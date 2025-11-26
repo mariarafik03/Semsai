@@ -9,6 +9,17 @@ from langchain_core.messages import HumanMessage, AIMessage
 END = "END"
 
 
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+
+llm = HuggingFaceEndpoint(
+    repo_id="HuggingFaceH4/zephyr-7b-beta",
+    task="text-generation",  # Required for compatibility
+    temperature=0.7,
+    max_new_tokens=512,
+    huggingfacehub_api_token=""  # Optional if env var set
+)
+model = ChatHuggingFace(llm=llm)
+
 class AgentState(TypedDict):
     user_input: str                  
     purpose: Optional[str]
@@ -32,8 +43,7 @@ def ask_llm_simulated(prompt: str) -> str:
             return AIMessage(content=purpose).content
     
   
-    return AIMessage(content=input("Agent: I'm not sure. Do you want to rent, invest, or live? You: ")).content
-
+    return AIMessage(content=input(model.invoke("Genaret inquire sentanse to user telling him that you didn't get his/her purpose and ask him/her if he want to invest, rent or live  "))).content
 
 def purpose_agent(state: AgentState):
     print("\n--- Purpose Agent Thinking ---")
