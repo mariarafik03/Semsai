@@ -13,6 +13,7 @@ def call_api_llm(prompt, system_message=None, api_key=None):
         String response from the model
     """
     import os
+
     
     # Get API key from parameter or environment
     if api_key is None:
