@@ -10,3 +10,8 @@ class AgentState(TypedDict):
     payment_type: Optional[str]
     Downpayment: Optional[str]
     monthlyinstall: Optional[str]
+    retry: Optional [str]
+    budget_valid: Optional[str]
+    breakingquest: Optional[str]
+    breakingbudget:Optional[str]
+    breakinginstallments:Optional[str]
