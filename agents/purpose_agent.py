@@ -14,12 +14,12 @@ def purpose_agent(state: AgentState):
         state["retry"] = False
 
     purpose = ask_ollama(
-        f"Extract ONLY one purpose from user input (rent, invest, live, buy): '{state['user_input']}'"
+        f"Extract ONLY one purpose from user input (rent, invest, live): '{state['user_input']}'"
     ).strip().lower()
     
 
    
-    if purpose in ["rent", "invest", "live", "buy"]:
+    if purpose in ["rent", "invest", "live"]:
         print(f"Agent: So, you want to buy a property to {purpose}? Please reply yes or no.")
         confirmation = input("You (yes/no): ").strip().lower()
         if confirmation == "yes":
