@@ -7,7 +7,13 @@ const userSchema = new mongoose.Schema({
   profession: { type: String },
   occupation: { type: String },
   dev_preference: [{ type: String }],
-  amenities: [{ type: String }]
+  amenities: [{ type: String }],
+  savedLocations: [{
+    name: { type: String, required: true },
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true },
+    address: { type: String }
+  }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema, 'users');

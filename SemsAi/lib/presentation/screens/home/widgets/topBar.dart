@@ -35,7 +35,7 @@ class Topbar extends StatelessWidget {
                 Icon(Icons.location_on, color: myColors.orangeColor, size: 20),
                 const SizedBox(width: 6),
                 const Text(
-                  'North Coast, Egypt',
+                  'Cairo, Egypt',
                   style: TextStyle(color: Colors.black),
                 ),
                 const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -43,7 +43,14 @@ class Topbar extends StatelessWidget {
             ),
           ),
         ),
-        Spacer(),
+        SizedBox(width: 166),
+        IconButton(
+          icon: Icon(Icons.logout, color: myColors.orangeColor, size: 30),
+          onPressed: () {
+            // log out
+            Navigator.pushNamed(context, '/login');
+          },
+        ),
       ],
     );
   }

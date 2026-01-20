@@ -37,6 +37,53 @@ app.get('/users', async (req, res) => {
   const users = await User.find();
   res.json(users);
 });
+
+// User Locations
+app.post('/users/locations', async (req, res) => {
+  const { email, location } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    user.savedLocations.push(location);
+    await user.save();
+    res.status(201).json(user.savedLocations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save location' });
+  }
+});
+
+app.get('/users/locations', async (req, res) => {
+  const { email } = req.query;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user.savedLocations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch locations' });
+  }
+});
+
+app.delete('/users/locations/:id', async (req, res) => {
+  const { email } = req.body;
+  const locationId = req.params.id;
+
+  try {
+      const user = await User.findOne({ email });
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      user.savedLocations.pull({ _id: locationId });
+      await user.save();
+      
+      res.status(200).json(user.savedLocations);
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to delete location' });
+  }
+});
+
 // Auth
 app.post('/auth/register',async (req,res) => {
 try {
