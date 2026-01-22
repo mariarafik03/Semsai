@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const unitSchema = new mongoose.Schema({
     compound_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Compound', required: true },
+    external_id: { type: String, unique: true, sparse: true, index: true }, // PropertyFinder ID
     type: { type: String, required: true }, // e.g., "apartment", "villa"
     area: Number, // Size in sqm
     price: Number, // Current price
@@ -18,7 +19,7 @@ const unitSchema = new mongoose.Schema({
     
     // Unit specific amenities (if any)
     amenities: [String]
-}, { timestamps: true });
+}, { timestamps: true, strict: false });
 
 const Unit = mongoose.model('Unit', unitSchema, 'units');
 

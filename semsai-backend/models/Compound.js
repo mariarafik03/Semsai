@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 
 const compoundSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    propertyfinder_id: { type: String, index: true }, // ID for Price Trends API
+    propertyfinder_slug: String, // Slug for Area Insights pages
     description: String,
     location: String, // General location name like "New Cairo"
     area: Number, // Total area in sqm
