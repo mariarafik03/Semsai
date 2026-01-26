@@ -16,7 +16,7 @@ def lifestyle_agent(state: AgentState):
     else:
         landscapes_w, nightlife_w = 0.55, 0.45
 
-    
+    # Q2: modern practical vs luxury prestige
     print("\n(2) Do you prefer a modern practical design or a luxury prestige style?")
     print("   1) Modern/practical   2) Luxury/prestige")
     b = input("Your choice (1/2): ").strip()
@@ -28,7 +28,7 @@ def lifestyle_agent(state: AgentState):
     else:
         modern_w, luxury_w = 0.60, 0.60
 
-    
+    # Q3: closed/private vs large city-like
     print("\n(3) Do you prefer a closed/private compound or a large city-like one?")
     print("   1) Closed/private   2) Large/city-like")
     c = input("Your choice (1/2): ").strip()
