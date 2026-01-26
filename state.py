@@ -1,0 +1,25 @@
+from typing import TypedDict, Optional
+
+class AgentState(TypedDict):
+    user_input: Optional[str]
+    purpose: Optional[str]
+    pending_confirmation: Optional[str]
+    budget: Optional[int]
+    location: Optional[str]
+    next_step: Optional[str]
+    payment_type: Optional[str]
+    Downpayment: Optional[str]
+    monthlyinstall: Optional[str]
+    retry: Optional [str]
+    budget_valid: Optional[str]
+    breakingquest: Optional[str]
+    breakingbudget:Optional[str]
+    breakinginstallments:Optional[str]
+    candidate_compounds: Optional[list]
+    landscapes: Optional[list]
+    nightlife: Optional[list]
+    modern_layout: Optional[list]
+    luxury_layout: Optional[list]
+    closed_off_layout: Optional[list]
+    larger_layout: Optional[list]
+
