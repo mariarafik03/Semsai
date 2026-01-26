@@ -5,9 +5,9 @@ import { parse } from 'csv-parse/sync';
 import { stringify } from 'csv-stringify/sync';
 import path from 'path';
 
-const INPUT_CSV = 'e:/StudioProjects/SemsAi/SemsAi/nawy (1).csv';
-const OUTPUT_CSV = 'e:/StudioProjects/SemsAi/SemsAi/nawy_enriched.csv';
-const PROGRESS_FILE = 'e:/StudioProjects/SemsAi/semsai-backend/enrichment_progress.json';
+const INPUT_CSV = 'c:/Users/Mohamed Hany/Desktop/Semsai-1/SemsAi/nawy (1).csv';
+const OUTPUT_CSV = 'c:/Users/Mohamed Hany/Desktop/Semsai-1/SemsAi/nawy_enriched.csv';
+const PROGRESS_FILE = 'c:/Users/Mohamed Hany/Desktop/Semsai-1/semsai-backend/enrichment_progress.json';
 
 // Batch size for parallel requests
 const BATCH_SIZE = 5;
@@ -15,7 +15,7 @@ const LIMIT = null; // Production run
 
 async function enrich() {
     console.log('Starting Enrichment Scraper...');
-    
+
     const fileContent = fs.readFileSync(INPUT_CSV, 'utf-8');
     const records = parse(fileContent, {
         columns: true,
@@ -37,7 +37,7 @@ async function enrich() {
     }
 
     const browser = await chromium.launch({ headless: true });
-    
+
     for (let i = startIndex; i < processedRecords.length; i += BATCH_SIZE) {
         const batch = processedRecords.slice(i, i + BATCH_SIZE);
         console.log(`Processing batch ${i} to ${Math.min(i + BATCH_SIZE, processedRecords.length)}...`);
@@ -48,7 +48,7 @@ async function enrich() {
 
             const context = await browser.newContext();
             const page = await context.newPage();
-            
+
             try {
                 // Navigate and block unnecessary resources
                 await page.route('**/*.{png,jpg,jpeg,gif,svg,css,woff,woff2}', route => route.abort());
@@ -86,7 +86,7 @@ async function enrich() {
             } finally {
                 try {
                     if (context) await context.close();
-                } catch (e) {}
+                } catch (e) { }
             }
 
             return record;
@@ -97,7 +97,7 @@ async function enrich() {
 
         // Save progress every batch
         fs.writeFileSync(PROGRESS_FILE, JSON.stringify({ index: i + BATCH_SIZE, data: enrichedData }));
-        
+
         // Write periodic CSV update
         const csvOutput = stringify(enrichedData, { header: true });
         fs.writeFileSync(OUTPUT_CSV, csvOutput);

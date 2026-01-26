@@ -21,7 +21,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CSV_FILE_PATH = 'e:/StudioProjects/SemsAi/SemsAi/nawy_enriched.csv';
+const CSV_FILE_PATH = 'c:/Users/Mohamed Hany/Desktop/Semsai-1/SemsAi/nawy_enriched.csv';
 
 const connectDB = async () => {
     try {
@@ -45,6 +45,11 @@ const parseDurationMonths = (val, unit) => {
     return num;
 };
 
+const parseSafeNumber = (val) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? 0 : num;
+};
+
 const extractDeveloper = (description) => {
     if (!description) return "Unknown Developer";
     const match = description.match(/by\s+(.*?)(?:\.|$)/);
@@ -55,7 +60,7 @@ const migrate = async () => {
     await connectDB();
 
     const results = [];
-    
+
     // Create a stream
     fs.createReadStream(CSV_FILE_PATH)
         .pipe(csv())
@@ -64,7 +69,7 @@ const migrate = async () => {
             console.log(`Parsed ${results.length} rows. Starting migration...`);
 
             // Cache for Compounds and Developers to avoid redundant DB calls
-            const compoundsCache = {}; 
+            const compoundsCache = {};
             const developersCache = {};
 
             // Batch processing could be better, but we'll do sequential for safety first
@@ -75,19 +80,19 @@ const migrate = async () => {
                     // "name": "Type, Compound Name" -> "Apartment, Kayan-Phase 1"
                     const nameParts = row['name'] ? row['name'].split(',') : ['Unknown', 'Unknown'];
                     const unitType = nameParts[0].trim();
-                     // Join the rest in case compound name has commas
+                    // Join the rest in case compound name has commas
                     const compoundName = nameParts.slice(1).join(',').trim() || "Unknown Compound";
-                    
+
                     const locationArea = row['area']; // "Northern Expansion"
                     const description = row['sc-4b9910fd-0'];
                     const developerName = extractDeveloper(description);
-                    
-                    const unitArea = parseFloat(row['value']); // 125
-                    const bedrooms = parseFloat(row['value 2']); // 3
-                    const bathrooms = parseFloat(row['value 3']); // 2
-                    
+
+                    const unitArea = parseSafeNumber(row['value']); // 125
+                    const bedrooms = parseSafeNumber(row['value 2']); // 3
+                    const bathrooms = parseSafeNumber(row['value 3']); // 2
+
                     const price = cleanPrice(row['price']);
-                    
+
                     // Payment parsing
                     // "down-payment": "410,118 EGP quarterly"
                     // "down-payment 3": "4"
@@ -99,7 +104,7 @@ const migrate = async () => {
                     if (installmentStr && installmentStr.toLowerCase().includes('quarterly')) {
                         monthlyInstallment = installmentAmount / 3;
                     }
-                    
+
                     const durationVal = row['down-payment 3'];
                     const durationUnit = row['down-payment 4'];
                     const months = parseDurationMonths(durationVal, durationUnit);
@@ -179,8 +184,10 @@ const migrate = async () => {
                         compoundsCache[compoundName] = compoundId;
                     }
 
-                    // 4. Create Unit
-                    const unit = await Unit.create({
+                    // 4. Upsert Unit (Prevent Duplicates)
+                    const unitUrl = row['tablescraper-selected-row href'];
+
+                    const unitData = {
                         compound_id: compoundId,
                         type: unitType,
                         area: unitArea,
@@ -190,41 +197,62 @@ const migrate = async () => {
                         finishing: row['finishing_extracted'] || 'Unknown',
                         lat: row['lat_extracted'] || null,
                         lng: row['lng_extracted'] || null,
-                        amenities: row['amenities_extracted'] ? row['amenities_extracted'].split(' | ') : []
-                    });
+                        amenities: row['amenities_extracted'] ? row['amenities_extracted'].split(' | ') : [],
+                        url: unitUrl
+                    };
 
-                    // 5. Create Residential Specs
-                    await Residential.create({
-                        unit_id: unit._id,
-                        bedrooms: bedrooms,
-                        bathrooms: bathrooms,
-                        finishing: 'Unknown' // Not clear in CSV headers inspected
-                    });
+                    const unit = await Unit.findOneAndUpdate(
+                        { url: unitUrl },
+                        unitData,
+                        { upsert: true, new: true, setDefaultsOnInsert: true }
+                    );
 
-                    // 6. Create Location (Unit specific if any, otherwise skip or link)
-                    // We really just have "area" which is compound level. 
-                    // We can skip creating a per-unit location if it's identical to compound.
-                    // But if we want geospatial queries on units, we might want it.
-                    // For now, let's skip to save space unless we have lat/long.
+                    // 5. Create Residential Specs (Only if new unit? Or update?)
+                    // For simplicity, we can try to findOneAndUpdate as well if we link by unit_id
+                    await Residential.findOneAndUpdate(
+                        { unit_id: unit._id },
+                        {
+                            bedrooms: bedrooms,
+                            bathrooms: bathrooms,
+                            finishing: row['finishing_extracted'] || 'Unknown'
+                        },
+                        { upsert: true }
+                    );
 
-                    // 7. Create Media
-                    if (row['sc-a8a5fdb6-0 src']) {
-                        await Media.create({
-                            unit_id: unit._id,
-                            compound_id: compoundId,
-                            url: row['sc-a8a5fdb6-0 src'],
-                            type: 'image'
-                        });
-                    }
-
-                    // 8. Create Payment
+                    // 6. Payment (Update if exists)
                     if (months > 0 || monthlyInstallment > 0) {
-                        await Payment.create({
-                            unit_id: unit._id,
-                            monthly_installment: Math.round(monthlyInstallment),
-                            duration: months
-                        });
+                        await Payment.findOneAndUpdate(
+                            { unit_id: unit._id },
+                            {
+                                monthly_installment: Math.round(monthlyInstallment),
+                                duration: months
+                            },
+                            { upsert: true }
+                        );
                     }
+
+                    // 7. Media (Avoid duplicate images)
+                    if (row['sc-a8a5fdb6-0 src']) {
+                        await Media.findOneAndUpdate(
+                            { unit_id: unit._id, url: row['sc-a8a5fdb6-0 src'] },
+                            {
+                                compound_id: compoundId,
+                                type: 'image'
+                            },
+                            { upsert: true }
+                        );
+                    }
+
+                    // 8. Skip Residential/Payment checks below since we moved them up
+                    continue;
+
+                    /* OLD LOGIC REMOVED */
+                    /*
+                    // 5. Create Residential Specs
+                    await Residential.create({ ... });
+
+                    // ...
+                    */
 
                 } catch (err) {
                     console.error(`Error processing row: ${err.message}`);
