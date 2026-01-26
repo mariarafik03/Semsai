@@ -14,10 +14,10 @@ def location_agent(state: AgentState):
     print("Agent:", question)
 
     user_location_input = input("You: ")
-    state["user_input"] = user_location_input
+    state["location"] = user_location_input
 
     
-    normalize_prompt = (
+    """normalize_prompt = (
         "Normalize this Egyptian location input into a standard city or neighborhood name. "
         "Return a short, clean location name.\n"
         f"User said: '{user_location_input}'"
@@ -30,6 +30,6 @@ def location_agent(state: AgentState):
         print(f"Debug: standardized location: {normalized_location}")
     else:
         print("Agent: I couldn't understand that location. Let's try again.")
-        return location_agent(state)  # retry
+        return location_agent(state)  # retry"""
 
     return state  

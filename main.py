@@ -1,9 +1,11 @@
-from state import AgentState
+
 from graph import StateGraph, END
 from agents.purpose_agent import purpose_agent
 from agents.questioning_agent import questioning_agent
 from agents.budget_agent import budget_agent
 from agents.location_agent import location_agent
+from agents.lifestyle_agent import lifestyle_agent
+from agents.compounds_agent import compounds_agent
 
 state = {
     "user_input": None,
@@ -19,18 +21,31 @@ state = {
     "budget_valid":None,
     "breakingquest":None,
     "breakingbudget":None,
-    "breakinginstallments":None
+    "breakinginstallments":None,
+    "candidate_compounds": None,
+    "landscapes": None,
+    "nightlife": None,
+    "modern_layout": None,
+    "luxury_layout": None,
+    "closed_off_layout": None,
+    "larger_layout": None
 }
 graph = StateGraph()
 graph.add_node("purpose_agent", purpose_agent)
 graph.add_node("questioning_agent", questioning_agent)
 graph.add_node("budget_agent", budget_agent)
 graph.add_node("location_agent", location_agent)
+graph.add_node("lifestyle_agent", lifestyle_agent)
+graph.add_node("compounds_agent", compounds_agent)
+
 
 graph.add_edge("purpose_agent", lambda s: "budget_agent" if s.get("purpose") else "questioning_agent")
 graph.add_edge("questioning_agent", lambda s: "budget_agent")
 graph.add_edge("budget_agent", lambda s: "location_agent" )
-graph.add_edge("location_agent", lambda s: "END")
+graph.add_edge("location_agent", lambda s: "lifestyle_agent")
+
+graph.add_edge("lifestyle_agent", lambda s: "compounds_agent")
+graph.add_edge("compounds_agent", lambda s: END)
 
 graph.set_entry_point("purpose_agent")
 
