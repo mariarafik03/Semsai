@@ -1,0 +1,50 @@
+[
+  {
+    "compound_id": 129,
+    "compound_name": "مراسى",
+    "developer_name": "إعمار مصر",
+    "customer_complaints": 1,
+    "experts_count": 27,
+    "status": "open",
+    "compound_url": "https://aqarmap.com.eg/compounds-ratings/ar/compound/129",
+    "developer_rating": {
+      "overall": 9.3,
+      "experience": 10,
+      "reputation": 9,
+      "delivery_commitment": 9
+    },
+    "project_rating": {
+      "overall": 9.3,
+      "location": 10,
+      "services": 17,
+      "brokers_issues": 8
+    },
+    "data_completeness": "full",
+    "data_source": "aqarmap",
+    "scraped_at": "2026-01-26T16:04:20.174Z"
+  },
+  {
+    "compound_id": 457,
+    "compound_name": "رامتان",
+    "developer_name": "رامتان للتنمية العقارية",
+    "customer_complaints": 0,
+    "experts_count": 18,
+    "status": "open",
+    "compound_url": "https://aqarmap.com.eg/compounds-ratings/ar/compound/457",
+    "developer_rating": {
+      "overall": 4,
+      "experience": 2,
+      "reputation": 5,
+      "delivery_commitment": 5
+    },
+    "project_rating": {
+      "overall": 4,
+      "location": 8,
+      "services": 5,
+      "brokers_issues": 6
+    },
+    "data_completeness": "full",
+    "data_source": "aqarmap",
+    "scraped_at": "2026-01-26T16:04:26.862Z"
+  }
+]
