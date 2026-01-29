@@ -1,0 +1,40 @@
+# Nawy.com Web Scraper Dependencies
+# Install with: pip install -r requirements.txt
+
+# Browser automation
+playwright==1.40.0
+
+# HTML parsing
+beautifulsoup4==4.12.2
+lxml==5.1.0
+
+# MongoDB
+pymongo==4.6.1
+pymongo[srv]
+
+# Data validation
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Data processing
+pandas==2.1.4
+
+# Progress bars
+tqdm==4.66.1
+
+# User agent rotation
+fake-useragent==1.4.0
+
+# Async support
+aiohttp==3.9.1
+
+# CLI
+click==8.1.7
+rich==13.7.0
+
+# AI Enrichment (optional)
+langchain==0.1.0
+openai==1.6.1

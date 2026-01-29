@@ -1,0 +1,2097 @@
+2026-01-29 15:42:13,137 | INFO | ✅ Connected to MongoDB: semsai
+2026-01-29 15:42:25,437 | INFO | 🚀 Initializing browser...
+2026-01-29 15:42:28,085 | INFO | ✅ Browser initialized (UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb...)
+2026-01-29 15:42:28,085 | INFO | [1/1406] Scraping: https://www.nawy.com/compound/1771-jirian-nations-of-sky
+2026-01-29 15:42:28,086 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1771-jirian-nations-of-sky...
+2026-01-29 15:42:43,605 | INFO |    ✅ Jirian - Nations of Sky
+2026-01-29 15:42:43,756 | INFO | ➕ Inserted new compound: Jirian - Nations of Sky
+2026-01-29 15:42:43,757 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:42:47,827 | INFO | [2/1406] Scraping: https://www.nawy.com/compound/1834-tierra
+2026-01-29 15:42:47,828 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1834-tierra...
+2026-01-29 15:42:59,891 | INFO |    ✅ Tierra
+2026-01-29 15:43:00,035 | INFO | ➕ Inserted new compound: Tierra
+2026-01-29 15:43:00,036 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:43:03,737 | INFO | [3/1406] Scraping: https://www.nawy.com/compound/1846-sodic-mostakbal-city
+2026-01-29 15:43:03,746 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1846-sodic-mostakbal-city...
+2026-01-29 15:43:17,378 | INFO |    ✅ East Vale
+2026-01-29 15:43:17,523 | INFO | ➕ Inserted new compound: East Vale
+2026-01-29 15:43:17,524 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:43:22,721 | INFO | [4/1406] Scraping: https://www.nawy.com/compound/1835-solana-east-strip
+2026-01-29 15:43:22,721 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1835-solana-east-strip...
+2026-01-29 15:43:35,522 | INFO |    ✅ Solana East Strip
+2026-01-29 15:43:35,665 | INFO | ➕ Inserted new compound: Solana East Strip
+2026-01-29 15:43:35,666 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:43:40,265 | INFO | [5/1406] Scraping: https://www.nawy.com/compound/1793-hyde-park-signature
+2026-01-29 15:43:40,267 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1793-hyde-park-signature...
+2026-01-29 15:44:06,588 | INFO |    ✅ Hyde Park Signature
+2026-01-29 15:44:06,734 | INFO | ➕ Inserted new compound: Hyde Park Signature
+2026-01-29 15:44:06,734 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:44:12,539 | INFO | [6/1406] Scraping: https://www.nawy.com/compound/1333-crescent-walk
+2026-01-29 15:44:12,544 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1333-crescent-walk...
+2026-01-29 15:44:39,641 | INFO |    ✅ Crescent Walk
+2026-01-29 15:44:39,984 | INFO | ➕ Inserted new compound: Crescent Walk
+2026-01-29 15:44:39,991 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:44:44,872 | INFO | [7/1406] Scraping: https://www.nawy.com/compound/1077-solana-east
+2026-01-29 15:44:44,873 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1077-solana-east...
+2026-01-29 15:45:15,075 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 15:45:15,155 | INFO | ⏳ Retrying in 2.2s...
+2026-01-29 15:45:17,422 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1077-solana-east...
+2026-01-29 15:45:33,038 | INFO |    ✅ Solana East
+2026-01-29 15:45:33,274 | INFO | ➕ Inserted new compound: Solana East
+2026-01-29 15:45:33,274 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:45:37,928 | INFO | [8/1406] Scraping: https://www.nawy.com/compound/939-telal-east
+2026-01-29 15:45:37,929 | INFO | 📄 Navigating to: https://www.nawy.com/compound/939-telal-east...
+2026-01-29 15:45:50,644 | INFO |    ✅ Telal East
+2026-01-29 15:45:50,795 | INFO | ➕ Inserted new compound: Telal East
+2026-01-29 15:45:50,796 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:45:55,476 | INFO | [9/1406] Scraping: https://www.nawy.com/compound/1761-el-patio-riva
+2026-01-29 15:45:55,477 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1761-el-patio-riva...
+2026-01-29 15:46:09,731 | INFO |    ✅ El Patio Riva
+2026-01-29 15:46:09,874 | INFO | ➕ Inserted new compound: El Patio Riva
+2026-01-29 15:46:09,875 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:46:13,288 | INFO | [10/1406] Scraping: https://www.nawy.com/compound/274-zed
+2026-01-29 15:46:13,288 | INFO | 📄 Navigating to: https://www.nawy.com/compound/274-zed...
+2026-01-29 15:46:35,657 | INFO |    ✅ ZED
+2026-01-29 15:46:35,807 | INFO | ➕ Inserted new compound: ZED
+2026-01-29 15:46:35,808 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:46:38,957 | INFO | [11/1406] Scraping: https://www.nawy.com/compound/806-the-crest
+2026-01-29 15:46:38,958 | INFO | 📄 Navigating to: https://www.nawy.com/compound/806-the-crest...
+2026-01-29 15:46:56,403 | INFO |    ✅ The Crest
+2026-01-29 15:46:56,546 | INFO | ➕ Inserted new compound: The Crest
+2026-01-29 15:46:56,546 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:47:00,928 | INFO | [12/1406] Scraping: https://www.nawy.com/compound/1027-mar-ville
+2026-01-29 15:47:00,928 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1027-mar-ville...
+2026-01-29 15:47:14,318 | INFO |    ✅ Mar ville
+2026-01-29 15:47:14,461 | INFO | ➕ Inserted new compound: Mar ville
+2026-01-29 15:47:14,461 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:47:18,296 | INFO | [13/1406] Scraping: https://www.nawy.com/compound/242-vida-marassi-marina
+2026-01-29 15:47:18,297 | INFO | 📄 Navigating to: https://www.nawy.com/compound/242-vida-marassi-marina...
+2026-01-29 15:47:30,111 | INFO |    ✅ Vida Marassi Marina
+2026-01-29 15:47:30,252 | INFO | ➕ Inserted new compound: Vida Marassi Marina
+2026-01-29 15:47:30,253 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:47:34,746 | INFO | [14/1406] Scraping: https://www.nawy.com/compound/1480-linwood
+2026-01-29 15:47:34,746 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1480-linwood...
+2026-01-29 15:47:46,635 | INFO |    ✅ Linwood
+2026-01-29 15:47:46,778 | INFO | ➕ Inserted new compound: Linwood
+2026-01-29 15:47:46,779 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:47:52,245 | INFO | [15/1406] Scraping: https://www.nawy.com/compound/981-lavida-9
+2026-01-29 15:47:52,245 | INFO | 📄 Navigating to: https://www.nawy.com/compound/981-lavida-9...
+2026-01-29 15:48:11,339 | INFO |    ✅ Lavida 9
+2026-01-29 15:48:11,470 | INFO | ➕ Inserted new compound: Lavida 9
+2026-01-29 15:48:11,471 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:48:16,823 | INFO | [16/1406] Scraping: https://www.nawy.com/compound/937-lavida-9
+2026-01-29 15:48:16,823 | INFO | 📄 Navigating to: https://www.nawy.com/compound/937-lavida-9...
+2026-01-29 15:48:28,771 | INFO |    ✅ Lavida
+2026-01-29 15:48:28,918 | INFO | ➕ Inserted new compound: Lavida
+2026-01-29 15:48:28,918 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:48:32,433 | INFO | [17/1406] Scraping: https://www.nawy.com/compound/1247-rock-white
+2026-01-29 15:48:32,436 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1247-rock-white...
+2026-01-29 15:48:44,438 | INFO |    ✅ Rock White
+2026-01-29 15:48:44,585 | INFO | ➕ Inserted new compound: Rock White
+2026-01-29 15:48:44,585 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:48:49,835 | INFO | [18/1406] Scraping: https://www.nawy.com/compound/1301-new-kairo
+2026-01-29 15:48:49,836 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1301-new-kairo...
+2026-01-29 15:49:09,631 | INFO |    ✅ New Kairo
+2026-01-29 15:49:09,774 | INFO | ➕ Inserted new compound: New Kairo
+2026-01-29 15:49:09,775 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:49:15,652 | INFO | [19/1406] Scraping: https://www.nawy.com/compound/176-sodic-east
+2026-01-29 15:49:15,653 | INFO | 📄 Navigating to: https://www.nawy.com/compound/176-sodic-east...
+2026-01-29 15:49:41,351 | INFO |    ✅ SODIC East
+2026-01-29 15:49:41,492 | INFO | ➕ Inserted new compound: SODIC East
+2026-01-29 15:49:41,494 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:49:47,067 | INFO | [20/1406] Scraping: https://www.nawy.com/compound/1468-rivette-amwaj
+2026-01-29 15:49:47,067 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1468-rivette-amwaj...
+2026-01-29 15:50:00,487 | INFO |    ✅ Rivette - Amwaj
+2026-01-29 15:50:00,631 | INFO | ➕ Inserted new compound: Rivette - Amwaj
+2026-01-29 15:50:00,632 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:50:06,610 | INFO | [21/1406] Scraping: https://www.nawy.com/compound/976-infinity-tower
+2026-01-29 15:50:06,613 | INFO | 📄 Navigating to: https://www.nawy.com/compound/976-infinity-tower...
+2026-01-29 15:50:21,909 | INFO |    ✅ Infinity Tower
+2026-01-29 15:50:22,056 | INFO | ➕ Inserted new compound: Infinity Tower
+2026-01-29 15:50:22,057 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:50:26,373 | INFO | [22/1406] Scraping: https://www.nawy.com/compound/711-green-5/property/14527-green-5-sheikh-zayed-apartment-4-bedrooms-for-sale
+2026-01-29 15:50:26,374 | INFO | 📄 Navigating to: https://www.nawy.com/compound/711-green-5/property/14527-green-5-sheikh-zayed-ap...
+2026-01-29 15:50:37,978 | INFO |    ✅ Unknown
+2026-01-29 15:50:38,105 | INFO | ➕ Inserted new compound: None
+2026-01-29 15:50:38,105 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:50:43,285 | INFO | [23/1406] Scraping: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cairo-villa-9-bedrooms-for-sale
+2026-01-29 15:50:43,287 | INFO | 📄 Navigating to: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cai...
+2026-01-29 15:51:01,077 | INFO |    ✅ Unknown
+2026-01-29 15:51:01,205 | INFO | 🔄 Updated compound: None
+2026-01-29 15:51:01,206 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:51:04,259 | INFO | [24/1406] Scraping: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sale-in-katameya-dunes-new-cairo
+2026-01-29 15:51:04,260 | INFO | 📄 Navigating to: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sa...
+2026-01-29 15:51:30,347 | INFO |    ✅ Unknown
+2026-01-29 15:51:30,475 | INFO | 🔄 Updated compound: None
+2026-01-29 15:51:30,478 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:51:33,984 | INFO | [25/1406] Scraping: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-marina-2-north-coast
+2026-01-29 15:51:33,984 | INFO | 📄 Navigating to: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-mari...
+2026-01-29 15:51:56,003 | INFO |    ✅ Unknown
+2026-01-29 15:51:56,135 | INFO | 🔄 Updated compound: None
+2026-01-29 15:51:56,136 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:52:02,036 | INFO | [26/1406] Scraping: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sale-in-marseilia-beach-3
+2026-01-29 15:52:02,037 | INFO | 📄 Navigating to: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sal...
+2026-01-29 15:52:32,159 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 15:52:32,159 | INFO | ⏳ Retrying in 2.6s...
+2026-01-29 15:52:34,787 | INFO | 📄 Navigating to: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sal...
+2026-01-29 15:53:04,905 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 15:53:04,909 | INFO | ⏳ Retrying in 3.6s...
+2026-01-29 15:53:08,559 | INFO | 📄 Navigating to: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sal...
+2026-01-29 15:53:38,674 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 15:53:38,675 | WARNING |    ❌ Failed to scrape
+2026-01-29 15:53:43,150 | INFO | [27/1406] Scraping: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-neopolis-mostakbal-city
+2026-01-29 15:53:43,150 | INFO | 📄 Navigating to: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-...
+2026-01-29 15:53:53,202 | INFO |    ✅ Unknown
+2026-01-29 15:53:53,361 | INFO | 🔄 Updated compound: None
+2026-01-29 15:53:53,363 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:53:58,702 | INFO | [28/1406] Scraping: https://www.nawy.com/compound/639-diar-ii/property/62215-apartment-for-sale-in-diar-ll
+2026-01-29 15:53:58,703 | INFO | 📄 Navigating to: https://www.nawy.com/compound/639-diar-ii/property/62215-apartment-for-sale-in-d...
+2026-01-29 15:54:10,701 | INFO |    ✅ Unknown
+2026-01-29 15:54:10,856 | INFO | 🔄 Updated compound: None
+2026-01-29 15:54:10,856 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:54:16,447 | INFO | [29/1406] Scraping: https://www.nawy.com/compound/1214-the-grey/property/62438-office-for-sale-in-the-gray-in-new-cairo-by-housing-and-development-properties-hdp
+2026-01-29 15:54:16,447 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1214-the-grey/property/62438-office-for-sale-in-th...
+2026-01-29 15:54:26,131 | INFO |    ✅ Unknown
+2026-01-29 15:54:26,292 | INFO | 🔄 Updated compound: None
+2026-01-29 15:54:26,293 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:54:29,675 | INFO | [30/1406] Scraping: https://www.nawy.com/compound/972-the-wonder-marq/property/64956-villa-for-sale-in-the-wonder-marq
+2026-01-29 15:54:29,676 | INFO | 📄 Navigating to: https://www.nawy.com/compound/972-the-wonder-marq/property/64956-villa-for-sale-...
+2026-01-29 15:54:51,450 | INFO |    ✅ Unknown
+2026-01-29 15:54:51,603 | INFO | 🔄 Updated compound: None
+2026-01-29 15:54:51,605 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:54:55,104 | INFO | [31/1406] Scraping: https://www.nawy.com/compound/742-stei8ht
+2026-01-29 15:54:55,108 | INFO | 📄 Navigating to: https://www.nawy.com/compound/742-stei8ht...
+2026-01-29 15:55:25,230 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 15:55:25,231 | INFO | ⏳ Retrying in 3.7s...
+2026-01-29 15:55:28,968 | INFO | 📄 Navigating to: https://www.nawy.com/compound/742-stei8ht...
+2026-01-29 15:55:59,086 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 15:55:59,086 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 15:56:02,253 | INFO | 📄 Navigating to: https://www.nawy.com/compound/742-stei8ht...
+2026-01-29 15:56:26,431 | INFO |    ✅ Stei8ht
+2026-01-29 15:56:26,583 | INFO | ➕ Inserted new compound: Stei8ht
+2026-01-29 15:56:26,584 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:56:31,760 | INFO | [32/1406] Scraping: https://www.nawy.com/compound/1032-hills-of-one
+2026-01-29 15:56:31,761 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1032-hills-of-one...
+2026-01-29 15:56:43,890 | INFO |    ✅ Hills of One
+2026-01-29 15:56:44,047 | INFO | ➕ Inserted new compound: Hills of One
+2026-01-29 15:56:44,048 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:56:49,265 | INFO | [33/1406] Scraping: https://www.nawy.com/compound/1391-scenes
+2026-01-29 15:56:49,266 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1391-scenes...
+2026-01-29 15:57:08,296 | INFO |    ✅ Scenes
+2026-01-29 15:57:08,465 | INFO | ➕ Inserted new compound: Scenes
+2026-01-29 15:57:08,465 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:57:12,454 | INFO | [34/1406] Scraping: https://www.nawy.com/compound/258-o-west-orascom
+2026-01-29 15:57:12,454 | INFO | 📄 Navigating to: https://www.nawy.com/compound/258-o-west-orascom...
+2026-01-29 15:57:36,748 | INFO |    ✅ O West Orascom
+2026-01-29 15:57:37,440 | INFO | ➕ Inserted new compound: O West Orascom
+2026-01-29 15:57:37,440 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:57:40,546 | INFO | [35/1406] Scraping: https://www.nawy.com/compound/1493-ras-el-hekma-egypt
+2026-01-29 15:57:40,547 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1493-ras-el-hekma-egypt...
+2026-01-29 15:57:51,176 | INFO |    ✅ Ras El Hekma Egypt
+2026-01-29 15:57:51,339 | INFO | ➕ Inserted new compound: Ras El Hekma Egypt
+2026-01-29 15:57:51,339 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:57:55,955 | INFO | [36/1406] Scraping: https://www.nawy.com/compound/223-badya
+2026-01-29 15:57:55,955 | INFO | 📄 Navigating to: https://www.nawy.com/compound/223-badya...
+2026-01-29 15:58:08,467 | INFO |    ✅ Badya
+2026-01-29 15:58:08,610 | INFO | ➕ Inserted new compound: Badya
+2026-01-29 15:58:08,611 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:58:11,794 | INFO | [37/1406] Scraping: https://www.nawy.com/compound/38-hyde-park
+2026-01-29 15:58:11,799 | INFO | 📄 Navigating to: https://www.nawy.com/compound/38-hyde-park...
+2026-01-29 15:58:25,368 | INFO |    ✅ Hyde Park
+2026-01-29 15:58:25,511 | INFO | ➕ Inserted new compound: Hyde Park
+2026-01-29 15:58:25,511 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:58:30,413 | INFO | [38/1406] Scraping: https://www.nawy.com/compound/530-silversands
+2026-01-29 15:58:30,414 | INFO | 📄 Navigating to: https://www.nawy.com/compound/530-silversands...
+2026-01-29 15:59:01,567 | INFO |    ✅ Silversands
+2026-01-29 15:59:01,718 | INFO | ➕ Inserted new compound: Silversands
+2026-01-29 15:59:01,719 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:59:05,709 | INFO | [39/1406] Scraping: https://www.nawy.com/compound/1192-ramla
+2026-01-29 15:59:05,710 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1192-ramla...
+2026-01-29 15:59:17,354 | INFO |    ✅ Ramla
+2026-01-29 15:59:17,508 | INFO | ➕ Inserted new compound: Ramla
+2026-01-29 15:59:17,508 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:59:22,703 | INFO | [40/1406] Scraping: https://www.nawy.com/compound/148-palm-hills-new-cairo
+2026-01-29 15:59:22,703 | INFO | 📄 Navigating to: https://www.nawy.com/compound/148-palm-hills-new-cairo...
+2026-01-29 15:59:34,626 | INFO |    ✅ Palm Hills New Cairo
+2026-01-29 15:59:34,777 | INFO | ➕ Inserted new compound: Palm Hills New Cairo
+2026-01-29 15:59:34,778 | INFO |    💾 Saved to MongoDB
+2026-01-29 15:59:39,932 | INFO | [41/1406] Scraping: https://www.nawy.com/compound/1237-ogami-ras-el-hekma
+2026-01-29 15:59:39,934 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1237-ogami-ras-el-hekma...
+2026-01-29 16:00:10,075 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:00:10,075 | INFO | ⏳ Retrying in 2.9s...
+2026-01-29 16:00:12,987 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1237-ogami-ras-el-hekma...
+2026-01-29 16:00:38,988 | INFO |    ✅ Ogami Ras El Hekma
+2026-01-29 16:00:39,129 | INFO | ➕ Inserted new compound: Ogami Ras El Hekma
+2026-01-29 16:00:39,148 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:00:43,717 | INFO | [42/1406] Scraping: https://www.nawy.com/compound/3-new-giza
+2026-01-29 16:00:43,718 | INFO | 📄 Navigating to: https://www.nawy.com/compound/3-new-giza...
+2026-01-29 16:00:57,195 | INFO |    ✅ New Giza
+2026-01-29 16:00:57,356 | INFO | ➕ Inserted new compound: New Giza
+2026-01-29 16:00:57,376 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:01:02,269 | INFO | [43/1406] Scraping: https://www.nawy.com/compound/1263-beit-al-bahr
+2026-01-29 16:01:02,323 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1263-beit-al-bahr...
+2026-01-29 16:01:26,918 | INFO |    ✅ Beit Al Bahr
+2026-01-29 16:01:27,059 | INFO | ➕ Inserted new compound: Beit Al Bahr
+2026-01-29 16:01:27,060 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:01:31,668 | INFO | [44/1406] Scraping: https://www.nawy.com/compound/232-el-masyaf
+2026-01-29 16:01:31,668 | INFO | 📄 Navigating to: https://www.nawy.com/compound/232-el-masyaf...
+2026-01-29 16:02:01,837 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:02:01,878 | INFO | ⏳ Retrying in 2.1s...
+2026-01-29 16:02:04,062 | INFO | 📄 Navigating to: https://www.nawy.com/compound/232-el-masyaf...
+2026-01-29 16:02:34,249 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:02:34,249 | INFO | ⏳ Retrying in 4.3s...
+2026-01-29 16:02:38,579 | INFO | 📄 Navigating to: https://www.nawy.com/compound/232-el-masyaf...
+2026-01-29 16:03:08,707 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:03:08,708 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:03:13,479 | INFO | [45/1406] Scraping: https://www.nawy.com/compound/761-the-med
+2026-01-29 16:03:13,480 | INFO | 📄 Navigating to: https://www.nawy.com/compound/761-the-med...
+2026-01-29 16:03:28,362 | INFO |    ✅ The Med
+2026-01-29 16:03:28,508 | INFO | ➕ Inserted new compound: The Med
+2026-01-29 16:03:28,509 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:03:32,290 | INFO | [46/1406] Scraping: https://www.nawy.com/compound/522-hyde-park-north-seashore
+2026-01-29 16:03:32,291 | INFO | 📄 Navigating to: https://www.nawy.com/compound/522-hyde-park-north-seashore...
+2026-01-29 16:03:48,422 | INFO |    ✅ Hyde Park North - Seashore
+2026-01-29 16:03:48,595 | INFO | ➕ Inserted new compound: Hyde Park North - Seashore
+2026-01-29 16:03:48,596 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:03:51,633 | INFO | [47/1406] Scraping: https://www.nawy.com/compound/510-june
+2026-01-29 16:03:51,635 | INFO | 📄 Navigating to: https://www.nawy.com/compound/510-june...
+2026-01-29 16:04:13,317 | INFO |    ✅ June
+2026-01-29 16:04:13,538 | INFO | ➕ Inserted new compound: June
+2026-01-29 16:04:13,539 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:04:18,379 | INFO | [48/1406] Scraping: https://www.nawy.com/compound/1427-patio-vida
+2026-01-29 16:04:18,379 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1427-patio-vida...
+2026-01-29 16:04:32,875 | INFO |    ✅ Patio Vida
+2026-01-29 16:04:33,044 | INFO | ➕ Inserted new compound: Patio Vida
+2026-01-29 16:04:33,044 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:04:37,976 | INFO | [49/1406] Scraping: https://www.nawy.com/compound/798-garden-lakes
+2026-01-29 16:04:37,976 | INFO | 📄 Navigating to: https://www.nawy.com/compound/798-garden-lakes...
+2026-01-29 16:04:49,884 | INFO |    ✅ Garden Lakes
+2026-01-29 16:04:50,051 | INFO | ➕ Inserted new compound: Garden Lakes
+2026-01-29 16:04:50,052 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:04:54,022 | INFO | [50/1406] Scraping: https://www.nawy.com/compound/1671-youd
+2026-01-29 16:04:54,022 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1671-youd...
+2026-01-29 16:05:07,111 | INFO |    ✅ Youd
+2026-01-29 16:05:07,298 | INFO | ➕ Inserted new compound: Youd
+2026-01-29 16:05:07,298 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:05:12,562 | INFO | [51/1406] Scraping: https://www.nawy.com/compound/752-seazen
+2026-01-29 16:05:12,562 | INFO | 📄 Navigating to: https://www.nawy.com/compound/752-seazen...
+2026-01-29 16:05:42,994 | INFO |    ✅ Seazen
+2026-01-29 16:05:43,193 | INFO | ➕ Inserted new compound: Seazen
+2026-01-29 16:05:43,193 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:05:46,840 | INFO | [52/1406] Scraping: https://www.nawy.com/compound/1660-sky-north
+2026-01-29 16:05:46,840 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1660-sky-north...
+2026-01-29 16:05:59,718 | INFO |    ✅ Sky North
+2026-01-29 16:05:59,884 | INFO | ➕ Inserted new compound: Sky North
+2026-01-29 16:05:59,884 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:06:04,947 | INFO | [53/1406] Scraping: https://www.nawy.com/compound/764-city-gate
+2026-01-29 16:06:04,947 | INFO | 📄 Navigating to: https://www.nawy.com/compound/764-city-gate...
+2026-01-29 16:06:17,579 | INFO |    ✅ City Gate
+2026-01-29 16:06:17,785 | INFO | ➕ Inserted new compound: City Gate
+2026-01-29 16:06:17,787 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:06:22,495 | INFO | [54/1406] Scraping: https://www.nawy.com/compound/1505-jirian-mountain-view
+2026-01-29 16:06:22,495 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1505-jirian-mountain-view...
+2026-01-29 16:06:33,343 | INFO |    ✅ Jirian - Mountain View
+2026-01-29 16:06:33,499 | INFO | ➕ Inserted new compound: Jirian - Mountain View
+2026-01-29 16:06:33,500 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:06:37,958 | INFO | [55/1406] Scraping: https://www.nawy.com/compound/927-salt
+2026-01-29 16:06:37,958 | INFO | 📄 Navigating to: https://www.nawy.com/compound/927-salt...
+2026-01-29 16:06:48,940 | INFO |    ✅ Salt
+2026-01-29 16:06:49,087 | INFO | ➕ Inserted new compound: Salt
+2026-01-29 16:06:49,088 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:06:52,318 | INFO | [56/1406] Scraping: https://www.nawy.com/compound/1224-plage
+2026-01-29 16:06:52,319 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1224-plage...
+2026-01-29 16:07:02,118 | INFO |    ✅ Plage
+2026-01-29 16:07:02,260 | INFO | ➕ Inserted new compound: Plage
+2026-01-29 16:07:02,261 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:07:05,974 | INFO | [57/1406] Scraping: https://www.nawy.com/compound/1213-saada-north-coast
+2026-01-29 16:07:05,974 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1213-saada-north-coast...
+2026-01-29 16:07:15,182 | INFO |    ✅ Saada North Coast
+2026-01-29 16:07:15,344 | INFO | ➕ Inserted new compound: Saada North Coast
+2026-01-29 16:07:15,345 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:07:18,401 | INFO | [58/1406] Scraping: https://www.nawy.com/compound/1312-park-central
+2026-01-29 16:07:18,402 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1312-park-central...
+2026-01-29 16:07:36,388 | INFO |    ✅ Park Central
+2026-01-29 16:07:36,532 | INFO | ➕ Inserted new compound: Park Central
+2026-01-29 16:07:36,533 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:07:40,722 | INFO | [59/1406] Scraping: https://www.nawy.com/compound/402-karmell-new-zayed
+2026-01-29 16:07:40,722 | INFO | 📄 Navigating to: https://www.nawy.com/compound/402-karmell-new-zayed...
+2026-01-29 16:08:10,841 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:08:10,841 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 16:08:14,384 | INFO | 📄 Navigating to: https://www.nawy.com/compound/402-karmell-new-zayed...
+2026-01-29 16:08:22,023 | INFO |    ✅ Karmell New Zayed
+2026-01-29 16:08:22,169 | INFO | ➕ Inserted new compound: Karmell New Zayed
+2026-01-29 16:08:22,169 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:08:26,248 | INFO | [60/1406] Scraping: https://www.nawy.com/compound/877-solana
+2026-01-29 16:08:26,249 | INFO | 📄 Navigating to: https://www.nawy.com/compound/877-solana...
+2026-01-29 16:08:48,988 | INFO |    ✅ Solana
+2026-01-29 16:08:49,135 | INFO | ➕ Inserted new compound: Solana
+2026-01-29 16:08:49,135 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:08:54,837 | INFO | [61/1406] Scraping: https://www.nawy.com/compound/1199-safia-ras-el-hekma
+2026-01-29 16:08:54,839 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1199-safia-ras-el-hekma...
+2026-01-29 16:09:04,731 | INFO |    ✅ Safia - Ras El Hekma
+2026-01-29 16:09:04,883 | INFO | ➕ Inserted new compound: Safia - Ras El Hekma
+2026-01-29 16:09:04,884 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:09:10,643 | INFO | [62/1406] Scraping: https://www.nawy.com/compound/1159-lyv-caesar-ras-el-hekma
+2026-01-29 16:09:10,644 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1159-lyv-caesar-ras-el-hekma...
+2026-01-29 16:09:29,587 | INFO |    ✅ Lyv Caesar - Ras El Hekma
+2026-01-29 16:09:29,729 | INFO | ➕ Inserted new compound: Lyv Caesar - Ras El Hekma
+2026-01-29 16:09:29,730 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:09:34,516 | INFO | [63/1406] Scraping: https://www.nawy.com/compound/974-saada
+2026-01-29 16:09:34,517 | INFO | 📄 Navigating to: https://www.nawy.com/compound/974-saada...
+2026-01-29 16:09:47,068 | INFO |    ✅ Saada
+2026-01-29 16:09:47,213 | INFO | ➕ Inserted new compound: Saada
+2026-01-29 16:09:47,214 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:09:51,867 | INFO | [64/1406] Scraping: https://www.nawy.com/compound/74-telal-north-coast
+2026-01-29 16:09:51,869 | INFO | 📄 Navigating to: https://www.nawy.com/compound/74-telal-north-coast...
+2026-01-29 16:10:08,115 | INFO |    ✅ Telal North Coast
+2026-01-29 16:10:08,261 | INFO | ➕ Inserted new compound: Telal North Coast
+2026-01-29 16:10:08,262 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:10:12,337 | INFO | [65/1406] Scraping: https://www.nawy.com/compound/805-swanlake-october
+2026-01-29 16:10:12,338 | INFO | 📄 Navigating to: https://www.nawy.com/compound/805-swanlake-october...
+2026-01-29 16:10:20,036 | INFO |    ✅ Swanlake October
+2026-01-29 16:10:20,178 | INFO | ➕ Inserted new compound: Swanlake October
+2026-01-29 16:10:20,179 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:10:23,464 | INFO | [66/1406] Scraping: https://www.nawy.com/compound/345-zed-east
+2026-01-29 16:10:23,465 | INFO | 📄 Navigating to: https://www.nawy.com/compound/345-zed-east...
+2026-01-29 16:10:52,319 | INFO |    ✅ ZED East
+2026-01-29 16:10:52,467 | INFO | ➕ Inserted new compound: ZED East
+2026-01-29 16:10:52,468 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:10:55,758 | INFO | [67/1406] Scraping: https://www.nawy.com/compound/929-solare
+2026-01-29 16:10:55,764 | INFO | 📄 Navigating to: https://www.nawy.com/compound/929-solare...
+2026-01-29 16:11:25,902 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:11:25,902 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 16:11:28,308 | INFO | 📄 Navigating to: https://www.nawy.com/compound/929-solare...
+2026-01-29 16:11:58,436 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:11:58,437 | INFO | ⏳ Retrying in 4.5s...
+2026-01-29 16:12:02,973 | INFO | 📄 Navigating to: https://www.nawy.com/compound/929-solare...
+2026-01-29 16:12:33,098 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:12:33,099 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:12:37,939 | INFO | [68/1406] Scraping: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma
+2026-01-29 16:12:37,939 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:13:08,070 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:13:08,070 | INFO | ⏳ Retrying in 3.6s...
+2026-01-29 16:13:11,694 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:13:41,840 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:13:41,844 | INFO | ⏳ Retrying in 3.4s...
+2026-01-29 16:13:45,197 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:14:15,330 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:14:15,331 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:14:20,862 | INFO | [69/1406] Scraping: https://www.nawy.com/compound/1261-hacienda-waters
+2026-01-29 16:14:20,862 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1261-hacienda-waters...
+2026-01-29 16:14:44,031 | ERROR | Error
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 135, in scrape_missing_from_mongodb
+    compound_data = await scraper._scrape_compound_detail(url)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\compound_scraper.py", line 300, in _scrape_compound_detail
+    if not await self.safe_goto(url):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 148, in safe_goto
+    response = await self.page.goto(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 9260, in goto
+    await self._impl_obj.goto(
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_page.py", line 475, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_frame.py", line 139, in goto
+    await self._channel.send("goto", locals_to_params(locals()))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 91, in inner_send
+    done, _ = await asyncio.wait(
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 464, in wait
+    return await _wait(fs, timeout, return_when, loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 550, in _wait
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 197, in main
+    compounds = asyncio.run(scrape_missing_from_mongodb())
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 175, in scrape_missing_from_mongodb
+    await scraper.close()
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 107, in close
+    await self.context.close()
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 13758, in close
+    return mapping.from_maybe_impl(await self._impl_obj.close(reason=reason))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_browser_context.py", line 485, in close
+    await self._channel.send("close", filter_none({"reason": reason}))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 100, in inner_send
+    result = next(iter(done)).result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+Browser logs:
+
+<launching> C:\Users\Youssef\AppData\Local\ms-playwright\chromium-1091\chrome-win\chrome.exe --disable-field-trial-config --disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --disable-dev-shm-usage --no-sandbox --disable-setuid-sandbox --disable-web-security --disable-features=IsolateOrigins,site-per-process --user-data-dir=E:\Temp\playwright_chromiumdev_profile-apfPJ8 --remote-debugging-pipe --no-startup-window
+<launched> pid=15236
+[pid=15236] <gracefully close start>
+2026-01-29 16:14:44,224 | INFO | 🔌 Disconnected from MongoDB
+2026-01-29 16:14:51,434 | INFO | ✅ Connected to MongoDB: semsai
+2026-01-29 16:15:06,322 | INFO | 🚀 Initializing browser...
+2026-01-29 16:15:08,429 | INFO | ✅ Browser initialized (UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap...)
+2026-01-29 16:15:08,431 | INFO | [1/1348] Scraping: https://www.nawy.com/compound/711-green-5/property/14527-green-5-sheikh-zayed-apartment-4-bedrooms-for-sale
+2026-01-29 16:15:08,432 | INFO | 📄 Navigating to: https://www.nawy.com/compound/711-green-5/property/14527-green-5-sheikh-zayed-ap...
+2026-01-29 16:15:21,001 | INFO |    ✅ Unknown
+2026-01-29 16:15:21,124 | INFO | 🔄 Updated compound: None
+2026-01-29 16:15:21,124 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:15:26,669 | INFO | [2/1348] Scraping: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cairo-villa-9-bedrooms-for-sale
+2026-01-29 16:15:26,672 | INFO | 📄 Navigating to: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cai...
+2026-01-29 16:15:46,164 | INFO |    ✅ Unknown
+2026-01-29 16:15:46,283 | INFO | 🔄 Updated compound: None
+2026-01-29 16:15:46,284 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:15:50,561 | INFO | [3/1348] Scraping: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sale-in-katameya-dunes-new-cairo
+2026-01-29 16:15:50,562 | INFO | 📄 Navigating to: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sa...
+2026-01-29 16:16:02,470 | INFO |    ✅ Unknown
+2026-01-29 16:16:02,590 | INFO | 🔄 Updated compound: None
+2026-01-29 16:16:02,591 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:16:05,957 | INFO | [4/1348] Scraping: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-marina-2-north-coast
+2026-01-29 16:16:05,957 | INFO | 📄 Navigating to: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-mari...
+2026-01-29 16:16:17,873 | INFO |    ✅ Unknown
+2026-01-29 16:16:17,993 | INFO | 🔄 Updated compound: None
+2026-01-29 16:16:17,994 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:16:23,799 | INFO | [5/1348] Scraping: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sale-in-marseilia-beach-3
+2026-01-29 16:16:23,801 | INFO | 📄 Navigating to: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sal...
+2026-01-29 16:16:49,662 | INFO |    ✅ Unknown
+2026-01-29 16:16:49,783 | INFO | 🔄 Updated compound: None
+2026-01-29 16:16:49,783 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:16:53,762 | INFO | [6/1348] Scraping: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-neopolis-mostakbal-city
+2026-01-29 16:16:53,763 | INFO | 📄 Navigating to: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-...
+2026-01-29 16:17:05,503 | INFO |    ✅ Unknown
+2026-01-29 16:17:05,622 | INFO | 🔄 Updated compound: None
+2026-01-29 16:17:05,622 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:17:10,449 | INFO | [7/1348] Scraping: https://www.nawy.com/compound/639-diar-ii/property/62215-apartment-for-sale-in-diar-ll
+2026-01-29 16:17:10,450 | INFO | 📄 Navigating to: https://www.nawy.com/compound/639-diar-ii/property/62215-apartment-for-sale-in-d...
+2026-01-29 16:17:25,720 | INFO |    ✅ Unknown
+2026-01-29 16:17:25,843 | INFO | 🔄 Updated compound: None
+2026-01-29 16:17:25,843 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:17:31,652 | INFO | [8/1348] Scraping: https://www.nawy.com/compound/1214-the-grey/property/62438-office-for-sale-in-the-gray-in-new-cairo-by-housing-and-development-properties-hdp
+2026-01-29 16:17:31,652 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1214-the-grey/property/62438-office-for-sale-in-th...
+2026-01-29 16:17:39,404 | INFO |    ✅ Unknown
+2026-01-29 16:17:39,522 | INFO | 🔄 Updated compound: None
+2026-01-29 16:17:39,523 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:17:43,715 | INFO | [9/1348] Scraping: https://www.nawy.com/compound/232-el-masyaf
+2026-01-29 16:17:43,718 | INFO | 📄 Navigating to: https://www.nawy.com/compound/232-el-masyaf...
+2026-01-29 16:17:56,071 | INFO |    ✅ El Masyaf
+2026-01-29 16:17:56,206 | INFO | ➕ Inserted new compound: El Masyaf
+2026-01-29 16:17:56,206 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:18:00,918 | INFO | [10/1348] Scraping: https://www.nawy.com/compound/929-solare
+2026-01-29 16:18:00,918 | INFO | 📄 Navigating to: https://www.nawy.com/compound/929-solare...
+2026-01-29 16:18:14,713 | INFO |    ✅ Solare
+2026-01-29 16:18:14,847 | INFO | ➕ Inserted new compound: Solare
+2026-01-29 16:18:14,847 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:18:19,874 | INFO | [11/1348] Scraping: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma
+2026-01-29 16:18:19,875 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:18:50,004 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:18:50,005 | INFO | ⏳ Retrying in 2.1s...
+2026-01-29 16:18:52,146 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:19:22,280 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:19:22,280 | INFO | ⏳ Retrying in 3.7s...
+2026-01-29 16:19:25,960 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:19:56,079 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:19:56,080 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:20:01,413 | INFO | [12/1348] Scraping: https://www.nawy.com/compound/1261-hacienda-waters
+2026-01-29 16:20:01,415 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1261-hacienda-waters...
+2026-01-29 16:20:31,549 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:20:31,550 | INFO | ⏳ Retrying in 2.3s...
+2026-01-29 16:20:33,814 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1261-hacienda-waters...
+2026-01-29 16:21:03,957 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:21:03,958 | INFO | ⏳ Retrying in 4.3s...
+2026-01-29 16:21:08,260 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1261-hacienda-waters...
+2026-01-29 16:21:38,393 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:21:38,395 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:21:43,648 | INFO | [13/1348] Scraping: https://www.nawy.com/compound/21-caesar
+2026-01-29 16:21:43,649 | INFO | 📄 Navigating to: https://www.nawy.com/compound/21-caesar...
+2026-01-29 16:21:59,099 | INFO |    ✅ Caesar
+2026-01-29 16:21:59,237 | INFO | ➕ Inserted new compound: Caesar
+2026-01-29 16:21:59,237 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:22:05,223 | INFO | [14/1348] Scraping: https://www.nawy.com/compound/996-aliva-mountain-view-mostakbal-city
+2026-01-29 16:22:05,223 | INFO | 📄 Navigating to: https://www.nawy.com/compound/996-aliva-mountain-view-mostakbal-city...
+2026-01-29 16:22:18,238 | INFO |    ✅ Aliva Mountain View Mostakbal City
+2026-01-29 16:22:18,373 | INFO | ➕ Inserted new compound: Aliva Mountain View Mostakbal City
+2026-01-29 16:22:18,374 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:22:22,544 | INFO | [15/1348] Scraping: https://www.nawy.com/compound/5-marassi
+2026-01-29 16:22:22,544 | INFO | 📄 Navigating to: https://www.nawy.com/compound/5-marassi...
+2026-01-29 16:22:34,746 | INFO |    ✅ Marassi
+2026-01-29 16:22:34,885 | INFO | ➕ Inserted new compound: Marassi
+2026-01-29 16:22:34,886 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:22:40,746 | INFO | [16/1348] Scraping: https://www.nawy.com/compound/827-rivers
+2026-01-29 16:22:40,747 | INFO | 📄 Navigating to: https://www.nawy.com/compound/827-rivers...
+2026-01-29 16:22:53,756 | INFO |    ✅ Rivers
+2026-01-29 16:22:53,887 | INFO | ➕ Inserted new compound: Rivers
+2026-01-29 16:22:53,889 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:22:58,993 | INFO | [17/1348] Scraping: https://www.nawy.com/compound/925-eastown
+2026-01-29 16:22:58,993 | INFO | 📄 Navigating to: https://www.nawy.com/compound/925-eastown...
+2026-01-29 16:23:08,192 | INFO |    ✅ Eastown
+2026-01-29 16:23:08,327 | INFO | ➕ Inserted new compound: Eastown
+2026-01-29 16:23:08,327 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:23:11,360 | INFO | [18/1348] Scraping: https://www.nawy.com/compound/422-mountain-view-icity-october
+2026-01-29 16:23:11,362 | INFO | 📄 Navigating to: https://www.nawy.com/compound/422-mountain-view-icity-october...
+2026-01-29 16:23:24,477 | INFO |    ✅ Mountain View iCity October
+2026-01-29 16:23:24,617 | INFO | ➕ Inserted new compound: Mountain View iCity October
+2026-01-29 16:23:24,618 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:23:27,789 | INFO | [19/1348] Scraping: https://www.nawy.com/compound/1003-ivoire-west
+2026-01-29 16:23:27,790 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1003-ivoire-west...
+2026-01-29 16:23:40,027 | INFO |    ✅ Ivoire West
+2026-01-29 16:23:40,167 | INFO | ➕ Inserted new compound: Ivoire West
+2026-01-29 16:23:40,168 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:23:43,420 | INFO | [20/1348] Scraping: https://www.nawy.com/compound/195-mountain-view-icity-new-cairo
+2026-01-29 16:23:43,423 | INFO | 📄 Navigating to: https://www.nawy.com/compound/195-mountain-view-icity-new-cairo...
+2026-01-29 16:23:55,919 | INFO |    ✅ Mountain View ICity New Cairo
+2026-01-29 16:23:56,057 | INFO | ➕ Inserted new compound: Mountain View ICity New Cairo
+2026-01-29 16:23:56,057 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:24:01,258 | INFO | [21/1348] Scraping: https://www.nawy.com/compound/18-allegria
+2026-01-29 16:24:01,259 | INFO | 📄 Navigating to: https://www.nawy.com/compound/18-allegria...
+2026-01-29 16:24:12,662 | INFO |    ✅ Allegria
+2026-01-29 16:24:12,802 | INFO | ➕ Inserted new compound: Allegria
+2026-01-29 16:24:12,802 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:24:18,115 | INFO | [22/1348] Scraping: https://www.nawy.com/compound/219-al-burouj
+2026-01-29 16:24:18,117 | INFO | 📄 Navigating to: https://www.nawy.com/compound/219-al-burouj...
+2026-01-29 16:24:29,179 | INFO |    ✅ Al Burouj
+2026-01-29 16:24:29,320 | INFO | ➕ Inserted new compound: Al Burouj
+2026-01-29 16:24:29,322 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:24:32,414 | INFO | [23/1348] Scraping: https://www.nawy.com/compound/1426-glen
+2026-01-29 16:24:32,414 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1426-glen...
+2026-01-29 16:24:45,531 | INFO |    ✅ Glen
+2026-01-29 16:24:45,668 | INFO | ➕ Inserted new compound: Glen
+2026-01-29 16:24:45,668 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:24:49,918 | INFO | [24/1348] Scraping: https://www.nawy.com/compound/222-district-5
+2026-01-29 16:24:49,920 | INFO | 📄 Navigating to: https://www.nawy.com/compound/222-district-5...
+2026-01-29 16:25:06,723 | INFO |    ✅ DISTRICT 5
+2026-01-29 16:25:06,861 | INFO | ➕ Inserted new compound: DISTRICT 5
+2026-01-29 16:25:06,861 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:25:12,225 | INFO | [25/1348] Scraping: https://www.nawy.com/compound/202-bloomfields
+2026-01-29 16:25:12,225 | INFO | 📄 Navigating to: https://www.nawy.com/compound/202-bloomfields...
+2026-01-29 16:25:25,385 | INFO |    ✅ Bloomfields
+2026-01-29 16:25:25,530 | INFO | ➕ Inserted new compound: Bloomfields
+2026-01-29 16:25:25,533 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:25:28,916 | INFO | [26/1348] Scraping: https://www.nawy.com/compound/73-amwaj
+2026-01-29 16:25:28,917 | INFO | 📄 Navigating to: https://www.nawy.com/compound/73-amwaj...
+2026-01-29 16:25:42,362 | INFO |    ✅ Amwaj
+2026-01-29 16:25:42,558 | INFO | ➕ Inserted new compound: Amwaj
+2026-01-29 16:25:42,563 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:25:46,775 | INFO | [27/1348] Scraping: https://www.nawy.com/compound/64-palm-parks
+2026-01-29 16:25:46,778 | INFO | 📄 Navigating to: https://www.nawy.com/compound/64-palm-parks...
+2026-01-29 16:25:59,382 | INFO |    ✅ Palm Parks
+2026-01-29 16:25:59,519 | INFO | ➕ Inserted new compound: Palm Parks
+2026-01-29 16:25:59,519 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:26:02,645 | INFO | [28/1348] Scraping: https://www.nawy.com/compound/192-fifth-square-al-marasem
+2026-01-29 16:26:02,645 | INFO | 📄 Navigating to: https://www.nawy.com/compound/192-fifth-square-al-marasem...
+2026-01-29 16:26:15,283 | INFO |    ✅ Fifth Square Al Marasem
+2026-01-29 16:26:15,423 | INFO | ➕ Inserted new compound: Fifth Square Al Marasem
+2026-01-29 16:26:15,424 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:26:18,507 | INFO | [29/1348] Scraping: https://www.nawy.com/compound/207-el-patio-oro
+2026-01-29 16:26:18,508 | INFO | 📄 Navigating to: https://www.nawy.com/compound/207-el-patio-oro...
+2026-01-29 16:26:44,637 | INFO |    ✅ El Patio Oro
+2026-01-29 16:26:44,768 | INFO | ➕ Inserted new compound: El Patio Oro
+2026-01-29 16:26:44,769 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:26:50,339 | INFO | [30/1348] Scraping: https://www.nawy.com/compound/639-diar-ii
+2026-01-29 16:26:50,339 | INFO | 📄 Navigating to: https://www.nawy.com/compound/639-diar-ii...
+2026-01-29 16:27:02,287 | INFO |    ✅ Diar II
+2026-01-29 16:27:02,421 | INFO | ➕ Inserted new compound: Diar II
+2026-01-29 16:27:02,421 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:27:07,311 | INFO | [31/1348] Scraping: https://www.nawy.com/compound/394-azzar-new-cairo
+2026-01-29 16:27:07,312 | INFO | 📄 Navigating to: https://www.nawy.com/compound/394-azzar-new-cairo...
+2026-01-29 16:27:20,119 | INFO |    ✅ Azzar New Cairo
+2026-01-29 16:27:20,261 | INFO | ➕ Inserted new compound: Azzar New Cairo
+2026-01-29 16:27:20,262 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:27:25,418 | INFO | [32/1348] Scraping: https://www.nawy.com/compound/167-capital-gardens
+2026-01-29 16:27:25,418 | INFO | 📄 Navigating to: https://www.nawy.com/compound/167-capital-gardens...
+2026-01-29 16:27:35,884 | INFO |    ✅ Capital Gardens
+2026-01-29 16:27:36,023 | INFO | ➕ Inserted new compound: Capital Gardens
+2026-01-29 16:27:36,024 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:27:41,781 | INFO | [33/1348] Scraping: https://www.nawy.com/compound/84-fouka-bay
+2026-01-29 16:27:41,782 | INFO | 📄 Navigating to: https://www.nawy.com/compound/84-fouka-bay...
+2026-01-29 16:27:52,240 | INFO |    ✅ Fouka Bay
+2026-01-29 16:27:52,381 | INFO | ➕ Inserted new compound: Fouka Bay
+2026-01-29 16:27:52,382 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:27:56,019 | INFO | [34/1348] Scraping: https://www.nawy.com/compound/423-mountain-view-chillout-park
+2026-01-29 16:27:56,020 | INFO | 📄 Navigating to: https://www.nawy.com/compound/423-mountain-view-chillout-park...
+2026-01-29 16:28:20,281 | INFO |    ✅ Mountain View Chillout Park
+2026-01-29 16:28:20,423 | INFO | ➕ Inserted new compound: Mountain View Chillout Park
+2026-01-29 16:28:20,424 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:28:25,348 | INFO | [35/1348] Scraping: https://www.nawy.com/compound/13-el-patio-5-east
+2026-01-29 16:28:25,348 | INFO | 📄 Navigating to: https://www.nawy.com/compound/13-el-patio-5-east...
+2026-01-29 16:28:35,064 | INFO |    ✅ El Patio 5 East
+2026-01-29 16:28:35,196 | INFO | ➕ Inserted new compound: El Patio 5 East
+2026-01-29 16:28:35,198 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:28:40,200 | INFO | [36/1348] Scraping: https://www.nawy.com/compound/20-casa
+2026-01-29 16:28:40,318 | INFO | 📄 Navigating to: https://www.nawy.com/compound/20-casa...
+2026-01-29 16:28:53,269 | INFO |    ✅ Casa
+2026-01-29 16:28:53,400 | INFO | ➕ Inserted new compound: Casa
+2026-01-29 16:28:53,401 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:28:56,825 | INFO | [37/1348] Scraping: https://www.nawy.com/compound/19-beverly-hills
+2026-01-29 16:28:56,825 | INFO | 📄 Navigating to: https://www.nawy.com/compound/19-beverly-hills...
+2026-01-29 16:29:10,960 | INFO |    ✅ Beverly Hills
+2026-01-29 16:29:11,095 | INFO | ➕ Inserted new compound: Beverly Hills
+2026-01-29 16:29:11,096 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:29:14,310 | INFO | [38/1348] Scraping: https://www.nawy.com/compound/229-atrio
+2026-01-29 16:29:14,310 | INFO | 📄 Navigating to: https://www.nawy.com/compound/229-atrio...
+2026-01-29 16:29:23,565 | INFO |    ✅ ATRIO
+2026-01-29 16:29:23,703 | INFO | ➕ Inserted new compound: ATRIO
+2026-01-29 16:29:23,704 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:29:27,195 | INFO | [39/1348] Scraping: https://www.nawy.com/compound/156-el-patio-casa
+2026-01-29 16:29:27,195 | INFO | 📄 Navigating to: https://www.nawy.com/compound/156-el-patio-casa...
+2026-01-29 16:29:40,048 | INFO |    ✅ El Patio Casa
+2026-01-29 16:29:40,183 | INFO | ➕ Inserted new compound: El Patio Casa
+2026-01-29 16:29:40,184 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:29:45,634 | INFO | [40/1348] Scraping: https://www.nawy.com/compound/205-azad
+2026-01-29 16:29:45,634 | INFO | 📄 Navigating to: https://www.nawy.com/compound/205-azad...
+2026-01-29 16:29:59,347 | INFO |    ✅ AZAD
+2026-01-29 16:29:59,483 | INFO | ➕ Inserted new compound: AZAD
+2026-01-29 16:29:59,483 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:30:04,128 | INFO | [41/1348] Scraping: https://www.nawy.com/compound/200-aeon-towers
+2026-01-29 16:30:04,128 | INFO | 📄 Navigating to: https://www.nawy.com/compound/200-aeon-towers...
+2026-01-29 16:30:15,710 | INFO |    ✅ AEON Towers
+2026-01-29 16:30:15,848 | INFO | ➕ Inserted new compound: AEON Towers
+2026-01-29 16:30:15,870 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:30:20,048 | INFO | [42/1348] Scraping: https://www.nawy.com/compound/318-la-vista-2
+2026-01-29 16:30:20,048 | INFO | 📄 Navigating to: https://www.nawy.com/compound/318-la-vista-2...
+2026-01-29 16:30:32,198 | INFO |    ✅ La Vista 2
+2026-01-29 16:30:32,339 | INFO | ➕ Inserted new compound: La Vista 2
+2026-01-29 16:30:32,340 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:30:38,188 | INFO | [43/1348] Scraping: https://www.nawy.com/compound/224-el-patio-prime
+2026-01-29 16:30:38,192 | INFO | 📄 Navigating to: https://www.nawy.com/compound/224-el-patio-prime...
+2026-01-29 16:30:46,704 | INFO |    ✅ El Patio Prime
+2026-01-29 16:30:46,837 | INFO | ➕ Inserted new compound: El Patio Prime
+2026-01-29 16:30:46,838 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:30:51,448 | INFO | [44/1348] Scraping: https://www.nawy.com/compound/410-stone-residence
+2026-01-29 16:30:51,449 | INFO | 📄 Navigating to: https://www.nawy.com/compound/410-stone-residence...
+2026-01-29 16:31:03,546 | INFO |    ✅ Stone Residence
+2026-01-29 16:31:03,681 | INFO | ➕ Inserted new compound: Stone Residence
+2026-01-29 16:31:03,682 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:31:09,236 | INFO | [45/1348] Scraping: https://www.nawy.com/compound/785-la-vista-4
+2026-01-29 16:31:09,245 | INFO | 📄 Navigating to: https://www.nawy.com/compound/785-la-vista-4...
+2026-01-29 16:31:30,770 | INFO |    ✅ LA Vista 4
+2026-01-29 16:31:30,976 | INFO | ➕ Inserted new compound: LA Vista 4
+2026-01-29 16:31:30,977 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:31:34,839 | INFO | [46/1348] Scraping: https://www.nawy.com/compound/401-green-3
+2026-01-29 16:31:34,839 | INFO | 📄 Navigating to: https://www.nawy.com/compound/401-green-3...
+2026-01-29 16:31:47,089 | INFO |    ✅ Green 3
+2026-01-29 16:31:47,219 | INFO | ➕ Inserted new compound: Green 3
+2026-01-29 16:31:47,220 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:31:53,122 | INFO | [47/1348] Scraping: https://www.nawy.com/compound/786-la-vista-5
+2026-01-29 16:31:53,123 | INFO | 📄 Navigating to: https://www.nawy.com/compound/786-la-vista-5...
+2026-01-29 16:32:00,893 | INFO |    ✅ LA Vista 5
+2026-01-29 16:32:01,027 | INFO | ➕ Inserted new compound: LA Vista 5
+2026-01-29 16:32:01,028 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:32:06,807 | INFO | [48/1348] Scraping: https://www.nawy.com/compound/15-el-patio-zahraa
+2026-01-29 16:32:06,807 | INFO | 📄 Navigating to: https://www.nawy.com/compound/15-el-patio-zahraa...
+2026-01-29 16:32:14,574 | INFO |    ✅ El Patio Zahraa
+2026-01-29 16:32:14,707 | INFO | ➕ Inserted new compound: El Patio Zahraa
+2026-01-29 16:32:14,707 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:32:19,816 | INFO | [49/1348] Scraping: https://www.nawy.com/compound/711-green-5
+2026-01-29 16:32:19,818 | INFO | 📄 Navigating to: https://www.nawy.com/compound/711-green-5...
+2026-01-29 16:32:32,502 | INFO |    ✅ Green 5
+2026-01-29 16:32:32,638 | INFO | ➕ Inserted new compound: Green 5
+2026-01-29 16:32:32,639 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:32:36,714 | INFO | [50/1348] Scraping: https://www.nawy.com/compound/264-la-vista-city
+2026-01-29 16:32:36,716 | INFO | 📄 Navigating to: https://www.nawy.com/compound/264-la-vista-city...
+2026-01-29 16:32:48,925 | INFO |    ✅ La Vista City
+2026-01-29 16:32:49,063 | INFO | ➕ Inserted new compound: La Vista City
+2026-01-29 16:32:49,064 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:32:52,539 | INFO | [51/1348] Scraping: https://www.nawy.com/compound/230-jedar
+2026-01-29 16:32:52,539 | INFO | 📄 Navigating to: https://www.nawy.com/compound/230-jedar...
+2026-01-29 16:33:11,256 | INFO |    ✅ JEDAR
+2026-01-29 16:33:11,392 | INFO | ➕ Inserted new compound: JEDAR
+2026-01-29 16:33:11,393 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:33:15,743 | INFO | [52/1348] Scraping: https://www.nawy.com/compound/697-la-vista-3
+2026-01-29 16:33:15,743 | INFO | 📄 Navigating to: https://www.nawy.com/compound/697-la-vista-3...
+2026-01-29 16:33:24,779 | INFO |    ✅ La Vista 3
+2026-01-29 16:33:24,917 | INFO | ➕ Inserted new compound: La Vista 3
+2026-01-29 16:33:24,917 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:33:30,185 | INFO | [53/1348] Scraping: https://www.nawy.com/compound/917-ivy
+2026-01-29 16:33:30,185 | INFO | 📄 Navigating to: https://www.nawy.com/compound/917-ivy...
+2026-01-29 16:34:00,336 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:34:00,337 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 16:34:03,861 | INFO | 📄 Navigating to: https://www.nawy.com/compound/917-ivy...
+2026-01-29 16:34:16,692 | INFO |    ✅ IVY
+2026-01-29 16:34:16,841 | INFO | ➕ Inserted new compound: IVY
+2026-01-29 16:34:16,843 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:34:21,262 | INFO | [54/1348] Scraping: https://www.nawy.com/compound/1101-greens
+2026-01-29 16:34:21,262 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1101-greens...
+2026-01-29 16:34:38,923 | INFO |    ✅ Greens
+2026-01-29 16:34:39,082 | INFO | ➕ Inserted new compound: Greens
+2026-01-29 16:34:39,082 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:34:44,103 | INFO | [55/1348] Scraping: https://www.nawy.com/compound/71-la-vista-cascada
+2026-01-29 16:34:44,104 | INFO | 📄 Navigating to: https://www.nawy.com/compound/71-la-vista-cascada...
+2026-01-29 16:35:14,230 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:35:14,231 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 16:35:17,699 | INFO | 📄 Navigating to: https://www.nawy.com/compound/71-la-vista-cascada...
+2026-01-29 16:35:24,790 | INFO |    ✅ La Vista Cascada
+2026-01-29 16:35:24,924 | INFO | ➕ Inserted new compound: La Vista Cascada
+2026-01-29 16:35:24,924 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:35:28,662 | INFO | [56/1348] Scraping: https://www.nawy.com/compound/283-jayd
+2026-01-29 16:35:28,663 | INFO | 📄 Navigating to: https://www.nawy.com/compound/283-jayd...
+2026-01-29 16:35:52,431 | INFO |    ✅ Jayd
+2026-01-29 16:35:52,564 | INFO | ➕ Inserted new compound: Jayd
+2026-01-29 16:35:52,564 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:35:57,291 | INFO | [57/1348] Scraping: https://www.nawy.com/compound/308-la-vista-7
+2026-01-29 16:35:57,292 | INFO | 📄 Navigating to: https://www.nawy.com/compound/308-la-vista-7...
+2026-01-29 16:36:09,088 | INFO |    ✅ La Vista 7
+2026-01-29 16:36:09,219 | INFO | ➕ Inserted new compound: La Vista 7
+2026-01-29 16:36:09,220 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:36:14,133 | INFO | [58/1348] Scraping: https://www.nawy.com/compound/12-lake-view-residence
+2026-01-29 16:36:14,133 | INFO | 📄 Navigating to: https://www.nawy.com/compound/12-lake-view-residence...
+2026-01-29 16:36:26,562 | INFO |    ✅ Lake View Residence
+2026-01-29 16:36:26,720 | INFO | ➕ Inserted new compound: Lake View Residence
+2026-01-29 16:36:26,721 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:36:30,367 | INFO | [59/1348] Scraping: https://www.nawy.com/compound/30-westown-residences
+2026-01-29 16:36:30,387 | INFO | 📄 Navigating to: https://www.nawy.com/compound/30-westown-residences...
+2026-01-29 16:36:44,115 | INFO |    ✅ Westown Residences
+2026-01-29 16:36:44,750 | INFO | ➕ Inserted new compound: Westown Residences
+2026-01-29 16:36:44,750 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:36:47,804 | INFO | [60/1348] Scraping: https://www.nawy.com/compound/16-la-vista-gardens
+2026-01-29 16:36:47,805 | INFO | 📄 Navigating to: https://www.nawy.com/compound/16-la-vista-gardens...
+2026-01-29 16:37:03,210 | ERROR | Error
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 135, in scrape_missing_from_mongodb
+    compound_data = await scraper._scrape_compound_detail(url)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\compound_scraper.py", line 300, in _scrape_compound_detail
+    if not await self.safe_goto(url):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 148, in safe_goto
+    response = await self.page.goto(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 9260, in goto
+    await self._impl_obj.goto(
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_page.py", line 475, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_frame.py", line 139, in goto
+    await self._channel.send("goto", locals_to_params(locals()))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 91, in inner_send
+    done, _ = await asyncio.wait(
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 464, in wait
+    return await _wait(fs, timeout, return_when, loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 550, in _wait
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 197, in main
+    compounds = asyncio.run(scrape_missing_from_mongodb())
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 175, in scrape_missing_from_mongodb
+    await scraper.close()
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 107, in close
+    await self.context.close()
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 13758, in close
+    return mapping.from_maybe_impl(await self._impl_obj.close(reason=reason))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_browser_context.py", line 485, in close
+    await self._channel.send("close", filter_none({"reason": reason}))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 100, in inner_send
+    result = next(iter(done)).result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+2026-01-29 16:37:03,449 | INFO | 🔌 Disconnected from MongoDB
+2026-01-29 16:37:11,599 | INFO | ✅ Connected to MongoDB: semsai
+2026-01-29 16:37:42,908 | INFO | 🚀 Initializing browser...
+2026-01-29 16:37:45,465 | INFO | ✅ Browser initialized (UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0...)
+2026-01-29 16:37:45,469 | INFO | [1/1297] Scraping: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cairo-villa-9-bedrooms-for-sale
+2026-01-29 16:37:45,480 | INFO | 📄 Navigating to: https://www.nawy.com/compound/189-zizinia-gardens/property/16177-zizinia-new-cai...
+2026-01-29 16:37:57,913 | INFO |    ✅ Unknown
+2026-01-29 16:37:58,054 | INFO | 🔄 Updated compound: None
+2026-01-29 16:37:58,055 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:38:01,746 | INFO | [2/1297] Scraping: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sale-in-katameya-dunes-new-cairo
+2026-01-29 16:38:01,746 | INFO | 📄 Navigating to: https://www.nawy.com/compound/50-katameya-dunes/property/23564-town-house-for-sa...
+2026-01-29 16:38:13,287 | INFO |    ✅ Unknown
+2026-01-29 16:38:13,411 | INFO | 🔄 Updated compound: None
+2026-01-29 16:38:13,411 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:38:18,094 | INFO | [3/1297] Scraping: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-marina-2-north-coast
+2026-01-29 16:38:18,095 | INFO | 📄 Navigating to: https://www.nawy.com/compound/776-marina-1/property/39193-villa-for-sale-in-mari...
+2026-01-29 16:38:30,147 | INFO |    ✅ Unknown
+2026-01-29 16:38:30,271 | INFO | 🔄 Updated compound: None
+2026-01-29 16:38:30,271 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:38:34,955 | INFO | [4/1297] Scraping: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sale-in-marseilia-beach-3
+2026-01-29 16:38:34,955 | INFO | 📄 Navigating to: https://www.nawy.com/compound/405-marseilia-beach-3/property/53850-villa-for-sal...
+2026-01-29 16:38:53,194 | INFO |    ✅ Unknown
+2026-01-29 16:38:53,332 | INFO | 🔄 Updated compound: None
+2026-01-29 16:38:53,332 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:38:58,147 | INFO | [5/1297] Scraping: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-neopolis-mostakbal-city
+2026-01-29 16:38:58,147 | INFO | 📄 Navigating to: https://www.nawy.com/compound/926-neopolis/property/55349-apartment-for-sale-in-...
+2026-01-29 16:39:07,448 | INFO |    ✅ Unknown
+2026-01-29 16:39:07,580 | INFO | 🔄 Updated compound: None
+2026-01-29 16:39:07,580 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:39:11,679 | INFO | [6/1297] Scraping: https://www.nawy.com/compound/972-the-wonder-marq/property/64956-villa-for-sale-in-the-wonder-marq
+2026-01-29 16:39:11,680 | INFO | 📄 Navigating to: https://www.nawy.com/compound/972-the-wonder-marq/property/64956-villa-for-sale-...
+2026-01-29 16:39:19,433 | INFO |    ✅ Unknown
+2026-01-29 16:39:19,558 | INFO | 🔄 Updated compound: None
+2026-01-29 16:39:19,558 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:39:23,243 | INFO | [7/1297] Scraping: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma
+2026-01-29 16:39:23,244 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1212-mar-bay-ras-el-hekma...
+2026-01-29 16:39:35,186 | INFO |    ✅ Mar Bay - Ras El Hekma
+2026-01-29 16:39:35,347 | INFO | ➕ Inserted new compound: Mar Bay - Ras El Hekma
+2026-01-29 16:39:35,348 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:39:41,121 | INFO | [8/1297] Scraping: https://www.nawy.com/compound/1261-hacienda-waters
+2026-01-29 16:39:41,123 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1261-hacienda-waters...
+2026-01-29 16:39:53,089 | INFO |    ✅ Hacienda Waters
+2026-01-29 16:39:53,244 | INFO | ➕ Inserted new compound: Hacienda Waters
+2026-01-29 16:39:53,244 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:39:58,822 | INFO | [9/1297] Scraping: https://www.nawy.com/compound/16-la-vista-gardens
+2026-01-29 16:39:58,822 | INFO | 📄 Navigating to: https://www.nawy.com/compound/16-la-vista-gardens...
+2026-01-29 16:40:11,207 | INFO |    ✅ La Vista Gardens
+2026-01-29 16:40:11,357 | INFO | ➕ Inserted new compound: La Vista Gardens
+2026-01-29 16:40:11,357 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:40:17,329 | INFO | [10/1297] Scraping: https://www.nawy.com/compound/87-telal-sokhna
+2026-01-29 16:40:17,333 | INFO | 📄 Navigating to: https://www.nawy.com/compound/87-telal-sokhna...
+2026-01-29 16:40:29,134 | INFO |    ✅ Telal Sokhna
+2026-01-29 16:40:29,285 | INFO | ➕ Inserted new compound: Telal Sokhna
+2026-01-29 16:40:29,286 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:40:34,109 | INFO | [11/1297] Scraping: https://www.nawy.com/compound/175-la-vista-ras-el-hekma
+2026-01-29 16:40:34,113 | INFO | 📄 Navigating to: https://www.nawy.com/compound/175-la-vista-ras-el-hekma...
+2026-01-29 16:40:50,122 | INFO |    ✅ La Vista Ras El Hekma
+2026-01-29 16:40:50,276 | INFO | ➕ Inserted new compound: La Vista Ras El Hekma
+2026-01-29 16:40:50,277 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:40:54,580 | INFO | [12/1297] Scraping: https://www.nawy.com/compound/7-mountain-view-hyde-park
+2026-01-29 16:40:54,581 | INFO | 📄 Navigating to: https://www.nawy.com/compound/7-mountain-view-hyde-park...
+2026-01-29 16:41:06,433 | INFO |    ✅ Mountain View Hyde Park
+2026-01-29 16:41:06,591 | INFO | ➕ Inserted new compound: Mountain View Hyde Park
+2026-01-29 16:41:06,591 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:41:10,622 | INFO | [13/1297] Scraping: https://www.nawy.com/compound/235-marina-marassi
+2026-01-29 16:41:10,624 | INFO | 📄 Navigating to: https://www.nawy.com/compound/235-marina-marassi...
+2026-01-29 16:41:20,097 | INFO |    ✅ Marina Marassi
+2026-01-29 16:41:20,252 | INFO | ➕ Inserted new compound: Marina Marassi
+2026-01-29 16:41:20,253 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:41:25,730 | INFO | [14/1297] Scraping: https://www.nawy.com/compound/647-porto-sokhna
+2026-01-29 16:41:25,731 | INFO | 📄 Navigating to: https://www.nawy.com/compound/647-porto-sokhna...
+2026-01-29 16:41:37,574 | INFO |    ✅ Porto Sokhna
+2026-01-29 16:41:37,725 | INFO | ➕ Inserted new compound: Porto Sokhna
+2026-01-29 16:41:37,725 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:41:42,754 | INFO | [15/1297] Scraping: https://www.nawy.com/compound/260-v-residences-by-villette
+2026-01-29 16:41:42,754 | INFO | 📄 Navigating to: https://www.nawy.com/compound/260-v-residences-by-villette...
+2026-01-29 16:42:00,635 | INFO |    ✅ V Residences By Villette
+2026-01-29 16:42:00,783 | INFO | ➕ Inserted new compound: V Residences By Villette
+2026-01-29 16:42:00,784 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:42:05,294 | INFO | [16/1297] Scraping: https://www.nawy.com/compound/45-mountain-view-ras-el-hekma
+2026-01-29 16:42:05,302 | INFO | 📄 Navigating to: https://www.nawy.com/compound/45-mountain-view-ras-el-hekma...
+2026-01-29 16:42:24,571 | INFO |    ✅ Mountain View Ras El Hekma
+2026-01-29 16:42:24,724 | INFO | ➕ Inserted new compound: Mountain View Ras El Hekma
+2026-01-29 16:42:24,725 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:42:28,176 | INFO | [17/1297] Scraping: https://www.nawy.com/compound/62-palm-hills-golf-extension
+2026-01-29 16:42:28,176 | INFO | 📄 Navigating to: https://www.nawy.com/compound/62-palm-hills-golf-extension...
+2026-01-29 16:42:40,237 | INFO |    ✅ Palm Hills Golf Extension
+2026-01-29 16:42:40,398 | INFO | ➕ Inserted new compound: Palm Hills Golf Extension
+2026-01-29 16:42:40,399 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:42:45,271 | INFO | [18/1297] Scraping: https://www.nawy.com/compound/171-the-greek-village-marassi
+2026-01-29 16:42:45,272 | INFO | 📄 Navigating to: https://www.nawy.com/compound/171-the-greek-village-marassi...
+2026-01-29 16:42:56,048 | INFO |    ✅ The Greek Village Marassi
+2026-01-29 16:42:56,205 | INFO | ➕ Inserted new compound: The Greek Village Marassi
+2026-01-29 16:42:56,205 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:43:00,888 | INFO | [19/1297] Scraping: https://www.nawy.com/compound/758-soul
+2026-01-29 16:43:00,889 | INFO | 📄 Navigating to: https://www.nawy.com/compound/758-soul...
+2026-01-29 16:43:13,980 | INFO |    ✅ Soul
+2026-01-29 16:43:14,135 | INFO | ➕ Inserted new compound: Soul
+2026-01-29 16:43:14,136 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:43:17,911 | INFO | [20/1297] Scraping: https://www.nawy.com/compound/299-madinaty
+2026-01-29 16:43:17,911 | INFO | 📄 Navigating to: https://www.nawy.com/compound/299-madinaty...
+2026-01-29 16:43:29,535 | INFO |    ✅ Madinaty
+2026-01-29 16:43:29,688 | INFO | ➕ Inserted new compound: Madinaty
+2026-01-29 16:43:29,689 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:43:34,419 | INFO | [21/1297] Scraping: https://www.nawy.com/compound/49-katameya-heights
+2026-01-29 16:43:34,420 | INFO | 📄 Navigating to: https://www.nawy.com/compound/49-katameya-heights...
+2026-01-29 16:43:44,313 | INFO |    ✅ Katameya Heights
+2026-01-29 16:43:44,464 | INFO | ➕ Inserted new compound: Katameya Heights
+2026-01-29 16:43:44,465 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:43:48,271 | INFO | [22/1297] Scraping: https://www.nawy.com/compound/70-hacienda-white
+2026-01-29 16:43:48,275 | INFO | 📄 Navigating to: https://www.nawy.com/compound/70-hacienda-white...
+2026-01-29 16:43:55,996 | INFO |    ✅ Hacienda White
+2026-01-29 16:43:56,167 | INFO | ➕ Inserted new compound: Hacienda White
+2026-01-29 16:43:56,167 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:44:00,188 | INFO | [23/1297] Scraping: https://www.nawy.com/compound/750-stella-sidi-abdelrahman
+2026-01-29 16:44:00,189 | INFO | 📄 Navigating to: https://www.nawy.com/compound/750-stella-sidi-abdelrahman...
+2026-01-29 16:44:18,556 | INFO |    ✅ Stella Sidi Abdelrahman
+2026-01-29 16:44:18,703 | INFO | ➕ Inserted new compound: Stella Sidi Abdelrahman
+2026-01-29 16:44:18,704 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:44:23,671 | INFO | [24/1297] Scraping: https://www.nawy.com/compound/541-almaza-bay
+2026-01-29 16:44:23,671 | INFO | 📄 Navigating to: https://www.nawy.com/compound/541-almaza-bay...
+2026-01-29 16:44:40,534 | INFO |    ✅ Almaza Bay
+2026-01-29 16:44:40,728 | INFO | ➕ Inserted new compound: Almaza Bay
+2026-01-29 16:44:40,728 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:44:45,893 | INFO | [25/1297] Scraping: https://www.nawy.com/compound/50-katameya-dunes
+2026-01-29 16:44:45,893 | INFO | 📄 Navigating to: https://www.nawy.com/compound/50-katameya-dunes...
+2026-01-29 16:44:57,416 | INFO |    ✅ Katameya Dunes
+2026-01-29 16:44:57,563 | INFO | ➕ Inserted new compound: Katameya Dunes
+2026-01-29 16:44:57,563 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:45:03,373 | INFO | [26/1297] Scraping: https://www.nawy.com/compound/774-marina-6
+2026-01-29 16:45:03,413 | INFO | 📄 Navigating to: https://www.nawy.com/compound/774-marina-6...
+2026-01-29 16:45:33,572 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:45:33,572 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 16:45:36,594 | INFO | 📄 Navigating to: https://www.nawy.com/compound/774-marina-6...
+2026-01-29 16:46:06,718 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:46:06,719 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 16:46:10,067 | INFO | 📄 Navigating to: https://www.nawy.com/compound/774-marina-6...
+2026-01-29 16:46:40,189 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:46:40,189 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:46:43,978 | INFO | [27/1297] Scraping: https://www.nawy.com/compound/83-swanlake-north-coast
+2026-01-29 16:46:43,979 | INFO | 📄 Navigating to: https://www.nawy.com/compound/83-swanlake-north-coast...
+2026-01-29 16:46:58,190 | INFO |    ✅ Swanlake North Coast
+2026-01-29 16:46:58,358 | INFO | ➕ Inserted new compound: Swanlake North Coast
+2026-01-29 16:46:58,359 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:47:03,842 | INFO | [28/1297] Scraping: https://www.nawy.com/compound/42-lake-view
+2026-01-29 16:47:03,843 | INFO | 📄 Navigating to: https://www.nawy.com/compound/42-lake-view...
+2026-01-29 16:47:16,505 | INFO |    ✅ Lake View
+2026-01-29 16:47:16,672 | INFO | ➕ Inserted new compound: Lake View
+2026-01-29 16:47:16,673 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:47:20,391 | INFO | [29/1297] Scraping: https://www.nawy.com/compound/225-la-vista-topaz
+2026-01-29 16:47:20,414 | INFO | 📄 Navigating to: https://www.nawy.com/compound/225-la-vista-topaz...
+2026-01-29 16:47:32,463 | INFO |    ✅ La Vista Topaz
+2026-01-29 16:47:32,632 | INFO | ➕ Inserted new compound: La Vista Topaz
+2026-01-29 16:47:32,659 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:47:35,883 | INFO | [30/1297] Scraping: https://www.nawy.com/compound/166-the-crown
+2026-01-29 16:47:35,883 | INFO | 📄 Navigating to: https://www.nawy.com/compound/166-the-crown...
+2026-01-29 16:47:48,578 | INFO |    ✅ The Crown
+2026-01-29 16:47:48,733 | INFO | ➕ Inserted new compound: The Crown
+2026-01-29 16:47:48,734 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:47:53,355 | INFO | [31/1297] Scraping: https://www.nawy.com/compound/31-the-courtyards
+2026-01-29 16:47:53,356 | INFO | 📄 Navigating to: https://www.nawy.com/compound/31-the-courtyards...
+2026-01-29 16:48:04,243 | INFO |    ✅ The Courtyards
+2026-01-29 16:48:04,392 | INFO | ➕ Inserted new compound: The Courtyards
+2026-01-29 16:48:04,393 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:48:08,386 | INFO | [32/1297] Scraping: https://www.nawy.com/compound/451-mountain-view-executive-residence--katameya
+2026-01-29 16:48:08,387 | INFO | 📄 Navigating to: https://www.nawy.com/compound/451-mountain-view-executive-residence--katameya...
+2026-01-29 16:48:20,820 | INFO |    ✅ Mountain View Executive Residence Katameya
+2026-01-29 16:48:20,979 | INFO | ➕ Inserted new compound: Mountain View Executive Residence Katameya
+2026-01-29 16:48:20,980 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:48:24,168 | INFO | [33/1297] Scraping: https://www.nawy.com/compound/187-cairo-festival-city
+2026-01-29 16:48:24,168 | INFO | 📄 Navigating to: https://www.nawy.com/compound/187-cairo-festival-city...
+2026-01-29 16:48:37,729 | INFO |    ✅ Cairo Festival City
+2026-01-29 16:48:37,901 | INFO | ➕ Inserted new compound: Cairo Festival City
+2026-01-29 16:48:37,901 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:48:42,096 | INFO | [34/1297] Scraping: https://www.nawy.com/compound/1708-golf-views
+2026-01-29 16:48:42,096 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1708-golf-views...
+2026-01-29 16:48:55,463 | INFO |    ✅ Golf Views
+2026-01-29 16:48:55,613 | INFO | ➕ Inserted new compound: Golf Views
+2026-01-29 16:48:55,613 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:49:01,253 | INFO | [35/1297] Scraping: https://www.nawy.com/compound/56-palm-hills-katameya-extension-(pk2)
+2026-01-29 16:49:01,254 | INFO | 📄 Navigating to: https://www.nawy.com/compound/56-palm-hills-katameya-extension-(pk2)...
+2026-01-29 16:49:14,258 | INFO |    ✅ Palm Hills Katameya Extension (PK2)
+2026-01-29 16:49:14,470 | INFO | ➕ Inserted new compound: Palm Hills Katameya Extension (PK2)
+2026-01-29 16:49:14,472 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:49:19,129 | INFO | [36/1297] Scraping: https://www.nawy.com/compound/17-la-vista-bay
+2026-01-29 16:49:19,129 | INFO | 📄 Navigating to: https://www.nawy.com/compound/17-la-vista-bay...
+2026-01-29 16:49:27,919 | INFO |    ✅ La Vista Bay
+2026-01-29 16:49:28,088 | INFO | ➕ Inserted new compound: La Vista Bay
+2026-01-29 16:49:28,090 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:49:31,304 | INFO | [37/1297] Scraping: https://www.nawy.com/compound/4-uptown-cairo
+2026-01-29 16:49:31,304 | INFO | 📄 Navigating to: https://www.nawy.com/compound/4-uptown-cairo...
+2026-01-29 16:49:43,541 | INFO |    ✅ Uptown Cairo
+2026-01-29 16:49:43,696 | INFO | ➕ Inserted new compound: Uptown Cairo
+2026-01-29 16:49:43,696 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:49:47,532 | INFO | [38/1297] Scraping: https://www.nawy.com/compound/477-stone-park
+2026-01-29 16:49:47,534 | INFO | 📄 Navigating to: https://www.nawy.com/compound/477-stone-park...
+2026-01-29 16:50:02,376 | INFO |    ✅ Stone Park
+2026-01-29 16:50:02,598 | INFO | ➕ Inserted new compound: Stone Park
+2026-01-29 16:50:02,615 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:50:07,919 | INFO | [39/1297] Scraping: https://www.nawy.com/compound/6-mivida
+2026-01-29 16:50:07,919 | INFO | 📄 Navigating to: https://www.nawy.com/compound/6-mivida...
+2026-01-29 16:50:22,257 | INFO |    ✅ Mivida
+2026-01-29 16:50:22,409 | INFO | ➕ Inserted new compound: Mivida
+2026-01-29 16:50:22,410 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:50:26,961 | INFO | [40/1297] Scraping: https://www.nawy.com/compound/23-villette
+2026-01-29 16:50:26,961 | INFO | 📄 Navigating to: https://www.nawy.com/compound/23-villette...
+2026-01-29 16:50:47,390 | INFO |    ✅ Villette
+2026-01-29 16:50:47,574 | INFO | ➕ Inserted new compound: Villette
+2026-01-29 16:50:47,600 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:50:51,961 | INFO | [41/1297] Scraping: https://www.nawy.com/compound/591-marina-4
+2026-01-29 16:50:51,961 | INFO | 📄 Navigating to: https://www.nawy.com/compound/591-marina-4...
+2026-01-29 16:51:00,960 | INFO |    ✅ Marina 4
+2026-01-29 16:51:01,103 | INFO | ➕ Inserted new compound: Marina 4
+2026-01-29 16:51:01,103 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:51:04,299 | INFO | [42/1297] Scraping: https://www.nawy.com/compound/278-swanlake-residences
+2026-01-29 16:51:04,300 | INFO | 📄 Navigating to: https://www.nawy.com/compound/278-swanlake-residences...
+2026-01-29 16:51:16,260 | INFO |    ✅ Swanlake Residences
+2026-01-29 16:51:16,455 | INFO | ➕ Inserted new compound: Swanlake Residences
+2026-01-29 16:51:16,455 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:51:22,140 | INFO | [43/1297] Scraping: https://www.nawy.com/compound/931-205-arkan-palm
+2026-01-29 16:51:22,159 | INFO | 📄 Navigating to: https://www.nawy.com/compound/931-205-arkan-palm...
+2026-01-29 16:51:35,086 | INFO |    ✅ 205 Arkan Palm
+2026-01-29 16:51:35,260 | INFO | ➕ Inserted new compound: 205 Arkan Palm
+2026-01-29 16:51:35,264 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:51:41,163 | INFO | [44/1297] Scraping: https://www.nawy.com/compound/249-layan
+2026-01-29 16:51:41,166 | INFO | 📄 Navigating to: https://www.nawy.com/compound/249-layan...
+2026-01-29 16:51:52,937 | INFO |    ✅ Layan
+2026-01-29 16:51:53,095 | INFO | ➕ Inserted new compound: Layan
+2026-01-29 16:51:53,095 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:51:57,048 | INFO | [45/1297] Scraping: https://www.nawy.com/compound/391-village-west
+2026-01-29 16:51:57,048 | INFO | 📄 Navigating to: https://www.nawy.com/compound/391-village-west...
+2026-01-29 16:52:08,878 | INFO |    ✅ Village West
+2026-01-29 16:52:09,037 | INFO | ➕ Inserted new compound: Village West
+2026-01-29 16:52:09,038 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:52:13,968 | INFO | [46/1297] Scraping: https://www.nawy.com/compound/151-pyramid-hills
+2026-01-29 16:52:13,970 | INFO | 📄 Navigating to: https://www.nawy.com/compound/151-pyramid-hills...
+2026-01-29 16:52:22,636 | INFO |    ✅ Pyramid Hills
+2026-01-29 16:52:22,793 | INFO | ➕ Inserted new compound: Pyramid Hills
+2026-01-29 16:52:22,794 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:52:27,727 | INFO | [47/1297] Scraping: https://www.nawy.com/compound/754-ninety-avenue
+2026-01-29 16:52:27,738 | INFO | 📄 Navigating to: https://www.nawy.com/compound/754-ninety-avenue...
+2026-01-29 16:52:48,840 | INFO |    ✅ Ninety Avenue
+2026-01-29 16:52:48,999 | INFO | ➕ Inserted new compound: Ninety Avenue
+2026-01-29 16:52:49,004 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:52:54,474 | INFO | [48/1297] Scraping: https://www.nawy.com/compound/1007-marina-2
+2026-01-29 16:52:54,475 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1007-marina-2...
+2026-01-29 16:53:06,648 | INFO |    ✅ Marina 2
+2026-01-29 16:53:06,804 | INFO | ➕ Inserted new compound: Marina 2
+2026-01-29 16:53:06,806 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:53:10,670 | INFO | [49/1297] Scraping: https://www.nawy.com/compound/145-october-plaza
+2026-01-29 16:53:10,670 | INFO | 📄 Navigating to: https://www.nawy.com/compound/145-october-plaza...
+2026-01-29 16:53:23,356 | INFO |    ✅ October Plaza
+2026-01-29 16:53:23,516 | INFO | ➕ Inserted new compound: October Plaza
+2026-01-29 16:53:23,516 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:53:27,877 | INFO | [50/1297] Scraping: https://www.nawy.com/compound/635-green-6
+2026-01-29 16:53:27,877 | INFO | 📄 Navigating to: https://www.nawy.com/compound/635-green-6...
+2026-01-29 16:53:58,003 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:53:58,013 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 16:54:01,064 | INFO | 📄 Navigating to: https://www.nawy.com/compound/635-green-6...
+2026-01-29 16:54:31,195 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:54:31,196 | INFO | ⏳ Retrying in 4.2s...
+2026-01-29 16:54:35,379 | INFO | 📄 Navigating to: https://www.nawy.com/compound/635-green-6...
+2026-01-29 16:54:47,030 | INFO |    ✅ Green 6
+2026-01-29 16:54:47,218 | INFO | ➕ Inserted new compound: Green 6
+2026-01-29 16:54:47,219 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:54:50,261 | INFO | [51/1297] Scraping: https://www.nawy.com/compound/57-the-village-gate
+2026-01-29 16:54:50,263 | INFO | 📄 Navigating to: https://www.nawy.com/compound/57-the-village-gate...
+2026-01-29 16:55:18,342 | INFO |    ✅ The Village Gate
+2026-01-29 16:55:18,495 | INFO | ➕ Inserted new compound: The Village Gate
+2026-01-29 16:55:18,495 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:55:21,968 | INFO | [52/1297] Scraping: https://www.nawy.com/compound/850-tala
+2026-01-29 16:55:21,968 | INFO | 📄 Navigating to: https://www.nawy.com/compound/850-tala...
+2026-01-29 16:55:52,090 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:55:52,091 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 16:55:55,324 | INFO | 📄 Navigating to: https://www.nawy.com/compound/850-tala...
+2026-01-29 16:56:25,452 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 16:56:25,453 | INFO | ⏳ Retrying in 4.2s...
+2026-01-29 16:56:29,658 | INFO | 📄 Navigating to: https://www.nawy.com/compound/850-tala...
+2026-01-29 16:56:59,776 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 16:56:59,776 | WARNING |    ❌ Failed to scrape
+2026-01-29 16:57:04,066 | INFO | [53/1297] Scraping: https://www.nawy.com/compound/1180-porto-marina
+2026-01-29 16:57:04,067 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1180-porto-marina...
+2026-01-29 16:57:34,193 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:57:34,194 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 16:57:36,635 | INFO | 📄 Navigating to: https://www.nawy.com/compound/1180-porto-marina...
+2026-01-29 16:57:53,412 | INFO |    ✅ Porto Marina
+2026-01-29 16:57:53,567 | INFO | ➕ Inserted new compound: Porto Marina
+2026-01-29 16:57:53,567 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:57:58,130 | INFO | [54/1297] Scraping: https://www.nawy.com/compound/649-tag-sultan
+2026-01-29 16:57:58,143 | INFO | 📄 Navigating to: https://www.nawy.com/compound/649-tag-sultan...
+2026-01-29 16:58:19,259 | INFO |    ✅ Tag Sultan
+2026-01-29 16:58:19,415 | INFO | ➕ Inserted new compound: Tag Sultan
+2026-01-29 16:58:19,416 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:58:23,642 | INFO | [55/1297] Scraping: https://www.nawy.com/compound/776-marina-1
+2026-01-29 16:58:23,643 | INFO | 📄 Navigating to: https://www.nawy.com/compound/776-marina-1...
+2026-01-29 16:58:39,791 | INFO |    ✅ Marina 1
+2026-01-29 16:58:39,945 | INFO | ➕ Inserted new compound: Marina 1
+2026-01-29 16:58:39,945 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:58:44,128 | INFO | [56/1297] Scraping: https://www.nawy.com/compound/60-the-village
+2026-01-29 16:58:44,131 | INFO | 📄 Navigating to: https://www.nawy.com/compound/60-the-village...
+2026-01-29 16:59:06,417 | INFO |    ✅ The Village
+2026-01-29 16:59:06,565 | INFO | ➕ Inserted new compound: The Village
+2026-01-29 16:59:06,566 | INFO |    💾 Saved to MongoDB
+2026-01-29 16:59:10,147 | INFO | [57/1297] Scraping: https://www.nawy.com/compound/65-woodville
+2026-01-29 16:59:10,148 | INFO | 📄 Navigating to: https://www.nawy.com/compound/65-woodville...
+2026-01-29 16:59:40,264 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 16:59:40,264 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 16:59:43,788 | INFO | 📄 Navigating to: https://www.nawy.com/compound/65-woodville...
+2026-01-29 17:00:13,912 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:00:13,913 | INFO | ⏳ Retrying in 5.0s...
+2026-01-29 17:00:18,879 | INFO | 📄 Navigating to: https://www.nawy.com/compound/65-woodville...
+2026-01-29 17:00:36,123 | INFO |    ✅ Woodville
+2026-01-29 17:00:36,324 | INFO | ➕ Inserted new compound: Woodville
+2026-01-29 17:00:36,324 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:00:40,124 | INFO | [58/1297] Scraping: https://www.nawy.com/compound/310-the-estates
+2026-01-29 17:00:40,130 | INFO | 📄 Navigating to: https://www.nawy.com/compound/310-the-estates...
+2026-01-29 17:01:01,573 | INFO |    ✅ The Estates
+2026-01-29 17:01:01,727 | INFO | ➕ Inserted new compound: The Estates
+2026-01-29 17:01:01,728 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:01:07,696 | INFO | [59/1297] Scraping: https://www.nawy.com/compound/69-palm-valley
+2026-01-29 17:01:07,707 | INFO | 📄 Navigating to: https://www.nawy.com/compound/69-palm-valley...
+2026-01-29 17:01:37,837 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:01:37,837 | INFO | ⏳ Retrying in 2.9s...
+2026-01-29 17:01:40,711 | INFO | 📄 Navigating to: https://www.nawy.com/compound/69-palm-valley...
+2026-01-29 17:02:10,833 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:02:10,835 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 17:02:14,377 | INFO | 📄 Navigating to: https://www.nawy.com/compound/69-palm-valley...
+2026-01-29 17:02:26,919 | INFO |    ✅ Palm Valley
+2026-01-29 17:02:27,069 | INFO | ➕ Inserted new compound: Palm Valley
+2026-01-29 17:02:27,069 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:02:32,671 | INFO | [60/1297] Scraping: https://www.nawy.com/compound/44-zayed-dunes
+2026-01-29 17:02:32,671 | INFO | 📄 Navigating to: https://www.nawy.com/compound/44-zayed-dunes...
+2026-01-29 17:02:57,396 | INFO |    ✅ Zayed Dunes
+2026-01-29 17:02:57,546 | INFO | ➕ Inserted new compound: Zayed Dunes
+2026-01-29 17:02:57,547 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:03:02,973 | INFO | [61/1297] Scraping: https://www.nawy.com/compound/10-mountain-view-october-park
+2026-01-29 17:03:02,974 | INFO | 📄 Navigating to: https://www.nawy.com/compound/10-mountain-view-october-park...
+2026-01-29 17:03:33,096 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:03:33,098 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 17:03:36,404 | INFO | 📄 Navigating to: https://www.nawy.com/compound/10-mountain-view-october-park...
+2026-01-29 17:04:06,519 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:04:06,520 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 17:04:09,704 | INFO | 📄 Navigating to: https://www.nawy.com/compound/10-mountain-view-october-park...
+2026-01-29 17:04:39,830 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:04:39,830 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:04:44,213 | INFO | [62/1297] Scraping: https://www.nawy.com/compound/11-the-waterway-new-cairo
+2026-01-29 17:04:44,214 | INFO | 📄 Navigating to: https://www.nawy.com/compound/11-the-waterway-new-cairo...
+2026-01-29 17:05:14,352 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:05:14,353 | INFO | ⏳ Retrying in 3.7s...
+2026-01-29 17:05:18,032 | INFO | 📄 Navigating to: https://www.nawy.com/compound/11-the-waterway-new-cairo...
+2026-01-29 17:05:48,152 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:05:48,152 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 17:05:51,504 | INFO | 📄 Navigating to: https://www.nawy.com/compound/11-the-waterway-new-cairo...
+2026-01-29 17:06:05,179 | INFO |    ✅ The Waterway - New Cairo
+2026-01-29 17:06:05,330 | INFO | ➕ Inserted new compound: The Waterway - New Cairo
+2026-01-29 17:06:05,331 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:06:10,280 | INFO | [63/1297] Scraping: https://www.nawy.com/compound/14-el-patio-7
+2026-01-29 17:06:10,280 | INFO | 📄 Navigating to: https://www.nawy.com/compound/14-el-patio-7...
+2026-01-29 17:06:34,410 | INFO |    ✅ El Patio 7
+2026-01-29 17:06:34,554 | INFO | ➕ Inserted new compound: El Patio 7
+2026-01-29 17:06:34,555 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:06:39,693 | INFO | [64/1297] Scraping: https://www.nawy.com/compound/22-eastown-residence
+2026-01-29 17:06:39,694 | INFO | 📄 Navigating to: https://www.nawy.com/compound/22-eastown-residence...
+2026-01-29 17:06:56,089 | INFO |    ✅ Eastown Residence
+2026-01-29 17:06:56,239 | INFO | ➕ Inserted new compound: Eastown Residence
+2026-01-29 17:06:56,239 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:06:59,366 | INFO | [65/1297] Scraping: https://www.nawy.com/compound/26-forty-west-phase-i
+2026-01-29 17:06:59,367 | INFO | 📄 Navigating to: https://www.nawy.com/compound/26-forty-west-phase-i...
+2026-01-29 17:07:14,526 | INFO |    ✅ Forty West Phase I
+2026-01-29 17:07:14,681 | INFO | ➕ Inserted new compound: Forty West Phase I
+2026-01-29 17:07:14,681 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:07:19,158 | INFO | [66/1297] Scraping: https://www.nawy.com/compound/27-the-polygon
+2026-01-29 17:07:19,159 | INFO | 📄 Navigating to: https://www.nawy.com/compound/27-the-polygon...
+2026-01-29 17:07:49,291 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:07:49,293 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 17:07:51,742 | INFO | 📄 Navigating to: https://www.nawy.com/compound/27-the-polygon...
+2026-01-29 17:08:21,871 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:08:21,874 | INFO | ⏳ Retrying in 4.6s...
+2026-01-29 17:08:26,441 | INFO | 📄 Navigating to: https://www.nawy.com/compound/27-the-polygon...
+2026-01-29 17:08:56,569 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:08:56,570 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:09:00,203 | INFO | [67/1297] Scraping: https://www.nawy.com/compound/28-the-strip-[-commercial-]
+2026-01-29 17:09:00,214 | INFO | 📄 Navigating to: https://www.nawy.com/compound/28-the-strip-[-commercial-]...
+2026-01-29 17:09:26,728 | INFO |    ✅ The Strip [ Commercial ]
+2026-01-29 17:09:26,929 | INFO | ➕ Inserted new compound: The Strip [ Commercial ]
+2026-01-29 17:09:26,946 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:09:32,697 | INFO | [68/1297] Scraping: https://www.nawy.com/compound/29-westown-hub
+2026-01-29 17:09:32,697 | INFO | 📄 Navigating to: https://www.nawy.com/compound/29-westown-hub...
+2026-01-29 17:09:51,113 | INFO |    ✅ Westown Hub
+2026-01-29 17:09:51,283 | INFO | ➕ Inserted new compound: Westown Hub
+2026-01-29 17:09:51,290 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:09:57,006 | INFO | [69/1297] Scraping: https://www.nawy.com/compound/33-g-cribs
+2026-01-29 17:09:57,006 | INFO | 📄 Navigating to: https://www.nawy.com/compound/33-g-cribs...
+2026-01-29 17:10:10,231 | INFO |    ✅ G Cribs
+2026-01-29 17:10:10,426 | INFO | ➕ Inserted new compound: G Cribs
+2026-01-29 17:10:10,427 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:10:16,030 | INFO | [70/1297] Scraping: https://www.nawy.com/compound/34-soleya
+2026-01-29 17:10:16,031 | INFO | 📄 Navigating to: https://www.nawy.com/compound/34-soleya...
+2026-01-29 17:10:27,717 | INFO |    ✅ Soleya
+2026-01-29 17:10:27,875 | INFO | ➕ Inserted new compound: Soleya
+2026-01-29 17:10:27,877 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:10:32,332 | INFO | [71/1297] Scraping: https://www.nawy.com/compound/35-forty-west-phase-ii
+2026-01-29 17:10:32,345 | INFO | 📄 Navigating to: https://www.nawy.com/compound/35-forty-west-phase-ii...
+2026-01-29 17:10:46,752 | INFO |    ✅ Forty West Phase II
+2026-01-29 17:10:46,911 | INFO | ➕ Inserted new compound: Forty West Phase II
+2026-01-29 17:10:46,924 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:10:51,981 | INFO | [72/1297] Scraping: https://www.nawy.com/compound/36-jamaran
+2026-01-29 17:10:51,983 | INFO | 📄 Navigating to: https://www.nawy.com/compound/36-jamaran...
+2026-01-29 17:11:04,505 | INFO |    ✅ Jamaran
+2026-01-29 17:11:04,658 | INFO | ➕ Inserted new compound: Jamaran
+2026-01-29 17:11:04,661 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:11:08,601 | INFO | [73/1297] Scraping: https://www.nawy.com/compound/43-hacienda-bay
+2026-01-29 17:11:08,603 | INFO | 📄 Navigating to: https://www.nawy.com/compound/43-hacienda-bay...
+2026-01-29 17:11:26,228 | INFO |    ✅ Hacienda Bay
+2026-01-29 17:11:26,379 | INFO | ➕ Inserted new compound: Hacienda Bay
+2026-01-29 17:11:26,382 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:11:30,908 | INFO | [74/1297] Scraping: https://www.nawy.com/compound/46-village-garden-katameya
+2026-01-29 17:11:30,908 | INFO | 📄 Navigating to: https://www.nawy.com/compound/46-village-garden-katameya...
+2026-01-29 17:11:45,367 | INFO |    ✅ Village Garden Katameya
+2026-01-29 17:11:45,562 | INFO | ➕ Inserted new compound: Village Garden Katameya
+2026-01-29 17:11:45,588 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:11:50,440 | INFO | [75/1297] Scraping: https://www.nawy.com/compound/47-the-square
+2026-01-29 17:11:50,440 | INFO | 📄 Navigating to: https://www.nawy.com/compound/47-the-square...
+2026-01-29 17:12:01,296 | INFO |    ✅ The Square
+2026-01-29 17:12:01,447 | INFO | ➕ Inserted new compound: The Square
+2026-01-29 17:12:01,447 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:12:07,198 | INFO | [76/1297] Scraping: https://www.nawy.com/compound/48-seashell-sidi-abdel-rahman
+2026-01-29 17:12:07,198 | INFO | 📄 Navigating to: https://www.nawy.com/compound/48-seashell-sidi-abdel-rahman...
+2026-01-29 17:12:37,307 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:12:37,310 | INFO | ⏳ Retrying in 2.7s...
+2026-01-29 17:12:40,017 | INFO | 📄 Navigating to: https://www.nawy.com/compound/48-seashell-sidi-abdel-rahman...
+2026-01-29 17:12:47,908 | INFO |    ✅ Seashell Sidi Abdel Rahman
+2026-01-29 17:12:48,064 | INFO | ➕ Inserted new compound: Seashell Sidi Abdel Rahman
+2026-01-29 17:12:48,065 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:12:52,082 | INFO | [77/1297] Scraping: https://www.nawy.com/compound/51-mirage-city
+2026-01-29 17:12:52,082 | INFO | 📄 Navigating to: https://www.nawy.com/compound/51-mirage-city...
+2026-01-29 17:13:03,761 | INFO |    ✅ Mirage City
+2026-01-29 17:13:03,907 | INFO | ➕ Inserted new compound: Mirage City
+2026-01-29 17:13:03,908 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:13:07,305 | INFO | [78/1297] Scraping: https://www.nawy.com/compound/53-katameya-residence
+2026-01-29 17:13:07,305 | INFO | 📄 Navigating to: https://www.nawy.com/compound/53-katameya-residence...
+2026-01-29 17:13:37,419 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:13:37,420 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 17:13:40,591 | INFO | 📄 Navigating to: https://www.nawy.com/compound/53-katameya-residence...
+2026-01-29 17:14:10,711 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:14:10,711 | INFO | ⏳ Retrying in 4.1s...
+2026-01-29 17:14:14,849 | INFO | 📄 Navigating to: https://www.nawy.com/compound/53-katameya-residence...
+2026-01-29 17:14:44,976 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:14:44,977 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:14:48,447 | INFO | [79/1297] Scraping: https://www.nawy.com/compound/55-palm-hills-katameya-(pk1)
+2026-01-29 17:14:48,447 | INFO | 📄 Navigating to: https://www.nawy.com/compound/55-palm-hills-katameya-(pk1)...
+2026-01-29 17:15:18,571 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:15:18,572 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 17:15:21,576 | INFO | 📄 Navigating to: https://www.nawy.com/compound/55-palm-hills-katameya-(pk1)...
+2026-01-29 17:15:51,703 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:15:51,703 | INFO | ⏳ Retrying in 4.7s...
+2026-01-29 17:15:56,392 | INFO | 📄 Navigating to: https://www.nawy.com/compound/55-palm-hills-katameya-(pk1)...
+2026-01-29 17:16:26,518 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:16:26,518 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:16:31,835 | INFO | [80/1297] Scraping: https://www.nawy.com/compound/58-village-avenue
+2026-01-29 17:16:31,837 | INFO | 📄 Navigating to: https://www.nawy.com/compound/58-village-avenue...
+2026-01-29 17:17:01,979 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:17:01,980 | INFO | ⏳ Retrying in 3.4s...
+2026-01-29 17:17:05,427 | INFO | 📄 Navigating to: https://www.nawy.com/compound/58-village-avenue...
+2026-01-29 17:17:30,796 | INFO |    ✅ Village Avenue
+2026-01-29 17:17:30,948 | INFO | ➕ Inserted new compound: Village Avenue
+2026-01-29 17:17:30,949 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:17:34,069 | INFO | [81/1297] Scraping: https://www.nawy.com/compound/61-palm-hills-october
+2026-01-29 17:17:34,071 | INFO | 📄 Navigating to: https://www.nawy.com/compound/61-palm-hills-october...
+2026-01-29 17:17:42,823 | INFO |    ✅ Palm Hills October
+2026-01-29 17:17:42,979 | INFO | ➕ Inserted new compound: Palm Hills October
+2026-01-29 17:17:42,979 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:17:48,445 | INFO | [82/1297] Scraping: https://www.nawy.com/compound/63-palm-hills-golf-views
+2026-01-29 17:17:48,446 | INFO | 📄 Navigating to: https://www.nawy.com/compound/63-palm-hills-golf-views...
+2026-01-29 17:17:57,144 | INFO |    ✅ Palm Hills Golf Views
+2026-01-29 17:17:57,301 | INFO | ➕ Inserted new compound: Palm Hills Golf Views
+2026-01-29 17:17:57,301 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:18:02,016 | INFO | [83/1297] Scraping: https://www.nawy.com/compound/67-botanica
+2026-01-29 17:18:02,086 | INFO | 📄 Navigating to: https://www.nawy.com/compound/67-botanica...
+2026-01-29 17:18:16,591 | INFO |    ✅ Botanica
+2026-01-29 17:18:16,717 | INFO | ➕ Inserted new compound: Botanica
+2026-01-29 17:18:16,720 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:18:22,463 | INFO | [84/1297] Scraping: https://www.nawy.com/compound/68-bamboo-extension
+2026-01-29 17:18:22,463 | INFO | 📄 Navigating to: https://www.nawy.com/compound/68-bamboo-extension...
+2026-01-29 17:18:52,593 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:18:52,597 | INFO | ⏳ Retrying in 2.0s...
+2026-01-29 17:18:54,665 | INFO | 📄 Navigating to: https://www.nawy.com/compound/68-bamboo-extension...
+2026-01-29 17:19:24,792 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:19:24,794 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 17:19:28,001 | INFO | 📄 Navigating to: https://www.nawy.com/compound/68-bamboo-extension...
+2026-01-29 17:19:36,263 | INFO |    ✅ Bamboo Extension
+2026-01-29 17:19:36,435 | INFO | ➕ Inserted new compound: Bamboo Extension
+2026-01-29 17:19:36,436 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:19:41,767 | INFO | [85/1297] Scraping: https://www.nawy.com/compound/72-marina-el-alamein
+2026-01-29 17:19:41,772 | INFO | 📄 Navigating to: https://www.nawy.com/compound/72-marina-el-alamein...
+2026-01-29 17:19:53,658 | INFO |    ✅ Marina El-Alamein
+2026-01-29 17:19:53,817 | INFO | ➕ Inserted new compound: Marina El-Alamein
+2026-01-29 17:19:53,817 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:19:58,846 | INFO | [86/1297] Scraping: https://www.nawy.com/compound/79-marseilia-beach-4
+2026-01-29 17:19:58,846 | INFO | 📄 Navigating to: https://www.nawy.com/compound/79-marseilia-beach-4...
+2026-01-29 17:20:28,052 | INFO |    ✅ Marseilia Beach 4
+2026-01-29 17:20:28,539 | INFO | ➕ Inserted new compound: Marseilia Beach 4
+2026-01-29 17:20:28,613 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:20:34,461 | INFO | [87/1297] Scraping: https://www.nawy.com/compound/82-ghazala-bay
+2026-01-29 17:20:34,533 | INFO | 📄 Navigating to: https://www.nawy.com/compound/82-ghazala-bay...
+2026-01-29 17:20:56,810 | INFO |    ✅ Ghazala Bay
+2026-01-29 17:20:56,982 | INFO | ➕ Inserted new compound: Ghazala Bay
+2026-01-29 17:20:56,996 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:21:00,796 | INFO | [88/1297] Scraping: https://www.nawy.com/compound/85-karma-residence
+2026-01-29 17:21:00,798 | INFO | 📄 Navigating to: https://www.nawy.com/compound/85-karma-residence...
+2026-01-29 17:21:14,283 | INFO |    ✅ Karma Residence
+2026-01-29 17:21:14,436 | INFO | ➕ Inserted new compound: Karma Residence
+2026-01-29 17:21:14,437 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:21:17,624 | INFO | [89/1297] Scraping: https://www.nawy.com/compound/86-joubal-el-gouna
+2026-01-29 17:21:17,643 | INFO | 📄 Navigating to: https://www.nawy.com/compound/86-joubal-el-gouna...
+2026-01-29 17:21:31,050 | INFO |    ✅ Joubal El-Gouna
+2026-01-29 17:21:31,201 | INFO | ➕ Inserted new compound: Joubal El-Gouna
+2026-01-29 17:21:31,202 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:21:36,937 | INFO | [90/1297] Scraping: https://www.nawy.com/compound/88-azha
+2026-01-29 17:21:36,937 | INFO | 📄 Navigating to: https://www.nawy.com/compound/88-azha...
+2026-01-29 17:21:50,617 | INFO |    ✅ Azha
+2026-01-29 17:21:50,777 | INFO | ➕ Inserted new compound: Azha
+2026-01-29 17:21:50,778 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:21:56,459 | INFO | [91/1297] Scraping: https://www.nawy.com/compound/89-executive-residence-giza-plateau
+2026-01-29 17:21:56,460 | INFO | 📄 Navigating to: https://www.nawy.com/compound/89-executive-residence-giza-plateau...
+2026-01-29 17:22:08,594 | INFO |    ✅ Executive Residence Giza Plateau
+2026-01-29 17:22:08,744 | INFO | ➕ Inserted new compound: Executive Residence Giza Plateau
+2026-01-29 17:22:08,745 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:22:12,685 | INFO | [92/1297] Scraping: https://www.nawy.com/compound/90-il-monte-galala
+2026-01-29 17:22:12,685 | INFO | 📄 Navigating to: https://www.nawy.com/compound/90-il-monte-galala...
+2026-01-29 17:22:24,662 | INFO |    ✅ Il Monte Galala
+2026-01-29 17:22:24,834 | INFO | ➕ Inserted new compound: Il Monte Galala
+2026-01-29 17:22:24,835 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:22:30,743 | INFO | [93/1297] Scraping: https://www.nawy.com/compound/91-ein-hills
+2026-01-29 17:22:30,744 | INFO | 📄 Navigating to: https://www.nawy.com/compound/91-ein-hills...
+2026-01-29 17:22:47,350 | INFO |    ✅ Ein Hills
+2026-01-29 17:22:47,501 | INFO | ➕ Inserted new compound: Ein Hills
+2026-01-29 17:22:47,501 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:22:51,329 | INFO | [94/1297] Scraping: https://www.nawy.com/compound/92-laguna-bay
+2026-01-29 17:22:51,330 | INFO | 📄 Navigating to: https://www.nawy.com/compound/92-laguna-bay...
+2026-01-29 17:23:13,135 | INFO |    ✅ Laguna Bay
+2026-01-29 17:23:13,293 | INFO | ➕ Inserted new compound: Laguna Bay
+2026-01-29 17:23:13,294 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:23:18,598 | INFO | [95/1297] Scraping: https://www.nawy.com/compound/94-mountain-view-sokhna
+2026-01-29 17:23:18,599 | INFO | 📄 Navigating to: https://www.nawy.com/compound/94-mountain-view-sokhna...
+2026-01-29 17:23:48,717 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:23:48,719 | INFO | ⏳ Retrying in 2.8s...
+2026-01-29 17:23:51,542 | INFO | 📄 Navigating to: https://www.nawy.com/compound/94-mountain-view-sokhna...
+2026-01-29 17:24:21,661 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:24:21,661 | INFO | ⏳ Retrying in 4.6s...
+2026-01-29 17:24:26,246 | INFO | 📄 Navigating to: https://www.nawy.com/compound/94-mountain-view-sokhna...
+2026-01-29 17:24:56,369 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:24:56,369 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:25:02,314 | INFO | [96/1297] Scraping: https://www.nawy.com/compound/96-piacera
+2026-01-29 17:25:02,314 | INFO | 📄 Navigating to: https://www.nawy.com/compound/96-piacera...
+2026-01-29 17:25:32,441 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:25:32,442 | INFO | ⏳ Retrying in 3.6s...
+2026-01-29 17:25:36,038 | INFO | 📄 Navigating to: https://www.nawy.com/compound/96-piacera...
+2026-01-29 17:26:06,161 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:26:06,161 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 17:26:09,222 | INFO | 📄 Navigating to: https://www.nawy.com/compound/96-piacera...
+2026-01-29 17:26:16,823 | INFO |    ✅ Piacera
+2026-01-29 17:26:16,977 | INFO | ➕ Inserted new compound: Piacera
+2026-01-29 17:26:17,004 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:26:22,745 | INFO | [97/1297] Scraping: https://www.nawy.com/compound/97-little-venice
+2026-01-29 17:26:22,745 | INFO | 📄 Navigating to: https://www.nawy.com/compound/97-little-venice...
+2026-01-29 17:26:43,953 | INFO |    ✅ Little Venice
+2026-01-29 17:26:44,101 | INFO | ➕ Inserted new compound: Little Venice
+2026-01-29 17:26:44,102 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:26:47,227 | INFO | [98/1297] Scraping: https://www.nawy.com/compound/98-dome-marina-resort
+2026-01-29 17:26:47,227 | INFO | 📄 Navigating to: https://www.nawy.com/compound/98-dome-marina-resort...
+2026-01-29 17:27:17,352 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:27:17,354 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 17:27:20,617 | INFO | 📄 Navigating to: https://www.nawy.com/compound/98-dome-marina-resort...
+2026-01-29 17:27:50,738 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:27:50,739 | INFO | ⏳ Retrying in 3.8s...
+2026-01-29 17:27:54,530 | INFO | 📄 Navigating to: https://www.nawy.com/compound/98-dome-marina-resort...
+2026-01-29 17:28:00,839 | INFO |    ✅ Dome Marina Resort
+2026-01-29 17:28:00,998 | INFO | ➕ Inserted new compound: Dome Marina Resort
+2026-01-29 17:28:00,999 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:28:04,365 | INFO | [99/1297] Scraping: https://www.nawy.com/compound/99-l%E2%80%99avenir
+2026-01-29 17:28:04,365 | INFO | 📄 Navigating to: https://www.nawy.com/compound/99-l%E2%80%99avenir...
+2026-01-29 17:28:15,829 | INFO |    ✅ L’Avenir
+2026-01-29 17:28:15,982 | INFO | ➕ Inserted new compound: L’Avenir
+2026-01-29 17:28:15,982 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:28:21,736 | INFO | [100/1297] Scraping: https://www.nawy.com/compound/100-brix
+2026-01-29 17:28:21,747 | INFO | 📄 Navigating to: https://www.nawy.com/compound/100-brix...
+2026-01-29 17:28:35,166 | INFO |    ✅ BRIX
+2026-01-29 17:28:35,321 | INFO | ➕ Inserted new compound: BRIX
+2026-01-29 17:28:35,322 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:28:39,413 | INFO | [101/1297] Scraping: https://www.nawy.com/compound/102-green-beach
+2026-01-29 17:28:39,416 | INFO | 📄 Navigating to: https://www.nawy.com/compound/102-green-beach...
+2026-01-29 17:28:51,535 | INFO |    ✅ Green Beach
+2026-01-29 17:28:51,680 | INFO | ➕ Inserted new compound: Green Beach
+2026-01-29 17:28:51,681 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:28:56,485 | INFO | [102/1297] Scraping: https://www.nawy.com/compound/103-fanadir-bay
+2026-01-29 17:28:56,486 | INFO | 📄 Navigating to: https://www.nawy.com/compound/103-fanadir-bay...
+2026-01-29 17:29:18,534 | INFO |    ✅ Fanadir Bay
+2026-01-29 17:29:18,688 | INFO | ➕ Inserted new compound: Fanadir Bay
+2026-01-29 17:29:18,689 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:29:23,507 | INFO | [103/1297] Scraping: https://www.nawy.com/compound/104-joubal-lagoon
+2026-01-29 17:29:23,509 | INFO | 📄 Navigating to: https://www.nawy.com/compound/104-joubal-lagoon...
+2026-01-29 17:29:53,624 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:29:53,625 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 17:29:56,025 | INFO | 📄 Navigating to: https://www.nawy.com/compound/104-joubal-lagoon...
+2026-01-29 17:30:03,965 | INFO |    ✅ Joubal Lagoon
+2026-01-29 17:30:04,122 | INFO | ➕ Inserted new compound: Joubal Lagoon
+2026-01-29 17:30:04,124 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:30:09,767 | INFO | [104/1297] Scraping: https://www.nawy.com/compound/105-joubal-lagoon-phase-2
+2026-01-29 17:30:09,767 | INFO | 📄 Navigating to: https://www.nawy.com/compound/105-joubal-lagoon-phase-2...
+2026-01-29 17:30:18,376 | INFO |    ✅ Joubal Lagoon Phase 2
+2026-01-29 17:30:18,534 | INFO | ➕ Inserted new compound: Joubal Lagoon Phase 2
+2026-01-29 17:30:18,534 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:30:22,189 | INFO | [105/1297] Scraping: https://www.nawy.com/compound/106-joubal-views
+2026-01-29 17:30:22,189 | INFO | 📄 Navigating to: https://www.nawy.com/compound/106-joubal-views...
+2026-01-29 17:30:29,225 | INFO |    ✅ Joubal Views
+2026-01-29 17:30:29,382 | INFO | ➕ Inserted new compound: Joubal Views
+2026-01-29 17:30:29,382 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:30:33,241 | INFO | [106/1297] Scraping: https://www.nawy.com/compound/109-sabina
+2026-01-29 17:30:33,241 | INFO | 📄 Navigating to: https://www.nawy.com/compound/109-sabina...
+2026-01-29 17:30:47,073 | INFO |    ✅ Sabina
+2026-01-29 17:30:47,237 | INFO | ➕ Inserted new compound: Sabina
+2026-01-29 17:30:47,246 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:30:50,831 | INFO | [107/1297] Scraping: https://www.nawy.com/compound/115-tawila
+2026-01-29 17:30:50,832 | INFO | 📄 Navigating to: https://www.nawy.com/compound/115-tawila...
+2026-01-29 17:31:12,679 | INFO |    ✅ Tawila
+2026-01-29 17:31:12,827 | INFO | ➕ Inserted new compound: Tawila
+2026-01-29 17:31:12,827 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:31:16,580 | INFO | [108/1297] Scraping: https://www.nawy.com/compound/116-um-jamar
+2026-01-29 17:31:16,580 | INFO | 📄 Navigating to: https://www.nawy.com/compound/116-um-jamar...
+2026-01-29 17:31:46,908 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:31:47,004 | INFO | ⏳ Retrying in 3.7s...
+2026-01-29 17:31:50,712 | INFO | 📄 Navigating to: https://www.nawy.com/compound/116-um-jamar...
+2026-01-29 17:32:05,211 | INFO |    ✅ Um Jamar
+2026-01-29 17:32:05,486 | INFO | ➕ Inserted new compound: Um Jamar
+2026-01-29 17:32:05,734 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:32:11,295 | INFO | [109/1297] Scraping: https://www.nawy.com/compound/117-waterside-condos
+2026-01-29 17:32:11,318 | INFO | 📄 Navigating to: https://www.nawy.com/compound/117-waterside-condos...
+2026-01-29 17:32:25,277 | INFO |    ✅ Waterside Condos
+2026-01-29 17:32:25,446 | INFO | ➕ Inserted new compound: Waterside Condos
+2026-01-29 17:32:25,471 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:32:30,923 | INFO | [110/1297] Scraping: https://www.nawy.com/compound/123-swanlake-el-gouna
+2026-01-29 17:32:30,981 | INFO | 📄 Navigating to: https://www.nawy.com/compound/123-swanlake-el-gouna...
+2026-01-29 17:32:47,134 | INFO |    ✅ Swanlake El Gouna
+2026-01-29 17:32:47,360 | INFO | ➕ Inserted new compound: Swanlake El Gouna
+2026-01-29 17:32:47,369 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:32:50,652 | INFO | [111/1297] Scraping: https://www.nawy.com/compound/124-bay-west
+2026-01-29 17:32:50,658 | INFO | 📄 Navigating to: https://www.nawy.com/compound/124-bay-west...
+2026-01-29 17:33:05,506 | INFO |    ✅ Bay West
+2026-01-29 17:33:05,689 | INFO | ➕ Inserted new compound: Bay West
+2026-01-29 17:33:05,738 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:33:10,404 | INFO | [112/1297] Scraping: https://www.nawy.com/compound/126-soma-breeze
+2026-01-29 17:33:10,534 | INFO | 📄 Navigating to: https://www.nawy.com/compound/126-soma-breeze...
+2026-01-29 17:33:23,800 | INFO |    ✅ Soma Breeze
+2026-01-29 17:33:23,980 | INFO | ➕ Inserted new compound: Soma Breeze
+2026-01-29 17:33:24,057 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:33:28,277 | INFO | [113/1297] Scraping: https://www.nawy.com/compound/127-wadi-jebal
+2026-01-29 17:33:28,369 | INFO | 📄 Navigating to: https://www.nawy.com/compound/127-wadi-jebal...
+2026-01-29 17:33:41,289 | INFO |    ✅ Wadi Jebal
+2026-01-29 17:33:41,453 | INFO | ➕ Inserted new compound: Wadi Jebal
+2026-01-29 17:33:41,488 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:33:45,217 | INFO | [114/1297] Scraping: https://www.nawy.com/compound/136-reef-town
+2026-01-29 17:33:45,234 | INFO | 📄 Navigating to: https://www.nawy.com/compound/136-reef-town...
+2026-01-29 17:34:04,779 | INFO |    ✅ Reef Town
+2026-01-29 17:34:04,960 | INFO | ➕ Inserted new compound: Reef Town
+2026-01-29 17:34:04,963 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:34:09,646 | INFO | [115/1297] Scraping: https://www.nawy.com/compound/137-green-iv-october
+2026-01-29 17:34:09,647 | INFO | 📄 Navigating to: https://www.nawy.com/compound/137-green-iv-october...
+2026-01-29 17:34:39,783 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:34:39,784 | INFO | ⏳ Retrying in 2.8s...
+2026-01-29 17:34:42,549 | INFO | 📄 Navigating to: https://www.nawy.com/compound/137-green-iv-october...
+2026-01-29 17:34:50,385 | INFO |    ✅ Green IV October
+2026-01-29 17:34:50,537 | INFO | ➕ Inserted new compound: Green IV October
+2026-01-29 17:34:50,538 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:34:56,450 | INFO | [116/1297] Scraping: https://www.nawy.com/compound/138-el-patio-6-october
+2026-01-29 17:34:56,450 | INFO | 📄 Navigating to: https://www.nawy.com/compound/138-el-patio-6-october...
+2026-01-29 17:35:22,400 | INFO |    ✅ El Patio 6 October
+2026-01-29 17:35:22,606 | INFO | ➕ Inserted new compound: El Patio 6 October
+2026-01-29 17:35:22,607 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:35:28,548 | INFO | [117/1297] Scraping: https://www.nawy.com/compound/140-one-16
+2026-01-29 17:35:28,549 | INFO | 📄 Navigating to: https://www.nawy.com/compound/140-one-16...
+2026-01-29 17:35:53,908 | INFO |    ✅ One 16
+2026-01-29 17:35:54,080 | INFO | ➕ Inserted new compound: One 16
+2026-01-29 17:35:54,158 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:35:59,475 | INFO | [118/1297] Scraping: https://www.nawy.com/compound/142-park-view-haptown
+2026-01-29 17:35:59,543 | INFO | 📄 Navigating to: https://www.nawy.com/compound/142-park-view-haptown...
+2026-01-29 17:36:13,121 | INFO |    ✅ Park View - Haptown
+2026-01-29 17:36:13,270 | INFO | ➕ Inserted new compound: Park View - Haptown
+2026-01-29 17:36:13,270 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:36:16,927 | INFO | [119/1297] Scraping: https://www.nawy.com/compound/143-les-rois-new-cairo
+2026-01-29 17:36:16,930 | INFO | 📄 Navigating to: https://www.nawy.com/compound/143-les-rois-new-cairo...
+2026-01-29 17:36:47,048 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:36:47,050 | INFO | ⏳ Retrying in 2.7s...
+2026-01-29 17:36:49,812 | INFO | 📄 Navigating to: https://www.nawy.com/compound/143-les-rois-new-cairo...
+2026-01-29 17:37:23,842 | INFO |    ✅ Les Rois New Cairo
+2026-01-29 17:37:23,992 | INFO | ➕ Inserted new compound: Les Rois New Cairo
+2026-01-29 17:37:23,992 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:37:27,515 | INFO | [120/1297] Scraping: https://www.nawy.com/compound/144-jubail
+2026-01-29 17:37:27,518 | INFO | 📄 Navigating to: https://www.nawy.com/compound/144-jubail...
+2026-01-29 17:37:57,635 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:37:57,636 | INFO | ⏳ Retrying in 2.2s...
+2026-01-29 17:37:59,862 | INFO | 📄 Navigating to: https://www.nawy.com/compound/144-jubail...
+2026-01-29 17:38:12,293 | INFO |    ✅ Jubail
+2026-01-29 17:38:12,460 | INFO | ➕ Inserted new compound: Jubail
+2026-01-29 17:38:12,476 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:38:15,993 | INFO | [121/1297] Scraping: https://www.nawy.com/compound/146-new-marina
+2026-01-29 17:38:15,994 | INFO | 📄 Navigating to: https://www.nawy.com/compound/146-new-marina...
+2026-01-29 17:38:34,583 | INFO |    ✅ New Marina
+2026-01-29 17:38:34,735 | INFO | ➕ Inserted new compound: New Marina
+2026-01-29 17:38:34,736 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:38:39,367 | INFO | [122/1297] Scraping: https://www.nawy.com/compound/147-sarai
+2026-01-29 17:38:39,369 | INFO | 📄 Navigating to: https://www.nawy.com/compound/147-sarai...
+2026-01-29 17:38:50,877 | INFO |    ✅ Sarai
+2026-01-29 17:38:51,036 | INFO | ➕ Inserted new compound: Sarai
+2026-01-29 17:38:51,036 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:38:54,434 | INFO | [123/1297] Scraping: https://www.nawy.com/compound/149-south-golf-villas
+2026-01-29 17:38:54,435 | INFO | 📄 Navigating to: https://www.nawy.com/compound/149-south-golf-villas...
+2026-01-29 17:39:11,295 | INFO |    ✅ South Golf Villas
+2026-01-29 17:39:11,441 | INFO | ➕ Inserted new compound: South Golf Villas
+2026-01-29 17:39:11,441 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:39:14,791 | INFO | [124/1297] Scraping: https://www.nawy.com/compound/150-royal-meadows-sheikh-zayed
+2026-01-29 17:39:14,794 | INFO | 📄 Navigating to: https://www.nawy.com/compound/150-royal-meadows-sheikh-zayed...
+2026-01-29 17:39:44,525 | INFO |    ✅ Royal Meadows Sheikh Zayed
+2026-01-29 17:39:44,673 | INFO | ➕ Inserted new compound: Royal Meadows Sheikh Zayed
+2026-01-29 17:39:44,673 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:39:50,248 | INFO | [125/1297] Scraping: https://www.nawy.com/compound/152-west-hills
+2026-01-29 17:39:50,249 | INFO | 📄 Navigating to: https://www.nawy.com/compound/152-west-hills...
+2026-01-29 17:40:20,369 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:40:20,369 | INFO | ⏳ Retrying in 3.7s...
+2026-01-29 17:40:24,065 | INFO | 📄 Navigating to: https://www.nawy.com/compound/152-west-hills...
+2026-01-29 17:40:45,084 | INFO |    ✅ West Hills
+2026-01-29 17:40:45,258 | INFO | ➕ Inserted new compound: West Hills
+2026-01-29 17:40:45,260 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:40:50,098 | INFO | [126/1297] Scraping: https://www.nawy.com/compound/153-stella-di-mare-sidi-abdelrahman-1
+2026-01-29 17:40:50,098 | INFO | 📄 Navigating to: https://www.nawy.com/compound/153-stella-di-mare-sidi-abdelrahman-1...
+2026-01-29 17:41:23,031 | INFO |    ✅ Stella Di Mare Sidi Abdelrahman 1
+2026-01-29 17:41:23,259 | INFO | ➕ Inserted new compound: Stella Di Mare Sidi Abdelrahman 1
+2026-01-29 17:41:23,275 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:41:27,748 | INFO | [127/1297] Scraping: https://www.nawy.com/compound/155-scarab
+2026-01-29 17:41:27,749 | INFO | 📄 Navigating to: https://www.nawy.com/compound/155-scarab...
+2026-01-29 17:41:36,274 | INFO |    ✅ Scarab
+2026-01-29 17:41:36,441 | INFO | ➕ Inserted new compound: Scarab
+2026-01-29 17:41:36,442 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:41:40,903 | INFO | [128/1297] Scraping: https://www.nawy.com/compound/159-ancient-sands-golf-resort
+2026-01-29 17:41:40,904 | INFO | 📄 Navigating to: https://www.nawy.com/compound/159-ancient-sands-golf-resort...
+2026-01-29 17:41:53,520 | INFO |    ✅ Ancient Sands Golf Resort
+2026-01-29 17:41:53,672 | INFO | ➕ Inserted new compound: Ancient Sands Golf Resort
+2026-01-29 17:41:53,672 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:41:58,431 | INFO | [129/1297] Scraping: https://www.nawy.com/compound/160-steigenberger-golf-resort
+2026-01-29 17:41:58,431 | INFO | 📄 Navigating to: https://www.nawy.com/compound/160-steigenberger-golf-resort...
+2026-01-29 17:42:10,657 | INFO |    ✅ Steigenberger Golf Resort
+2026-01-29 17:42:10,809 | INFO | ➕ Inserted new compound: Steigenberger Golf Resort
+2026-01-29 17:42:10,809 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:42:14,849 | INFO | [130/1297] Scraping: https://www.nawy.com/compound/161-la-vista-bay-east
+2026-01-29 17:42:14,849 | INFO | 📄 Navigating to: https://www.nawy.com/compound/161-la-vista-bay-east...
+2026-01-29 17:42:23,537 | INFO |    ✅ La Vista Bay East
+2026-01-29 17:42:24,162 | INFO | ➕ Inserted new compound: La Vista Bay East
+2026-01-29 17:42:24,162 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:42:29,216 | INFO | [131/1297] Scraping: https://www.nawy.com/compound/162-pyramids-heights-residences
+2026-01-29 17:42:29,216 | INFO | 📄 Navigating to: https://www.nawy.com/compound/162-pyramids-heights-residences...
+2026-01-29 17:42:47,892 | INFO |    ✅ Pyramids Heights Residences
+2026-01-29 17:42:48,059 | INFO | ➕ Inserted new compound: Pyramids Heights Residences
+2026-01-29 17:42:48,059 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:42:52,107 | INFO | [132/1297] Scraping: https://www.nawy.com/compound/163-joulz
+2026-01-29 17:42:52,107 | INFO | 📄 Navigating to: https://www.nawy.com/compound/163-joulz...
+2026-01-29 17:43:22,264 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:43:22,304 | INFO | ⏳ Retrying in 3.1s...
+2026-01-29 17:43:25,455 | INFO | 📄 Navigating to: https://www.nawy.com/compound/163-joulz...
+2026-01-29 17:43:37,355 | INFO |    ✅ Joulz
+2026-01-29 17:43:37,515 | INFO | ➕ Inserted new compound: Joulz
+2026-01-29 17:43:37,546 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:43:40,579 | INFO | [133/1297] Scraping: https://www.nawy.com/compound/164-downtown
+2026-01-29 17:43:40,580 | INFO | 📄 Navigating to: https://www.nawy.com/compound/164-downtown...
+2026-01-29 17:43:47,883 | INFO |    ✅ Downtown
+2026-01-29 17:43:48,037 | INFO | ➕ Inserted new compound: Downtown
+2026-01-29 17:43:48,037 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:43:52,356 | INFO | [134/1297] Scraping: https://www.nawy.com/compound/165-jefaira
+2026-01-29 17:43:52,452 | INFO | 📄 Navigating to: https://www.nawy.com/compound/165-jefaira...
+2026-01-29 17:44:08,594 | INFO |    ✅ Jefaira
+2026-01-29 17:44:08,827 | INFO | ➕ Inserted new compound: Jefaira
+2026-01-29 17:44:08,884 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:44:13,933 | INFO | [135/1297] Scraping: https://www.nawy.com/compound/168-mountain-view-one
+2026-01-29 17:44:13,936 | INFO | 📄 Navigating to: https://www.nawy.com/compound/168-mountain-view-one...
+2026-01-29 17:44:36,404 | INFO |    ✅ Mountain View One
+2026-01-29 17:44:36,557 | INFO | ➕ Inserted new compound: Mountain View One
+2026-01-29 17:44:36,558 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:44:42,166 | INFO | [136/1297] Scraping: https://www.nawy.com/compound/174-salerno-marassi
+2026-01-29 17:44:42,188 | INFO | 📄 Navigating to: https://www.nawy.com/compound/174-salerno-marassi...
+2026-01-29 17:44:49,969 | INFO |    ✅ Salerno Marassi
+2026-01-29 17:44:50,116 | INFO | ➕ Inserted new compound: Salerno Marassi
+2026-01-29 17:44:50,117 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:44:54,233 | INFO | [137/1297] Scraping: https://www.nawy.com/compound/177-celia-marassi
+2026-01-29 17:44:54,248 | INFO | 📄 Navigating to: https://www.nawy.com/compound/177-celia-marassi...
+2026-01-29 17:45:23,450 | INFO |    ✅ Celia Marassi
+2026-01-29 17:45:23,598 | INFO | ➕ Inserted new compound: Celia Marassi
+2026-01-29 17:45:23,629 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:45:29,295 | INFO | [138/1297] Scraping: https://www.nawy.com/compound/178-abu-tig-hill
+2026-01-29 17:45:29,295 | INFO | 📄 Navigating to: https://www.nawy.com/compound/178-abu-tig-hill...
+2026-01-29 17:45:59,410 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:45:59,411 | INFO | ⏳ Retrying in 2.8s...
+2026-01-29 17:46:02,181 | INFO | 📄 Navigating to: https://www.nawy.com/compound/178-abu-tig-hill...
+2026-01-29 17:46:32,327 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:46:32,327 | INFO | ⏳ Retrying in 3.5s...
+2026-01-29 17:46:35,799 | INFO | 📄 Navigating to: https://www.nawy.com/compound/178-abu-tig-hill...
+2026-01-29 17:47:05,925 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:47:05,926 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:47:10,560 | INFO | [139/1297] Scraping: https://www.nawy.com/compound/180-sky-condos-phase-3,-villette
+2026-01-29 17:47:10,561 | INFO | 📄 Navigating to: https://www.nawy.com/compound/180-sky-condos-phase-3,-villette...
+2026-01-29 17:47:22,089 | INFO |    ✅ Sky Condos Phase 3, Villette
+2026-01-29 17:47:22,237 | INFO | ➕ Inserted new compound: Sky Condos Phase 3, Villette
+2026-01-29 17:47:22,303 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:47:26,769 | INFO | [140/1297] Scraping: https://www.nawy.com/compound/181-il-bosco-new-capital
+2026-01-29 17:47:26,769 | INFO | 📄 Navigating to: https://www.nawy.com/compound/181-il-bosco-new-capital...
+2026-01-29 17:47:53,104 | INFO |    ✅ Il Bosco New Capital
+2026-01-29 17:47:53,265 | INFO | ➕ Inserted new compound: Il Bosco New Capital
+2026-01-29 17:47:53,265 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:47:57,128 | INFO | [141/1297] Scraping: https://www.nawy.com/compound/182-maesta,-il-monte-galala
+2026-01-29 17:47:57,128 | INFO | 📄 Navigating to: https://www.nawy.com/compound/182-maesta,-il-monte-galala...
+2026-01-29 17:48:19,308 | INFO |    ✅ Maesta Il Monte Galala
+2026-01-29 17:48:19,456 | INFO | ➕ Inserted new compound: Maesta Il Monte Galala
+2026-01-29 17:48:19,457 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:48:25,396 | INFO | [142/1297] Scraping: https://www.nawy.com/compound/183-boulevard-residences-mivida
+2026-01-29 17:48:25,396 | INFO | 📄 Navigating to: https://www.nawy.com/compound/183-boulevard-residences-mivida...
+2026-01-29 17:48:42,786 | INFO |    ✅ Boulevard Residences - Mivida
+2026-01-29 17:48:42,946 | INFO | ➕ Inserted new compound: Boulevard Residences - Mivida
+2026-01-29 17:48:42,953 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:48:48,888 | INFO | [143/1297] Scraping: https://www.nawy.com/compound/184-fountain-park
+2026-01-29 17:48:48,889 | INFO | 📄 Navigating to: https://www.nawy.com/compound/184-fountain-park...
+2026-01-29 17:49:16,509 | INFO |    ✅ Fountain Park
+2026-01-29 17:49:16,659 | INFO | ➕ Inserted new compound: Fountain Park
+2026-01-29 17:49:16,660 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:49:19,961 | INFO | [144/1297] Scraping: https://www.nawy.com/compound/186-taj-city
+2026-01-29 17:49:19,962 | INFO | 📄 Navigating to: https://www.nawy.com/compound/186-taj-city...
+2026-01-29 17:49:50,079 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:49:50,080 | INFO | ⏳ Retrying in 2.8s...
+2026-01-29 17:49:52,858 | INFO | 📄 Navigating to: https://www.nawy.com/compound/186-taj-city...
+2026-01-29 17:50:10,814 | INFO |    ✅ Taj City
+2026-01-29 17:50:10,985 | INFO | ➕ Inserted new compound: Taj City
+2026-01-29 17:50:10,986 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:50:14,248 | INFO | [145/1297] Scraping: https://www.nawy.com/compound/188-la-rose-new-cairo
+2026-01-29 17:50:14,249 | INFO | 📄 Navigating to: https://www.nawy.com/compound/188-la-rose-new-cairo...
+2026-01-29 17:50:44,369 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:50:44,369 | INFO | ⏳ Retrying in 2.3s...
+2026-01-29 17:50:46,688 | INFO | 📄 Navigating to: https://www.nawy.com/compound/188-la-rose-new-cairo...
+2026-01-29 17:51:16,810 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:51:16,810 | INFO | ⏳ Retrying in 4.2s...
+2026-01-29 17:51:21,006 | INFO | 📄 Navigating to: https://www.nawy.com/compound/188-la-rose-new-cairo...
+2026-01-29 17:51:51,128 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:51:51,130 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:51:57,129 | INFO | [146/1297] Scraping: https://www.nawy.com/compound/189-zizinia-gardens
+2026-01-29 17:51:57,130 | INFO | 📄 Navigating to: https://www.nawy.com/compound/189-zizinia-gardens...
+2026-01-29 17:52:10,504 | INFO |    ✅ Zizinia Gardens
+2026-01-29 17:52:10,663 | INFO | ➕ Inserted new compound: Zizinia Gardens
+2026-01-29 17:52:10,663 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:52:16,118 | INFO | [147/1297] Scraping: https://www.nawy.com/compound/190-jewar-sheikh-zayed
+2026-01-29 17:52:16,118 | INFO | 📄 Navigating to: https://www.nawy.com/compound/190-jewar-sheikh-zayed...
+2026-01-29 17:52:46,234 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:52:46,234 | INFO | ⏳ Retrying in 2.1s...
+2026-01-29 17:52:48,383 | INFO | 📄 Navigating to: https://www.nawy.com/compound/190-jewar-sheikh-zayed...
+2026-01-29 17:52:56,098 | INFO |    ✅ Jewar Sheikh Zayed
+2026-01-29 17:52:56,281 | INFO | ➕ Inserted new compound: Jewar Sheikh Zayed
+2026-01-29 17:52:56,282 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:53:00,768 | INFO | [148/1297] Scraping: https://www.nawy.com/compound/191-kai-sokhna
+2026-01-29 17:53:00,769 | INFO | 📄 Navigating to: https://www.nawy.com/compound/191-kai-sokhna...
+2026-01-29 17:53:13,002 | INFO |    ✅ Kai Sokhna
+2026-01-29 17:53:13,202 | INFO | ➕ Inserted new compound: Kai Sokhna
+2026-01-29 17:53:13,202 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:53:18,367 | INFO | [149/1297] Scraping: https://www.nawy.com/compound/196-haptown
+2026-01-29 17:53:18,370 | INFO | 📄 Navigating to: https://www.nawy.com/compound/196-haptown...
+2026-01-29 17:53:32,024 | INFO |    ✅ HAPTown
+2026-01-29 17:53:32,203 | INFO | ➕ Inserted new compound: HAPTown
+2026-01-29 17:53:32,204 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:53:37,811 | INFO | [150/1297] Scraping: https://www.nawy.com/compound/197-the-capitalway
+2026-01-29 17:53:37,811 | INFO | 📄 Navigating to: https://www.nawy.com/compound/197-the-capitalway...
+2026-01-29 17:53:50,311 | INFO |    ✅ The Capitalway
+2026-01-29 17:53:50,528 | INFO | ➕ Inserted new compound: The Capitalway
+2026-01-29 17:53:50,528 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:53:55,196 | INFO | [151/1297] Scraping: https://www.nawy.com/compound/198-hyde-park-business-district
+2026-01-29 17:53:55,196 | INFO | 📄 Navigating to: https://www.nawy.com/compound/198-hyde-park-business-district...
+2026-01-29 17:54:06,774 | INFO |    ✅ Hyde Park Business District
+2026-01-29 17:54:06,987 | INFO | ➕ Inserted new compound: Hyde Park Business District
+2026-01-29 17:54:06,988 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:54:10,669 | INFO | [152/1297] Scraping: https://www.nawy.com/compound/199-mivida-business-district
+2026-01-29 17:54:10,670 | INFO | 📄 Navigating to: https://www.nawy.com/compound/199-mivida-business-district...
+2026-01-29 17:54:25,576 | INFO |    ✅ Mivida Business District
+2026-01-29 17:54:25,775 | INFO | ➕ Inserted new compound: Mivida Business District
+2026-01-29 17:54:25,776 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:54:29,367 | INFO | [153/1297] Scraping: https://www.nawy.com/compound/201-palm-hills-alexandria
+2026-01-29 17:54:29,368 | INFO | 📄 Navigating to: https://www.nawy.com/compound/201-palm-hills-alexandria...
+2026-01-29 17:54:59,488 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:54:59,488 | INFO | ⏳ Retrying in 4.0s...
+2026-01-29 17:55:03,485 | INFO | 📄 Navigating to: https://www.nawy.com/compound/201-palm-hills-alexandria...
+2026-01-29 17:55:33,661 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:55:33,661 | INFO | ⏳ Retrying in 4.4s...
+2026-01-29 17:55:38,076 | INFO | 📄 Navigating to: https://www.nawy.com/compound/201-palm-hills-alexandria...
+2026-01-29 17:56:08,199 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:56:08,200 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:56:11,334 | INFO | [154/1297] Scraping: https://www.nawy.com/compound/204-trio
+2026-01-29 17:56:11,334 | INFO | 📄 Navigating to: https://www.nawy.com/compound/204-trio...
+2026-01-29 17:56:24,179 | INFO |    ✅ Trio
+2026-01-29 17:56:24,332 | INFO | ➕ Inserted new compound: Trio
+2026-01-29 17:56:24,332 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:56:29,046 | INFO | [155/1297] Scraping: https://www.nawy.com/compound/209-galleria
+2026-01-29 17:56:29,048 | INFO | 📄 Navigating to: https://www.nawy.com/compound/209-galleria...
+2026-01-29 17:56:59,166 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:56:59,166 | INFO | ⏳ Retrying in 2.7s...
+2026-01-29 17:57:01,864 | INFO | 📄 Navigating to: https://www.nawy.com/compound/209-galleria...
+2026-01-29 17:57:31,990 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:57:31,990 | INFO | ⏳ Retrying in 4.8s...
+2026-01-29 17:57:36,794 | INFO | 📄 Navigating to: https://www.nawy.com/compound/209-galleria...
+2026-01-29 17:58:06,916 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 17:58:06,917 | WARNING |    ❌ Failed to scrape
+2026-01-29 17:58:10,697 | INFO | [156/1297] Scraping: https://www.nawy.com/compound/210-sun-capital
+2026-01-29 17:58:10,697 | INFO | 📄 Navigating to: https://www.nawy.com/compound/210-sun-capital...
+2026-01-29 17:58:25,707 | INFO |    ✅ Sun Capital
+2026-01-29 17:58:25,863 | INFO | ➕ Inserted new compound: Sun Capital
+2026-01-29 17:58:25,864 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:58:31,743 | INFO | [157/1297] Scraping: https://www.nawy.com/compound/212-al-rabwa
+2026-01-29 17:58:31,743 | INFO | 📄 Navigating to: https://www.nawy.com/compound/212-al-rabwa...
+2026-01-29 17:58:45,261 | INFO |    ✅ Al Rabwa
+2026-01-29 17:58:45,412 | INFO | ➕ Inserted new compound: Al Rabwa
+2026-01-29 17:58:45,413 | INFO |    💾 Saved to MongoDB
+2026-01-29 17:58:50,458 | INFO | [158/1297] Scraping: https://www.nawy.com/compound/214-ein-bay
+2026-01-29 17:58:50,458 | INFO | 📄 Navigating to: https://www.nawy.com/compound/214-ein-bay...
+2026-01-29 17:59:20,585 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 17:59:20,586 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 17:59:23,898 | INFO | 📄 Navigating to: https://www.nawy.com/compound/214-ein-bay...
+2026-01-29 17:59:54,029 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 17:59:54,030 | INFO | ⏳ Retrying in 4.8s...
+2026-01-29 17:59:58,804 | INFO | 📄 Navigating to: https://www.nawy.com/compound/214-ein-bay...
+2026-01-29 18:00:28,933 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 18:00:28,933 | WARNING |    ❌ Failed to scrape
+2026-01-29 18:00:32,789 | INFO | [159/1297] Scraping: https://www.nawy.com/compound/215-eastown-administartive
+2026-01-29 18:00:32,789 | INFO | 📄 Navigating to: https://www.nawy.com/compound/215-eastown-administartive...
+2026-01-29 18:01:02,921 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:01:02,924 | INFO | ⏳ Retrying in 3.9s...
+2026-01-29 18:01:06,814 | INFO | 📄 Navigating to: https://www.nawy.com/compound/215-eastown-administartive...
+2026-01-29 18:01:36,941 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:01:36,941 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 18:01:39,971 | INFO | 📄 Navigating to: https://www.nawy.com/compound/215-eastown-administartive...
+2026-01-29 18:02:10,096 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 18:02:10,097 | WARNING |    ❌ Failed to scrape
+2026-01-29 18:02:13,523 | INFO | [160/1297] Scraping: https://www.nawy.com/compound/216-vida
+2026-01-29 18:02:13,523 | INFO | 📄 Navigating to: https://www.nawy.com/compound/216-vida...
+2026-01-29 18:02:20,949 | INFO |    ✅ Vida
+2026-01-29 18:02:21,103 | INFO | ➕ Inserted new compound: Vida
+2026-01-29 18:02:21,103 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:02:26,822 | INFO | [161/1297] Scraping: https://www.nawy.com/compound/217-the-city-of-odyssia
+2026-01-29 18:02:26,825 | INFO | 📄 Navigating to: https://www.nawy.com/compound/217-the-city-of-odyssia...
+2026-01-29 18:02:37,260 | INFO |    ✅ The City of Odyssia
+2026-01-29 18:02:37,414 | INFO | ➕ Inserted new compound: The City of Odyssia
+2026-01-29 18:02:37,417 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:02:40,631 | INFO | [162/1297] Scraping: https://www.nawy.com/compound/218-aria
+2026-01-29 18:02:40,631 | INFO | 📄 Navigating to: https://www.nawy.com/compound/218-aria...
+2026-01-29 18:02:51,193 | INFO |    ✅ Aria
+2026-01-29 18:02:51,350 | INFO | ➕ Inserted new compound: Aria
+2026-01-29 18:02:51,350 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:02:55,848 | INFO | [163/1297] Scraping: https://www.nawy.com/compound/220-la-vista-ray
+2026-01-29 18:02:55,849 | INFO | 📄 Navigating to: https://www.nawy.com/compound/220-la-vista-ray...
+2026-01-29 18:03:25,980 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:03:25,981 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 18:03:28,383 | INFO | 📄 Navigating to: https://www.nawy.com/compound/220-la-vista-ray...
+2026-01-29 18:03:58,503 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:03:58,511 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 18:04:01,745 | INFO | 📄 Navigating to: https://www.nawy.com/compound/220-la-vista-ray...
+2026-01-29 18:04:31,860 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 18:04:31,861 | WARNING |    ❌ Failed to scrape
+2026-01-29 18:04:37,421 | INFO | [164/1297] Scraping: https://www.nawy.com/compound/221-the-waterway-north-coast
+2026-01-29 18:04:37,427 | INFO | 📄 Navigating to: https://www.nawy.com/compound/221-the-waterway-north-coast...
+2026-01-29 18:04:56,464 | INFO |    ✅ The Waterway North Coast
+2026-01-29 18:04:57,004 | INFO | ➕ Inserted new compound: The Waterway North Coast
+2026-01-29 18:04:57,007 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:05:01,380 | INFO | [165/1297] Scraping: https://www.nawy.com/compound/227-address-east
+2026-01-29 18:05:01,381 | INFO | 📄 Navigating to: https://www.nawy.com/compound/227-address-east...
+2026-01-29 18:05:21,817 | INFO |    ✅ Address East
+2026-01-29 18:05:21,969 | INFO | ➕ Inserted new compound: Address East
+2026-01-29 18:05:21,970 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:05:26,901 | INFO | [166/1297] Scraping: https://www.nawy.com/compound/228-alma
+2026-01-29 18:05:26,901 | INFO | 📄 Navigating to: https://www.nawy.com/compound/228-alma...
+2026-01-29 18:05:35,815 | INFO |    ✅ ALMA
+2026-01-29 18:05:35,969 | INFO | ➕ Inserted new compound: ALMA
+2026-01-29 18:05:35,986 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:05:40,369 | INFO | [167/1297] Scraping: https://www.nawy.com/compound/231-north-edge-new-alamein
+2026-01-29 18:05:40,371 | INFO | 📄 Navigating to: https://www.nawy.com/compound/231-north-edge-new-alamein...
+2026-01-29 18:05:50,753 | INFO |    ✅ North Edge New Alamein
+2026-01-29 18:05:50,904 | INFO | ➕ Inserted new compound: North Edge New Alamein
+2026-01-29 18:05:50,904 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:05:54,075 | INFO | [168/1297] Scraping: https://www.nawy.com/compound/233-six-west
+2026-01-29 18:05:54,076 | INFO | 📄 Navigating to: https://www.nawy.com/compound/233-six-west...
+2026-01-29 18:06:10,008 | INFO |    ✅ Six West
+2026-01-29 18:06:10,159 | INFO | ➕ Inserted new compound: Six West
+2026-01-29 18:06:10,160 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:06:15,871 | INFO | [169/1297] Scraping: https://www.nawy.com/compound/236-katameya-coast
+2026-01-29 18:06:15,872 | INFO | 📄 Navigating to: https://www.nawy.com/compound/236-katameya-coast...
+2026-01-29 18:06:26,010 | INFO |    ✅ Katameya Coast
+2026-01-29 18:06:26,160 | INFO | ➕ Inserted new compound: Katameya Coast
+2026-01-29 18:06:26,161 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:06:30,821 | INFO | [170/1297] Scraping: https://www.nawy.com/compound/237-the-loft
+2026-01-29 18:06:30,821 | INFO | 📄 Navigating to: https://www.nawy.com/compound/237-the-loft...
+2026-01-29 18:06:50,793 | INFO |    ✅ The Loft
+2026-01-29 18:06:50,946 | INFO | ➕ Inserted new compound: The Loft
+2026-01-29 18:06:50,946 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:06:56,879 | INFO | [171/1297] Scraping: https://www.nawy.com/compound/238-zoya-ghazala-bay
+2026-01-29 18:06:56,880 | INFO | 📄 Navigating to: https://www.nawy.com/compound/238-zoya-ghazala-bay...
+2026-01-29 18:07:15,082 | INFO |    ✅ Zoya Ghazala Bay
+2026-01-29 18:07:15,240 | INFO | ➕ Inserted new compound: Zoya Ghazala Bay
+2026-01-29 18:07:15,240 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:07:18,309 | INFO | [172/1297] Scraping: https://www.nawy.com/compound/240-cavana-lakes--sarai
+2026-01-29 18:07:18,328 | INFO | 📄 Navigating to: https://www.nawy.com/compound/240-cavana-lakes--sarai...
+2026-01-29 18:07:27,289 | INFO |    ✅ Cavana Lakes Sarai
+2026-01-29 18:07:27,442 | INFO | ➕ Inserted new compound: Cavana Lakes Sarai
+2026-01-29 18:07:27,442 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:07:30,498 | INFO | [173/1297] Scraping: https://www.nawy.com/compound/241-lagoon-luxury-apartments-north-coast
+2026-01-29 18:07:30,499 | INFO | 📄 Navigating to: https://www.nawy.com/compound/241-lagoon-luxury-apartments-north-coast...
+2026-01-29 18:07:42,036 | INFO |    ✅ Lagoon Luxury Apartments North Coast
+2026-01-29 18:07:42,170 | INFO | ➕ Inserted new compound: Lagoon Luxury Apartments North Coast
+2026-01-29 18:07:42,171 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:07:45,934 | INFO | [174/1297] Scraping: https://www.nawy.com/compound/243-etapa
+2026-01-29 18:07:45,935 | INFO | 📄 Navigating to: https://www.nawy.com/compound/243-etapa...
+2026-01-29 18:08:16,053 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:08:16,054 | INFO | ⏳ Retrying in 2.9s...
+2026-01-29 18:08:18,911 | INFO | 📄 Navigating to: https://www.nawy.com/compound/243-etapa...
+2026-01-29 18:08:31,422 | INFO |    ✅ Etapa
+2026-01-29 18:08:31,580 | INFO | ➕ Inserted new compound: Etapa
+2026-01-29 18:08:31,580 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:08:36,523 | INFO | [175/1297] Scraping: https://www.nawy.com/compound/244-pali-north-coast
+2026-01-29 18:08:36,523 | INFO | 📄 Navigating to: https://www.nawy.com/compound/244-pali-north-coast...
+2026-01-29 18:08:45,336 | INFO |    ✅ Pali North Coast
+2026-01-29 18:08:45,486 | INFO | ➕ Inserted new compound: Pali North Coast
+2026-01-29 18:08:45,487 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:08:49,165 | INFO | [176/1297] Scraping: https://www.nawy.com/compound/246-city-stars-al-sahel
+2026-01-29 18:08:49,196 | INFO | 📄 Navigating to: https://www.nawy.com/compound/246-city-stars-al-sahel...
+2026-01-29 18:08:56,188 | INFO |    ✅ City Stars Al Sahel
+2026-01-29 18:08:56,340 | INFO | ➕ Inserted new compound: City Stars Al Sahel
+2026-01-29 18:08:56,341 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:08:59,658 | INFO | [177/1297] Scraping: https://www.nawy.com/compound/248-cyan
+2026-01-29 18:08:59,658 | INFO | 📄 Navigating to: https://www.nawy.com/compound/248-cyan...
+2026-01-29 18:09:29,774 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:09:29,774 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 18:09:32,193 | INFO | 📄 Navigating to: https://www.nawy.com/compound/248-cyan...
+2026-01-29 18:10:02,316 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:10:02,317 | INFO | ⏳ Retrying in 4.0s...
+2026-01-29 18:10:06,316 | INFO | 📄 Navigating to: https://www.nawy.com/compound/248-cyan...
+2026-01-29 18:10:13,804 | INFO |    ✅ Cyan
+2026-01-29 18:10:13,961 | INFO | ➕ Inserted new compound: Cyan
+2026-01-29 18:10:13,962 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:10:18,737 | INFO | [178/1297] Scraping: https://www.nawy.com/compound/252-vinci
+2026-01-29 18:10:18,738 | INFO | 📄 Navigating to: https://www.nawy.com/compound/252-vinci...
+2026-01-29 18:10:33,224 | INFO |    ✅ Vinci
+2026-01-29 18:10:33,383 | INFO | ➕ Inserted new compound: Vinci
+2026-01-29 18:10:33,395 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:10:38,599 | INFO | [179/1297] Scraping: https://www.nawy.com/compound/253-bay-7-sidi-heneish
+2026-01-29 18:10:38,601 | INFO | 📄 Navigating to: https://www.nawy.com/compound/253-bay-7-sidi-heneish...
+2026-01-29 18:10:49,491 | INFO |    ✅ Bay 7 Sidi Heneish
+2026-01-29 18:10:49,644 | INFO | ➕ Inserted new compound: Bay 7 Sidi Heneish
+2026-01-29 18:10:49,645 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:10:53,198 | INFO | [180/1297] Scraping: https://www.nawy.com/compound/254-axis-x-iwan
+2026-01-29 18:10:53,198 | INFO | 📄 Navigating to: https://www.nawy.com/compound/254-axis-x-iwan...
+2026-01-29 18:11:25,755 | INFO |    ✅ Axis X Iwan
+2026-01-29 18:11:25,910 | INFO | ➕ Inserted new compound: Axis X Iwan
+2026-01-29 18:11:25,911 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:11:31,722 | INFO | [181/1297] Scraping: https://www.nawy.com/compound/255-la-fontaine-province
+2026-01-29 18:11:31,722 | INFO | 📄 Navigating to: https://www.nawy.com/compound/255-la-fontaine-province...
+2026-01-29 18:12:01,840 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:12:01,840 | INFO | ⏳ Retrying in 2.4s...
+2026-01-29 18:12:04,301 | INFO | 📄 Navigating to: https://www.nawy.com/compound/255-la-fontaine-province...
+2026-01-29 18:12:34,426 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:12:34,427 | INFO | ⏳ Retrying in 4.0s...
+2026-01-29 18:12:38,402 | INFO | 📄 Navigating to: https://www.nawy.com/compound/255-la-fontaine-province...
+2026-01-29 18:13:08,600 | ERROR | ❌ Navigation error (attempt 3): Timeout 30000ms exceeded.
+2026-01-29 18:13:08,601 | WARNING |    ❌ Failed to scrape
+2026-01-29 18:13:13,087 | INFO | [182/1297] Scraping: https://www.nawy.com/compound/259-the-ridge-villas
+2026-01-29 18:13:13,088 | INFO | 📄 Navigating to: https://www.nawy.com/compound/259-the-ridge-villas...
+2026-01-29 18:13:43,223 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:13:43,224 | INFO | ⏳ Retrying in 3.0s...
+2026-01-29 18:13:46,195 | INFO | 📄 Navigating to: https://www.nawy.com/compound/259-the-ridge-villas...
+2026-01-29 18:13:53,741 | INFO |    ✅ The RIDGE Villas
+2026-01-29 18:13:53,897 | INFO | ➕ Inserted new compound: The RIDGE Villas
+2026-01-29 18:13:53,897 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:13:57,211 | INFO | [183/1297] Scraping: https://www.nawy.com/compound/261-mountain-view-2
+2026-01-29 18:13:57,211 | INFO | 📄 Navigating to: https://www.nawy.com/compound/261-mountain-view-2...
+2026-01-29 18:14:10,448 | INFO |    ✅ Mountain View 2
+2026-01-29 18:14:10,599 | INFO | ➕ Inserted new compound: Mountain View 2
+2026-01-29 18:14:10,599 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:14:14,758 | INFO | [184/1297] Scraping: https://www.nawy.com/compound/270-golf-residences--uptown-cairo
+2026-01-29 18:14:14,758 | INFO | 📄 Navigating to: https://www.nawy.com/compound/270-golf-residences--uptown-cairo...
+2026-01-29 18:14:29,486 | INFO |    ✅ Golf Residences Uptown Cairo
+2026-01-29 18:14:29,635 | INFO | ➕ Inserted new compound: Golf Residences Uptown Cairo
+2026-01-29 18:14:29,635 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:14:34,197 | INFO | [185/1297] Scraping: https://www.nawy.com/compound/271-al-maqsad
+2026-01-29 18:14:34,198 | INFO | 📄 Navigating to: https://www.nawy.com/compound/271-al-maqsad...
+2026-01-29 18:15:04,320 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:15:04,320 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 18:15:07,553 | INFO | 📄 Navigating to: https://www.nawy.com/compound/271-al-maqsad...
+2026-01-29 18:15:20,401 | INFO |    ✅ Al Maqsad
+2026-01-29 18:15:20,555 | INFO | ➕ Inserted new compound: Al Maqsad
+2026-01-29 18:15:20,556 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:15:26,561 | INFO | [186/1297] Scraping: https://www.nawy.com/compound/276-allegria-residence
+2026-01-29 18:15:26,563 | INFO | 📄 Navigating to: https://www.nawy.com/compound/276-allegria-residence...
+2026-01-29 18:15:42,041 | INFO |    ✅ Allegria Residence
+2026-01-29 18:15:42,191 | INFO | ➕ Inserted new compound: Allegria Residence
+2026-01-29 18:15:42,191 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:15:46,056 | INFO | [187/1297] Scraping: https://www.nawy.com/compound/279-the-duos--mivida
+2026-01-29 18:15:46,058 | INFO | 📄 Navigating to: https://www.nawy.com/compound/279-the-duos--mivida...
+2026-01-29 18:15:59,822 | INFO |    ✅ The Duos Mivida
+2026-01-29 18:16:00,016 | INFO | ➕ Inserted new compound: The Duos Mivida
+2026-01-29 18:16:00,017 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:16:05,003 | INFO | [188/1297] Scraping: https://www.nawy.com/compound/280-riva-villas--marassi
+2026-01-29 18:16:05,004 | INFO | 📄 Navigating to: https://www.nawy.com/compound/280-riva-villas--marassi...
+2026-01-29 18:16:16,268 | INFO |    ✅ Riva Villas Marassi
+2026-01-29 18:16:16,421 | INFO | ➕ Inserted new compound: Riva Villas Marassi
+2026-01-29 18:16:16,422 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:16:20,857 | INFO | [189/1297] Scraping: https://www.nawy.com/compound/281-armonia
+2026-01-29 18:16:20,858 | INFO | 📄 Navigating to: https://www.nawy.com/compound/281-armonia...
+2026-01-29 18:16:50,992 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:16:50,993 | INFO | ⏳ Retrying in 3.3s...
+2026-01-29 18:16:54,330 | INFO | 📄 Navigating to: https://www.nawy.com/compound/281-armonia...
+2026-01-29 18:17:14,840 | INFO |    ✅ Armonia
+2026-01-29 18:17:14,991 | INFO | ➕ Inserted new compound: Armonia
+2026-01-29 18:17:14,992 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:17:19,800 | INFO | [190/1297] Scraping: https://www.nawy.com/compound/284-plateau-district-5
+2026-01-29 18:17:19,801 | INFO | 📄 Navigating to: https://www.nawy.com/compound/284-plateau-district-5...
+2026-01-29 18:17:45,617 | INFO |    ✅ Plateau District 5
+2026-01-29 18:17:45,766 | INFO | ➕ Inserted new compound: Plateau District 5
+2026-01-29 18:17:45,766 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:17:49,593 | INFO | [191/1297] Scraping: https://www.nawy.com/compound/285-bo-island
+2026-01-29 18:17:49,593 | INFO | 📄 Navigating to: https://www.nawy.com/compound/285-bo-island...
+2026-01-29 18:18:19,722 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:18:19,723 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 18:18:22,961 | INFO | 📄 Navigating to: https://www.nawy.com/compound/285-bo-island...
+2026-01-29 18:18:53,127 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:18:53,341 | INFO | ⏳ Retrying in 3.2s...
+2026-01-29 18:18:56,592 | INFO | 📄 Navigating to: https://www.nawy.com/compound/285-bo-island...
+2026-01-29 18:19:04,587 | INFO |    ✅ Bo Island
+2026-01-29 18:19:04,720 | INFO | ➕ Inserted new compound: Bo Island
+2026-01-29 18:19:04,721 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:19:08,114 | INFO | [192/1297] Scraping: https://www.nawy.com/compound/286-bo-sands
+2026-01-29 18:19:08,156 | INFO | 📄 Navigating to: https://www.nawy.com/compound/286-bo-sands...
+2026-01-29 18:19:31,426 | INFO |    ✅ Bo Sands
+2026-01-29 18:19:31,571 | INFO | ➕ Inserted new compound: Bo Sands
+2026-01-29 18:19:31,571 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:19:35,544 | INFO | [193/1297] Scraping: https://www.nawy.com/compound/288-canyon
+2026-01-29 18:19:35,544 | INFO | 📄 Navigating to: https://www.nawy.com/compound/288-canyon...
+2026-01-29 18:20:05,703 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:20:05,743 | INFO | ⏳ Retrying in 3.4s...
+2026-01-29 18:20:09,181 | INFO | 📄 Navigating to: https://www.nawy.com/compound/288-canyon...
+2026-01-29 18:20:21,874 | INFO |    ✅ Canyon
+2026-01-29 18:20:22,030 | INFO | ➕ Inserted new compound: Canyon
+2026-01-29 18:20:22,031 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:20:27,085 | INFO | [194/1297] Scraping: https://www.nawy.com/compound/292-the-cribs--jefaira
+2026-01-29 18:20:27,099 | INFO | 📄 Navigating to: https://www.nawy.com/compound/292-the-cribs--jefaira...
+2026-01-29 18:20:43,749 | INFO |    ✅ The Cribs Jefaira
+2026-01-29 18:20:43,918 | INFO | ➕ Inserted new compound: The Cribs Jefaira
+2026-01-29 18:20:43,923 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:20:47,109 | INFO | [195/1297] Scraping: https://www.nawy.com/compound/293-mazarine
+2026-01-29 18:20:47,109 | INFO | 📄 Navigating to: https://www.nawy.com/compound/293-mazarine...
+2026-01-29 18:21:12,809 | INFO |    ✅ Mazarine
+2026-01-29 18:21:13,071 | INFO | ➕ Inserted new compound: Mazarine
+2026-01-29 18:21:13,127 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:21:17,528 | INFO | [196/1297] Scraping: https://www.nawy.com/compound/294-the-gate-new-alamein
+2026-01-29 18:21:17,758 | INFO | 📄 Navigating to: https://www.nawy.com/compound/294-the-gate-new-alamein...
+2026-01-29 18:21:35,408 | INFO |    ✅ The Gate - New Alamein
+2026-01-29 18:21:35,686 | INFO | ➕ Inserted new compound: The Gate - New Alamein
+2026-01-29 18:21:35,709 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:21:41,602 | INFO | [197/1297] Scraping: https://www.nawy.com/compound/295-the-loft-capital-center-commercial
+2026-01-29 18:21:41,717 | INFO | 📄 Navigating to: https://www.nawy.com/compound/295-the-loft-capital-center-commercial...
+2026-01-29 18:22:10,673 | INFO |    ✅ The Loft Capital Center Commercial
+2026-01-29 18:22:10,853 | INFO | ➕ Inserted new compound: The Loft Capital Center Commercial
+2026-01-29 18:22:10,854 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:22:15,895 | INFO | [198/1297] Scraping: https://www.nawy.com/compound/296-bleu-vert
+2026-01-29 18:22:16,169 | INFO | 📄 Navigating to: https://www.nawy.com/compound/296-bleu-vert...
+2026-01-29 18:22:31,344 | INFO |    ✅ Bleu Vert
+2026-01-29 18:22:31,562 | INFO | ➕ Inserted new compound: Bleu Vert
+2026-01-29 18:22:31,564 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:22:36,301 | INFO | [199/1297] Scraping: https://www.nawy.com/compound/297-scenario
+2026-01-29 18:22:36,304 | INFO | 📄 Navigating to: https://www.nawy.com/compound/297-scenario...
+2026-01-29 18:23:06,431 | ERROR | ❌ Navigation error (attempt 1): Timeout 30000ms exceeded.
+2026-01-29 18:23:06,432 | INFO | ⏳ Retrying in 4.0s...
+2026-01-29 18:23:10,419 | INFO | 📄 Navigating to: https://www.nawy.com/compound/297-scenario...
+2026-01-29 18:23:40,536 | ERROR | ❌ Navigation error (attempt 2): Timeout 30000ms exceeded.
+2026-01-29 18:23:40,537 | INFO | ⏳ Retrying in 4.1s...
+2026-01-29 18:23:44,681 | INFO | 📄 Navigating to: https://www.nawy.com/compound/297-scenario...
+2026-01-29 18:23:55,243 | INFO |    ✅ Scenario
+2026-01-29 18:23:56,382 | INFO | ➕ Inserted new compound: Scenario
+2026-01-29 18:23:56,394 | INFO |    💾 Saved to MongoDB
+2026-01-29 18:24:00,184 | INFO | [200/1297] Scraping: https://www.nawy.com/compound/300-maxim-country-clubhouse
+2026-01-29 18:24:00,189 | INFO | 📄 Navigating to: https://www.nawy.com/compound/300-maxim-country-clubhouse...
+2026-01-29 18:24:03,074 | ERROR | Error
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 135, in scrape_missing_from_mongodb
+    compound_data = await scraper._scrape_compound_detail(url)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\compound_scraper.py", line 300, in _scrape_compound_detail
+    if not await self.safe_goto(url):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 148, in safe_goto
+    response = await self.page.goto(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 9260, in goto
+    await self._impl_obj.goto(
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_page.py", line 475, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_frame.py", line 139, in goto
+    await self._channel.send("goto", locals_to_params(locals()))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 91, in inner_send
+    done, _ = await asyncio.wait(
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 464, in wait
+    return await _wait(fs, timeout, return_when, loop)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\tasks.py", line 550, in _wait
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 197, in main
+    compounds = asyncio.run(scrape_missing_from_mongodb())
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrape_smart.py", line 175, in scrape_missing_from_mongodb
+    await scraper.close()
+  File "E:\StudioProjects\SemsAi\nawy-scraper\scrapers\base_scraper.py", line 107, in close
+    await self.context.close()
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 13758, in close
+    return mapping.from_maybe_impl(await self._impl_obj.close(reason=reason))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_browser_context.py", line 485, in close
+    await self._channel.send("close", filter_none({"reason": reason}))
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 62, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 492, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\Youssef\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 100, in inner_send
+    result = next(iter(done)).result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+2026-01-29 18:24:03,331 | INFO | 🔌 Disconnected from MongoDB
+2026-01-29 18:24:04,226 | ERROR | Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed')>
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
