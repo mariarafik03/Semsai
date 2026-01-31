@@ -139,13 +139,18 @@ class DatabaseClient:
         """Insert or update a unit."""
         unit_data["updated_at"] = datetime.utcnow()
         
-        # Use URL as unique identifier if available
-        filter_key = {"url": unit_data.get("url")} if unit_data.get("url") else {
-            "compound_id": unit_data.get("compound_id"),
-            "type": unit_data.get("type"),
-            "area": unit_data.get("area"),
-            "price": unit_data.get("price")
-        }
+        # Use nawy_url or nawy_id as unique identifier
+        if unit_data.get("nawy_url"):
+            filter_key = {"nawy_url": unit_data.get("nawy_url")}
+        elif unit_data.get("nawy_id"):
+            filter_key = {"nawy_id": unit_data.get("nawy_id")}
+        else:
+            filter_key = {
+                "compound_id": unit_data.get("compound_id"),
+                "property_type": unit_data.get("property_type"),
+                "area": unit_data.get("area"),
+                "price": unit_data.get("price")
+            }
         
         result = self.db.units.update_one(
             filter_key,
@@ -153,7 +158,12 @@ class DatabaseClient:
             upsert=True
         )
         
-        return str(result.upserted_id) if result.upserted_id else "updated"
+        if result.upserted_id:
+            logger.info(f"➕ Inserted new unit: {unit_data.get('name', 'Unknown')[:50]}")
+            return str(result.upserted_id)
+        else:
+            logger.info(f"🔄 Updated unit: {unit_data.get('name', 'Unknown')[:50]}")
+            return "updated"
     
     def bulk_upsert_units(self, units: List[Dict]) -> Dict:
         """Bulk upsert units."""

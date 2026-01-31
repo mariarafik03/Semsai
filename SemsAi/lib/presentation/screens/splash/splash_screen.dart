@@ -93,8 +93,8 @@ class _SplashScreenState extends State<SplashScreen>
                       child: ScaleTransition(
                         scale: _scaleAnimation,
                         child: Image.asset(
-                          'assets/images/logo2.png',
-                          height: 180,
+                          'assets/images/SemsAi_logo.png',
+                          height: 200,
                         ),
                       ),
                     ),
