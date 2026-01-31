@@ -1,0 +1,1745 @@
+2026-01-30 18:55:26,703 | INFO | ✅ Connected to MongoDB: semsai
+2026-01-30 18:55:27,592 | INFO |    [1/1525] Linked: Beach Front Towers → City Edge Developments
+2026-01-30 18:55:27,645 | INFO |    [2/1525] Linked: Norm Spaces → Mazaya Developments
+2026-01-30 18:55:27,698 | INFO |    [3/1525] Linked: Sicily Lagoon  → Misr Italia Properties
+2026-01-30 18:55:27,756 | INFO |    [4/1525] Linked: Bungalows  → Arabia Holding
+2026-01-30 18:55:27,808 | INFO |    [5/1525] Linked: 31 West → M Squared
+2026-01-30 18:55:27,862 | INFO |    [6/1525] Linked: Elan  → Madinet Masr
+2026-01-30 18:55:27,921 | INFO |    [7/1525] Linked: Esse Residence  → Madinet Masr
+2026-01-30 18:55:27,973 | INFO |    [8/1525] Linked: Sheya residence  → Madinet Masr
+2026-01-30 18:55:28,028 | INFO |    [9/1525] Linked: Rai Views  → Madinet Masr
+2026-01-30 18:55:28,082 | INFO |    [10/1525] Linked: Origami Golf  → Madinet Masr
+2026-01-30 18:55:28,148 | INFO |    [11/1525] Linked: Origami  → Madinet Masr
+2026-01-30 18:55:28,202 | INFO |    [12/1525] Linked: Club Hills Residence → Housing and Development Properties HDP
+2026-01-30 18:55:28,255 | INFO |    [13/1525] Linked: Tiba → Tiba For Urban Development
+2026-01-30 18:55:28,310 | INFO |    [14/1525] Linked: Obex → Jadeer Realestate
+2026-01-30 18:55:28,365 | INFO |    [15/1525] Linked: Code → Jadeer Realestate
+2026-01-30 18:55:28,418 | INFO |    [16/1525] Linked: Swiss Belresidences → Altameer Arabian Developments CO.
+2026-01-30 18:55:28,470 | INFO |    [17/1525] Linked: Valory Mall → Menassat Developments
+2026-01-30 18:55:28,528 | INFO |    [18/1525] Linked: Spinner Tower → Radix Development
+2026-01-30 18:55:28,583 | INFO |    [19/1525] Linked: Degla palms → Morshedy Group
+2026-01-30 18:55:28,638 | INFO |    [20/1525] Linked: Haptown Park 227 → Hassan Allam Properties
+2026-01-30 18:55:28,692 | INFO |    [21/1525] Linked: Mazarine Ria  → City Edge Developments
+2026-01-30 18:55:28,750 | INFO |    [22/1525] Linked: October Hills 2 → SIAC Developments
+2026-01-30 18:55:28,804 | INFO |    [23/1525] Linked: Etoile De Ville → Al Ahly Sabbour Developments
+2026-01-30 18:55:28,860 | INFO |    [24/1525] Linked: Costa Del Sol North Coast → Miscellaneous
+2026-01-30 18:55:28,915 | INFO |    [25/1525] Linked: Village → Home Town Developments
+2026-01-30 18:55:28,973 | INFO |    [26/1525] Linked: Radix Agile → Radix Development
+2026-01-30 18:55:29,027 | INFO |    [27/1525] Linked: Mazarine Townhouse → City Edge Developments
+2026-01-30 18:55:29,082 | INFO |    [28/1525] Linked: Begonia Residence  → Menassat Developments
+2026-01-30 18:55:29,135 | INFO |    [29/1525] Linked: Midly Business Complex → I Capital Developments
+2026-01-30 18:55:29,188 | INFO |    [30/1525] Linked: Bianchi → Bianchi For Tourism & Real Estate Investment
+2026-01-30 18:55:29,241 | INFO |    [31/1525] Linked: Nest → N Developments
+2026-01-30 18:55:29,294 | INFO |    [32/1525] Linked: Playa  → G Developments
+2026-01-30 18:55:29,347 | INFO |    [33/1525] Linked: Gardenia Springs → IGI Real Estate
+2026-01-30 18:55:29,401 | INFO |    [34/1525] Linked: Lakefront → Morshedy Group
+2026-01-30 18:55:29,454 | INFO |    [35/1525] Linked: Bavaria Town → Morshedy Group
+2026-01-30 18:55:29,508 | INFO |    [36/1525] Linked: D View → Morshedy Group
+2026-01-30 18:55:29,561 | INFO |    [37/1525] Linked: Katameya gate → Morshedy Group
+2026-01-30 18:55:29,617 | INFO |    [38/1525] Linked: Rayhanna Avenue → Morshedy Group
+2026-01-30 18:55:29,671 | INFO |    [39/1525] Linked: Marseilia Beach 2 → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:55:29,726 | INFO |    [40/1525] Linked: The Butterfly  → Madinet Masr
+2026-01-30 18:55:29,778 | INFO |    [41/1525] Linked: Mamsha Avenues → City Edge Developments
+2026-01-30 18:55:29,831 | INFO |    [42/1525] Linked: Jamila → New Jersey Developments
+2026-01-30 18:55:29,886 | INFO |    [43/1525] Linked: Elevation → Somow Developments 
+2026-01-30 18:55:29,939 | INFO |    [44/1525] Linked: Ashgar Heights → IGI Real Estate
+2026-01-30 18:55:29,992 | INFO |    [45/1525] Linked: Zayed 2000 → Dorra Group
+2026-01-30 18:55:30,043 | INFO |    [46/1525] Linked: Keys 52  → Hassan Allam Properties
+2026-01-30 18:55:30,097 | INFO |    [47/1525] Linked: Pulse Green Square → Melee Development
+2026-01-30 18:55:30,149 | INFO |    [48/1525] Linked: Villagio  → Modon Egypt
+2026-01-30 18:55:30,202 | INFO |    [49/1525] Linked: Marina 8 By The Lake → Saudi Egyptian Developers (SED)
+2026-01-30 18:55:30,254 | INFO |    [50/1525] Linked: Al Shorouk 2000 → Dorra Group
+2026-01-30 18:55:30,318 | INFO |    [51/1525] Linked: Hazel - Sodic East  → SODIC
+2026-01-30 18:55:30,370 | INFO |    [52/1525] Linked: J East  → Juzur Development
+2026-01-30 18:55:30,424 | INFO |    [53/1525] Linked: The Islands → EGYGAB
+2026-01-30 18:55:30,481 | INFO |    [54/1525] Linked: El Patio Sola  → La Vista Developments
+2026-01-30 18:55:30,534 | INFO |    [55/1525] Linked: Coflow  → Tatweer Misr
+2026-01-30 18:55:30,586 | INFO |    [56/1525] Linked: District 6 - The Village → Palm Hills Developments
+2026-01-30 18:55:30,642 | INFO |    [57/1525] Linked: The Valley New Capital → Misr Italia Properties
+2026-01-30 18:55:30,698 | INFO |    [58/1525] Linked: The Creeks Villas → Misr Italia Properties
+2026-01-30 18:55:30,761 | INFO |    [59/1525] Linked: La Colina East → Capital Hills Developments (CHD )
+2026-01-30 18:55:30,813 | INFO |    [60/1525] Linked: Fifty 7 → Inertia Egypt
+2026-01-30 18:55:30,865 | INFO |    [61/1525] Linked: Beta Greens  → BETA Developments
+2026-01-30 18:55:30,919 | INFO |    [62/1525] Linked: Maspero Nile Heights → City Edge Developments
+2026-01-30 18:55:30,972 | INFO |    [63/1525] Linked: Quayside → Inertia Egypt
+2026-01-30 18:55:31,026 | INFO |    [64/1525] Linked: Furl → Inertia Egypt
+2026-01-30 18:55:31,078 | INFO |    [65/1525] Linked: Central Park - Aliva → Mountain View
+2026-01-30 18:55:31,134 | INFO |    [66/1525] Linked: Club Park - Aliva → Mountain View
+2026-01-30 18:55:31,187 | INFO |    [67/1525] Linked: West El Balad → Centrada Developments
+2026-01-30 18:55:31,240 | INFO |    [68/1525] Linked: Centrada One → Centrada Developments
+2026-01-30 18:55:31,293 | INFO |    [69/1525] Linked: Centrada Hub → Centrada Developments
+2026-01-30 18:55:31,346 | INFO |    [70/1525] Linked: Centrada Plaza → Centrada Developments
+2026-01-30 18:55:31,398 | INFO |    [71/1525] Linked: Kite → Centrada Developments
+2026-01-30 18:55:31,451 | INFO |    [72/1525] Linked: Rivali → SAMCO Developments
+2026-01-30 18:55:31,504 | INFO |    [73/1525] Linked: The Five → SAMCO Developments
+2026-01-30 18:55:31,557 | INFO |    [74/1525] Linked: Kings Way  → Mountain View
+2026-01-30 18:55:31,610 | INFO |    [75/1525] Linked: Downtown Extension  → City Edge Developments
+2026-01-30 18:55:31,662 | INFO |    [76/1525] Linked: Q North  → Q Developments
+2026-01-30 18:55:31,714 | INFO |    [77/1525] Linked: Concord Gardens → Concord For Engineering and Contracting
+2026-01-30 18:55:31,769 | INFO |    [78/1525] Linked: Marina 5 → The New Urban Communities Authority
+2026-01-30 18:55:31,823 | INFO |    [79/1525] Linked: Al Karma 1 → AlKarma Developments
+2026-01-30 18:55:31,877 | INFO |    [80/1525] Linked: national defence → Miscellaneous
+2026-01-30 18:55:31,930 | INFO |    [81/1525] Linked: City View → G Developments
+2026-01-30 18:55:31,983 | INFO |    [82/1525] Linked: Gardenia Park 2 → IGI Real Estate
+2026-01-30 18:55:32,039 | INFO |    [83/1525] Linked: Kornish El Nile → Miscellaneous
+2026-01-30 18:55:32,092 | INFO |    [84/1525] Linked: West ElGolf → Miscellaneous
+2026-01-30 18:55:32,144 | INFO |    [85/1525] Linked: Dream Land → Bahgat Group
+2026-01-30 18:55:32,198 | INFO |    [86/1525] Linked: Dara Gardens → Al Ahly Sabbour Developments
+2026-01-30 18:55:32,251 | INFO |    [87/1525] Linked: Blumar → Wadi Degla Developments
+2026-01-30 18:55:32,307 | INFO |    [88/1525] Linked: Marina 7 → The New Urban Communities Authority
+2026-01-30 18:55:32,366 | INFO |    [89/1525] Linked: Beverly Hills El Shorouk → Beverly Hills Development
+2026-01-30 18:55:32,419 | INFO |    [90/1525] Linked: North Coast - General Ad. → Miscellaneous
+2026-01-30 18:55:32,472 | INFO |    [91/1525] Linked: Kattameya Plaza → SODIC
+2026-01-30 18:55:32,525 | INFO |    [92/1525] Linked: La Vista 6 → La Vista Developments
+2026-01-30 18:55:32,577 | INFO |    [93/1525] Linked: El Centro Business Complex → Empire State Developments
+2026-01-30 18:55:32,632 | INFO |    [94/1525] Linked: D Square  → Infinity Investments
+2026-01-30 18:55:32,685 | INFO |    [95/1525] Linked: Pagoda Business Complex  → Akadia Developments
+2026-01-30 18:55:32,742 | INFO |    [96/1525] Linked: East Tower → UC Developments
+2026-01-30 18:55:32,794 | INFO |    [97/1525] Linked: Eclat → New Plan
+2026-01-30 18:55:32,845 | INFO |    [98/1525] Linked: The Arena  Strip Mall → Madinet Masr
+2026-01-30 18:55:32,898 | INFO |    [99/1525] Linked: Bali  → Pillarz Real Estate Developments
+2026-01-30 18:55:32,951 | INFO |    [100/1525] Linked: Lasirena Sokhna Resort → Lasirena Group
+2026-01-30 18:55:33,011 | INFO |    [101/1525] Linked: Emirates Heights → Yafa Mac Developments
+2026-01-30 18:55:33,065 | INFO |    [102/1525] Linked: Al Worood → EGYDEV
+2026-01-30 18:55:33,139 | INFO |    [103/1525] Linked: Blanca → Somabay
+2026-01-30 18:55:33,192 | INFO |    [104/1525] Linked: Al Rawda → Al Waly Developments
+2026-01-30 18:55:33,245 | INFO |    [105/1525] Linked: Yaru → Qontrac Developments
+2026-01-30 18:55:33,297 | INFO |    [106/1525] Linked: Bareq Tower  → Inverse Group Developments
+2026-01-30 18:55:33,350 | INFO |    [107/1525] Linked: Vida Mall Down Town  → Location Developments
+2026-01-30 18:55:33,402 | INFO |    [108/1525] Linked: Rayhana  → Egyptian Engineering Company
+2026-01-30 18:55:33,455 | INFO |    [109/1525] Linked: Murooj → Dar El Maghraby
+2026-01-30 18:55:33,510 | INFO |    [110/1525] Linked: Noor Capital Gardens → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:55:33,563 | INFO |    [111/1525] Linked: Celia  → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:55:33,614 | INFO |    [112/1525] Linked: Golf Porto Marina → Porto Group
+2026-01-30 18:55:33,667 | INFO |    [113/1525] Linked: Muse The Strip → Developer X
+2026-01-30 18:55:33,719 | INFO |    [114/1525] Linked: Nile Business City → Nile Developments
+2026-01-30 18:55:33,773 | INFO |    [115/1525] Linked: Katameya Gardens → North Africa For Real Estate Investment
+2026-01-30 18:55:33,826 | INFO |    [116/1525] Linked: Marina Residence Il Monte Galala → Tatweer Misr
+2026-01-30 18:55:33,879 | INFO |    [117/1525] Linked: Eastmain New Cairo → Mobco Group
+2026-01-30 18:55:33,947 | INFO |    [118/1525] Linked: Westown The Portal → SODIC
+2026-01-30 18:55:33,998 | INFO |    [119/1525] Linked: Katameya Hills → Al Ahly Sabbour Developments
+2026-01-30 18:55:34,051 | INFO |    [120/1525] Linked: Zaha Park - New Capital  → Home Town Developments
+2026-01-30 18:55:34,106 | INFO |    [121/1525] Linked: El Rehab  → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:55:34,162 | INFO |    [122/1525] Linked: Azad Views → Tameer
+2026-01-30 18:55:34,219 | INFO |    [123/1525] Linked: Ashgar City → IGI Real Estate
+2026-01-30 18:55:34,277 | INFO |    [124/1525] Linked: Sky Condos → SODIC
+2026-01-30 18:55:34,331 | INFO |    [125/1525] Linked: Mountain View 1.1 → Mountain View
+2026-01-30 18:55:34,383 | INFO |    [126/1525] Linked: Modon Green River Tower → Modon Egypt
+2026-01-30 18:55:34,437 | INFO |    [127/1525] Linked: Sofitel Oia Towers → EDGE HOLDING
+2026-01-30 18:55:34,492 | INFO |    [128/1525] Linked: Golden Gate → Redcon for Offices and Commercial Centers
+2026-01-30 18:55:34,548 | INFO |    [129/1525] Linked: El Patio 2 → La Vista Developments
+2026-01-30 18:55:34,601 | INFO |    [130/1525] Linked: Cleo - Palm Hills New Cairo → Palm Hills Developments
+2026-01-30 18:55:34,673 | INFO |    [131/1525] Linked: Jirian - Nations of Sky → Nations Of Sky
+2026-01-30 18:55:34,752 | INFO |    [132/1525] Linked: Tierra → Saudi Egyptian Developers (SED)
+2026-01-30 18:55:34,833 | INFO |    [133/1525] Linked: East Vale → SODIC
+2026-01-30 18:55:34,896 | INFO |    [134/1525] Linked: Solana East Strip → Ora Developers
+2026-01-30 18:55:34,949 | INFO |    [135/1525] Linked: Hyde Park Signature → Hyde Park
+2026-01-30 18:55:35,004 | INFO |    [136/1525] Linked: Crescent Walk → Marakez
+2026-01-30 18:55:35,056 | INFO |    [137/1525] Linked: Solana East → Ora Developers
+2026-01-30 18:55:35,111 | INFO |    [138/1525] Linked: Telal East → Roya Developments
+2026-01-30 18:55:35,162 | INFO |    [139/1525] Linked: El Patio Riva → La Vista Developments
+2026-01-30 18:55:35,215 | INFO |    [140/1525] Linked: ZED → Ora Developers
+2026-01-30 18:55:35,268 | INFO |    [141/1525] Linked: The Crest → IL Cazar Developments
+2026-01-30 18:55:35,319 | INFO |    [142/1525] Linked: Mar ville → Al Marasem Development
+2026-01-30 18:55:35,372 | INFO |    [143/1525] Linked: Vida Marassi Marina → Emaar Misr
+2026-01-30 18:55:35,424 | INFO |    [144/1525] Linked: Linwood → Emaar Rezk Group Developments 
+2026-01-30 18:55:35,477 | INFO |    [145/1525] Linked: Lavida 9 → MG Developments
+2026-01-30 18:55:35,532 | INFO |    [146/1525] Linked: Lavida → MG Developments
+2026-01-30 18:55:35,586 | INFO |    [147/1525] Linked: Rock White → Rock developments
+2026-01-30 18:55:35,638 | INFO |    [148/1525] Linked: New Kairo → G Developments
+2026-01-30 18:55:35,688 | INFO |    [149/1525] Linked: SODIC East → SODIC
+2026-01-30 18:55:35,740 | INFO |    [150/1525] Linked: Rivette - Amwaj → Melee Development
+2026-01-30 18:55:35,798 | INFO |    [151/1525] Linked: Infinity Tower → Infinity Towers For Urban Developments
+2026-01-30 18:55:35,852 | INFO |    [152/1525] Linked: None → The Marq Communities
+2026-01-30 18:55:35,909 | INFO |    [153/1525] Linked: Stei8ht → LMD
+2026-01-30 18:55:35,964 | INFO |    [154/1525] Linked: Hills of One → People & Places
+2026-01-30 18:55:36,025 | INFO |    [155/1525] Linked: Scenes → Tatweer Misr
+2026-01-30 18:55:36,077 | INFO |    [156/1525] Linked: O West Orascom → Orascom Development Egypt
+2026-01-30 18:55:36,131 | INFO |    [157/1525] Linked: Ras El Hekma Egypt → Modon 
+2026-01-30 18:55:36,185 | INFO |    [158/1525] Linked: Badya → Palm Hills Developments
+2026-01-30 18:55:36,239 | INFO |    [159/1525] Linked: Hyde Park → Hyde Park
+2026-01-30 18:55:36,293 | INFO |    [160/1525] Linked: Silversands → Ora Developers
+2026-01-30 18:55:36,345 | INFO |    [161/1525] Linked: Ramla → Marakez
+2026-01-30 18:55:36,397 | INFO |    [162/1525] Linked: Palm Hills New Cairo → Palm Hills Developments
+2026-01-30 18:55:36,453 | INFO |    [163/1525] Linked: Ogami Ras El Hekma → SODIC
+2026-01-30 18:55:36,507 | INFO |    [164/1525] Linked: New Giza → G Developments
+2026-01-30 18:55:36,559 | INFO |    [165/1525] Linked: Beit Al Bahr → Beit Al Bahr
+2026-01-30 18:55:36,613 | INFO |    [166/1525] Linked: The Med → People & Places
+2026-01-30 18:55:36,665 | INFO |    [167/1525] Linked: Hyde Park North - Seashore → Hyde Park
+2026-01-30 18:55:36,720 | INFO |    [168/1525] Linked: June → SODIC
+2026-01-30 18:55:36,773 | INFO |    [169/1525] Linked: Patio Vida → La Vista Developments
+2026-01-30 18:55:36,825 | INFO |    [170/1525] Linked: Garden Lakes → Hyde Park
+2026-01-30 18:55:36,877 | INFO |    [171/1525] Linked: Youd → Al Ahly Sabbour Developments
+2026-01-30 18:55:36,930 | INFO |    [172/1525] Linked: Seazen → Al Qamzi Developments
+2026-01-30 18:55:36,982 | INFO |    [173/1525] Linked: Sky North → Sky AD Developments
+2026-01-30 18:55:37,034 | INFO |    [174/1525] Linked: City Gate → Qatari Diar
+2026-01-30 18:55:37,087 | INFO |    [175/1525] Linked: Jirian - Mountain View → Mountain View
+2026-01-30 18:55:37,141 | INFO |    [176/1525] Linked: Salt → Tatweer Misr
+2026-01-30 18:55:37,197 | INFO |    [177/1525] Linked: Plage → Mountain View
+2026-01-30 18:55:37,252 | INFO |    [178/1525] Linked: Saada North Coast → Horizon Egypt Development
+2026-01-30 18:55:37,308 | INFO |    [179/1525] Linked: Park Central → Hassan Allam Properties
+2026-01-30 18:55:37,364 | INFO |    [180/1525] Linked: Karmell New Zayed → SODIC
+2026-01-30 18:55:37,417 | INFO |    [181/1525] Linked: Solana → Ora Developers
+2026-01-30 18:55:37,468 | INFO |    [182/1525] Linked: Safia - Ras El Hekma → IL Cazar Developments
+2026-01-30 18:55:37,523 | INFO |    [183/1525] Linked: Lyv Caesar - Ras El Hekma → Gates Development
+2026-01-30 18:55:37,577 | INFO |    [184/1525] Linked: Saada → Horizon Egypt Development
+2026-01-30 18:55:37,636 | INFO |    [185/1525] Linked: Telal North Coast → Roya Developments
+2026-01-30 18:55:37,691 | INFO |    [186/1525] Linked: Swanlake October → Hassan Allam Properties
+2026-01-30 18:55:37,745 | INFO |    [187/1525] Linked: ZED East → Ora Developers
+2026-01-30 18:55:37,797 | INFO |    [188/1525] Linked: El Masyaf → M Squared
+2026-01-30 18:55:37,849 | INFO |    [189/1525] Linked: Solare → Misr Italia Properties
+2026-01-30 18:55:37,901 | INFO |    [190/1525] Linked: Caesar → SODIC
+2026-01-30 18:55:37,954 | INFO |    [191/1525] Linked: Aliva Mountain View Mostakbal City → Mountain View
+2026-01-30 18:55:38,007 | INFO |    [192/1525] Linked: Marassi → Emaar Misr
+2026-01-30 18:55:38,058 | INFO |    [193/1525] Linked: Rivers → Tatweer Misr
+2026-01-30 18:55:38,110 | INFO |    [194/1525] Linked: Eastown → SODIC
+2026-01-30 18:55:38,164 | INFO |    [195/1525] Linked: Mountain View iCity October → Mountain View
+2026-01-30 18:55:38,215 | INFO |    [196/1525] Linked: Ivoire West → PRE Developments
+2026-01-30 18:55:38,268 | INFO |    [197/1525] Linked: Mountain View ICity New Cairo → Mountain View
+2026-01-30 18:55:38,321 | INFO |    [198/1525] Linked: Allegria → SODIC
+2026-01-30 18:55:38,375 | INFO |    [199/1525] Linked: Al Burouj → Imkan Misr
+2026-01-30 18:55:38,428 | INFO |    [200/1525] Linked: Glen → IL Cazar Developments
+2026-01-30 18:55:38,482 | INFO |    [201/1525] Linked: DISTRICT 5 → Marakez
+2026-01-30 18:55:38,536 | INFO |    [202/1525] Linked: Bloomfields → Tatweer Misr
+2026-01-30 18:55:38,592 | INFO |    [203/1525] Linked: Amwaj → Al Ahly Sabbour Developments
+2026-01-30 18:55:38,645 | INFO |    [204/1525] Linked: Palm Parks → Palm Hills Developments
+2026-01-30 18:55:38,697 | INFO |    [205/1525] Linked: Fifth Square Al Marasem → Al Marasem Development
+2026-01-30 18:55:38,750 | INFO |    [206/1525] Linked: El Patio Oro → La Vista Developments
+2026-01-30 18:55:38,802 | INFO |    [207/1525] Linked: Diar II → Tameer
+2026-01-30 18:55:38,855 | INFO |    [208/1525] Linked: Azzar New Cairo → Reedy Group
+2026-01-30 18:55:38,905 | INFO |    [209/1525] Linked: Capital Gardens → Palm Hills Developments
+2026-01-30 18:55:38,959 | INFO |    [210/1525] Linked: Fouka Bay → Tatweer Misr
+2026-01-30 18:55:39,013 | INFO |    [211/1525] Linked: Mountain View Chillout Park → Mountain View
+2026-01-30 18:55:39,071 | INFO |    [212/1525] Linked: El Patio 5 East → La Vista Developments
+2026-01-30 18:55:39,124 | INFO |    [213/1525] Linked: Casa → SODIC
+2026-01-30 18:55:39,178 | INFO |    [214/1525] Linked: Beverly Hills → SODIC
+2026-01-30 18:55:39,231 | INFO |    [215/1525] Linked: ATRIO → IWAN Developments
+2026-01-30 18:55:39,284 | INFO |    [216/1525] Linked: El Patio Casa → La Vista Developments
+2026-01-30 18:55:39,336 | INFO |    [217/1525] Linked: AZAD → Tameer
+2026-01-30 18:55:39,390 | INFO |    [218/1525] Linked: AEON Towers → Marakez
+2026-01-30 18:55:39,444 | INFO |    [219/1525] Linked: La Vista 2 → La Vista Developments
+2026-01-30 18:55:39,497 | INFO |    [220/1525] Linked: El Patio Prime → La Vista Developments
+2026-01-30 18:55:39,552 | INFO |    [221/1525] Linked: Stone Residence → PRE Developments
+2026-01-30 18:55:39,605 | INFO |    [222/1525] Linked: LA Vista 4 → La Vista Developments
+2026-01-30 18:55:39,659 | INFO |    [223/1525] Linked: Green 3 → Mabany Edris
+2026-01-30 18:55:39,712 | INFO |    [224/1525] Linked: LA Vista 5 → La Vista Developments
+2026-01-30 18:55:39,769 | INFO |    [225/1525] Linked: El Patio Zahraa → La Vista Developments
+2026-01-30 18:55:39,822 | INFO |    [226/1525] Linked: Green 5 → Mabany Edris
+2026-01-30 18:55:39,873 | INFO |    [227/1525] Linked: La Vista City → La Vista Developments
+2026-01-30 18:55:39,929 | INFO |    [228/1525] Linked: JEDAR → IWAN Developments
+2026-01-30 18:55:39,981 | INFO |    [229/1525] Linked: La Vista 3 → La Vista Developments
+2026-01-30 18:55:40,036 | INFO |    [230/1525] Linked: IVY → SODIC
+2026-01-30 18:55:40,097 | INFO |    [231/1525] Linked: Greens → Dorra Group
+2026-01-30 18:55:40,157 | INFO |    [232/1525] Linked: La Vista Cascada → La Vista Developments
+2026-01-30 18:55:40,232 | INFO |    [233/1525] Linked: Jayd → Saudi Egyptian Developers (SED)
+2026-01-30 18:55:40,286 | INFO |    [234/1525] Linked: La Vista 7 → La Vista Developments
+2026-01-30 18:55:40,338 | INFO |    [235/1525] Linked: Lake View Residence → Lake View Development
+2026-01-30 18:55:40,401 | INFO |    [236/1525] Linked: Westown Residences → SODIC
+2026-01-30 18:55:40,454 | INFO |    [237/1525] Linked: Mar Bay - Ras El Hekma → Al Marasem Development
+2026-01-30 18:55:40,510 | INFO |    [238/1525] Linked: Hacienda Waters → Palm Hills Developments
+2026-01-30 18:55:40,562 | INFO |    [239/1525] Linked: La Vista Gardens → La Vista Developments
+2026-01-30 18:55:40,614 | INFO |    [240/1525] Linked: Telal Sokhna → Roya Developments
+2026-01-30 18:55:40,666 | INFO |    [241/1525] Linked: La Vista Ras El Hekma → La Vista Developments
+2026-01-30 18:55:40,719 | INFO |    [242/1525] Linked: Mountain View Hyde Park → Mountain View
+2026-01-30 18:55:40,772 | INFO |    [243/1525] Linked: Marina Marassi → Emaar Misr
+2026-01-30 18:55:40,824 | INFO |    [244/1525] Linked: Porto Sokhna → Porto Group
+2026-01-30 18:55:40,878 | INFO |    [245/1525] Linked: V Residences By Villette → SODIC
+2026-01-30 18:55:40,930 | INFO |    [246/1525] Linked: Mountain View Ras El Hekma → Mountain View
+2026-01-30 18:55:40,985 | INFO |    [247/1525] Linked: Palm Hills Golf Extension → Palm Hills Developments
+2026-01-30 18:55:41,037 | INFO |    [248/1525] Linked: The Greek Village Marassi → Emaar Misr
+2026-01-30 18:55:41,089 | INFO |    [249/1525] Linked: Soul → Emaar Misr
+2026-01-30 18:55:41,142 | INFO |    [250/1525] Linked: Madinaty → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:55:41,197 | INFO |    [251/1525] Linked: Katameya Heights → Starlight Developments
+2026-01-30 18:55:41,251 | INFO |    [252/1525] Linked: Hacienda White → Palm Hills Developments
+2026-01-30 18:55:41,302 | INFO |    [253/1525] Linked: Stella Sidi Abdelrahman → Remco Tourism Villages Construction
+2026-01-30 18:55:41,355 | INFO |    [254/1525] Linked: Almaza Bay → Travco properties
+2026-01-30 18:55:41,408 | INFO |    [255/1525] Linked: Katameya Dunes → Starlight Developments
+2026-01-30 18:55:41,460 | INFO |    [256/1525] Linked: Swanlake North Coast → Hassan Allam Properties
+2026-01-30 18:55:41,513 | INFO |    [257/1525] Linked: Lake View → Lake View Development
+2026-01-30 18:55:41,567 | INFO |    [258/1525] Linked: La Vista Topaz → La Vista Developments
+2026-01-30 18:55:41,618 | INFO |    [259/1525] Linked: The Crown → Palm Hills Developments
+2026-01-30 18:55:41,669 | INFO |    [260/1525] Linked: The Courtyards → SODIC
+2026-01-30 18:55:41,722 | INFO |    [261/1525] Linked: Mountain View Executive Residence Katameya → Mountain View
+2026-01-30 18:55:41,774 | INFO |    [262/1525] Linked: Cairo Festival City → Al-Futtaim Group Real Estate
+2026-01-30 18:55:41,827 | INFO |    [263/1525] Linked: Golf Views → Palm Hills Developments
+2026-01-30 18:55:41,880 | INFO |    [264/1525] Linked: Palm Hills Katameya Extension (PK2) → Palm Hills Developments
+2026-01-30 18:55:41,933 | INFO |    [265/1525] Linked: La Vista Bay → La Vista Developments
+2026-01-30 18:55:41,984 | INFO |    [266/1525] Linked: Uptown Cairo → Emaar Misr
+2026-01-30 18:55:42,036 | INFO |    [267/1525] Linked: Stone Park → Roya Developments
+2026-01-30 18:55:42,088 | INFO |    [268/1525] Linked: Mivida → Emaar Misr
+2026-01-30 18:55:42,140 | INFO |    [269/1525] Linked: Villette → SODIC
+2026-01-30 18:55:42,193 | INFO |    [270/1525] Linked: Marina 4 → The New Urban Communities Authority
+2026-01-30 18:55:42,245 | INFO |    [271/1525] Linked: Swanlake Residences → Hassan Allam Properties
+2026-01-30 18:55:42,297 | INFO |    [272/1525] Linked: 205 Arkan Palm → Arkan Palm Development
+2026-01-30 18:55:42,351 | INFO |    [273/1525] Linked: Layan → Manazel Developments
+2026-01-30 18:55:42,404 | INFO |    [274/1525] Linked: Village West → Dorra Group
+2026-01-30 18:55:42,456 | INFO |    [275/1525] Linked: Pyramid Hills → Ora Developers
+2026-01-30 18:55:42,513 | INFO |    [276/1525] Linked: Ninety Avenue → TBK Developments
+2026-01-30 18:55:42,565 | INFO |    [277/1525] Linked: Marina 2 → The New Urban Communities Authority
+2026-01-30 18:55:42,616 | INFO |    [278/1525] Linked: October Plaza → SODIC
+2026-01-30 18:55:42,667 | INFO |    [279/1525] Linked: Green 6 → Mabany Edris
+2026-01-30 18:55:42,720 | INFO |    [280/1525] Linked: The Village Gate → Palm Hills Developments
+2026-01-30 18:55:42,773 | INFO |    [281/1525] Linked: Porto Marina → The New Urban Communities Authority
+2026-01-30 18:55:42,828 | INFO |    [282/1525] Linked: Tag Sultan → Madinet Masr
+2026-01-30 18:55:42,882 | INFO |    [283/1525] Linked: Marina 1 → The New Urban Communities Authority
+2026-01-30 18:55:42,939 | INFO |    [284/1525] Linked: The Village → Palm Hills Developments
+2026-01-30 18:55:42,996 | INFO |    [285/1525] Linked: Woodville → Palm Hills Developments
+2026-01-30 18:55:43,048 | INFO |    [286/1525] Linked: The Estates → SODIC
+2026-01-30 18:55:43,101 | INFO |    [287/1525] Linked: Palm Valley → Palm Hills Developments
+2026-01-30 18:55:43,156 | INFO |    [288/1525] Linked: Zayed Dunes → Al Rabwa Group
+2026-01-30 18:55:43,207 | INFO |    [289/1525] Linked: The Waterway - New Cairo → The Waterway Developments
+2026-01-30 18:55:43,264 | INFO |    [290/1525] Linked: El Patio 7 → La Vista Developments
+2026-01-30 18:55:43,318 | INFO |    [291/1525] Linked: Eastown Residence → SODIC
+2026-01-30 18:55:43,371 | INFO |    [292/1525] Linked: Forty West Phase I → SODIC
+2026-01-30 18:55:43,420 | INFO |    [293/1525] Linked: The Strip [ Commercial ] → SODIC
+2026-01-30 18:55:43,474 | INFO |    [294/1525] Linked: Westown Hub → SODIC
+2026-01-30 18:55:43,526 | INFO |    [295/1525] Linked: G Cribs → Inertia Egypt
+2026-01-30 18:55:43,582 | INFO |    [296/1525] Linked: Soleya → Inertia Egypt
+2026-01-30 18:55:43,634 | INFO |    [297/1525] Linked: Forty West Phase II → SODIC
+2026-01-30 18:55:43,686 | INFO |    [298/1525] Linked: Jamaran → ERC [ Egyptian Resorts Company ]
+2026-01-30 18:55:43,738 | INFO |    [299/1525] Linked: Hacienda Bay → Palm Hills Developments
+2026-01-30 18:55:43,791 | INFO |    [300/1525] Linked: Village Garden Katameya → Palm Hills Developments
+2026-01-30 18:55:43,850 | INFO |    [301/1525] Linked: The Square → Al Ahly Sabbour Developments
+2026-01-30 18:55:43,904 | INFO |    [302/1525] Linked: Seashell Sidi Abdel Rahman → G Developments
+2026-01-30 18:55:43,956 | INFO |    [303/1525] Linked: Mirage City → Mirage City
+2026-01-30 18:55:44,012 | INFO |    [304/1525] Linked: Village Avenue → Palm Hills Developments
+2026-01-30 18:55:44,087 | INFO |    [305/1525] Linked: Palm Hills October → Palm Hills Developments
+2026-01-30 18:55:44,165 | INFO |    [306/1525] Linked: Palm Hills Golf Views → Palm Hills Developments
+2026-01-30 18:55:44,225 | INFO |    [307/1525] Linked: Botanica → Palm Hills Developments
+2026-01-30 18:55:44,280 | INFO |    [308/1525] Linked: Bamboo Extension → Palm Hills Developments
+2026-01-30 18:55:44,339 | INFO |    [309/1525] Linked: Marina El-Alamein → The New Urban Communities Authority
+2026-01-30 18:55:44,391 | INFO |    [310/1525] Linked: Marseilia Beach 4 → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:55:44,464 | INFO |    [311/1525] Linked: Ghazala Bay → Ghazala Bay
+2026-01-30 18:55:44,519 | INFO |    [312/1525] Linked: Karma Residence → Karma Development  Company
+2026-01-30 18:55:44,574 | INFO |    [313/1525] Linked: Joubal El-Gouna → Orascom Development Egypt
+2026-01-30 18:55:44,626 | INFO |    [314/1525] Linked: Azha → Madaar Development
+2026-01-30 18:55:44,685 | INFO |    [315/1525] Linked: Executive Residence Giza Plateau → Mountain View
+2026-01-30 18:55:44,738 | INFO |    [316/1525] Linked: Il Monte Galala → Tatweer Misr
+2026-01-30 18:55:44,791 | INFO |    [317/1525] Linked: Ein Hills → El-Shahawi Group
+2026-01-30 18:55:44,843 | INFO |    [318/1525] Linked: Laguna Bay → Capital Development
+2026-01-30 18:55:44,896 | INFO |    [319/1525] Linked: Piacera → Al Ahly Sabbour Developments
+2026-01-30 18:55:44,949 | INFO |    [320/1525] Linked: Little Venice → Hassan Allam Properties
+2026-01-30 18:55:45,001 | INFO |    [321/1525] Linked: Dome Marina Resort → Dome Marina Company
+2026-01-30 18:55:45,053 | INFO |    [322/1525] Linked: L’Avenir → Al Ahly Sabbour Developments
+2026-01-30 18:55:45,106 | INFO |    [323/1525] Linked: BRIX → Inertia Egypt
+2026-01-30 18:55:45,160 | INFO |    [324/1525] Linked: Green Beach → Green Beach
+2026-01-30 18:55:45,214 | INFO |    [325/1525] Linked: Fanadir Bay → Orascom Development Egypt
+2026-01-30 18:55:45,267 | INFO |    [326/1525] Linked: Joubal Lagoon → Orascom Development Egypt
+2026-01-30 18:55:45,320 | INFO |    [327/1525] Linked: Joubal Lagoon Phase 2 → Orascom Development Egypt
+2026-01-30 18:55:45,374 | INFO |    [328/1525] Linked: Joubal Views → Orascom Development Egypt
+2026-01-30 18:55:45,426 | INFO |    [329/1525] Linked: Sabina → Orascom Development Egypt
+2026-01-30 18:55:45,478 | INFO |    [330/1525] Linked: Tawila → Orascom Development Egypt
+2026-01-30 18:55:45,530 | INFO |    [331/1525] Linked: Um Jamar → Orascom Development Egypt
+2026-01-30 18:55:45,582 | INFO |    [332/1525] Linked: Waterside Condos → Orascom Development Egypt
+2026-01-30 18:55:45,634 | INFO |    [333/1525] Linked: Swanlake El Gouna → Hassan Allam Properties
+2026-01-30 18:55:45,687 | INFO |    [334/1525] Linked: Bay West → Somabay
+2026-01-30 18:55:45,739 | INFO |    [335/1525] Linked: Soma Breeze → Somabay
+2026-01-30 18:55:45,793 | INFO |    [336/1525] Linked: Wadi Jebal → Somabay
+2026-01-30 18:55:45,845 | INFO |    [337/1525] Linked: Reef Town → Somabay
+2026-01-30 18:55:45,900 | INFO |    [338/1525] Linked: Green IV October → Mabany Edris
+2026-01-30 18:55:45,954 | INFO |    [339/1525] Linked: El Patio 6 October → La Vista Developments
+2026-01-30 18:55:46,008 | INFO |    [340/1525] Linked: One 16 → SODIC
+2026-01-30 18:55:46,064 | INFO |    [341/1525] Linked: Park View - Haptown → Hassan Allam Properties
+2026-01-30 18:55:46,118 | INFO |    [342/1525] Linked: Les Rois New Cairo → Housing and Development Properties HDP
+2026-01-30 18:55:46,176 | INFO |    [343/1525] Linked: Jubail → IWAN Developments
+2026-01-30 18:55:46,230 | INFO |    [344/1525] Linked: New Marina → Orascom Development Egypt
+2026-01-30 18:55:46,288 | INFO |    [345/1525] Linked: Sarai → Madinet Masr
+2026-01-30 18:55:46,341 | INFO |    [346/1525] Linked: South Golf Villas → Orascom Development Egypt
+2026-01-30 18:55:46,396 | INFO |    [347/1525] Linked: Royal Meadows Sheikh Zayed → ARCO
+2026-01-30 18:55:46,449 | INFO |    [348/1525] Linked: West Hills → Inertia Egypt
+2026-01-30 18:55:46,502 | INFO |    [349/1525] Linked: Stella Di Mare Sidi Abdelrahman 1 → Remco Tourism Villages Construction
+2026-01-30 18:55:46,556 | INFO |    [350/1525] Linked: Scarab → Remal Properties
+2026-01-30 18:55:46,611 | INFO |    [351/1525] Linked: Ancient Sands Golf Resort → Orascom Development Egypt
+2026-01-30 18:55:46,666 | INFO |    [352/1525] Linked: Steigenberger Golf Resort → Orascom Development Egypt
+2026-01-30 18:55:46,719 | INFO |    [353/1525] Linked: La Vista Bay East → La Vista Developments
+2026-01-30 18:55:46,774 | INFO |    [354/1525] Linked: Pyramids Heights Residences → Samcrete Investments
+2026-01-30 18:55:46,832 | INFO |    [355/1525] Linked: Joulz → Inertia Egypt
+2026-01-30 18:55:46,884 | INFO |    [356/1525] Linked: Downtown → Orascom Development Egypt
+2026-01-30 18:55:46,937 | INFO |    [357/1525] Linked: Jefaira → Inertia Egypt
+2026-01-30 18:55:46,992 | INFO |    [358/1525] Linked: Mountain View One → Mountain View
+2026-01-30 18:55:47,044 | INFO |    [359/1525] Linked: Salerno Marassi → Emaar Misr
+2026-01-30 18:55:47,097 | INFO |    [360/1525] Linked: Celia Marassi → Emaar Misr
+2026-01-30 18:55:47,149 | INFO |    [361/1525] Linked: Sky Condos Phase 3, Villette → SODIC
+2026-01-30 18:55:47,206 | INFO |    [362/1525] Linked: Il Bosco New Capital → Misr Italia Properties
+2026-01-30 18:55:47,259 | INFO |    [363/1525] Linked: Maesta Il Monte Galala → Tatweer Misr
+2026-01-30 18:55:47,314 | INFO |    [364/1525] Linked: Boulevard Residences - Mivida → Emaar Misr
+2026-01-30 18:55:47,366 | INFO |    [365/1525] Linked: Fountain Park → Orientals for Urban Development
+2026-01-30 18:55:47,418 | INFO |    [366/1525] Linked: Taj City → Madinet Masr
+2026-01-30 18:55:47,470 | INFO |    [367/1525] Linked: Zizinia Gardens → ARDIC For Real Estate Development
+2026-01-30 18:55:47,521 | INFO |    [368/1525] Linked: Jewar Sheikh Zayed → Jewar
+2026-01-30 18:55:47,576 | INFO |    [369/1525] Linked: Kai Sokhna → Misr Italia Properties
+2026-01-30 18:55:47,629 | INFO |    [370/1525] Linked: HAPTown → Hassan Allam Properties
+2026-01-30 18:55:47,682 | INFO |    [371/1525] Linked: The Capitalway → The Waterway Developments
+2026-01-30 18:55:47,737 | INFO |    [372/1525] Linked: Hyde Park Business District → Hyde Park
+2026-01-30 18:55:47,797 | INFO |    [373/1525] Linked: Mivida Business District → Emaar Misr
+2026-01-30 18:55:47,849 | INFO |    [374/1525] Linked: Trio → M Squared
+2026-01-30 18:55:47,902 | INFO |    [375/1525] Linked: Sun Capital → Arabia Holding
+2026-01-30 18:55:47,955 | INFO |    [376/1525] Linked: Al Rabwa → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:55:48,008 | INFO |    [377/1525] Linked: Vida → IWAN Developments
+2026-01-30 18:55:48,063 | INFO |    [378/1525] Linked: The City of Odyssia → Al Ahly Sabbour Developments
+2026-01-30 18:55:48,117 | INFO |    [379/1525] Linked: Aria → LMD
+2026-01-30 18:55:48,169 | INFO |    [380/1525] Linked: The Waterway North Coast → The Waterway Developments
+2026-01-30 18:55:48,222 | INFO |    [381/1525] Linked: Address East → Torec Developments
+2026-01-30 18:55:48,275 | INFO |    [382/1525] Linked: ALMA → IWAN Developments
+2026-01-30 18:55:48,333 | INFO |    [383/1525] Linked: North Edge New Alamein → City Edge Developments
+2026-01-30 18:55:48,385 | INFO |    [384/1525] Linked: Six West → SODIC
+2026-01-30 18:55:48,439 | INFO |    [385/1525] Linked: Katameya Coast → Starlight Developments
+2026-01-30 18:55:48,492 | INFO |    [386/1525] Linked: The Loft → Living Yards Developments
+2026-01-30 18:55:48,545 | INFO |    [387/1525] Linked: Zoya Ghazala Bay → LMD
+2026-01-30 18:55:48,597 | INFO |    [388/1525] Linked: Cavana Lakes Sarai → Madinet Masr
+2026-01-30 18:55:48,650 | INFO |    [389/1525] Linked: Lagoon Luxury Apartments North Coast → ARCO
+2026-01-30 18:55:48,704 | INFO |    [390/1525] Linked: Etapa → City Edge Developments
+2026-01-30 18:55:48,757 | INFO |    [391/1525] Linked: Pali North Coast → El-Shahawi Group
+2026-01-30 18:55:48,809 | INFO |    [392/1525] Linked: City Stars Al Sahel → ARCO
+2026-01-30 18:55:48,861 | INFO |    [393/1525] Linked: Cyan → Orascom Development Egypt
+2026-01-30 18:55:48,914 | INFO |    [394/1525] Linked: Vinci → Misr Italia Properties
+2026-01-30 18:55:48,966 | INFO |    [395/1525] Linked: Bay 7 Sidi Heneish → El Abd Resort Sidi Heneish
+2026-01-30 18:55:49,019 | INFO |    [396/1525] Linked: Axis X Iwan → IWAN Developments
+2026-01-30 18:55:49,077 | INFO |    [397/1525] Linked: The RIDGE Villas → Al Ahly Sabbour Developments
+2026-01-30 18:55:49,130 | INFO |    [398/1525] Linked: Mountain View 2 → Mountain View
+2026-01-30 18:55:49,190 | INFO |    [399/1525] Linked: Golf Residences Uptown Cairo → Emaar Misr
+2026-01-30 18:55:49,244 | INFO |    [400/1525] Linked: Al Maqsad → City Edge Developments
+2026-01-30 18:55:49,299 | INFO |    [401/1525] Linked: Allegria Residence → SODIC
+2026-01-30 18:55:49,352 | INFO |    [402/1525] Linked: The Duos Mivida → Emaar Misr
+2026-01-30 18:55:49,408 | INFO |    [403/1525] Linked: Riva Villas Marassi → Emaar Misr
+2026-01-30 18:55:49,460 | INFO |    [404/1525] Linked: Armonia → The Land Developers (TLD)
+2026-01-30 18:55:49,512 | INFO |    [405/1525] Linked: Plateau District 5 → Marakez
+2026-01-30 18:55:49,565 | INFO |    [406/1525] Linked: Bo Island → Maxim Developments
+2026-01-30 18:55:49,617 | INFO |    [407/1525] Linked: Bo Sands → Maxim Developments
+2026-01-30 18:55:49,671 | INFO |    [408/1525] Linked: Canyon → Maxim Developments
+2026-01-30 18:55:49,724 | INFO |    [409/1525] Linked: The Cribs Jefaira → Inertia Egypt
+2026-01-30 18:55:49,778 | INFO |    [410/1525] Linked: Mazarine → City Edge Developments
+2026-01-30 18:55:49,830 | INFO |    [411/1525] Linked: The Gate - New Alamein → City Edge Developments
+2026-01-30 18:55:49,884 | INFO |    [412/1525] Linked: The Loft Capital Center Commercial → Living Yards Developments
+2026-01-30 18:55:49,937 | INFO |    [413/1525] Linked: Bleu Vert → Saudi Egyptian Developers (SED)
+2026-01-30 18:55:49,990 | INFO |    [414/1525] Linked: Scenario → Akam Developments
+2026-01-30 18:55:50,100 | INFO |    [415/1525] Linked: Marina 6 → The New Urban Communities Authority
+2026-01-30 18:55:50,160 | INFO |    [416/1525] Linked: Tala → Housing and Development Properties HDP
+2026-01-30 18:55:50,217 | INFO |    [417/1525] Linked: Mountain View October Park → Mountain View
+2026-01-30 18:55:50,270 | INFO |    [418/1525] Linked: The Polygon → SODIC
+2026-01-30 18:55:50,335 | INFO |    [419/1525] Linked: Katameya Residence → Al Ahly Sabbour Developments
+2026-01-30 18:55:50,389 | INFO |    [420/1525] Linked: Palm Hills Katameya (PK1) → Palm Hills Developments
+2026-01-30 18:55:50,441 | INFO |    [421/1525] Linked: Mountain View Sokhna → Mountain View
+2026-01-30 18:55:50,495 | INFO |    [422/1525] Linked: Abu Tig Hill → Orascom Development Egypt
+2026-01-30 18:55:50,547 | INFO |    [423/1525] Linked: Galleria Residence → Arabia Holding
+2026-01-30 18:55:50,600 | INFO |    [424/1525] Linked: Ein Bay → G Developments
+2026-01-30 18:55:50,651 | INFO |    [425/1525] Linked: Eastown Administartive → SODIC
+2026-01-30 18:55:50,704 | INFO |    [426/1525] Linked: La Vista Ray → La Vista Developments
+2026-01-30 18:55:50,755 | INFO |    [427/1525] Linked: La Fontaine Province → ARCO
+2026-01-30 18:55:50,807 | INFO |    [428/1525] Linked: Maxim Country Clubhouse → Maxim Developments
+2026-01-30 18:55:50,858 | INFO |    [429/1525] Linked: Veranda Sahl Hasheesh → Inertia Egypt
+2026-01-30 18:55:50,911 | INFO |    [430/1525] Linked: The Giselle SwanLake Residences → Hassan Allam Properties
+2026-01-30 18:55:50,964 | INFO |    [431/1525] Linked: 5A Administrative → The Waterway Developments
+2026-01-30 18:55:51,022 | INFO |    [432/1525] Linked: LEA Marassi → Emaar Misr
+2026-01-30 18:55:51,074 | INFO |    [433/1525] Linked: Gaia → Al Ahly Sabbour Developments
+2026-01-30 18:55:51,127 | INFO |    [434/1525] Linked: The Scarlet SwanLake Residences → Hassan Allam Properties
+2026-01-30 18:55:51,183 | INFO |    [435/1525] Linked: O West Business District → Orascom Development Egypt
+2026-01-30 18:55:51,239 | INFO |    [436/1525] Linked: Downtown New Alamein → City Edge Developments
+2026-01-30 18:55:51,292 | INFO |    [437/1525] Linked: Carnelia → Ajna Developments
+2026-01-30 18:55:51,345 | INFO |    [438/1525] Linked: Majada Iwan → IWAN Developments
+2026-01-30 18:55:51,397 | INFO |    [439/1525] Linked: Trevi → Arabia Holding
+2026-01-30 18:55:51,464 | INFO |    [440/1525] Linked: Ainava → Akam Developments
+2026-01-30 18:55:51,518 | INFO |    [441/1525] Linked: Mindhaus New Katameya → Marakez
+2026-01-30 18:55:51,571 | INFO |    [442/1525] Linked: IRIS SwanLake Residences → Hassan Allam Properties
+2026-01-30 18:55:51,636 | INFO |    [443/1525] Linked: UpVille Wady El Nile → Wady El Nile
+2026-01-30 18:55:51,690 | INFO |    [444/1525] Linked: PHIA Il Monte Galala → Tatweer Misr
+2026-01-30 18:55:51,745 | INFO |    [445/1525] Linked: Meadows Park → ARCO
+2026-01-30 18:55:51,799 | INFO |    [446/1525] Linked: Every SwanLake Residences Administrative → Hassan Allam Properties
+2026-01-30 18:55:51,853 | INFO |    [447/1525] Linked: Kastra → Madaar Development
+2026-01-30 18:55:51,911 | INFO |    [448/1525] Linked: Hale Town → Palm Hills Developments
+2026-01-30 18:55:51,965 | INFO |    [449/1525] Linked: Lakeyard Hacienda Bay → Palm Hills Developments
+2026-01-30 18:55:52,019 | INFO |    [450/1525] Linked: Golf Central → Palm Hills Developments
+2026-01-30 18:55:52,079 | INFO |    [451/1525] Linked: West Gate Pyramid Hills → Ora Developers
+2026-01-30 18:55:52,132 | INFO |    [452/1525] Linked: West Golf → Orascom Development Egypt
+2026-01-30 18:55:52,184 | INFO |    [453/1525] Linked: Cairo Gate → Emaar Misr
+2026-01-30 18:55:52,235 | INFO |    [454/1525] Linked: One - Ninety → LMD
+2026-01-30 18:55:52,288 | INFO |    [455/1525] Linked: RIVAN → Altameer Arabian Developments CO.
+2026-01-30 18:55:52,339 | INFO |    [456/1525] Linked: Sila Il Bosco City → Misr Italia Properties
+2026-01-30 18:55:52,391 | INFO |    [457/1525] Linked: Mesca Somabay → Somabay
+2026-01-30 18:55:52,443 | INFO |    [458/1525] Linked: Selina SwanLake Residences → Hassan Allam Properties
+2026-01-30 18:55:52,493 | INFO |    [459/1525] Linked: Faya Marassi → Emaar Misr
+2026-01-30 18:55:52,545 | INFO |    [460/1525] Linked: The Vues - Terraces Bloomfields → Tatweer Misr
+2026-01-30 18:55:52,596 | INFO |    [461/1525] Linked: The Peak Joulz → Inertia Egypt
+2026-01-30 18:55:52,649 | INFO |    [462/1525] Linked: Keeva → Al Ahly Sabbour Developments
+2026-01-30 18:55:52,702 | INFO |    [463/1525] Linked: Westlane Boulevard → Palm Hills Developments
+2026-01-30 18:55:52,754 | INFO |    [464/1525] Linked: SKAIA Marassi → Emaar Misr
+2026-01-30 18:55:52,807 | INFO |    [465/1525] Linked: WBR1 → The Waterway Developments
+2026-01-30 18:55:52,863 | INFO |    [466/1525] Linked: The Phoenix SwanLake Residences → Hassan Allam Properties
+2026-01-30 18:55:52,915 | INFO |    [467/1525] Linked: Katameya Creeks → Starlight Developments
+2026-01-30 18:55:52,971 | INFO |    [468/1525] Linked: Eden Villas Cairo Gate → Emaar Misr
+2026-01-30 18:55:53,021 | INFO |    [469/1525] Linked: ELAN Villas Cairo Gate → Emaar Misr
+2026-01-30 18:55:53,083 | INFO |    [470/1525] Linked: Vinci Street → Misr Italia Properties
+2026-01-30 18:55:53,139 | INFO |    [471/1525] Linked: Grand Residences Cairo Gate → Emaar Misr
+2026-01-30 18:55:53,197 | INFO |    [472/1525] Linked: Cairo Business Park → Misr Italia Properties
+2026-01-30 18:55:53,253 | INFO |    [473/1525] Linked: ISLA Il Monte Galala → Tatweer Misr
+2026-01-30 18:55:53,310 | INFO |    [474/1525] Linked: Golf Vistas Uptown Cairo → Emaar Misr
+2026-01-30 18:55:53,367 | INFO |    [475/1525] Linked: Zahra Morshedy Group → Morshedy Group
+2026-01-30 18:55:53,420 | INFO |    [476/1525] Linked: Lake Residence Fifth Square → Al Marasem Development
+2026-01-30 18:55:53,473 | INFO |    [477/1525] Linked: Al Maqsad Residences → City Edge Developments
+2026-01-30 18:55:53,524 | INFO |    [478/1525] Linked: Bay Central Residence Soma Bay → Somabay
+2026-01-30 18:55:53,579 | INFO |    [479/1525] Linked: Palm Hills Sokhna → Palm Hills Developments
+2026-01-30 18:55:53,632 | INFO |    [480/1525] Linked: Allure Executive Offices → Misr Italia Properties
+2026-01-30 18:55:53,684 | INFO |    [481/1525] Linked: Seashell Ras El Hekma → G Developments
+2026-01-30 18:55:53,736 | INFO |    [482/1525] Linked: The Place Mivida → Emaar Misr
+2026-01-30 18:55:53,790 | INFO |    [483/1525] Linked: Address Residences Marassi Beach → Emaar Misr
+2026-01-30 18:55:53,842 | INFO |    [484/1525] Linked: OIA Compound → EDGE HOLDING
+2026-01-30 18:55:53,901 | INFO |    [485/1525] Linked: Swan Lake West → Hassan Allam Properties
+2026-01-30 18:55:53,954 | INFO |    [486/1525] Linked: Caesar Bay → Mediterranean Tourism Investment Company
+2026-01-30 18:55:54,007 | INFO |    [487/1525] Linked: Scene 7 → Akam Developments
+2026-01-30 18:55:54,057 | INFO |    [488/1525] Linked: THE MEADOWS Il Bosco → Misr Italia Properties
+2026-01-30 18:55:54,109 | INFO |    [489/1525] Linked: Kinda → Madinet Masr
+2026-01-30 18:55:54,162 | INFO |    [490/1525] Linked: Solay → Living Yards Developments
+2026-01-30 18:55:54,214 | INFO |    [491/1525] Linked: M Residence → Tatweer Misr
+2026-01-30 18:55:54,266 | INFO |    [492/1525] Linked: CALA → Capital Link Developments
+2026-01-30 18:55:54,323 | INFO |    [493/1525] Linked: Kairo → The Waterway Developments
+2026-01-30 18:55:54,377 | INFO |    [494/1525] Linked: West Courts New October → Morshedy Group
+2026-01-30 18:55:54,430 | INFO |    [495/1525] Linked: Evolve Tower → New Town Group
+2026-01-30 18:55:54,483 | INFO |    [496/1525] Linked: Capital Dubai Mall → Dubai Misr
+2026-01-30 18:55:54,594 | INFO |    [497/1525] Linked: Thru Dal Developments → DAL Developments
+2026-01-30 18:55:54,647 | INFO |    [498/1525] Linked: Noi → Urbnlanes Development
+2026-01-30 18:55:54,701 | INFO |    [499/1525] Linked: Cliff → The Ark Development
+2026-01-30 18:55:54,760 | INFO |    [500/1525] Linked: Eastville → Ajna Developments
+2026-01-30 18:55:54,814 | INFO |    [501/1525] Linked: Jeera New Zayed → IWAN Developments
+2026-01-30 18:55:54,869 | INFO |    [502/1525] Linked: Sky Walk October → Skywalk Developments
+2026-01-30 18:55:54,924 | INFO |    [503/1525] Linked: N Residence → TBK Developments
+2026-01-30 18:55:54,999 | INFO |    [504/1525] Linked: Pyramids Walk → Wadi Degla Developments
+2026-01-30 18:55:55,058 | INFO |    [505/1525] Linked: Westview Residence → Housing and Development Properties HDP
+2026-01-30 18:55:55,108 | INFO |    [506/1525] Linked: Parkway Residence - Hyde Park → Hyde Park
+2026-01-30 18:55:55,161 | INFO |    [507/1525] Linked: Al Yasmin-Sheikh Zayed → Al Rayan Holding co.
+2026-01-30 18:55:55,213 | INFO |    [508/1525] Linked: Kukun → The Land Developers (TLD)
+2026-01-30 18:55:55,266 | INFO |    [509/1525] Linked: Blanks → Manaj Developments
+2026-01-30 18:55:55,319 | INFO |    [510/1525] Linked: Rock Vera → Rock developments
+2026-01-30 18:55:55,377 | INFO |    [511/1525] Linked: Royal Hills → Royal Development
+2026-01-30 18:55:55,460 | INFO |    [512/1525] Linked: Lusail Residence → Margins Development
+2026-01-30 18:55:55,516 | INFO |    [513/1525] Linked: Rafts → The Ark Development
+2026-01-30 18:55:55,593 | INFO |    [514/1525] Linked: Rosevil → Sorouh Developments
+2026-01-30 18:55:55,645 | INFO |    [515/1525] Linked: The Angle → Arkan Palm Development
+2026-01-30 18:55:55,711 | INFO |    [516/1525] Linked: The Quad → Arkan Palm Development
+2026-01-30 18:55:55,765 | INFO |    [517/1525] Linked: The Emerald Collection - Zed East → Ora Developers
+2026-01-30 18:55:55,818 | INFO |    [518/1525] Linked: Avelin Phase 2 → Times Developments
+2026-01-30 18:55:55,870 | INFO |    [519/1525] Linked: Midtown East → Better Home
+2026-01-30 18:55:55,921 | INFO |    [520/1525] Linked: Midtown New Zayed West → Better Home
+2026-01-30 18:55:55,975 | INFO |    [521/1525] Linked: Beta Residence → BETA Developments
+2026-01-30 18:55:56,028 | INFO |    [522/1525] Linked: The Node → New Town Group
+2026-01-30 18:55:56,081 | INFO |    [523/1525] Linked: 6ixty Heliopolis → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:55:56,132 | INFO |    [524/1525] Linked: Kite Complex → Centrada Developments
+2026-01-30 18:55:56,185 | INFO |    [525/1525] Linked: Spring Fields Park → Mountain View
+2026-01-30 18:55:56,237 | INFO |    [526/1525] Linked: Stoda → IL Cazar Developments
+2026-01-30 18:55:56,292 | INFO |    [527/1525] Linked: The Lark Residence → Tamayoz Developments
+2026-01-30 18:55:56,344 | INFO |    [528/1525] Linked: Roofscape - At East → Al Ahly Sabbour Developments
+2026-01-30 18:55:56,399 | INFO |    [529/1525] Linked: Alca → SAG Developments 
+2026-01-30 18:55:56,453 | INFO |    [530/1525] Linked: The Harv → DAL Developments
+2026-01-30 18:55:56,506 | INFO |    [531/1525] Linked: Plaza Vida → Kayan Real Estate
+2026-01-30 18:55:56,559 | INFO |    [532/1525] Linked: Vida Residence → Kayan Real Estate
+2026-01-30 18:55:56,613 | INFO |    [533/1525] Linked: Jade Park → City Edge Developments
+2026-01-30 18:55:56,667 | INFO |    [534/1525] Linked: Home Residence → Home Town Developments
+2026-01-30 18:55:56,722 | INFO |    [535/1525] Linked: Hacienda Blue → Palm Hills Developments
+2026-01-30 18:55:56,776 | INFO |    [536/1525] Linked: De Joya 4 → Taj Misr Developments
+2026-01-30 18:55:56,829 | INFO |    [537/1525] Linked: Crystalline - Silversands → Ora Developers
+2026-01-30 18:55:56,883 | INFO |    [538/1525] Linked: District 6 - Laria → Palm Hills Developments
+2026-01-30 18:55:56,933 | INFO |    [539/1525] Linked: District 2 - Tali → Palm Hills Developments
+2026-01-30 18:55:56,986 | INFO |    [540/1525] Linked: Keystone → TBK Developments
+2026-01-30 18:55:57,038 | INFO |    [541/1525] Linked: Branded Residences - Silversands → Ora Developers
+2026-01-30 18:55:57,093 | INFO |    [542/1525] Linked: Pyramids Heights → ADD Properties
+2026-01-30 18:55:57,149 | INFO |    [543/1525] Linked: Rai → Madinet Masr
+2026-01-30 18:55:57,202 | INFO |    [544/1525] Linked: Geo The Med → People & Places
+2026-01-30 18:55:57,267 | INFO |    [545/1525] Linked: The Solos - Solana → Ora Developers
+2026-01-30 18:55:57,321 | INFO |    [546/1525] Linked: Greens Residence New Cairo → Hyde Park
+2026-01-30 18:55:57,373 | INFO |    [547/1525] Linked: The Mediterranean Villas → People & Places
+2026-01-30 18:55:57,425 | INFO |    [548/1525] Linked: Club Side Taj City → Madinet Masr
+2026-01-30 18:55:57,481 | INFO |    [549/1525] Linked: Grids New Cairo → Manaj Developments
+2026-01-30 18:55:57,537 | INFO |    [550/1525] Linked: Diplo East → MBG Developments
+2026-01-30 18:55:57,591 | INFO |    [551/1525] Linked: Lake West 4 → Cairo Capital Developments
+2026-01-30 18:55:57,644 | INFO |    [552/1525] Linked: Maliv Street → Kulture Developments
+2026-01-30 18:55:57,698 | INFO |    [553/1525] Linked: The Mornings → Al Ahly Sabbour Developments
+2026-01-30 18:55:57,752 | INFO |    [554/1525] Linked: Menorca Zayed → MARDEV
+2026-01-30 18:55:57,804 | INFO |    [555/1525] Linked: Mist → M Squared
+2026-01-30 18:55:57,860 | INFO |    [556/1525] Linked: One50 → El Gabry Developments
+2026-01-30 18:55:57,912 | INFO |    [557/1525] Linked: One Three One → Zaya Development
+2026-01-30 18:55:57,964 | INFO |    [558/1525] Linked: Being → LMD
+2026-01-30 18:55:58,018 | INFO |    [559/1525] Linked: El Patio Hills → La Vista Developments
+2026-01-30 18:55:58,071 | INFO |    [560/1525] Linked: Grand Valleys - Kayan City → Mountain View
+2026-01-30 18:55:58,123 | INFO |    [561/1525] Linked: 205 Towers → Arkan Palm Development
+2026-01-30 18:55:58,174 | INFO |    [562/1525] Linked: Water Creek - Direction White → Arabella
+2026-01-30 18:55:58,225 | INFO |    [563/1525] Linked: Direction white Phase one → Arabella
+2026-01-30 18:55:58,278 | INFO |    [564/1525] Linked: ONS → Mabany Edris
+2026-01-30 18:55:58,335 | INFO |    [565/1525] Linked: Acclaro - Silversands → Ora Developers
+2026-01-30 18:55:58,390 | INFO |    [566/1525] Linked: Twin Plaza → Kayan Real Estate
+2026-01-30 18:55:58,445 | INFO |    [567/1525] Linked: Jirian - Palm Hills → Palm Hills Developments
+2026-01-30 18:55:58,497 | INFO |    [568/1525] Linked: Westdays → IL Cazar Developments
+2026-01-30 18:55:58,549 | INFO |    [569/1525] Linked: District 2 - Moon Heights → Palm Hills Developments
+2026-01-30 18:55:58,603 | INFO |    [570/1525] Linked: District 6 - Blu → Palm Hills Developments
+2026-01-30 18:55:58,658 | INFO |    [571/1525] Linked: District 2 - Ella Extension → Palm Hills Developments
+2026-01-30 18:55:58,713 | INFO |    [572/1525] Linked: Jade Extension → Palm Hills Developments
+2026-01-30 18:55:58,765 | INFO |    [573/1525] Linked: District 1 - Boulevard → Palm Hills Developments
+2026-01-30 18:55:58,818 | INFO |    [574/1525] Linked: Zayard Villa → Palmier Developments 
+2026-01-30 18:55:58,871 | INFO |    [575/1525] Linked: Zayard residence → Palmier Developments 
+2026-01-30 18:55:58,924 | INFO |    [576/1525] Linked: Zayard Avenue → Palmier Developments 
+2026-01-30 18:55:58,977 | INFO |    [577/1525] Linked: Club residence → Ora Developers
+2026-01-30 18:55:59,029 | INFO |    [578/1525] Linked: Key Of Greens → TBK Developments
+2026-01-30 18:55:59,092 | INFO |    [579/1525] Linked: Junction → Majid Al Futtaim
+2026-01-30 18:55:59,146 | INFO |    [580/1525] Linked: FCC → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:55:59,213 | INFO |    [581/1525] Linked: Crescent Walk East → Marakez
+2026-01-30 18:55:59,269 | INFO |    [582/1525] Linked: Saada Boutique → Horizon Egypt Development
+2026-01-30 18:55:59,333 | INFO |    [583/1525] Linked: River Park → Mountain View
+2026-01-30 18:55:59,415 | INFO |    [584/1525] Linked: Fields park → Mountain View
+2026-01-30 18:55:59,492 | INFO |    [585/1525] Linked: The Signature Tower → A Capital Holding
+2026-01-30 18:55:59,545 | INFO |    [586/1525] Linked: Hilltop Chalets - Solare → Misr Italia Properties
+2026-01-30 18:55:59,600 | INFO |    [587/1525] Linked: Crystal Bay - Hacienda Heneish → Palm Hills Developments
+2026-01-30 18:55:59,651 | INFO |    [588/1525] Linked: Soma Bay Golf Town - Marina Edition → Somabay
+2026-01-30 18:55:59,706 | INFO |    [589/1525] Linked: Jade & Blue → Aspect Development
+2026-01-30 18:55:59,758 | INFO |    [590/1525] Linked: Degla Towers → Morshedy Group
+2026-01-30 18:55:59,812 | INFO |    [591/1525] Linked: Dijar Towers → Reedy Group
+2026-01-30 18:55:59,865 | INFO |    [592/1525] Linked: Talala → Madinet Masr
+2026-01-30 18:55:59,915 | INFO |    [593/1525] Linked: Lagoon Town → Hyde Park
+2026-01-30 18:55:59,974 | INFO |    [594/1525] Linked: Town Island → Hyde Park
+2026-01-30 18:56:00,025 | INFO |    [595/1525] Linked: Grand Park → Hyde Park
+2026-01-30 18:56:00,079 | INFO |    [596/1525] Linked: Mamsha Vista → City Edge Developments
+2026-01-30 18:56:00,133 | INFO |    [597/1525] Linked: Lacerta → Madaar Development
+2026-01-30 18:56:00,194 | INFO |    [598/1525] Linked: Naos → Madaar Development
+2026-01-30 18:56:00,249 | INFO |    [599/1525] Linked: Kasakuon - Eastville → Ajna Developments
+2026-01-30 18:56:00,302 | INFO |    [600/1525] Linked: Ciano Lagoon → Misr Italia Properties
+2026-01-30 18:56:00,357 | INFO |    [601/1525] Linked: The Gryd → Upwyde Developments
+2026-01-30 18:56:00,409 | INFO |    [602/1525] Linked: Camellia → SODIC
+2026-01-30 18:56:00,461 | INFO |    [603/1525] Linked: Doray → MBG Developments
+2026-01-30 18:56:00,516 | INFO |    [604/1525] Linked: Blue Walk → Sky AD Developments
+2026-01-30 18:56:00,569 | INFO |    [605/1525] Linked: Oak Residence → SODIC
+2026-01-30 18:56:00,619 | INFO |    [606/1525] Linked: Orchid → SODIC
+2026-01-30 18:56:00,674 | INFO |    [607/1525] Linked: La Rose New Cairo → La Rose
+2026-01-30 18:56:00,726 | INFO |    [608/1525] Linked: Palm Hills Alexandria → Palm Hills Developments
+2026-01-30 18:56:00,779 | INFO |    [609/1525] Linked: New Marina FANADIR → Orascom Development Egypt
+2026-01-30 18:56:00,831 | INFO |    [610/1525] Linked: Fera Residences → Orascom Development Egypt
+2026-01-30 18:56:00,884 | INFO |    [611/1525] Linked: Azailya → SODIC
+2026-01-30 18:56:00,936 | INFO |    [612/1525] Linked: El Patio 4 → La Vista Developments
+2026-01-30 18:56:00,988 | INFO |    [613/1525] Linked: Sawary → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:01,041 | INFO |    [614/1525] Linked: Three Sixty → LMD
+2026-01-30 18:56:01,094 | INFO |    [615/1525] Linked: VYE SODIC → SODIC
+2026-01-30 18:56:01,146 | INFO |    [616/1525] Linked: HeartWork → Mountain View
+2026-01-30 18:56:01,197 | INFO |    [617/1525] Linked: Green Square → Al Ahly Sabbour Developments
+2026-01-30 18:56:01,250 | INFO |    [618/1525] Linked: Baymount → MAVEN DEVELOPMENTS
+2026-01-30 18:56:01,302 | INFO |    [619/1525] Linked: Diwa Veranda Sahl Hasheesh → Inertia Egypt
+2026-01-30 18:56:01,362 | INFO |    [620/1525] Linked: Tawny → Hyde Park
+2026-01-30 18:56:01,417 | INFO |    [621/1525] Linked: Clubside Apartments District 5 → Marakez
+2026-01-30 18:56:01,470 | INFO |    [622/1525] Linked: The Groove → DM DEVELOPMENT
+2026-01-30 18:56:01,523 | INFO |    [623/1525] Linked: Al Jazi First Marriott Residences → Al Jazi Egypt
+2026-01-30 18:56:01,580 | INFO |    [624/1525] Linked: ZED STRIP → Ora Developers
+2026-01-30 18:56:01,633 | INFO |    [625/1525] Linked: Elara Il Monte Galala → Tatweer Misr
+2026-01-30 18:56:01,684 | INFO |    [626/1525] Linked: Palm Hills New Alamein → Palm Hills Developments
+2026-01-30 18:56:01,738 | INFO |    [627/1525] Linked: Pine Lanes → People & Places
+2026-01-30 18:56:01,797 | INFO |    [628/1525] Linked: Lumia Lagoons → Dubai Misr
+2026-01-30 18:56:01,870 | INFO |    [629/1525] Linked: Edge → The Ark Development
+2026-01-30 18:56:01,926 | INFO |    [630/1525] Linked: Tuban El Gouna → Orascom Development Egypt
+2026-01-30 18:56:01,979 | INFO |    [631/1525] Linked: Jade Residence → Al Guzeira Group
+2026-01-30 18:56:02,032 | INFO |    [632/1525] Linked: Q Hills → Q Developments
+2026-01-30 18:56:02,085 | INFO |    [633/1525] Linked: B-Spaces Il Bosco City → Misr Italia Properties
+2026-01-30 18:56:02,139 | INFO |    [634/1525] Linked: Life View → IC Real Estate Development
+2026-01-30 18:56:02,195 | INFO |    [635/1525] Linked: Club Views - Sarai → Madinet Masr
+2026-01-30 18:56:02,249 | INFO |    [636/1525] Linked: City Hall 90 → SERAC Developments
+2026-01-30 18:56:02,302 | INFO |    [637/1525] Linked: Kinz → Madaar Development
+2026-01-30 18:56:02,355 | INFO |    [638/1525] Linked: Sapphire Residence → Qatari Diar
+2026-01-30 18:56:02,412 | INFO |    [639/1525] Linked: Linea → La Vista Developments
+2026-01-30 18:56:02,520 | INFO |    [640/1525] Linked: Belong → Centrada Developments
+2026-01-30 18:56:02,599 | INFO |    [641/1525] Linked: Sapphire Golf Residences → Qatari Diar
+2026-01-30 18:56:02,655 | INFO |    [642/1525] Linked: Moon Residences → Al Marasem Development
+2026-01-30 18:56:02,707 | INFO |    [643/1525] Linked: Maliv → Kulture Developments
+2026-01-30 18:56:02,762 | INFO |    [644/1525] Linked: Noll → Kleek Developments
+2026-01-30 18:56:02,822 | INFO |    [645/1525] Linked: The V Residence - Villagio → Modon Egypt
+2026-01-30 18:56:02,922 | INFO |    [646/1525] Linked: Rewaya → SIAC Developments
+2026-01-30 18:56:03,031 | INFO |    [647/1525] Linked: Triangle → The Waterway Developments
+2026-01-30 18:56:03,113 | INFO |    [648/1525] Linked: Rayos → Ofouk Developments
+2026-01-30 18:56:03,184 | INFO |    [649/1525] Linked: Reel - Peerage → Al Riyadh Misr
+2026-01-30 18:56:03,265 | INFO |    [650/1525] Linked: Waterfront Residence → Arkan Palm Development
+2026-01-30 18:56:03,342 | INFO |    [651/1525] Linked: Hyde Park Central → Hyde Park
+2026-01-30 18:56:03,437 | INFO |    [652/1525] Linked: Point 90 Mall → PRE Developments
+2026-01-30 18:56:03,546 | INFO |    [653/1525] Linked: Azzar Legacy → Reedy Group
+2026-01-30 18:56:03,669 | INFO |    [654/1525] Linked: Acasa → Dar  Al Alamia Developments
+2026-01-30 18:56:03,736 | INFO |    [655/1525] Linked: D Parks New Cairo → Marakez
+2026-01-30 18:56:03,814 | INFO |    [656/1525] Linked: Business Suites New Cairo → Al Jazi Egypt
+2026-01-30 18:56:03,892 | INFO |    [657/1525] Linked: Parkside Maadi Views → The Land Developers (TLD)
+2026-01-30 18:56:03,968 | INFO |    [658/1525] Linked: District 2 - Ella → Palm Hills Developments
+2026-01-30 18:56:04,022 | INFO |    [659/1525] Linked: Central Residence - Hyde Park Central → Hyde Park
+2026-01-30 18:56:04,085 | INFO |    [660/1525] Linked: District 1 - Rae → Palm Hills Developments
+2026-01-30 18:56:04,214 | INFO |    [661/1525] Linked: Zayard North Strike → Palmier Developments 
+2026-01-30 18:56:04,333 | INFO |    [662/1525] Linked: Evet Mall → Empire State Developments
+2026-01-30 18:56:04,582 | INFO |    [663/1525] Linked: Business Gate → Dominar Developments
+2026-01-30 18:56:04,807 | INFO |    [664/1525] Linked: Parkside - Owest → Orascom Development Egypt
+2026-01-30 18:56:05,040 | INFO |    [665/1525] Linked: Shore Ville → Hyde Park
+2026-01-30 18:56:05,133 | INFO |    [666/1525] Linked: Red (G) - Garnet → Jadeer Realestate
+2026-01-30 18:56:05,197 | INFO |    [667/1525] Linked: Garden Side → Hyde Park
+2026-01-30 18:56:05,267 | INFO |    [668/1525] Linked: Lake side → Hyde Park
+2026-01-30 18:56:05,401 | INFO |    [669/1525] Linked: AQ Residence → Madaar Development
+2026-01-30 18:56:05,567 | INFO |    [670/1525] Linked: Ogma → Madaar Development
+2026-01-30 18:56:05,758 | INFO |    [671/1525] Linked: C'est La Vie → Kayan Real Estate
+2026-01-30 18:56:05,941 | INFO |    [672/1525] Linked: Rosewood → SODIC
+2026-01-30 18:56:06,065 | INFO |    [673/1525] Linked: Club Park - ICity October → Mountain View
+2026-01-30 18:56:06,189 | INFO |    [674/1525] Linked: Suite Hub → Radix Development
+2026-01-30 18:56:06,246 | INFO |    [675/1525] Linked: Jay → Akam Alrajhi Developments
+2026-01-30 18:56:06,300 | INFO |    [676/1525] Linked: The Island - Marina 5 → Housing and Development Properties HDP
+2026-01-30 18:56:06,352 | INFO |    [677/1525] Linked: Seasons → Hassan Allam Properties
+2026-01-30 18:56:06,407 | INFO |    [678/1525] Linked: Seavia → La Vista Developments
+2026-01-30 18:56:06,463 | INFO |    [679/1525] Linked: Selection - Telal East → Roya Developments
+2026-01-30 18:56:06,522 | INFO |    [680/1525] Linked: Telal Soul → Roya Developments
+2026-01-30 18:56:06,604 | INFO |    [681/1525] Linked: Park Residence - Garden Lakes → Hyde Park
+2026-01-30 18:56:06,663 | INFO |    [682/1525] Linked: Park Side Residences → Ora Developers
+2026-01-30 18:56:06,724 | INFO |    [683/1525] Linked: The Village Views → Ora Developers
+2026-01-30 18:56:06,783 | INFO |    [684/1525] Linked: Luma - The Med → People & Places
+2026-01-30 18:56:06,847 | INFO |    [685/1525] Linked: The Great Lawn-Park Central → Hassan Allam Properties
+2026-01-30 18:56:06,908 | INFO |    [686/1525] Linked: Park Lofts → Living Yards Developments
+2026-01-30 18:56:06,966 | INFO |    [687/1525] Linked: The HUB Waterway New Cairo → The Waterway Developments
+2026-01-30 18:56:07,024 | INFO |    [688/1525] Linked: The Waterway Villas → The Waterway Developments
+2026-01-30 18:56:07,086 | INFO |    [689/1525] Linked: Jaz Little Venice → Hassan Allam Properties
+2026-01-30 18:56:07,148 | INFO |    [690/1525] Linked: West Clay → Remal Developments
+2026-01-30 18:56:07,213 | INFO |    [691/1525] Linked: Campus District 5 → Marakez
+2026-01-30 18:56:07,274 | INFO |    [692/1525] Linked: Queens → Al Jazi Egypt
+2026-01-30 18:56:07,335 | INFO |    [693/1525] Linked: Tara → Miscellaneous
+2026-01-30 18:56:07,483 | INFO |    [694/1525] Linked: Direction White - Oyster → Arabella
+2026-01-30 18:56:07,627 | INFO |    [695/1525] Linked: Zayard Elite → Palmier Developments 
+2026-01-30 18:56:07,732 | INFO |    [696/1525] Linked: Crescent Walk South → Marakez
+2026-01-30 18:56:07,891 | INFO |    [697/1525] Linked: Waterside → Hyde Park
+2026-01-30 18:56:07,996 | INFO |    [698/1525] Linked: Lunas → Madaar Development
+2026-01-30 18:56:08,071 | INFO |    [699/1525] Linked: The 8 Extension → El Gabry Developments
+2026-01-30 18:56:08,161 | INFO |    [700/1525] Linked: G-Haus - Glen → IL Cazar Developments
+2026-01-30 18:56:08,359 | INFO |    [701/1525] Linked: Saltshore - Salt → Tatweer Misr
+2026-01-30 18:56:08,562 | INFO |    [702/1525] Linked: Mazarine Commercial → City Edge Developments
+2026-01-30 18:56:08,637 | INFO |    [703/1525] Linked: Waterfall Village → People & Places
+2026-01-30 18:56:08,861 | INFO |    [704/1525] Linked: Lagoons Al Alamin → Modon Egypt
+2026-01-30 18:56:08,932 | INFO |    [705/1525] Linked: Jade Hills - City Gate → Qatari Diar
+2026-01-30 18:56:09,036 | INFO |    [706/1525] Linked: Shores-Beit Al Bahr → Beit Al Bahr
+2026-01-30 18:56:09,146 | INFO |    [707/1525] Linked: Roots-Beit Al Bahr → Beit Al Bahr
+2026-01-30 18:56:09,300 | INFO |    [708/1525] Linked: Alis → Melee Development
+2026-01-30 18:56:09,395 | INFO |    [709/1525] Linked: Hills-Beit Al Bahr → Beit Al Bahr
+2026-01-30 18:56:09,461 | INFO |    [710/1525] Linked: Fanadir Shores → Orascom Development Egypt
+2026-01-30 18:56:09,541 | INFO |    [711/1525] Linked: Laguna → The Land Developers (TLD)
+2026-01-30 18:56:09,613 | INFO |    [712/1525] Linked: Yellow Lane → Urbnlanes Development
+2026-01-30 18:56:09,669 | INFO |    [713/1525] Linked: The C → IL Cazar Developments
+2026-01-30 18:56:09,738 | INFO |    [714/1525] Linked: See The Sea → Starlight Developments
+2026-01-30 18:56:09,791 | INFO |    [715/1525] Linked: Crystal Terraces → Starlight Developments
+2026-01-30 18:56:09,857 | INFO |    [716/1525] Linked: Green Valley → Orascom Development Egypt
+2026-01-30 18:56:09,910 | INFO |    [717/1525] Linked: Midyard → Orascom Development Egypt
+2026-01-30 18:56:09,982 | INFO |    [718/1525] Linked: Galini → Doja Development 
+2026-01-30 18:56:10,041 | INFO |    [719/1525] Linked: Beach Residence-June → SODIC
+2026-01-30 18:56:10,122 | INFO |    [720/1525] Linked: Sky Range - Ever New Cairo → Cred Developments
+2026-01-30 18:56:10,185 | INFO |    [721/1525] Linked: Water Chalet - Ogami → SODIC
+2026-01-30 18:56:10,266 | INFO |    [722/1525] Linked: Kawn Business complex → Elaf Developments
+2026-01-30 18:56:10,318 | INFO |    [723/1525] Linked: Flow - Geo - The Med → People & Places
+2026-01-30 18:56:10,411 | INFO |    [724/1525] Linked: Core → Orascom Development Egypt
+2026-01-30 18:56:10,543 | INFO |    [725/1525] Linked: One33-Phase One → Arkan Palm Development
+2026-01-30 18:56:10,699 | INFO |    [726/1525] Linked: One33-Phase Two → Arkan Palm Development
+2026-01-30 18:56:10,806 | INFO |    [727/1525] Linked: The Waterway North Coast-Phase One → The Waterway Developments
+2026-01-30 18:56:10,862 | INFO |    [728/1525] Linked: Mazeej → Palm Hills Developments
+2026-01-30 18:56:10,948 | INFO |    [729/1525] Linked: Velais → Madaar Development
+2026-01-30 18:56:11,008 | INFO |    [730/1525] Linked: Meadows-Sodic East → SODIC
+2026-01-30 18:56:11,088 | INFO |    [731/1525] Linked: Kayan-Phase 1 → Arkan Palm Development
+2026-01-30 18:56:11,144 | INFO |    [732/1525] Linked: R6-Bougainvillea → Marakez
+2026-01-30 18:56:11,210 | INFO |    [733/1525] Linked: R8-Breeze → Marakez
+2026-01-30 18:56:11,261 | INFO |    [734/1525] Linked: Villa Mall New Capital → Better Home
+2026-01-30 18:56:11,323 | INFO |    [735/1525] Linked: Riverton → Mercon Developments
+2026-01-30 18:56:11,376 | INFO |    [736/1525] Linked: Valerie Village → Madaar Development
+2026-01-30 18:56:11,486 | INFO |    [737/1525] Linked: Ritz New Zayed → ARQA Development Group
+2026-01-30 18:56:11,541 | INFO |    [738/1525] Linked: Meditown → G Developments
+2026-01-30 18:56:11,630 | INFO |    [739/1525] Linked: Pixel Labs → G Developments
+2026-01-30 18:56:11,683 | INFO |    [740/1525] Linked: Ray-Beit Al Bahr → Beit Al Bahr
+2026-01-30 18:56:11,766 | INFO |    [741/1525] Linked: Blanca Gardens 2 → Somabay
+2026-01-30 18:56:11,821 | INFO |    [742/1525] Linked: Greens Baywest Valley → Somabay
+2026-01-30 18:56:11,874 | INFO |    [743/1525] Linked: Encore → Hassan Allam Properties
+2026-01-30 18:56:11,971 | INFO |    [744/1525] Linked: Cluster-Bloomfields → Tatweer Misr
+2026-01-30 18:56:12,026 | INFO |    [745/1525] Linked: Courtyard-Bloomfields → Tatweer Misr
+2026-01-30 18:56:12,113 | INFO |    [746/1525] Linked: Al Karma Kay-Phase 2 → AlKarma Developments
+2026-01-30 18:56:12,167 | INFO |    [747/1525] Linked: Al Karma Kay-Phase 1 → AlKarma Developments
+2026-01-30 18:56:12,248 | INFO |    [748/1525] Linked: Mazarine Hub → City Edge Developments
+2026-01-30 18:56:12,301 | INFO |    [749/1525] Linked: Youd-Phase 1 → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,356 | INFO |    [750/1525] Linked: Youd-Phase 2 → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,448 | INFO |    [751/1525] Linked: Youd-Phase 3 → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,513 | INFO |    [752/1525] Linked: Youd-Phase 4 → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,586 | INFO |    [753/1525] Linked: Skaia-Gaia → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,640 | INFO |    [754/1525] Linked: Sakan-Gaia → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,724 | INFO |    [755/1525] Linked: Summer-Phase 1 → Al Ahly Sabbour Developments
+2026-01-30 18:56:12,778 | INFO |    [756/1525] Linked: Nobu Branded Villas - Ogami → SODIC
+2026-01-30 18:56:12,832 | INFO |    [757/1525] Linked: Mivida Gardens → Emaar Misr
+2026-01-30 18:56:12,920 | INFO |    [758/1525] Linked: Wadi Jebal Extension → Somabay
+2026-01-30 18:56:12,976 | INFO |    [759/1525] Linked: Seazen-Phase 1 → Al Qamzi Developments
+2026-01-30 18:56:13,066 | INFO |    [760/1525] Linked: Seazen-Phase 2 → Al Qamzi Developments
+2026-01-30 18:56:13,130 | INFO |    [761/1525] Linked: 27 Residence → Tameer
+2026-01-30 18:56:13,201 | INFO |    [762/1525] Linked: Jiwar → Concrete Development
+2026-01-30 18:56:13,254 | INFO |    [763/1525] Linked: Latvia Business Hub → My Home Developments
+2026-01-30 18:56:13,308 | INFO |    [765/1525] Linked: Calma → Leaders Developments
+2026-01-30 18:56:13,405 | INFO |    [766/1525] Linked: ZAG East → PRE Developments
+2026-01-30 18:56:13,462 | INFO |    [767/1525] Linked: Sckylers → Sckylers Developments
+2026-01-30 18:56:13,543 | INFO |    [768/1525] Linked: Rejan Residence → Rejan Developments
+2026-01-30 18:56:13,599 | INFO |    [769/1525] Linked: Mercury Business Complex → Contact Development
+2026-01-30 18:56:13,685 | INFO |    [770/1525] Linked: Eval Towers → Contact Development
+2026-01-30 18:56:13,738 | INFO |    [771/1525] Linked: Mall Vasto Plaza → Channel Locations Developments
+2026-01-30 18:56:13,791 | INFO |    [772/1525] Linked: Darvell → White Eagle Development
+2026-01-30 18:56:13,879 | INFO |    [773/1525] Linked: V Terrace → Value Developments
+2026-01-30 18:56:13,941 | INFO |    [774/1525] Linked: Wadi West - Ras El Hekma → Modon 
+2026-01-30 18:56:14,019 | INFO |    [775/1525] Linked: Yemm Boulevard - Ras El Hekma → Modon 
+2026-01-30 18:56:14,074 | INFO |    [776/1525] Linked: Lugano El Galala Ain El Sokhna → AOG Development
+2026-01-30 18:56:14,158 | INFO |    [777/1525] Linked: Sector 3 → Modad Properties
+2026-01-30 18:56:14,214 | INFO |    [778/1525] Linked: The Park-Mountain View 1.1 → Mountain View
+2026-01-30 18:56:14,270 | INFO |    [779/1525] Linked: The Greens → Mountain View
+2026-01-30 18:56:14,354 | INFO |    [780/1525] Linked: Club Park- ICity New Cairo → Mountain View
+2026-01-30 18:56:14,408 | INFO |    [781/1525] Linked: MV Park - ICity New Cairo → Mountain View
+2026-01-30 18:56:14,495 | INFO |    [782/1525] Linked: Hyatt Centric → ADD Properties
+2026-01-30 18:56:14,551 | INFO |    [783/1525] Linked: Crysta → Mountain View
+2026-01-30 18:56:14,634 | INFO |    [784/1525] Linked: Telal Al Guezira → Al Guzeira Group
+2026-01-30 18:56:14,688 | INFO |    [785/1525] Linked: Boutique Village 2 → Modon Egypt
+2026-01-30 18:56:14,748 | INFO |    [786/1525] Linked: Cyra - Sun Capital → Arabia Holding
+2026-01-30 18:56:14,838 | INFO |    [787/1525] Linked: Wadi Yemm → Modon 
+2026-01-30 18:56:14,893 | INFO |    [788/1525] Linked: Vaya - Jefaira → Inertia Egypt
+2026-01-30 18:56:14,978 | INFO |    [789/1525] Linked: Amber-Il Bayou → The Land Developers (TLD)
+2026-01-30 18:56:15,040 | INFO |    [790/1525] Linked: Jade-Il Bayou → The Land Developers (TLD)
+2026-01-30 18:56:15,116 | INFO |    [791/1525] Linked: Waterside - Seashore → Hyde Park
+2026-01-30 18:56:15,172 | INFO |    [792/1525] Linked: Blanca Gardens → Somabay
+2026-01-30 18:56:15,226 | INFO |    [793/1525] Linked: Pearl-June → SODIC
+2026-01-30 18:56:15,315 | INFO |    [794/1525] Linked: Aquamarine-June → SODIC
+2026-01-30 18:56:15,372 | INFO |    [795/1525] Linked: Opal-June → SODIC
+2026-01-30 18:56:15,457 | INFO |    [796/1525] Linked: Valea → Saudi Group Development
+2026-01-30 18:56:15,509 | INFO |    [797/1525] Linked: Lake West 5 → Cairo Capital Developments
+2026-01-30 18:56:15,591 | INFO |    [798/1525] Linked: Olive Oasis - Solare → Misr Italia Properties
+2026-01-30 18:56:15,647 | INFO |    [799/1525] Linked: Caesar Extension 2 → SODIC
+2026-01-30 18:56:15,701 | INFO |    [800/1525] Linked: Jirian-Phase One → Palm Hills Developments
+2026-01-30 18:56:15,788 | INFO |    [801/1525] Linked: Jirian-Phase 2 → Palm Hills Developments
+2026-01-30 18:56:15,857 | INFO |    [802/1525] Linked: PX-Phase One → Palm Hills Developments
+2026-01-30 18:56:15,928 | INFO |    [803/1525] Linked: PX-Phase Two → Palm Hills Developments
+2026-01-30 18:56:15,984 | INFO |    [804/1525] Linked: The Waterway North Coast-Phase Two → The Waterway Developments
+2026-01-30 18:56:16,070 | INFO |    [805/1525] Linked: Kayan-Phase 2 → Arkan Palm Development
+2026-01-30 18:56:16,126 | INFO |    [806/1525] Linked: R1-Dunes → Marakez
+2026-01-30 18:56:16,179 | INFO |    [807/1525] Linked: R2-The Town → Marakez
+2026-01-30 18:56:16,272 | INFO |    [808/1525] Linked: R3-Oasis → Marakez
+2026-01-30 18:56:16,326 | INFO |    [809/1525] Linked: R4-The Grove → Marakez
+2026-01-30 18:56:16,410 | INFO |    [810/1525] Linked: R5-Acacia → Marakez
+2026-01-30 18:56:16,470 | INFO |    [811/1525] Linked: Queen Land → Euphoria Group
+2026-01-30 18:56:16,549 | INFO |    [812/1525] Linked: Story Hospitality → Urbnlanes Development
+2026-01-30 18:56:16,603 | INFO |    [813/1525] Linked: Midtown New Cairo Mall → Better Home
+2026-01-30 18:56:16,656 | INFO |    [814/1525] Linked: Lilac Village → Madaar Development
+2026-01-30 18:56:16,748 | INFO |    [815/1525] Linked: De Joya 4-Phase 2 → Taj Misr Developments
+2026-01-30 18:56:16,803 | INFO |    [816/1525] Linked: Ruby → Arabia Holding
+2026-01-30 18:56:16,886 | INFO |    [817/1525] Linked: Lakeside-Bloomfields → Tatweer Misr
+2026-01-30 18:56:16,969 | INFO |    [818/1525] Linked: Airy → Akam Alrajhi Developments
+2026-01-30 18:56:17,032 | INFO |    [819/1525] Linked: Epic → Akam Alrajhi Developments
+2026-01-30 18:56:17,090 | INFO |    [820/1525] Linked: Sway-Dose → Akam Alrajhi Developments
+2026-01-30 18:56:17,145 | INFO |    [821/1525] Linked: Sector 1 → Modad Properties
+2026-01-30 18:56:17,221 | INFO |    [822/1525] Linked: Sector 2 → Modad Properties
+2026-01-30 18:56:17,275 | INFO |    [823/1525] Linked: Reedy City → Reedy Group
+2026-01-30 18:56:17,362 | INFO |    [824/1525] Linked: Mesca Heights → Somabay
+2026-01-30 18:56:17,418 | INFO |    [825/1525] Linked: Azzar Reedy → Reedy Group
+2026-01-30 18:56:17,503 | INFO |    [826/1525] Linked: Boutiques Business Village → Modon Egypt
+2026-01-30 18:56:17,554 | INFO |    [827/1525] Linked: Acasa Alma → Dar  Al Alamia Developments
+2026-01-30 18:56:17,609 | INFO |    [828/1525] Linked: Caesar Extension 1 → SODIC
+2026-01-30 18:56:17,705 | INFO |    [829/1525] Linked: The Greek Plage → Mountain View
+2026-01-30 18:56:17,759 | INFO |    [830/1525] Linked: K Business Park → Kayan Real Estate
+2026-01-30 18:56:17,844 | INFO |    [831/1525] Linked: Hubwalk → Arabco Developments
+2026-01-30 18:56:17,898 | INFO |    [832/1525] Linked: Ten Islands → Al Ahly Sabbour Developments
+2026-01-30 18:56:17,984 | INFO |    [833/1525] Linked: Crescent Walk - Central Parcel → Marakez
+2026-01-30 18:56:18,037 | INFO |    [834/1525] Linked: Pixel Business Center → Safwa Urban Developments (SUD)
+2026-01-30 18:56:18,124 | INFO |    [835/1525] Linked: Khan Arabesque → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:18,181 | INFO |    [836/1525] Linked: Jazura → SAMCO Developments
+2026-01-30 18:56:18,247 | INFO |    [837/1525] Linked: Elm Tree → ELM Developments
+2026-01-30 18:56:18,310 | INFO |    [838/1525] Linked: Seen Gardenia → Rejan Developments
+2026-01-30 18:56:18,364 | INFO |    [839/1525] Linked: Seen Social District → Rejan Developments
+2026-01-30 18:56:18,436 | INFO |    [840/1525] Linked: Do → One Development
+2026-01-30 18:56:18,499 | INFO |    [841/1525] Linked: Quan Tower → Contact Development
+2026-01-30 18:56:18,553 | INFO |    [842/1525] Linked: Lagoons New Capital → Modon Egypt
+2026-01-30 18:56:18,606 | INFO |    [843/1525] Linked: Mamsha Central → City Edge Developments
+2026-01-30 18:56:18,659 | INFO |    [844/1525] Linked: Sudoku → ArtLife Developments
+2026-01-30 18:56:18,712 | INFO |    [845/1525] Linked: Hay El Ashgar → IGI Real Estate
+2026-01-30 18:56:18,764 | INFO |    [846/1525] Linked: Jada → IGI Real Estate
+2026-01-30 18:56:18,818 | INFO |    [847/1525] Linked: Flare Plaza → Garnet Developments
+2026-01-30 18:56:18,872 | INFO |    [848/1525] Linked: Life Wise → EONS developments
+2026-01-30 18:56:18,940 | INFO |    [849/1525] Linked: S Suits - Solay → Living Yards Developments
+2026-01-30 18:56:18,992 | INFO |    [850/1525] Linked: Aqmar → Kayan Real Estate
+2026-01-30 18:56:19,048 | INFO |    [851/1525] Linked: 40 Square → Mint Al Ahly Sabbour
+2026-01-30 18:56:19,099 | INFO |    [852/1525] Linked: Darvell Business Complex → White Eagle Development
+2026-01-30 18:56:19,153 | INFO |    [854/1525] Linked: Together → Golden View Developments 
+2026-01-30 18:56:19,205 | INFO |    [855/1525] Linked: Blanca Gardens Collection → Somabay
+2026-01-30 18:56:19,258 | INFO |    [856/1525] Linked: DeJoya 4 Strip Mall → Taj Misr Developments
+2026-01-30 18:56:19,316 | INFO |    [857/1525] Linked: 97 Hills → Palm Hills Developments
+2026-01-30 18:56:19,370 | INFO |    [858/1525] Linked: Jade → Palm Hills Developments
+2026-01-30 18:56:19,423 | INFO |    [859/1525] Linked: Park Villas - Al Burouj → Imkan Misr
+2026-01-30 18:56:19,476 | INFO |    [860/1525] Linked: Zoe-Badya → Palm Hills Developments
+2026-01-30 18:56:19,529 | INFO |    [861/1525] Linked: The Red Residence → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:19,582 | INFO |    [862/1525] Linked: Celestia Mall → Namaa AlKhaleej Development
+2026-01-30 18:56:19,635 | INFO |    [863/1525] Linked: Najm → Royal Development
+2026-01-30 18:56:19,686 | INFO |    [864/1525] Linked: Yardin → Mass Developments
+2026-01-30 18:56:19,744 | INFO |    [865/1525] Linked: Olin → Mass Developments
+2026-01-30 18:56:19,796 | INFO |    [866/1525] Linked: Canyon8 → Home Town Developments
+2026-01-30 18:56:19,848 | INFO |    [867/1525] Linked: Covaya → Roya Developments
+2026-01-30 18:56:19,901 | INFO |    [868/1525] Linked: Riza → Eagles Developments
+2026-01-30 18:56:19,953 | INFO |    [869/1525] Linked: Prive - Telal East → Roya Developments
+2026-01-30 18:56:20,006 | INFO |    [870/1525] Linked: Rhodes Island → Mountain View
+2026-01-30 18:56:20,058 | INFO |    [871/1525] Linked: S2-Croons → Madinet Masr
+2026-01-30 18:56:20,111 | INFO |    [872/1525] Linked: Crete Island → Mountain View
+2026-01-30 18:56:20,163 | INFO |    [873/1525] Linked: Paros → Mountain View
+2026-01-30 18:56:20,218 | INFO |    [874/1525] Linked: ELM Tree - Sarai → Madinet Masr
+2026-01-30 18:56:20,270 | INFO |    [875/1525] Linked: G-Bay El Sokhna → United Real Estate Developments
+2026-01-30 18:56:20,323 | INFO |    [876/1525] Linked: Vibe-90 Avenue → TBK Developments
+2026-01-30 18:56:20,395 | INFO |    [877/1525] Linked: Serenity-90 Avenue → TBK Developments
+2026-01-30 18:56:20,453 | INFO |    [878/1525] Linked: Pavilion-90 Avenue → TBK Developments
+2026-01-30 18:56:20,505 | INFO |    [879/1525] Linked: Beige Residence - Hills of One → People & Places
+2026-01-30 18:56:20,558 | INFO |    [880/1525] Linked: Taj Tower 2 → Taj Misr Developments
+2026-01-30 18:56:20,612 | INFO |    [881/1525] Linked: Bridges → One Of One Developments
+2026-01-30 18:56:20,674 | INFO |    [882/1525] Linked: Life Wise Business → EONS developments
+2026-01-30 18:56:20,735 | INFO |    [883/1525] Linked: Yemm Beach Plaza - Ras El Hekma → Modon 
+2026-01-30 18:56:20,788 | INFO |    [884/1525] Linked: The Capitalway Phase 1 → The Waterway Developments
+2026-01-30 18:56:20,846 | INFO |    [885/1525] Linked: Brackets → Modad Properties
+2026-01-30 18:56:20,899 | INFO |    [886/1525] Linked: Patterns → Kulture Developments
+2026-01-30 18:56:20,952 | INFO |    [887/1525] Linked: KAIA → Guira Developments 
+2026-01-30 18:56:21,005 | INFO |    [888/1525] Linked: The North Park-ICity New Cairo → Mountain View
+2026-01-30 18:56:21,058 | INFO |    [889/1525] Linked: MV Park - ICity October → Mountain View
+2026-01-30 18:56:21,113 | INFO |    [890/1525] Linked: Beginnings → TBK Developments
+2026-01-30 18:56:21,171 | INFO |    [891/1525] Linked: Maison S → Living Yards Developments
+2026-01-30 18:56:21,229 | INFO |    [892/1525] Linked: Mountain View Diplomats → Mountain View
+2026-01-30 18:56:21,284 | INFO |    [893/1525] Linked: S1-Taval → Madinet Masr
+2026-01-30 18:56:21,338 | INFO |    [894/1525] Linked: KOR → Arabia Holding
+2026-01-30 18:56:21,391 | INFO |    [895/1525] Linked: Spire - Club Hills → Housing and Development Properties HDP
+2026-01-30 18:56:21,444 | INFO |    [896/1525] Linked: Sholan Somabay → Reside Developments
+2026-01-30 18:56:21,497 | INFO |    [897/1525] Linked: Vert → Palmier Developments 
+2026-01-30 18:56:21,548 | INFO |    [898/1525] Linked: The Stamp - TALDA → Housing and Development Properties HDP
+2026-01-30 18:56:21,604 | INFO |    [899/1525] Linked: Next Point → Akadia Developments
+2026-01-30 18:56:21,660 | INFO |    [900/1525] Linked: Roudy-phase 2 → Zaya Development
+2026-01-30 18:56:21,715 | INFO |    [901/1525] Linked: Boulevard Hills-Hills Of One → People & Places
+2026-01-30 18:56:21,770 | INFO |    [902/1525] Linked: North Villas-Hills Of One → People & Places
+2026-01-30 18:56:21,824 | INFO |    [903/1525] Linked: V40 District → City Edge Developments
+2026-01-30 18:56:21,898 | INFO |    [904/1525] Linked: Jura Phase1 → New Jersey Developments
+2026-01-30 18:56:21,952 | INFO |    [905/1525] Linked: Nine08 → Centrada Developments
+2026-01-30 18:56:22,020 | INFO |    [906/1525] Linked: Mall T Square → Torec Developments
+2026-01-30 18:56:22,081 | INFO |    [907/1525] Linked: T Pearl → Torec Developments
+2026-01-30 18:56:22,134 | INFO |    [908/1525] Linked: Golf Town → Modon Egypt
+2026-01-30 18:56:22,186 | INFO |    [909/1525] Linked: HOM → Zaya Development
+2026-01-30 18:56:22,239 | INFO |    [910/1525] Linked: Capital Park → RFCO Development 
+2026-01-30 18:56:22,291 | INFO |    [911/1525] Linked: Mindset → LMD
+2026-01-30 18:56:22,345 | INFO |    [912/1525] Linked: cityzen → Al Qamzi Developments
+2026-01-30 18:56:22,398 | INFO |    [913/1525] Linked: El Patio Jade → La Vista Developments
+2026-01-30 18:56:22,451 | INFO |    [914/1525] Linked: GRAND LANE → Housing and Development Properties HDP
+2026-01-30 18:56:22,504 | INFO |    [915/1525] Linked: O Views → Orascom Development Egypt
+2026-01-30 18:56:22,557 | INFO |    [916/1525] Linked: Rock Green → Rock developments
+2026-01-30 18:56:22,610 | INFO |    [917/1525] Linked: V Levels Phase 3 → Dunes Capital Group
+2026-01-30 18:56:22,662 | INFO |    [918/1525] Linked: V Levels Phase 4 → Dunes Capital Group
+2026-01-30 18:56:22,717 | INFO |    [919/1525] Linked: C9 → Centrada Developments
+2026-01-30 18:56:22,774 | INFO |    [920/1525] Linked: Lush Valley → City Edge Developments
+2026-01-30 18:56:22,828 | INFO |    [921/1525] Linked: Mesca Edition → Somabay
+2026-01-30 18:56:22,880 | INFO |    [922/1525] Linked: Siyal → Orascom Development Egypt
+2026-01-30 18:56:22,933 | INFO |    [923/1525] Linked: The Cove - Silversands → Ora Developers
+2026-01-30 18:56:22,985 | INFO |    [924/1525] Linked: Can Limon - Kai Sokhna → Misr Italia Properties
+2026-01-30 18:56:23,038 | INFO |    [925/1525] Linked: Hub 44 → Kayan Real Estate
+2026-01-30 18:56:23,092 | INFO |    [926/1525] Linked: Starla-Ashgar Heights → IGI Real Estate
+2026-01-30 18:56:23,146 | INFO |    [927/1525] Linked: Neo Gardens → Wadi Degla Developments
+2026-01-30 18:56:23,200 | INFO |    [928/1525] Linked: VILLAGE DE LA CAPITALE → Palm Hills Developments
+2026-01-30 18:56:23,253 | INFO |    [929/1525] Linked: The Nines → Orascom Development Egypt
+2026-01-30 18:56:23,306 | INFO |    [930/1525] Linked: Pearl → Orascom Development Egypt
+2026-01-30 18:56:23,361 | INFO |    [931/1525] Linked: Livelli → Arabco Developments
+2026-01-30 18:56:23,418 | INFO |    [932/1525] Linked: Noir → Living Yards Developments
+2026-01-30 18:56:23,518 | INFO |    [933/1525] Linked: Eastside → LMD
+2026-01-30 18:56:23,673 | INFO |    [934/1525] Linked: Cleopatra Square → Cleopatra Hotels and Developments
+2026-01-30 18:56:23,746 | INFO |    [935/1525] Linked: Axle → Menassat Developments
+2026-01-30 18:56:23,849 | INFO |    [936/1525] Linked: Park View → Hassan Allam Properties
+2026-01-30 18:56:23,946 | INFO |    [937/1525] Linked: Taycoon → Nile Developments
+2026-01-30 18:56:24,000 | INFO |    [938/1525] Linked: Orkidia → Al Nasr Housing and Development
+2026-01-30 18:56:24,055 | INFO |    [939/1525] Linked: Orla Residence → I Capital Developments
+2026-01-30 18:56:24,109 | INFO |    [940/1525] Linked: 41 Business District → M Squared
+2026-01-30 18:56:24,169 | INFO |    [941/1525] Linked: Maadi grand city → Morshedy Group
+2026-01-30 18:56:24,223 | INFO |    [942/1525] Linked: Space Mall → Gates Development
+2026-01-30 18:56:24,366 | INFO |    [943/1525] Linked: Maxim Canal Residence → Maxim Group
+2026-01-30 18:56:24,444 | INFO |    [944/1525] Linked: Garden Hills → Masr El Hayah For Real Estate Development 
+2026-01-30 18:56:24,497 | INFO |    [945/1525] Linked: Le Ciel → Cecelia for Construction
+2026-01-30 18:56:24,549 | INFO |    [946/1525] Linked: Oak Residences-Stone Park → Roya Developments
+2026-01-30 18:56:24,602 | INFO |    [947/1525] Linked: Neopolis → Wadi Degla Developments
+2026-01-30 18:56:24,654 | INFO |    [948/1525] Linked: It Business Hub → Upwyde Developments
+2026-01-30 18:56:24,708 | INFO |    [949/1525] Linked: Naia Bay → Naia Developments
+2026-01-30 18:56:24,761 | INFO |    [950/1525] Linked: Bo Sidi Abdelrahman → Maxim Developments
+2026-01-30 18:56:24,819 | INFO |    [951/1525] Linked: El Patio 1 → La Vista Developments
+2026-01-30 18:56:24,872 | INFO |    [952/1525] Linked: Koun → Mabany Edris
+2026-01-30 18:56:24,922 | INFO |    [953/1525] Linked: Yellow Residence → Urbnlanes Development
+2026-01-30 18:56:24,979 | INFO |    [954/1525] Linked: Solimar → Solimar Real Estate
+2026-01-30 18:56:25,030 | INFO |    [955/1525] Linked: Track 10 → Deal Investment Group
+2026-01-30 18:56:25,082 | INFO |    [956/1525] Linked: Ras Soma → Travco properties
+2026-01-30 18:56:25,158 | INFO |    [957/1525] Linked: Italian Square → Misr Italia Properties
+2026-01-30 18:56:25,220 | INFO |    [958/1525] Linked: Town View → Pyramisa Properties
+2026-01-30 18:56:25,273 | INFO |    [959/1525] Linked: White Bay → PACT Real Estate
+2026-01-30 18:56:25,327 | INFO |    [960/1525] Linked: El Safwa → Safwa Real Estate
+2026-01-30 18:56:25,383 | INFO |    [961/1525] Linked: Hadayek el Mohandesin → Dorra Group
+2026-01-30 18:56:25,440 | INFO |    [962/1525] Linked: Stella Marina → Remco Tourism Villages Construction
+2026-01-30 18:56:25,494 | INFO |    [963/1525] Linked: Verde → United For Housing and Development
+2026-01-30 18:56:25,547 | INFO |    [964/1525] Linked: Agora Sidi Abdelrahman → El Wadi For Investment
+2026-01-30 18:56:25,597 | INFO |    [965/1525] Linked: Gardenia Heights → Al- Kamel
+2026-01-30 18:56:25,649 | INFO |    [966/1525] Linked: Golden Eagle → Golden Eagle For Construction
+2026-01-30 18:56:25,701 | INFO |    [967/1525] Linked: Fairways → Orascom Development Egypt
+2026-01-30 18:56:25,755 | INFO |    [968/1525] Linked: Loloat Al Sherouk → Miscellaneous
+2026-01-30 18:56:25,810 | INFO |    [969/1525] Linked: Stella Heights → Remco Tourism Villages Construction
+2026-01-30 18:56:25,863 | INFO |    [970/1525] Linked: Cinco → Upwyde Developments
+2026-01-30 18:56:25,917 | INFO |    [971/1525] Linked: Marriot Residence - Amer group → Amer Group
+2026-01-30 18:56:25,969 | INFO |    [972/1525] Linked: Rosail → Khaled Sabry Holding
+2026-01-30 18:56:26,021 | INFO |    [973/1525] Linked: Sarayat Al Korba → Heliopolis Developers Group
+2026-01-30 18:56:26,077 | INFO |    [974/1525] Linked: Blue Blue → MG Developments
+2026-01-30 18:56:26,130 | INFO |    [975/1525] Linked: ZOE Extension → Palm Hills Developments
+2026-01-30 18:56:26,182 | INFO |    [976/1525] Linked: Royal City → Al Babtain Group
+2026-01-30 18:56:26,236 | INFO |    [977/1525] Linked: Mena 3 → Mena For Real Estate Development
+2026-01-30 18:56:26,288 | INFO |    [978/1525] Linked: 6ixty Three → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:26,342 | INFO |    [979/1525] Linked: 6ixty Walk One New Capital → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:26,396 | INFO |    [980/1525] Linked: Heaven Hills Porto El Sokhna → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:26,449 | INFO |    [981/1525] Linked: Monark Residence → Royal Development
+2026-01-30 18:56:26,502 | INFO |    [982/1525] Linked: Waterway White → The Waterway Developments
+2026-01-30 18:56:26,554 | INFO |    [983/1525] Linked: Moon Valley 2 → Arabia Holding
+2026-01-30 18:56:26,608 | INFO |    [984/1525] Linked: Il Bayou → The Land Developers (TLD)
+2026-01-30 18:56:26,661 | INFO |    [985/1525] Linked: Urban Business Lane → Tameer
+2026-01-30 18:56:26,715 | INFO |    [986/1525] Linked: D Line → La Vista Developments
+2026-01-30 18:56:26,771 | INFO |    [987/1525] Linked: La Terra → Miscellaneous
+2026-01-30 18:56:26,824 | INFO |    [988/1525] Linked: Trivium Business Complex → INMA Developments
+2026-01-30 18:56:26,878 | INFO |    [989/1525] Linked: Trivium Square → INMA Developments
+2026-01-30 18:56:26,930 | INFO |    [990/1525] Linked: Marina 8 → The New Urban Communities Authority
+2026-01-30 18:56:26,983 | INFO |    [991/1525] Linked: Salt Mall → New Generation Developments
+2026-01-30 18:56:27,037 | INFO |    [992/1525] Linked: LVLS Mountain View → Mountain View
+2026-01-30 18:56:27,090 | INFO |    [993/1525] Linked: Amorada → Afaaq Developments
+2026-01-30 18:56:27,145 | INFO |    [994/1525] Linked: Diplo 2 → Miscellaneous
+2026-01-30 18:56:27,203 | INFO |    [995/1525] Linked: Jeera → IWAN Developments
+2026-01-30 18:56:27,254 | INFO |    [996/1525] Linked: Capital Heights 2 → Safwa Urban Developments (SUD)
+2026-01-30 18:56:27,307 | INFO |    [997/1525] Linked: Iguall → Upwyde Developments
+2026-01-30 18:56:27,359 | INFO |    [998/1525] Linked: Obsidier → Dubai Misr
+2026-01-30 18:56:27,432 | INFO |    [999/1525] Linked: Il Latini City Edge → City Edge Developments
+2026-01-30 18:56:27,488 | INFO |    [1000/1525] Linked: Beach chalets - Seashore → Hyde Park
+2026-01-30 18:56:27,633 | INFO |    [1001/1525] Linked: Dijar → Reedy Group
+2026-01-30 18:56:27,697 | INFO |    [1002/1525] Linked: Al Alamein Residences → Emaar Misr
+2026-01-30 18:56:27,762 | INFO |    [1003/1525] Linked: Lake view Residence 2 → Lake View Development
+2026-01-30 18:56:27,818 | INFO |    [1004/1525] Linked: IRA → El Gabry Developments
+2026-01-30 18:56:27,871 | INFO |    [1005/1525] Linked: Vigor → Al Baron Developments
+2026-01-30 18:56:27,923 | INFO |    [1006/1525] Linked: Mamsha Views → City Edge Developments
+2026-01-30 18:56:27,976 | INFO |    [1007/1525] Linked: Mamsha Almaqsad → City Edge Developments
+2026-01-30 18:56:28,027 | INFO |    [1008/1525] Linked: Mamsha District → City Edge Developments
+2026-01-30 18:56:28,079 | INFO |    [1009/1525] Linked: Mamsha Gardens → City Edge Developments
+2026-01-30 18:56:28,168 | INFO |    [1010/1525] Linked: Miramar Residence → Orascom Development Egypt
+2026-01-30 18:56:28,223 | INFO |    [1011/1525] Linked: Boutique Village → Modon Egypt
+2026-01-30 18:56:28,278 | INFO |    [1012/1525] Linked: EDEN → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:56:28,330 | INFO |    [1013/1525] Linked: Diplo 3 → Miscellaneous
+2026-01-30 18:56:28,386 | INFO |    [1014/1525] Linked: Elite Park → Capital Elite Developments
+2026-01-30 18:56:28,439 | INFO |    [1015/1525] Linked: El Fustat → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:28,492 | INFO |    [1016/1525] Linked: Telal - Shores → Roya Developments
+2026-01-30 18:56:28,550 | INFO |    [1017/1525] Linked: Galleria Mall → Arabia Holding
+2026-01-30 18:56:28,603 | INFO |    [1018/1525] Linked: Dejoya Plaza Residence → Taj Misr Developments
+2026-01-30 18:56:28,656 | INFO |    [1019/1525] Linked: Catalan Mall → Gates Development
+2026-01-30 18:56:28,711 | INFO |    [1020/1525] Linked: Zomra East → Nations Of Sky
+2026-01-30 18:56:28,782 | INFO |    [1021/1525] Linked: J East-Phase 1 → Juzur Development
+2026-01-30 18:56:28,836 | INFO |    [1022/1525] Linked: J East-Phase 2 → Juzur Development
+2026-01-30 18:56:28,889 | INFO |    [1023/1525] Linked: Kernel → Akam Alrajhi Developments
+2026-01-30 18:56:28,944 | INFO |    [1024/1525] Linked: Begonia Walk → Menassat Developments
+2026-01-30 18:56:28,997 | INFO |    [1025/1525] Linked: Seventy Plaza Mall → Rejan Developments
+2026-01-30 18:56:29,050 | INFO |    [1026/1525] Linked: Shababeek → Marquee Developments
+2026-01-30 18:56:29,101 | INFO |    [1027/1525] Linked: Eagle Tower → White Eagle Development
+2026-01-30 18:56:29,153 | INFO |    [1028/1525] Linked: The Qube → Al Qamzi Developments
+2026-01-30 18:56:29,208 | INFO |    [1029/1525] Linked: Marassi Red Sea → Emaar Misr
+2026-01-30 18:56:29,262 | INFO |    [1030/1525] Linked: Pyramids City 5 → Pyramids Developments
+2026-01-30 18:56:29,317 | INFO |    [1031/1525] Linked: Skyla → IGI Real Estate
+2026-01-30 18:56:29,372 | INFO |    [1032/1525] Linked: City Central → IGI Real Estate
+2026-01-30 18:56:29,433 | INFO |    [1033/1525] Linked: LaManga → AlKarma Developments
+2026-01-30 18:56:29,494 | INFO |    [1034/1525] Linked: Loft-Pyramids Heights → ADD Properties
+2026-01-30 18:56:29,579 | INFO |    [1035/1525] Linked: The Capitalway Phase2 → The Waterway Developments
+2026-01-30 18:56:29,659 | INFO |    [1036/1525] Linked: Alam Al Roum → Qatari Diar
+2026-01-30 18:56:29,711 | INFO |    [1037/1525] Linked: Jura Phase 2 → New Jersey Developments
+2026-01-30 18:56:29,764 | INFO |    [1038/1525] Linked: Waterway East → The Waterway Developments
+2026-01-30 18:56:29,815 | INFO |    [1039/1525] Linked: Rafts Business District → The Ark Development
+2026-01-30 18:56:29,868 | INFO |    [1040/1525] Linked: Capital Crown → RFCO Development 
+2026-01-30 18:56:29,921 | INFO |    [1041/1525] Linked: VÉA → IL Cazar Developments
+2026-01-30 18:56:29,973 | INFO |    [1042/1525] Linked: Solimanya Gardens → Misr Tourism Development Company
+2026-01-30 18:56:30,026 | INFO |    [1043/1525] Linked: VX Golden Square → Mercon Developments
+2026-01-30 18:56:30,079 | INFO |    [1044/1525] Linked: Nest Residence - Serviced Apartments → N Developments
+2026-01-30 18:56:30,137 | INFO |    [1045/1525] Linked: Art Island → Orascom Development Egypt
+2026-01-30 18:56:30,194 | INFO |    [1046/1525] Linked: Mousa Coast → Mousa Coast Development
+2026-01-30 18:56:30,247 | INFO |    [1047/1525] Linked: The Rift Business Park → LUD -Lozan Urban Development
+2026-01-30 18:56:30,304 | INFO |    [1048/1525] Linked: The Trine → IWAN Developments
+2026-01-30 18:56:30,357 | INFO |    [1049/1525] Linked: Highland Park → Better Home
+2026-01-30 18:56:30,410 | INFO |    [1050/1525] Linked: Capital East → TBK Developments
+2026-01-30 18:56:30,469 | INFO |    [1051/1525] Linked: One Katameya → Morshedy Group
+2026-01-30 18:56:30,523 | INFO |    [1052/1525] Linked: River Green 2 → MBG Developments
+2026-01-30 18:56:30,578 | INFO |    [1053/1525] Linked: Mirage Mall → INMA Developments
+2026-01-30 18:56:30,634 | INFO |    [1054/1525] Linked: Alura → SERAC Developments
+2026-01-30 18:56:30,685 | INFO |    [1055/1525] Linked: Diar I → Tameer
+2026-01-30 18:56:30,739 | INFO |    [1056/1525] Linked: Mena 4 → Mena For Real Estate Development
+2026-01-30 18:56:30,793 | INFO |    [1057/1525] Linked: Nile Boulevard → Nile Developments
+2026-01-30 18:56:30,846 | INFO |    [1058/1525] Linked: Regent's Square → Al Dawlia Developments
+2026-01-30 18:56:30,898 | INFO |    [1059/1525] Linked: White Residence → Upwyde Developments
+2026-01-30 18:56:30,953 | INFO |    [1060/1525] Linked: Dejoya Primero Villas → Taj Misr Developments
+2026-01-30 18:56:31,010 | INFO |    [1061/1525] Linked: Continental Residence → Al Moez Holding Group
+2026-01-30 18:56:31,066 | INFO |    [1062/1525] Linked: Acasa Mia → Dar  Al Alamia Developments
+2026-01-30 18:56:31,119 | INFO |    [1063/1525] Linked: Casa D'Or - Zed → Ora Developers
+2026-01-30 18:56:31,175 | INFO |    [1064/1525] Linked: West Woods → Arabia Holding
+2026-01-30 18:56:31,230 | INFO |    [1065/1525] Linked: The Valleys → Hassan Allam Properties
+2026-01-30 18:56:31,283 | INFO |    [1066/1525] Linked: Lugar → Gates Development
+2026-01-30 18:56:31,336 | INFO |    [1067/1525] Linked: Hyatt Regency Residences → ADD Properties
+2026-01-30 18:56:31,387 | INFO |    [1068/1525] Linked: The Residence → Salam Properties
+2026-01-30 18:56:31,442 | INFO |    [1069/1525] Linked: Wadi East - Ras El Hekma → Modon 
+2026-01-30 18:56:31,495 | INFO |    [1070/1525] Linked: Agora Mall → Urban Developments
+2026-01-30 18:56:31,550 | INFO |    [1071/1525] Linked: T Residences → Torec Developments
+2026-01-30 18:56:31,604 | INFO |    [1072/1525] Linked: V levels → Dunes Capital Group
+2026-01-30 18:56:31,658 | INFO |    [1073/1525] Linked: Orouba Royal → Orouba Misr Development
+2026-01-30 18:56:31,711 | INFO |    [1074/1525] Linked: Lasirena Ras Sudr → Lasirena Group
+2026-01-30 18:56:31,763 | INFO |    [1075/1525] Linked: Go Heliopolis → IL Cazar Developments
+2026-01-30 18:56:31,816 | INFO |    [1076/1525] Linked: The Lark Mall → Tamayoz Developments
+2026-01-30 18:56:31,870 | INFO |    [1077/1525] Linked: V40 → City Edge Developments
+2026-01-30 18:56:31,921 | INFO |    [1078/1525] Linked: Amara → New Plan
+2026-01-30 18:56:31,972 | INFO |    [1079/1525] Linked: Lagoon New Allamein → ARCO
+2026-01-30 18:56:32,024 | INFO |    [1080/1525] Linked: North Bay - El Gouna → Orascom Development Egypt
+2026-01-30 18:56:32,082 | INFO |    [1081/1525] Linked: Murano Wadi Degla → Wadi Degla Developments
+2026-01-30 18:56:32,133 | INFO |    [1082/1525] Linked: Westown Medical Center → SODIC
+2026-01-30 18:56:32,187 | INFO |    [1083/1525] Linked: Elva - Il Monte Galala → Tatweer Misr
+2026-01-30 18:56:32,244 | INFO |    [1084/1525] Linked: Shamasi → SERAC Developments
+2026-01-30 18:56:32,301 | INFO |    [1085/1525] Linked: Cattleya → Arabco Developments
+2026-01-30 18:56:32,353 | INFO |    [1086/1525] Linked: Dinero Tower → Golden Town Development
+2026-01-30 18:56:32,406 | INFO |    [1087/1525] Linked: Palmet - New Cairo → Palm Hills Developments
+2026-01-30 18:56:32,458 | INFO |    [1088/1525] Linked: Al Maqsad Park → City Edge Developments
+2026-01-30 18:56:32,510 | INFO |    [1089/1525] Linked: Talda → Housing and Development Properties HDP
+2026-01-30 18:56:32,564 | INFO |    [1090/1525] Linked: Vaha → AlKarma Developments
+2026-01-30 18:56:32,617 | INFO |    [1091/1525] Linked: Lumia Residence- New Capital → Dubai Misr
+2026-01-30 18:56:32,669 | INFO |    [1092/1525] Linked: Sky Ramp → Upwyde Developments
+2026-01-30 18:56:32,722 | INFO |    [1093/1525] Linked: Nmq → Melee Development
+2026-01-30 18:56:32,777 | INFO |    [1094/1525] Linked: Eelaf Residence → Emaar Rezk Group Developments 
+2026-01-30 18:56:32,829 | INFO |    [1095/1525] Linked: T.Hub → Times Developments
+2026-01-30 18:56:32,883 | INFO |    [1096/1525] Linked: Pulse → Melee Development
+2026-01-30 18:56:32,935 | INFO |    [1097/1525] Linked: One33 → Arkan Palm Development
+2026-01-30 18:56:32,989 | INFO |    [1098/1525] Linked: La Quinta → La Quinta Group
+2026-01-30 18:56:33,041 | INFO |    [1099/1525] Linked: Zahya Business Park → Emtelak Developments
+2026-01-30 18:56:33,094 | INFO |    [1100/1525] Linked: Ivoire East → PRE Developments
+2026-01-30 18:56:33,150 | INFO |    [1101/1525] Linked: Peerage Residence → Al Riyadh Misr
+2026-01-30 18:56:33,201 | INFO |    [1102/1525] Linked: District People → W's 
+2026-01-30 18:56:33,254 | INFO |    [1103/1525] Linked: La Colina → Capital Hills Developments (CHD )
+2026-01-30 18:56:33,305 | INFO |    [1104/1525] Linked: Nautilus → Somabay
+2026-01-30 18:56:33,358 | INFO |    [1105/1525] Linked: City Hall Strip → SERAC Developments
+2026-01-30 18:56:33,414 | INFO |    [1106/1525] Linked: Arabesque → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:33,467 | INFO |    [1107/1525] Linked: Shades → Asaldi Properties
+2026-01-30 18:56:33,531 | INFO |    [1108/1525] Linked: Mena 2 → Mena For Real Estate Development
+2026-01-30 18:56:33,584 | INFO |    [1109/1525] Linked: Flowers Park → EGEC
+2026-01-30 18:56:33,636 | INFO |    [1110/1525] Linked: Century City → Vantage Urban Developments
+2026-01-30 18:56:33,699 | INFO |    [1111/1525] Linked: Divina Gardens → Atric Developments
+2026-01-30 18:56:33,754 | INFO |    [1112/1525] Linked: Wadi Soma → Somabay
+2026-01-30 18:56:33,808 | INFO |    [1113/1525] Linked: Valencia Valley → NCB Developments
+2026-01-30 18:56:33,861 | INFO |    [1114/1525] Linked: River Walk → Wadi Degla Developments
+2026-01-30 18:56:33,914 | INFO |    [1115/1525] Linked: Swan Lake Katameya → Hassan Allam Properties
+2026-01-30 18:56:33,967 | INFO |    [1116/1525] Linked: El Kafr → Miscellaneous
+2026-01-30 18:56:34,018 | INFO |    [1117/1525] Linked: Haptown Park 226 → Hassan Allam Properties
+2026-01-30 18:56:34,070 | INFO |    [1118/1525] Linked: Roudy → Zaya Development
+2026-01-30 18:56:34,123 | INFO |    [1119/1525] Linked: Golf City EL Obour → Zaghloul Holdings
+2026-01-30 18:56:34,174 | INFO |    [1120/1525] Linked: Notion → Town Writers
+2026-01-30 18:56:34,228 | INFO |    [1121/1525] Linked: Mountain View 3 → Mountain View
+2026-01-30 18:56:34,279 | INFO |    [1122/1525] Linked: West End → West End Developments
+2026-01-30 18:56:34,334 | INFO |    [1123/1525] Linked: Garnet → Jadeer Realestate
+2026-01-30 18:56:34,387 | INFO |    [1124/1525] Linked: El Patio Town → La Vista Developments
+2026-01-30 18:56:34,442 | INFO |    [1125/1525] Linked: Central Avenue → Mabany Edris
+2026-01-30 18:56:34,494 | INFO |    [1126/1525] Linked: Avelin → Times Developments
+2026-01-30 18:56:34,546 | INFO |    [1127/1525] Linked: Madar Mall → Tamayoz Developments
+2026-01-30 18:56:34,599 | INFO |    [1128/1525] Linked: Ivory Plaza → Tamayoz Developments
+2026-01-30 18:56:34,657 | INFO |    [1129/1525] Linked: Elora → Arabia Holding
+2026-01-30 18:56:34,711 | INFO |    [1130/1525] Linked: The Hills → Roya Developments
+2026-01-30 18:56:34,767 | INFO |    [1131/1525] Linked: The Willows → Roya Developments
+2026-01-30 18:56:34,819 | INFO |    [1132/1525] Linked: The Terraces → Cornerstone Development
+2026-01-30 18:56:34,873 | INFO |    [1133/1525] Linked: Palm Beach Ain Sokhna → Lasirena Group
+2026-01-30 18:56:34,927 | INFO |    [1134/1525] Linked: Porto Pyramids → Porto Group
+2026-01-30 18:56:34,980 | INFO |    [1135/1525] Linked: Nice 4 → Mimary Group
+2026-01-30 18:56:35,037 | INFO |    [1136/1525] Linked: Red → Cornerstone Development
+2026-01-30 18:56:35,089 | INFO |    [1137/1525] Linked: Riviera Heights → Novus Stanza Properties
+2026-01-30 18:56:35,141 | INFO |    [1138/1525] Linked: Zahya → City Edge Developments
+2026-01-30 18:56:35,197 | INFO |    [1139/1525] Linked: El Patio Vera → La Vista Developments
+2026-01-30 18:56:35,248 | INFO |    [1140/1525] Linked: Club Side Towers - Zed East → Ora Developers
+2026-01-30 18:56:35,299 | INFO |    [1141/1525] Linked: E Tower → United Development Group
+2026-01-30 18:56:35,351 | INFO |    [1142/1525] Linked: Wood Walks → Al Ahly Sabbour Developments
+2026-01-30 18:56:35,410 | INFO |    [1143/1525] Linked: Town Walk → Orascom Development Egypt
+2026-01-30 18:56:35,464 | INFO |    [1144/1525] Linked: Koronfel Heights → Engineering Company For Construction
+2026-01-30 18:56:35,527 | INFO |    [1145/1525] Linked: Rock Gold → Rock developments
+2026-01-30 18:56:35,581 | INFO |    [1146/1525] Linked: Rock Capital → Rock developments
+2026-01-30 18:56:35,636 | INFO |    [1147/1525] Linked: SQ1 → Housing and Development Properties HDP
+2026-01-30 18:56:35,688 | INFO |    [1148/1525] Linked: Icon Garden → Style Home Development
+2026-01-30 18:56:35,741 | INFO |    [1149/1525] Linked: At East → Al Ahly Sabbour Developments
+2026-01-30 18:56:35,797 | INFO |    [1150/1525] Linked: Gaia Cabanas → Melee Development
+2026-01-30 18:56:35,857 | INFO |    [1151/1525] Linked: Stella di mare 2 → Remco Tourism Villages Construction
+2026-01-30 18:56:35,911 | INFO |    [1152/1525] Linked: Mayadin R5 → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:35,967 | INFO |    [1153/1525] Linked: Summer → Al Ahly Sabbour Developments
+2026-01-30 18:56:36,022 | INFO |    [1154/1525] Linked: Villar → Al Diwan
+2026-01-30 18:56:36,075 | INFO |    [1155/1525] Linked: Saada Commercial Hub → Horizon Egypt Development
+2026-01-30 18:56:36,128 | INFO |    [1156/1525] Linked: Le Reve → ARCO
+2026-01-30 18:56:36,180 | INFO |    [1157/1525] Linked: The lane → Palm Hills Developments
+2026-01-30 18:56:36,234 | INFO |    [1158/1525] Linked: Degla Gardens → Morshedy Group
+2026-01-30 18:56:36,289 | INFO |    [1159/1525] Linked: Estates Residence - Nobu → SODIC
+2026-01-30 18:56:36,344 | INFO |    [1160/1525] Linked: Five Fifty Five Business Complex → DAL Developments
+2026-01-30 18:56:36,397 | INFO |    [1161/1525] Linked: Eastmed → LMD
+2026-01-30 18:56:36,451 | INFO |    [1162/1525] Linked: Icon Residence → Style Home Development
+2026-01-30 18:56:36,505 | INFO |    [1163/1525] Linked: Acasia → Housing and Development Properties HDP
+2026-01-30 18:56:36,561 | INFO |    [1164/1525] Linked: Playa Ghazala → G Developments
+2026-01-30 18:56:36,619 | INFO |    [1165/1525] Linked: Southmed → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:56:36,672 | INFO |    [1166/1525] Linked: Hacienda Heneish → Palm Hills Developments
+2026-01-30 18:56:36,725 | INFO |    [1167/1525] Linked: Lagoona - La Vista Ras El Hekma → La Vista Developments
+2026-01-30 18:56:36,778 | INFO |    [1168/1525] Linked: Aden → Orascom Development Egypt
+2026-01-30 18:56:36,829 | INFO |    [1169/1525] Linked: DUA → Orascom Development Egypt
+2026-01-30 18:56:36,882 | INFO |    [1170/1525] Linked: Financial Hub → Safwa Urban Developments (SUD)
+2026-01-30 18:56:36,936 | INFO |    [1171/1525] Linked: 3 Sides Mall → N Developments
+2026-01-30 18:56:36,990 | INFO |    [1172/1525] Linked: The Gray → Housing and Development Properties HDP
+2026-01-30 18:56:37,044 | INFO |    [1173/1525] Linked: Crowne Residence → Urbnlanes Development
+2026-01-30 18:56:37,099 | INFO |    [1174/1525] Linked: Alma New Alamein → New Generation Developments
+2026-01-30 18:56:37,152 | INFO |    [1175/1525] Linked: ARC- Soma Bay → Somabay
+2026-01-30 18:56:37,234 | INFO |    [1176/1525] Linked: Canan Capital → Lasirena Group
+2026-01-30 18:56:37,286 | INFO |    [1177/1525] Linked: Dejoya Park → Taj Misr Developments
+2026-01-30 18:56:37,340 | INFO |    [1178/1525] Linked: Pyramids City → Pyramids Developments
+2026-01-30 18:56:37,393 | INFO |    [1179/1525] Linked: Green Heights → Everest Egy
+2026-01-30 18:56:37,446 | INFO |    [1180/1525] Linked: Blumar El Dome → Wadi Degla Developments
+2026-01-30 18:56:37,499 | INFO |    [1181/1525] Linked: Lake View Boutique → Lake View Development
+2026-01-30 18:56:37,553 | INFO |    [1182/1525] Linked: One residence → Sky AD Developments
+2026-01-30 18:56:37,605 | INFO |    [1183/1525] Linked: White Walk → Upwyde Developments
+2026-01-30 18:56:37,658 | INFO |    [1184/1525] Linked: Ranches → Dorra Group
+2026-01-30 18:56:37,709 | INFO |    [1185/1525] Linked: New Garden City → City Edge Developments
+2026-01-30 18:56:37,761 | INFO |    [1186/1525] Linked: Alaire → Al Ahly Sabbour Developments
+2026-01-30 18:56:37,816 | INFO |    [1187/1525] Linked: Moray → Main Marks
+2026-01-30 18:56:37,872 | INFO |    [1188/1525] Linked: Ever New Cairo → Cred Developments
+2026-01-30 18:56:37,929 | INFO |    [1189/1525] Linked: Serena Heights → Housing Pgesco
+2026-01-30 18:56:37,982 | INFO |    [1190/1525] Linked: Jazebeya → Upwyde Developments
+2026-01-30 18:56:38,035 | INFO |    [1191/1525] Linked: N90 Business Complex → Wealth Development
+2026-01-30 18:56:38,089 | INFO |    [1192/1525] Linked: Marriott Residences Heliopolis → A Capital Holding
+2026-01-30 18:56:38,144 | INFO |    [1193/1525] Linked: Rock Eden → Rock developments
+2026-01-30 18:56:38,196 | INFO |    [1194/1525] Linked: Elsherouk → Miscellaneous
+2026-01-30 18:56:38,247 | INFO |    [1195/1525] Linked: PX → Palm Hills Developments
+2026-01-30 18:56:38,304 | INFO |    [1196/1525] Linked: Sheraton Residence → Margins Development
+2026-01-30 18:56:38,357 | INFO |    [1197/1525] Linked: Kazan Plaza → First Group
+2026-01-30 18:56:38,415 | INFO |    [1198/1525] Linked: Belva → Karnak Real Estate Developments
+2026-01-30 18:56:38,467 | INFO |    [1199/1525] Linked: Nurai → Mercon Developments
+2026-01-30 18:56:38,519 | INFO |    [1200/1525] Linked: Redwood Tower → A Capital Holding
+2026-01-30 18:56:38,575 | INFO |    [1201/1525] Linked: Karma 2 → Karma Development  Company
+2026-01-30 18:56:38,627 | INFO |    [1202/1525] Linked: Morfo → Capital Hills Developments (CHD )
+2026-01-30 18:56:38,681 | INFO |    [1203/1525] Linked: The 101 → El Attal Holding
+2026-01-30 18:56:38,737 | INFO |    [1204/1525] Linked: Neo Business Park → Juzur Development
+2026-01-30 18:56:38,814 | INFO |    [1205/1525] Linked: City Oval → Master Group
+2026-01-30 18:56:38,880 | INFO |    [1206/1525] Linked: Rai Valleys → Madinet Masr
+2026-01-30 18:56:38,932 | INFO |    [1207/1525] Linked: Lagoon Beach Park - Aliva → Mountain View
+2026-01-30 18:56:38,993 | INFO |    [1208/1525] Linked: More Residences → LMD
+2026-01-30 18:56:39,047 | INFO |    [1209/1525] Linked: Jura → New Jersey Developments
+2026-01-30 18:56:39,107 | INFO |    [1210/1525] Linked: Apex Business Complex → LUD -Lozan Urban Development
+2026-01-30 18:56:39,161 | INFO |    [1211/1525] Linked: Podium Cairo Festival City Admin Buildings → Al-Futtaim Group Real Estate
+2026-01-30 18:56:39,214 | INFO |    [1212/1525] Linked: Golf Solimania → Misr Tourism Development Company
+2026-01-30 18:56:39,269 | INFO |    [1213/1525] Linked: Marseilia beach 3 → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:56:39,321 | INFO |    [1214/1525] Linked: Al Jazi Gardens → Al Jazi Egypt
+2026-01-30 18:56:39,373 | INFO |    [1215/1525] Linked: Castle Landmark → Cred Developments
+2026-01-30 18:56:39,428 | INFO |    [1216/1525] Linked: Kayan → Arkan Palm Development
+2026-01-30 18:56:39,481 | INFO |    [1217/1525] Linked: La Nuova Vista → Misr Italia Properties
+2026-01-30 18:56:39,536 | INFO |    [1218/1525] Linked: Rivan Square → Altameer Arabian Developments CO.
+2026-01-30 18:56:39,588 | INFO |    [1219/1525] Linked: The Place New Cairo → Emaar Misr
+2026-01-30 18:56:39,639 | INFO |    [1220/1525] Linked: W Residences Cairo → LMD
+2026-01-30 18:56:39,693 | INFO |    [1221/1525] Linked: Shedwan → Orascom Development Egypt
+2026-01-30 18:56:39,747 | INFO |    [1222/1525] Linked: Sky City → Pyramids Developments
+2026-01-30 18:56:39,801 | INFO |    [1223/1525] Linked: Golden Yard → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:56:39,852 | INFO |    [1224/1525] Linked: Mountain view Giza Plateau → Mountain View
+2026-01-30 18:56:39,906 | INFO |    [1225/1525] Linked: Fifth SquareThe Mall → Al Marasem Development
+2026-01-30 18:56:39,961 | INFO |    [1226/1525] Linked: The Hoft → Madinet Masr
+2026-01-30 18:56:40,018 | INFO |    [1227/1525] Linked: Lake West → Cairo Capital Developments
+2026-01-30 18:56:40,070 | INFO |    [1228/1525] Linked: IL Mondo → RFCO Development 
+2026-01-30 18:56:40,123 | INFO |    [1229/1525] Linked: Jebal El Sokhna → PRE Developments
+2026-01-30 18:56:40,176 | INFO |    [1230/1525] Linked: Al Burouj Smart Village → Imkan Misr
+2026-01-30 18:56:40,231 | INFO |    [1231/1525] Linked: Qemet Owest → Orascom Development Egypt
+2026-01-30 18:56:40,289 | INFO |    [1232/1525] Linked: Midtown Sky → Better Home
+2026-01-30 18:56:40,340 | INFO |    [1233/1525] Linked: Midtown Sky Mall → Better Home
+2026-01-30 18:56:40,396 | INFO |    [1234/1525] Linked: Hadaba → PRE Developments
+2026-01-30 18:56:40,449 | INFO |    [1235/1525] Linked: Midtown New Capital Villa → Better Home
+2026-01-30 18:56:40,500 | INFO |    [1236/1525] Linked: Midtown Solo → Better Home
+2026-01-30 18:56:40,554 | INFO |    [1237/1525] Linked: Midtown condo → Better Home
+2026-01-30 18:56:40,609 | INFO |    [1238/1525] Linked: Midtown New Cairo → Better Home
+2026-01-30 18:56:40,663 | INFO |    [1239/1525] Linked: Pukka l → MBG Developments
+2026-01-30 18:56:40,718 | INFO |    [1240/1525] Linked: Rivan Tower → Altameer Arabian Developments CO.
+2026-01-30 18:56:40,775 | INFO |    [1241/1525] Linked: Residence Eight Sky Abu Dhabi → Sky AD Developments
+2026-01-30 18:56:40,832 | INFO |    [1242/1525] Linked: Abu Tig Marina → Orascom Development Egypt
+2026-01-30 18:56:40,887 | INFO |    [1243/1525] Linked: D-Bay → Tatweer Misr
+2026-01-30 18:56:40,941 | INFO |    [1244/1525] Linked: Belle Vie → Emaar Misr
+2026-01-30 18:56:40,992 | INFO |    [1245/1525] Linked: Makadi Heights → Orascom Development Egypt
+2026-01-30 18:56:41,046 | INFO |    [1246/1525] Linked: Netflat Kinda → Madinet Masr
+2026-01-30 18:56:41,108 | INFO |    [1247/1525] Linked: 6ixty Iconic Tower → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:41,161 | INFO |    [1248/1525] Linked: Elite Mall → SAK Development
+2026-01-30 18:56:41,217 | INFO |    [1249/1525] Linked: The View Waterway → The Waterway Developments
+2026-01-30 18:56:41,272 | INFO |    [1250/1525] Linked: Rare → Al Ahly Sabbour Developments
+2026-01-30 18:56:41,329 | INFO |    [1251/1525] Linked: The V Hub → SAK Development
+2026-01-30 18:56:41,383 | INFO |    [1252/1525] Linked: Creektown → IL Cazar Developments
+2026-01-30 18:56:41,436 | INFO |    [1253/1525] Linked: UniTower → UC Developments
+2026-01-30 18:56:41,489 | INFO |    [1254/1525] Linked: Midtown Solo Mall → Better Home
+2026-01-30 18:56:41,546 | INFO |    [1255/1525] Linked: Midtown Condo Mall → Better Home
+2026-01-30 18:56:41,598 | INFO |    [1256/1525] Linked: Cairo Business Plaza → Better Home
+2026-01-30 18:56:41,650 | INFO |    [1257/1525] Linked: Zed The U → Ora Developers
+2026-01-30 18:56:41,702 | INFO |    [1258/1525] Linked: Gems → VAI Developments
+2026-01-30 18:56:41,754 | INFO |    [1259/1525] Linked: W signature → The Waterway Developments
+2026-01-30 18:56:41,812 | INFO |    [1260/1525] Linked: El Gouna South Marina → Orascom Development Egypt
+2026-01-30 18:56:41,865 | INFO |    [1261/1525] Linked: Palma → Housing and Development Properties HDP
+2026-01-30 18:56:41,920 | INFO |    [1262/1525] Linked: 5 Business Hub Mall → Tamayoz Developments
+2026-01-30 18:56:41,972 | INFO |    [1263/1525] Linked: There → LMD
+2026-01-30 18:56:42,023 | INFO |    [1264/1525] Linked: Belle Ville → Al Jawhara Real Estate Development
+2026-01-30 18:56:42,076 | INFO |    [1265/1525] Linked: Al Karma Gates → AlKarma Developments
+2026-01-30 18:56:42,131 | INFO |    [1266/1525] Linked: Parklane → El Attal Holding
+2026-01-30 18:56:42,184 | INFO |    [1267/1525] Linked: I-Business Park → ARQA Development Group
+2026-01-30 18:56:42,236 | INFO |    [1268/1525] Linked: The Cliff Il Bosco → Misr Italia Properties
+2026-01-30 18:56:42,295 | INFO |    [1269/1525] Linked: Capital Square → United Development
+2026-01-30 18:56:42,348 | INFO |    [1270/1525] Linked: Citadel Commercial Complex → Sorouh Developments
+2026-01-30 18:56:42,405 | INFO |    [1271/1525] Linked: Sueno → SAK Development
+2026-01-30 18:56:42,459 | INFO |    [1272/1525] Linked: Festival Tower → Nile Developments
+2026-01-30 18:56:42,511 | INFO |    [1273/1525] Linked: Chess Field → Al Jazi Egypt
+2026-01-30 18:56:42,565 | INFO |    [1274/1525] Linked: Podia Tower → Menassat Developments
+2026-01-30 18:56:42,618 | INFO |    [1275/1525] Linked: Fanadir Lagoons → Orascom Development Egypt
+2026-01-30 18:56:42,671 | INFO |    [1276/1525] Linked: The Tower → Modon Egypt
+2026-01-30 18:56:42,724 | INFO |    [1277/1525] Linked: Ramatan → Ramatan Developments
+2026-01-30 18:56:42,778 | INFO |    [1278/1525] Linked: La Fayette Village → Home Town Developments
+2026-01-30 18:56:42,834 | INFO |    [1279/1525] Linked: Amberville → G Developments
+2026-01-30 18:56:42,888 | INFO |    [1280/1525] Linked: Mazarine Islands → City Edge Developments
+2026-01-30 18:56:42,941 | INFO |    [1281/1525] Linked: Dyar Park → ARCO
+2026-01-30 18:56:42,996 | INFO |    [1282/1525] Linked: Mangroovy → First Residence Development
+2026-01-30 18:56:43,053 | INFO |    [1283/1525] Linked: Tonino Lamborghini Residences → New Plan
+2026-01-30 18:56:43,111 | INFO |    [1284/1525] Linked: Regency Business Tower → Regency Urban Developments
+2026-01-30 18:56:43,168 | INFO |    [1285/1525] Linked: Il Bosco City → Misr Italia Properties
+2026-01-30 18:56:43,222 | INFO |    [1286/1525] Linked: The Loft Plaza → Living Yards Developments
+2026-01-30 18:56:43,280 | INFO |    [1287/1525] Linked: Entrada → Sorouh Developments
+2026-01-30 18:56:43,333 | INFO |    [1288/1525] Linked: Entrada Avenue → Sorouh Developments
+2026-01-30 18:56:43,388 | INFO |    [1289/1525] Linked: Paris Mall → Pyramids Developments
+2026-01-30 18:56:43,439 | INFO |    [1290/1525] Linked: Grand Square Mall → Pyramids Developments
+2026-01-30 18:56:43,492 | INFO |    [1291/1525] Linked: Pyramids Mall → Pyramids Developments
+2026-01-30 18:56:43,549 | INFO |    [1292/1525] Linked: Pyramids Business Tower → Pyramids Developments
+2026-01-30 18:56:43,603 | INFO |    [1293/1525] Linked: 31N Commercial Tower → Nile Developments
+2026-01-30 18:56:43,656 | INFO |    [1294/1525] Linked: Cali Coast Ras El Hekma → MAVEN DEVELOPMENTS
+2026-01-30 18:56:43,708 | INFO |    [1295/1525] Linked: Urbn K → Starlight Developments
+2026-01-30 18:56:43,764 | INFO |    [1296/1525] Linked: Al Karma 4 → AlKarma Developments
+2026-01-30 18:56:43,819 | INFO |    [1297/1525] Linked: EG Towers Eins → EG Towers Real Estate Development
+2026-01-30 18:56:43,873 | INFO |    [1298/1525] Linked: Champs Elysees Mall → Pyramids Developments
+2026-01-30 18:56:43,926 | INFO |    [1299/1525] Linked: Granoy → Upwyde Developments
+2026-01-30 18:56:43,980 | INFO |    [1300/1525] Linked: Mizar Tower → Zodiac Development
+2026-01-30 18:56:44,040 | INFO |    [1301/1525] Linked: Dorado → Capital Link Developments
+2026-01-30 18:56:44,093 | INFO |    [1302/1525] Linked: Verona → Capital Link Developments
+2026-01-30 18:56:44,147 | INFO |    [1303/1525] Linked: Solano → Capital Link Developments
+2026-01-30 18:56:44,200 | INFO |    [1304/1525] Linked: Laval → Capital Link Developments
+2026-01-30 18:56:44,253 | INFO |    [1305/1525] Linked: Hacienda West → Palm Hills Developments
+2026-01-30 18:56:44,310 | INFO |    [1306/1525] Linked: Patio 3 → La Vista Developments
+2026-01-30 18:56:44,364 | INFO |    [1307/1525] Linked: Bianchi Ilios → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:44,421 | INFO |    [1308/1525] Linked: Ayla Jefaira → Inertia Egypt
+2026-01-30 18:56:44,477 | INFO |    [1309/1525] Linked: Bayside → El Attal Holding
+2026-01-30 18:56:44,529 | INFO |    [1310/1525] Linked: Montenapoleone → Reportage Properties
+2026-01-30 18:56:44,589 | INFO |    [1311/1525] Linked: Central Iconic Tower Hotel and Residence → Modon Egypt
+2026-01-30 18:56:44,641 | INFO |    [1312/1525] Linked: Lagoon Beach Park Mountain View I City New Cairo → Mountain View
+2026-01-30 18:56:44,693 | INFO |    [1313/1525] Linked: Garden Residence Hyde Park → Hyde Park
+2026-01-30 18:56:44,749 | INFO |    [1314/1525] Linked: Novella → AlKarma Developments
+2026-01-30 18:56:44,802 | INFO |    [1315/1525] Linked: Zia Business Complex → Margins Development
+2026-01-30 18:56:44,856 | INFO |    [1316/1525] Linked: The Brooks → PRE Developments
+2026-01-30 18:56:44,907 | INFO |    [1317/1525] Linked: Serrano → New Plan
+2026-01-30 18:56:44,963 | INFO |    [1318/1525] Linked: Granvia Mall Serrano → New Plan
+2026-01-30 18:56:45,015 | INFO |    [1319/1525] Linked: The Curve → Cornerstone Development
+2026-01-30 18:56:45,068 | INFO |    [1320/1525] Linked: W14 -White 14 → MBG Developments
+2026-01-30 18:56:45,121 | INFO |    [1321/1525] Linked: 4T4 → VAI Developments
+2026-01-30 18:56:45,176 | INFO |    [1322/1525] Linked: The Median Residences → EGYGAB
+2026-01-30 18:56:45,228 | INFO |    [1323/1525] Linked: Grand Residence → Al Ahly Sabbour Developments
+2026-01-30 18:56:45,283 | INFO |    [1324/1525] Linked: Bellagio → ARCO
+2026-01-30 18:56:45,335 | INFO |    [1325/1525] Linked: Degla → Miscellaneous
+2026-01-30 18:56:45,387 | INFO |    [1326/1525] Linked: Dyar Mokhabarat → Miscellaneous
+2026-01-30 18:56:45,440 | INFO |    [1327/1525] Linked: Grand Heights → Kuwadico
+2026-01-30 18:56:45,497 | INFO |    [1328/1525] Linked: Concordia → Concord Real Estate Development and Construction Industries Group
+2026-01-30 18:56:45,550 | INFO |    [1329/1525] Linked: El Yasmine → Miscellaneous
+2026-01-30 18:56:45,603 | INFO |    [1330/1525] Linked: Dyar → ARCO
+2026-01-30 18:56:45,655 | INFO |    [1331/1525] Linked: Pavo Tower → Mercon Developments
+2026-01-30 18:56:45,708 | INFO |    [1332/1525] Linked: Canal Walk Island → Arkan Palm Development
+2026-01-30 18:56:45,761 | INFO |    [1333/1525] Linked: Soma Coves → Somabay
+2026-01-30 18:56:45,817 | INFO |    [1334/1525] Linked: Privado → Talaat Moustafa Group (TMG) Holding
+2026-01-30 18:56:45,871 | INFO |    [1335/1525] Linked: Botanica Residential → New Generation Developments
+2026-01-30 18:56:45,924 | INFO |    [1336/1525] Linked: Udora Mall → Home Town Developments
+2026-01-30 18:56:45,975 | INFO |    [1337/1525] Linked: Lasirena Bay → Lasirena Group
+2026-01-30 18:56:46,026 | INFO |    [1338/1525] Linked: Aster Residence → Times Developments
+2026-01-30 18:56:46,078 | INFO |    [1339/1525] Linked: Evora Tower → RUD Developments
+2026-01-30 18:56:46,131 | INFO |    [1340/1525] Linked: Oaks Egypt → Margins Development
+2026-01-30 18:56:46,187 | INFO |    [1341/1525] Linked: Katameya Breeze → Afifi for development and construction
+2026-01-30 18:56:46,243 | INFO |    [1342/1525] Linked: Aroma → Aroma Development
+2026-01-30 18:56:46,297 | INFO |    [1343/1525] Linked: VX 90 → Mercon Developments
+2026-01-30 18:56:46,352 | INFO |    [1344/1525] Linked: Villino → Raslan Group
+2026-01-30 18:56:46,405 | INFO |    [1345/1525] Linked: Levels Business Tower → Urbnlanes Development
+2026-01-30 18:56:46,457 | INFO |    [1346/1525] Linked: The Red Hacienda → Verdura
+2026-01-30 18:56:46,520 | INFO |    [1347/1525] Linked: Modon Mega Towers → Modon Egypt
+2026-01-30 18:56:46,574 | INFO |    [1348/1525] Linked: Al Karma Kay → AlKarma Developments
+2026-01-30 18:56:46,632 | INFO |    [1349/1525] Linked: The Lakes Villas Bloomfields → Tatweer Misr
+2026-01-30 18:56:46,685 | INFO |    [1350/1525] Linked: Stella Heliopolis → Remco Tourism Villages Construction
+2026-01-30 18:56:46,741 | INFO |    [1351/1525] Linked: Blue Views Residences Mivida → Emaar Misr
+2026-01-30 18:56:46,793 | INFO |    [1352/1525] Linked: Oro New capital → AMG (Ava Mina Group)
+2026-01-30 18:56:46,845 | INFO |    [1353/1525] Linked: Direction White → Arabella
+2026-01-30 18:56:46,898 | INFO |    [1354/1525] Linked: Lagoon Beach Park Mountain View I-City October → Mountain View
+2026-01-30 18:56:46,955 | INFO |    [1355/1525] Linked: District 1 - DAE → Palm Hills Developments
+2026-01-30 18:56:47,011 | INFO |    [1356/1525] Linked: Diplomats → Miscellaneous
+2026-01-30 18:56:47,064 | INFO |    [1357/1525] Linked: Makany Kattameya → El Mansour Development
+2026-01-30 18:56:47,116 | INFO |    [1358/1525] Linked: Blue Bay → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:56:47,169 | INFO |    [1359/1525] Linked: Maspero Business Tower → City Edge Developments
+2026-01-30 18:56:47,232 | INFO |    [1360/1525] Linked: Crown Central → Palm Hills Developments
+2026-01-30 18:56:47,284 | INFO |    [1361/1525] Linked: Palm Beach → Miscellaneous
+2026-01-30 18:56:47,341 | INFO |    [1362/1525] Linked: Zayed Regency → Dunes Capital Group
+2026-01-30 18:56:47,400 | INFO |    [1363/1525] Linked: Skyline → Morshedy Group
+2026-01-30 18:56:47,456 | INFO |    [1364/1525] Linked: The Wave Hotel Apartment Bianchi Ilios → Al - Borouj Misr Developments Group (ABM)
+2026-01-30 18:56:47,507 | INFO |    [1365/1525] Linked: Ever → Cred Developments
+2026-01-30 18:56:47,560 | INFO |    [1366/1525] Linked: Silvertown Silversands → Ora Developers
+2026-01-30 18:56:47,613 | INFO |    [1367/1525] Linked: Promenade → Wadi Degla Developments
+2026-01-30 18:56:47,666 | INFO |    [1368/1525] Linked: Marsellia Land → Marseilia Real Estate Investment S.A.E
+2026-01-30 18:56:47,721 | INFO |    [1369/1525] Linked: Nord New Alamein → IL Cazar Developments
+2026-01-30 18:56:47,775 | INFO |    [1370/1525] Linked: La Mirada → Grand Plaza For Real estate and Touristic Development
+2026-01-30 18:56:47,827 | INFO |    [1371/1525] Linked: Cape Bay Blumar Lasirena → Lasirena Group
+2026-01-30 18:56:47,880 | INFO |    [1372/1525] Linked: Kardia → Capital Link Developments
+2026-01-30 18:56:47,932 | INFO |    [1373/1525] Linked: Evia Mountain View → Mountain View
+2026-01-30 18:56:47,984 | INFO |    [1374/1525] Linked: Coral Hills → New Star Real Estate Development Company.
+2026-01-30 18:56:48,038 | INFO |    [1375/1525] Linked: De Joya 1 → Taj Misr Developments
+2026-01-30 18:56:48,090 | INFO |    [1376/1525] Linked: De Joya 2 → Taj Misr Developments
+2026-01-30 18:56:48,144 | INFO |    [1377/1525] Linked: De Joya 3 → Taj Misr Developments
+2026-01-30 18:56:48,195 | INFO |    [1378/1525] Linked: Granda Life → EGYGAB
+2026-01-30 18:56:48,246 | INFO |    [1379/1525] Linked: Gardenia Park 1 → IGI Real Estate
+2026-01-30 18:56:48,301 | INFO |    [1380/1525] Linked: Porto October → Porto Group
+2026-01-30 18:56:48,354 | INFO |    [1381/1525] Linked: Eastshire → Al Qamzi Developments
+2026-01-30 18:56:48,416 | INFO |    [1382/1525] Linked: Central New Cairo → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:48,471 | INFO |    [1383/1525] Linked: 88 Hub Mall → Town Writers
+2026-01-30 18:56:48,526 | INFO |    [1384/1525] Linked: Taj Tower → Taj Misr Developments
+2026-01-30 18:56:48,578 | INFO |    [1385/1525] Linked: Green Land → Al Manara for Urban Developments
+2026-01-30 18:56:48,631 | INFO |    [1386/1525] Linked: The Ark → The Ark Development
+2026-01-30 18:56:48,685 | INFO |    [1387/1525] Linked: Hacienda Red → Palm Hills Developments
+2026-01-30 18:56:48,738 | INFO |    [1388/1525] Linked: Moonreal Tower → Emaar Rezk Group Developments 
+2026-01-30 18:56:48,791 | INFO |    [1389/1525] Linked: Mena Garden City → Mena for Touristic and Real Estate Development
+2026-01-30 18:56:48,844 | INFO |    [1390/1525] Linked: Azha North Coast → Madaar Development
+2026-01-30 18:56:48,896 | INFO |    [1391/1525] Linked: D.O.S.E → Akam Alrajhi Developments
+2026-01-30 18:56:48,951 | INFO |    [1392/1525] Linked: La Mer Residence → Diamond Real Estate Investment
+2026-01-30 18:56:49,003 | INFO |    [1393/1525] Linked: Sea View → Jdar Development
+2026-01-30 18:56:49,055 | INFO |    [1394/1525] Linked: Ri8 → Emaar Rezk Group Developments 
+2026-01-30 18:56:49,108 | INFO |    [1395/1525] Linked: Central Point → Town Writers
+2026-01-30 18:56:49,160 | INFO |    [1396/1525] Linked: Rayan Tower → Khaled Sabry Holding
+2026-01-30 18:56:49,213 | INFO |    [1397/1525] Linked: Eco West → New City Developments
+2026-01-30 18:56:49,264 | INFO |    [1398/1525] Linked: La Verde New Capital → La Verde Developments
+2026-01-30 18:56:49,317 | INFO |    [1399/1525] Linked: La Verde Casette → La Verde Developments
+2026-01-30 18:56:49,368 | INFO |    [1400/1525] Linked: Talah → New Plan
+2026-01-30 18:56:49,423 | INFO |    [1401/1525] Linked: Eastlane → Urbnlanes Development
+2026-01-30 18:56:49,477 | INFO |    [1402/1525] Linked: Baron City → Orientals for Urban Development
+2026-01-30 18:56:49,528 | INFO |    [1403/1525] Linked: Al Yasmine Green Land → Al Yasmine International For Trade & Contracting
+2026-01-30 18:56:49,579 | INFO |    [1404/1525] Linked: Masaya → EGYGAB
+2026-01-30 18:56:49,632 | INFO |    [1405/1525] Linked: Marsa Baghush → Shehab Mazhar
+2026-01-30 18:56:49,683 | INFO |    [1406/1525] Linked: Nyoum October → Arab Developers Holding
+2026-01-30 18:56:49,734 | INFO |    [1407/1525] Linked: Majorelle → El Gabry Developments
+2026-01-30 18:56:49,786 | INFO |    [1408/1525] Linked: Lac Ville → El Gabry Developments
+2026-01-30 18:56:49,840 | INFO |    [1409/1525] Linked: De joya 1 strip mall → Taj Misr Developments
+2026-01-30 18:56:49,893 | INFO |    [1410/1525] Linked: De joya 2 strip mall → Taj Misr Developments
+2026-01-30 18:56:49,948 | INFO |    [1411/1525] Linked: De Joya 3 strip mall → Taj Misr Developments
+2026-01-30 18:56:50,001 | INFO |    [1412/1525] Linked: Milano Tower → Gosour Development
+2026-01-30 18:56:50,053 | INFO |    [1413/1525] Linked: Art City → High Art
+2026-01-30 18:56:50,106 | INFO |    [1414/1525] Linked: Mountain View 4 → Mountain View
+2026-01-30 18:56:50,191 | INFO |    [1415/1525] Linked: The City Valley → EG Master Developments
+2026-01-30 18:56:50,259 | INFO |    [1416/1525] Linked: Cleopatra Palace → Cleopatra Hotels and Developments
+2026-01-30 18:56:50,315 | INFO |    [1417/1525] Linked: Regents Park → Al Dawlia Developments
+2026-01-30 18:56:50,369 | INFO |    [1418/1525] Linked: Capital avenue → Sky AD Developments
+2026-01-30 18:56:50,426 | INFO |    [1419/1525] Linked: Seasons Residence → Hassan Allam Properties
+2026-01-30 18:56:50,478 | INFO |    [1420/1525] Linked: Suli Golf Residence → UC Developments
+2026-01-30 18:56:50,532 | INFO |    [1421/1525] Linked: Le Gray Beach Hotel and Residences → People & Places
+2026-01-30 18:56:50,585 | INFO |    [1422/1525] Linked: Arabella → Azmeel Group Real Estate
+2026-01-30 18:56:50,642 | INFO |    [1423/1525] Linked: OWAGIK Tower → OWAGIK Development
+2026-01-30 18:56:50,698 | INFO |    [1424/1525] Linked: 205 DownTown → Arkan Palm Development
+2026-01-30 18:56:50,755 | INFO |    [1425/1525] Linked: Palmet → Palm Hills Developments
+2026-01-30 18:56:50,808 | INFO |    [1426/1525] Linked: Prk Vie → Upwyde Developments
+2026-01-30 18:56:50,860 | INFO |    [1427/1525] Linked: Palm Hills New Alamein Mall → Palm Hills Developments
+2026-01-30 18:56:50,912 | INFO |    [1428/1525] Linked: Castle Gate → Cred Developments
+2026-01-30 18:56:50,964 | INFO |    [1429/1525] Linked: Zed Tower → Ora Developers
+2026-01-30 18:56:51,018 | INFO |    [1430/1525] Linked: Dejoya Residence → Taj Misr Developments
+2026-01-30 18:56:51,071 | INFO |    [1431/1525] Linked: Terrace → Housing and Development Properties HDP
+2026-01-30 18:56:51,129 | INFO |    [1432/1525] Linked: Wingate North 90St. → Wealth Development
+2026-01-30 18:56:51,183 | INFO |    [1433/1525] Linked: Promenade New Cairo → Wadi Degla Developments
+2026-01-30 18:56:51,236 | INFO |    [1434/1525] Linked: Dejoya Villas → Taj Misr Developments
+2026-01-30 18:56:51,291 | INFO |    [1435/1525] Linked: L'Hiver → New Generation Developments
+2026-01-30 18:56:51,362 | INFO |    [1436/1525] Linked: Botanica Inn → New Generation Developments
+2026-01-30 18:56:51,417 | INFO |    [1437/1525] Linked: Porto South Beach → Amer Group
+2026-01-30 18:56:51,473 | INFO |    [1438/1525] Linked: Cairo Design District → LMD
+2026-01-30 18:56:51,526 | INFO |    [1439/1525] Linked: City Hall → SERAC Developments
+2026-01-30 18:56:51,577 | INFO |    [1440/1525] Linked: Striple Walk → Town Writers
+2026-01-30 18:56:51,629 | INFO |    [1441/1525] Linked: Radium → Make Place Developments
+2026-01-30 18:56:51,681 | INFO |    [1442/1525] Linked: Atom → Make Place Developments
+2026-01-30 18:56:51,734 | INFO |    [1443/1525] Linked: Capital Heights 1 → Safwa Urban Developments (SUD)
+2026-01-30 18:56:51,786 | INFO |    [1444/1525] Linked: Radical 1 → Misr Italia Properties
+2026-01-30 18:56:51,839 | INFO |    [1445/1525] Linked: Walk Of Cairo → Bonyan for Development and Trade
+2026-01-30 18:56:51,891 | INFO |    [1446/1525] Linked: Destino → EL Ezz Development
+2026-01-30 18:56:51,952 | INFO |    [1447/1525] Linked: W51 Business Complex → Inverse Group Developments
+2026-01-30 18:56:52,004 | INFO |    [1448/1525] Linked: Santa Clause Resort → Next Deal Real Estate Investments
+2026-01-30 18:56:52,057 | INFO |    [1449/1525] Linked: Degla Land Mark → Morshedy Group
+2026-01-30 18:56:52,110 | INFO |    [1450/1525] Linked: Crystal Plaza → Morshedy Group
+2026-01-30 18:56:52,166 | INFO |    [1451/1525] Linked: Kenz Compound → First Group
+2026-01-30 18:56:52,218 | INFO |    [1452/1525] Linked: Mena 5 → Mena For Real Estate Development
+2026-01-30 18:56:52,270 | INFO |    [1453/1525] Linked: Ocean Blue Heliopolis → Ocean Blue Group
+2026-01-30 18:56:52,322 | INFO |    [1454/1525] Linked: Boho El Sokhna → Atric Developments
+2026-01-30 18:56:52,374 | INFO |    [1455/1525] Linked: Guezira compound → Al Guzeira Group
+2026-01-30 18:56:52,427 | INFO |    [1456/1525] Linked: Cyan Ras Sudr → Empire State Developments
+2026-01-30 18:56:52,480 | INFO |    [1457/1525] Linked: Ray Residence → Radix Development
+2026-01-30 18:56:52,534 | INFO |    [1458/1525] Linked: Bluetree → Sky AD Developments
+2026-01-30 18:56:52,587 | INFO |    [1459/1525] Linked: 4T1 Tower → VAI Developments
+2026-01-30 18:56:52,644 | INFO |    [1460/1525] Linked: Boardwalk → Atric Developments
+2026-01-30 18:56:52,698 | INFO |    [1461/1525] Linked: Venia → Gates Development
+2026-01-30 18:56:52,752 | INFO |    [1462/1525] Linked: Gates Prive → Gates Development
+2026-01-30 18:56:52,803 | INFO |    [1463/1525] Linked: Zizinia Al Mostakbal → ARDIC For Real Estate Development
+2026-01-30 18:56:52,855 | INFO |    [1464/1525] Linked: El Shorouk Springs → Hassan Allam Properties
+2026-01-30 18:56:52,907 | INFO |    [1465/1525] Linked: Leaves → El Attal Holding
+2026-01-30 18:56:52,959 | INFO |    [1466/1525] Linked: Marina Wadi Degla → Wadi Degla Developments
+2026-01-30 18:56:53,014 | INFO |    [1467/1525] Linked: Floria 5 → Four Season Group for Real Estate Development
+2026-01-30 18:56:53,069 | INFO |    [1468/1525] Linked: Al Azizia Compound → Al Azizia Commercial Investment Company 
+2026-01-30 18:56:53,126 | INFO |    [1469/1525] Linked: Wadi El Nakhil → Wadi El Nakhil
+2026-01-30 18:56:53,183 | INFO |    [1470/1525] Linked: Paragon 3 → Paragon Development
+2026-01-30 18:56:53,237 | INFO |    [1471/1525] Linked: Al Nasayem → October for Development and Real Estate
+2026-01-30 18:56:53,293 | INFO |    [1472/1525] Linked: Ancient Hill → Orascom Development Egypt
+2026-01-30 18:56:53,345 | INFO |    [1473/1525] Linked: The Big Business District → Roya Developments
+2026-01-30 18:56:53,399 | INFO |    [1474/1525] Linked: Ourika → Developer X
+2026-01-30 18:56:53,452 | INFO |    [1475/1525] Linked: Audaz → Gates Development
+2026-01-30 18:56:53,503 | INFO |    [1476/1525] Linked: Atika → New Plan
+2026-01-30 18:56:53,558 | INFO |    [1477/1525] Linked: Il Latini SED → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:53,611 | INFO |    [1478/1525] Linked: Altea Marassi → Emaar Misr
+2026-01-30 18:56:53,665 | INFO |    [1479/1525] Linked: Garana → Garana
+2026-01-30 18:56:53,717 | INFO |    [1480/1525] Linked: La Capitale → Pyramids Developments
+2026-01-30 18:56:53,770 | INFO |    [1481/1525] Linked: Stella Di Mary Ein Sokhna → Remco Tourism Villages Construction
+2026-01-30 18:56:53,825 | INFO |    [1482/1525] Linked: Ezdan → Taj Misr Developments
+2026-01-30 18:56:53,878 | INFO |    [1483/1525] Linked: Amazon Capital Diamond Tower → Amazon Holding
+2026-01-30 18:56:53,931 | INFO |    [1484/1525] Linked: La Vista 1 → La Vista Developments
+2026-01-30 18:56:53,983 | INFO |    [1485/1525] Linked: The Estates Residence → SODIC
+2026-01-30 18:56:54,037 | INFO |    [1486/1525] Linked: Moon Valley I → Arabia Holding
+2026-01-30 18:56:54,087 | INFO |    [1487/1525] Linked: Spectrum → SODIC
+2026-01-30 18:56:54,140 | INFO |    [1488/1525] Linked: Nakheel → Miscellaneous
+2026-01-30 18:56:54,192 | INFO |    [1489/1525] Linked: Modon Hotels & Residence Tower → Modon Egypt
+2026-01-30 18:56:54,245 | INFO |    [1490/1525] Linked: Taj Ville Taj City → Madinet Masr
+2026-01-30 18:56:54,303 | INFO |    [1491/1525] Linked: Maspero Mall → City Edge Developments
+2026-01-30 18:56:54,358 | INFO |    [1492/1525] Linked: Azzar Island → Reedy Group
+2026-01-30 18:56:54,420 | INFO |    [1493/1525] Linked: Reem Residence → Gulf Property Development Co
+2026-01-30 18:56:54,473 | INFO |    [1494/1525] Linked: Creek District → IL Cazar Developments
+2026-01-30 18:56:54,527 | INFO |    [1495/1525] Linked: Swan Lake Residences Office Park → Hassan Allam Properties
+2026-01-30 18:56:54,583 | INFO |    [1496/1525] Linked: Lasirena Palm Beach → Lasirena Group
+2026-01-30 18:56:54,637 | INFO |    [1497/1525] Linked: Nile Pearl Tower → Saudi Egyptian Developers (SED)
+2026-01-30 18:56:54,690 | INFO |    [1498/1525] Linked: Lasirena North Coast → Lasirena Group
+2026-01-30 18:56:54,743 | INFO |    [1499/1525] Linked: Majesty Bay El Galala Lasirena → Lasirena Group
+2026-01-30 18:56:54,796 | INFO |    [1500/1525] Linked: Kattameya palms → Misr Co. for Investment and Development 
+2026-01-30 18:56:54,854 | INFO |    [1501/1525] Linked: The 8 → El Gabry Developments
+2026-01-30 18:56:54,908 | INFO |    [1502/1525] Linked: Golden Heights → Novus Stanza
+2026-01-30 18:56:54,962 | INFO |    [1503/1525] Linked: The Edge → EGYGAB
+2026-01-30 18:56:55,014 | INFO |    [1504/1525] Linked: Nyom New Cairo → Arab Developers Holding
+2026-01-30 18:56:55,068 | INFO |    [1505/1525] Linked: Winter → New Generation Developments
+2026-01-30 18:56:55,121 | INFO |    [1506/1525] Linked: Naia West → Naia Developments
+2026-01-30 18:56:55,175 | INFO |    [1507/1525] Linked: Kamaran → Orascom Development Egypt
+2026-01-30 18:56:55,229 | INFO |    [1508/1525] Linked: The Strip Mall → Town Writers
+2026-01-30 18:56:55,280 | INFO |    [1509/1525] Linked: Roaya City → AMCO
+2026-01-30 18:56:55,334 | INFO |    [1510/1525] Linked: La Luna → Next Deal Real Estate Investments
+2026-01-30 18:56:55,392 | INFO |    [1511/1525] Linked: Hayah Residence → Haya for urban developments 
+2026-01-30 18:56:55,446 | INFO |    [1512/1525] Linked: Ocean Blue → Sallidar Real Estate Development
+2026-01-30 18:56:55,498 | INFO |    [1513/1525] Linked: Revolve Mall → Town Writers
+2026-01-30 18:56:55,551 | INFO |    [1514/1525] Linked: Silva → First Group
+2026-01-30 18:56:55,604 | INFO |    [1515/1525] Linked: Catalan → Gates Development
+2026-01-30 18:56:55,659 | INFO |    [1516/1525] Linked: West gate Business Hub → Gates Development
+2026-01-30 18:56:55,717 | INFO |    [1517/1525] Linked: Green Yard → Al Nasr Housing and Development
+2026-01-30 18:56:55,771 | INFO |    [1518/1525] Linked: Cayo Mall → Contact Development
+2026-01-30 18:56:55,827 | INFO |    [1519/1525] Linked: Sway → Al Rabat Developments
+2026-01-30 18:56:55,893 | INFO |    [1520/1525] Linked: Eleven → New Plan
+2026-01-30 18:56:55,952 | INFO |    [1521/1525] Linked: LDP → Menassat Developments
+2026-01-30 18:56:56,006 | INFO |    [1522/1525] Linked: La Mirada - New Cairo → Grand Plaza For Real estate and Touristic Development
+2026-01-30 18:56:56,058 | INFO |    [1523/1525] Linked: Leena Springs → Leena Real Estate
+2026-01-30 18:56:56,112 | INFO |    [1524/1525] Linked: Nyoum Mostaqbal City → Arab Developers Holding
+2026-01-30 18:56:56,165 | INFO |    [1525/1525] Linked: Paragon 2 → Paragon Development
+2026-01-30 18:56:58,956 | INFO |    Fixed: Beach Front Towers
+2026-01-30 18:56:59,034 | INFO |    Fixed: Norm Spaces
+2026-01-30 18:56:59,110 | INFO |    Fixed: Sicily Lagoon 
+2026-01-30 18:56:59,185 | INFO |    Fixed: Bungalows 
+2026-01-30 18:56:59,260 | INFO |    Fixed: 31 West
+2026-01-30 18:56:59,335 | INFO |    Fixed: Elan 
+2026-01-30 18:56:59,411 | INFO |    Fixed: Esse Residence 
+2026-01-30 18:56:59,485 | INFO |    Fixed: Sheya residence 
+2026-01-30 18:56:59,558 | INFO |    Fixed: Rai Views 
+2026-01-30 18:56:59,636 | INFO |    Fixed: Origami Golf 
+2026-01-30 18:56:59,711 | INFO |    Fixed: Origami 
+2026-01-30 18:56:59,786 | INFO |    Fixed: Club Hills Residence
+2026-01-30 18:56:59,863 | INFO |    Fixed: Tiba
+2026-01-30 18:56:59,935 | INFO |    Fixed: Obex
+2026-01-30 18:57:00,014 | INFO |    Fixed: Code
+2026-01-30 18:57:00,100 | INFO |    Fixed: Swiss Belresidences
+2026-01-30 18:57:00,173 | INFO |    Fixed: Valory Mall
+2026-01-30 18:57:00,248 | INFO |    Fixed: Spinner Tower
+2026-01-30 18:57:00,323 | INFO |    Fixed: Mazarine Ria 
+2026-01-30 18:57:00,398 | INFO |    Fixed: October Hills 2
+2026-01-30 18:57:00,478 | INFO |    Fixed: Etoile De Ville
+2026-01-30 18:57:00,554 | INFO |    Fixed: Costa Del Sol North Coast
+2026-01-30 18:57:00,627 | INFO |    Fixed: Village
+2026-01-30 18:57:00,700 | INFO |    Fixed: Radix Agile
+2026-01-30 18:57:00,771 | INFO |    Fixed: Mazarine Townhouse
+2026-01-30 18:57:00,843 | INFO |    Fixed: Begonia Residence 
+2026-01-30 18:57:00,918 | INFO |    Fixed: Bianchi
+2026-01-30 18:57:00,993 | INFO |    Fixed: Nest
+2026-01-30 18:57:01,067 | INFO |    Fixed: Playa 
+2026-01-30 18:57:01,147 | INFO |    Fixed: Gardenia Springs
+2026-01-30 18:57:01,226 | INFO |    Fixed: Marseilia Beach 2
+2026-01-30 18:57:01,310 | INFO |    Fixed: The Butterfly 
+2026-01-30 18:57:01,381 | INFO |    Fixed: Mamsha Avenues
+2026-01-30 18:57:01,456 | INFO |    Fixed: Jamila
+2026-01-30 18:57:01,527 | INFO |    Fixed: Elevation
+2026-01-30 18:57:01,603 | INFO |    Fixed: Zayed 2000
+2026-01-30 18:57:01,678 | INFO |    Fixed: Keys 52 
+2026-01-30 18:57:01,754 | INFO |    Fixed: Pulse Green Square
+2026-01-30 18:57:01,833 | INFO |    Fixed: Villagio 
+2026-01-30 18:57:01,907 | INFO |    Fixed: Marina 8 By The Lake
+2026-01-30 18:57:01,982 | INFO |    Fixed: Al Shorouk 2000
+2026-01-30 18:57:02,060 | INFO |    Fixed: Hazel - Sodic East 
+2026-01-30 18:57:02,138 | INFO |    Fixed: J East 
+2026-01-30 18:57:02,219 | INFO |    Fixed: The Islands
+2026-01-30 18:57:02,298 | INFO |    Fixed: El Patio Sola 
+2026-01-30 18:57:02,381 | INFO |    Fixed: Coflow 
+2026-01-30 18:57:02,458 | INFO |    Fixed: District 6 - The Village
+2026-01-30 18:57:02,530 | INFO |    Fixed: The Valley New Capital
+2026-01-30 18:57:02,603 | INFO |    Fixed: The Creeks Villas
+2026-01-30 18:57:02,678 | INFO |    Fixed: La Colina East
+2026-01-30 18:57:02,755 | INFO |    Fixed: Fifty 7
+2026-01-30 18:57:02,830 | INFO |    Fixed: Beta Greens 
+2026-01-30 18:57:02,906 | INFO |    Fixed: Maspero Nile Heights
+2026-01-30 18:57:02,982 | INFO |    Fixed: Quayside
+2026-01-30 18:57:03,059 | INFO |    Fixed: Furl
+2026-01-30 18:57:03,140 | INFO |    Fixed: Central Park - Aliva
+2026-01-30 18:57:03,218 | INFO |    Fixed: Club Park - Aliva
+2026-01-30 18:57:03,294 | INFO |    Fixed: West El Balad
+2026-01-30 18:57:03,369 | INFO |    Fixed: Centrada One
+2026-01-30 18:57:03,444 | INFO |    Fixed: Centrada Hub
+2026-01-30 18:57:03,525 | INFO |    Fixed: Kite
+2026-01-30 18:57:03,611 | INFO |    Fixed: Kings Way 
+2026-01-30 18:57:03,714 | INFO |    Fixed: Q North 
+2026-01-30 18:57:03,805 | INFO |    Fixed: Concord Gardens
+2026-01-30 18:57:03,897 | INFO |    Fixed: Marina 5
+2026-01-30 18:57:03,969 | INFO |    Fixed: Al Karma 1
+2026-01-30 18:57:04,021 | INFO |    Fixed: national defence
+2026-01-30 18:57:04,101 | INFO |    Fixed: City View
+2026-01-30 18:57:04,189 | INFO |    Fixed: Gardenia Park 2
+2026-01-30 18:57:04,246 | INFO |    Fixed: Kornish El Nile
+2026-01-30 18:57:04,319 | INFO |    Fixed: West ElGolf
+2026-01-30 18:57:04,393 | INFO |    Fixed: Dream Land
+2026-01-30 18:57:04,468 | INFO |    Fixed: Dara Gardens
+2026-01-30 18:57:04,552 | INFO |    Fixed: Blumar
+2026-01-30 18:57:04,628 | INFO |    Fixed: Marina 7
+2026-01-30 18:57:04,705 | INFO |    Fixed: Beverly Hills El Shorouk
+2026-01-30 18:57:04,760 | INFO |    Fixed: North Coast - General Ad.
+2026-01-30 18:57:04,838 | INFO |    Fixed: Kattameya Plaza
+2026-01-30 18:57:04,915 | INFO |    Fixed: La Vista 6
+2026-01-30 18:57:04,998 | INFO |    Fixed: El Centro Business Complex
+2026-01-30 18:57:05,077 | INFO |    Fixed: D Square 
+2026-01-30 18:57:05,156 | INFO |    Fixed: Pagoda Business Complex 
+2026-01-30 18:57:05,234 | INFO |    Fixed: East Tower
+2026-01-30 18:57:05,312 | INFO |    Fixed: Eclat
+2026-01-30 18:57:05,393 | INFO |    Fixed: The Arena  Strip Mall
+2026-01-30 18:57:05,472 | INFO |    Fixed: Bali 
+2026-01-30 18:57:05,530 | INFO |    Fixed: Lasirena Sokhna Resort
+2026-01-30 18:57:05,604 | INFO |    Fixed: Emirates Heights
+2026-01-30 18:57:05,678 | INFO |    Fixed: Al Worood
+2026-01-30 18:57:05,752 | INFO |    Fixed: Blanca
+2026-01-30 18:57:05,828 | INFO |    Fixed: Al Rawda
+2026-01-30 18:57:05,908 | INFO |    Fixed: Yaru
+2026-01-30 18:57:05,985 | INFO |    Fixed: Bareq Tower 
+2026-01-30 18:57:06,085 | INFO |    Fixed: Vida Mall Down Town 
+2026-01-30 18:57:06,166 | INFO |    Fixed: Rayhana 
+2026-01-30 18:57:06,243 | INFO |    Fixed: Murooj
+2026-01-30 18:57:06,319 | INFO |    Fixed: Noor Capital Gardens
+2026-01-30 18:57:06,395 | INFO |    Fixed: Celia 
+2026-01-30 18:57:06,474 | INFO |    Fixed: Golf Porto Marina
+2026-01-30 18:57:06,551 | INFO |    Fixed: Muse The Strip
+2026-01-30 18:57:06,631 | INFO |    Fixed: Nile Business City
+2026-01-30 18:57:06,708 | INFO |    Fixed: Katameya Gardens
+2026-01-30 18:57:06,783 | INFO |    Fixed: Marina Residence Il Monte Galala
+2026-01-30 18:57:06,861 | INFO |    Fixed: Eastmain New Cairo
+2026-01-30 18:57:06,932 | INFO |    Fixed: Westown The Portal
+2026-01-30 18:57:07,005 | INFO |    Fixed: Katameya Hills
+2026-01-30 18:57:07,068 | INFO |    Fixed: Zaha Park - New Capital 
+2026-01-30 18:57:07,149 | INFO |    Fixed: El Rehab 
+2026-01-30 18:57:07,223 | INFO |    Fixed: Azad Views
+2026-01-30 18:57:07,297 | INFO |    Fixed: Ashgar City
+2026-01-30 18:57:07,373 | INFO |    Fixed: Sky Condos
+2026-01-30 18:57:07,447 | INFO |    Fixed: Mountain View 1.1
+2026-01-30 18:57:07,522 | INFO |    Fixed: Modon Green River Tower
+2026-01-30 18:57:07,597 | INFO |    Fixed: Sofitel Oia Towers
+2026-01-30 18:57:07,677 | INFO |    Fixed: Golden Gate
+2026-01-30 18:57:07,751 | INFO |    Fixed: El Patio 2
+2026-01-30 18:57:07,831 | INFO |    Fixed: Cleo - Palm Hills New Cairo
+2026-01-30 18:57:07,903 | INFO |    Fixed: Jirian - Nations of Sky
+2026-01-30 18:57:07,970 | INFO |    Fixed: Tierra
+2026-01-30 18:57:08,029 | INFO |    Fixed: East Vale
+2026-01-30 18:57:08,088 | INFO |    Fixed: Solana East Strip
+2026-01-30 18:57:08,147 | INFO |    Fixed: Hyde Park Signature
+2026-01-30 18:57:08,214 | INFO |    Fixed: Crescent Walk
+2026-01-30 18:57:08,272 | INFO |    Fixed: Solana East
+2026-01-30 18:57:08,332 | INFO |    Fixed: Telal East
+2026-01-30 18:57:08,392 | INFO |    Fixed: El Patio Riva
+2026-01-30 18:57:08,455 | INFO |    Fixed: ZED
+2026-01-30 18:57:08,522 | INFO |    Fixed: The Crest
+2026-01-30 18:57:08,588 | INFO |    Fixed: Mar ville
+2026-01-30 18:57:08,655 | INFO |    Fixed: Vida Marassi Marina
+2026-01-30 18:57:08,716 | INFO |    Fixed: Linwood
+2026-01-30 18:57:08,774 | INFO |    Fixed: Lavida
+2026-01-30 18:57:08,830 | INFO |    Fixed: Rock White
+2026-01-30 18:57:08,890 | INFO |    Fixed: New Kairo
+2026-01-30 18:57:08,963 | INFO |    Fixed: SODIC East
+2026-01-30 18:57:09,025 | INFO |    Fixed: Rivette - Amwaj
+2026-01-30 18:57:09,092 | INFO |    Fixed: Infinity Tower
+2026-01-30 18:57:09,151 | INFO |    Fixed: Stei8ht
+2026-01-30 18:57:09,212 | INFO |    Fixed: Hills of One
+2026-01-30 18:57:09,269 | INFO |    Fixed: Scenes
+2026-01-30 18:57:09,328 | INFO |    Fixed: O West Orascom
+2026-01-30 18:57:09,388 | INFO |    Fixed: Ras El Hekma Egypt
+2026-01-30 18:57:09,448 | INFO |    Fixed: Badya
+2026-01-30 18:57:09,506 | INFO |    Fixed: Hyde Park
+2026-01-30 18:57:09,564 | INFO |    Fixed: Silversands
+2026-01-30 18:57:09,625 | INFO |    Fixed: Ramla
+2026-01-30 18:57:09,683 | INFO |    Fixed: Palm Hills New Cairo
+2026-01-30 18:57:09,745 | INFO |    Fixed: Ogami Ras El Hekma
+2026-01-30 18:57:09,806 | INFO |    Fixed: New Giza
+2026-01-30 18:57:09,865 | INFO |    Fixed: Beit Al Bahr
+2026-01-30 18:57:09,923 | INFO |    Fixed: The Med
+2026-01-30 18:57:09,982 | INFO |    Fixed: Hyde Park North - Seashore
+2026-01-30 18:57:10,043 | INFO |    Fixed: June
+2026-01-30 18:57:10,103 | INFO |    Fixed: Patio Vida
+2026-01-30 18:57:10,164 | INFO |    Fixed: Garden Lakes
+2026-01-30 18:57:10,229 | INFO |    Fixed: Youd
+2026-01-30 18:57:10,298 | INFO |    Fixed: Seazen
+2026-01-30 18:57:10,359 | INFO |    Fixed: Sky North
+2026-01-30 18:57:10,418 | INFO |    Fixed: City Gate
+2026-01-30 18:57:10,512 | INFO |    Fixed: Jirian - Mountain View
+2026-01-30 18:57:10,591 | INFO |    Fixed: Salt
+2026-01-30 18:57:10,653 | INFO |    Fixed: Plage
+2026-01-30 18:57:10,717 | INFO |    Fixed: Saada North Coast
+2026-01-30 18:57:10,777 | INFO |    Fixed: Park Central
+2026-01-30 18:57:10,837 | INFO |    Fixed: Karmell New Zayed
+2026-01-30 18:57:10,897 | INFO |    Fixed: Solana
+2026-01-30 18:57:10,963 | INFO |    Fixed: Safia - Ras El Hekma
+2026-01-30 18:57:11,019 | INFO |    Fixed: Lyv Caesar - Ras El Hekma
+2026-01-30 18:57:11,082 | INFO |    Fixed: Saada
+2026-01-30 18:57:11,142 | INFO |    Fixed: Telal North Coast
+2026-01-30 18:57:11,211 | INFO |    Fixed: Swanlake October
+2026-01-30 18:57:11,306 | INFO |    Fixed: ZED East
+2026-01-30 18:57:11,383 | INFO |    Fixed: El Masyaf
+2026-01-30 18:57:11,455 | INFO |    Fixed: Solare
+2026-01-30 18:57:11,519 | INFO |    Fixed: Caesar
+2026-01-30 18:57:11,581 | INFO |    Fixed: Aliva Mountain View Mostakbal City
+2026-01-30 18:57:11,640 | INFO |    Fixed: Marassi
+2026-01-30 18:57:11,702 | INFO |    Fixed: Rivers
+2026-01-30 18:57:11,763 | INFO |    Fixed: Eastown
+2026-01-30 18:57:11,822 | INFO |    Fixed: Mountain View iCity October
+2026-01-30 18:57:11,882 | INFO |    Fixed: Ivoire West
+2026-01-30 18:57:11,944 | INFO |    Fixed: Mountain View ICity New Cairo
+2026-01-30 18:57:12,004 | INFO |    Fixed: Allegria
+2026-01-30 18:57:12,064 | INFO |    Fixed: Al Burouj
+2026-01-30 18:57:12,125 | INFO |    Fixed: Glen
+2026-01-30 18:57:12,185 | INFO |    Fixed: DISTRICT 5
+2026-01-30 18:57:12,242 | INFO |    Fixed: Bloomfields
+2026-01-30 18:57:12,304 | INFO |    Fixed: Amwaj
+2026-01-30 18:57:12,365 | INFO |    Fixed: Palm Parks
+2026-01-30 18:57:12,423 | INFO |    Fixed: Fifth Square Al Marasem
+2026-01-30 18:57:12,484 | INFO |    Fixed: El Patio Oro
+2026-01-30 18:57:12,547 | INFO |    Fixed: Diar II
+2026-01-30 18:57:12,607 | INFO |    Fixed: Azzar New Cairo
+2026-01-30 18:57:12,666 | INFO |    Fixed: Capital Gardens
+2026-01-30 18:57:12,728 | INFO |    Fixed: Fouka Bay
+2026-01-30 18:57:12,787 | INFO |    Fixed: Mountain View Chillout Park
+2026-01-30 18:57:12,844 | INFO |    Fixed: El Patio 5 East
+2026-01-30 18:57:12,908 | INFO |    Fixed: Casa
+2026-01-30 18:57:12,965 | INFO |    Fixed: Beverly Hills
+2026-01-30 18:57:13,029 | INFO |    Fixed: ATRIO
+2026-01-30 18:57:13,098 | INFO |    Fixed: El Patio Casa
+2026-01-30 18:57:13,159 | INFO |    Fixed: AZAD
+2026-01-30 18:57:13,218 | INFO |    Fixed: AEON Towers
+2026-01-30 18:57:13,278 | INFO |    Fixed: La Vista 2
+2026-01-30 18:57:13,339 | INFO |    Fixed: El Patio Prime
+2026-01-30 18:57:13,396 | INFO |    Fixed: Stone Residence
+2026-01-30 18:57:13,458 | INFO |    Fixed: LA Vista 4
+2026-01-30 18:57:13,518 | INFO |    Fixed: Green 3
+2026-01-30 18:57:13,579 | INFO |    Fixed: LA Vista 5
+2026-01-30 18:57:13,640 | INFO |    Fixed: El Patio Zahraa
+2026-01-30 18:57:13,698 | INFO |    Fixed: Green 5
+2026-01-30 18:57:13,754 | INFO |    Fixed: La Vista City
+2026-01-30 18:57:13,814 | INFO |    Fixed: JEDAR
+2026-01-30 18:57:13,876 | INFO |    Fixed: La Vista 3
+2026-01-30 18:57:13,935 | INFO |    Fixed: Greens
+2026-01-30 18:57:13,994 | INFO |    Fixed: La Vista Cascada
+2026-01-30 18:57:14,054 | INFO |    Fixed: Jayd
+2026-01-30 18:57:14,113 | INFO |    Fixed: La Vista 7
+2026-01-30 18:57:14,175 | INFO |    Fixed: Lake View Residence
+2026-01-30 18:57:14,234 | INFO |    Fixed: Westown Residences
+2026-01-30 18:57:14,290 | INFO | 🔌 Disconnected from MongoDB

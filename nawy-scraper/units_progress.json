@@ -1,0 +1,11 @@
+{
+  "last_page": 3,
+  "stats": {
+    "pages_processed": 3,
+    "units_found": 63,
+    "units_scraped": 40,
+    "units_skipped": 20,
+    "units_failed": 3
+  },
+  "timestamp": "2026-01-31T15:03:29.718136+00:00"
+}
