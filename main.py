@@ -22,7 +22,8 @@ state = {
     "breakingquest":None,
     "breakingbudget":None,
     "breakinginstallments":None,
-    "candidate_compounds": None
+    "candidate_compounds": None,
+    "typeofproperty": None
    
 }
 graph = StateGraph()
@@ -51,8 +52,10 @@ while next_node != END:
 
 print("\n--- Final Plan ---")
 print("Purpose:", state["purpose"])
+print("Type of Property:", state["typeofproperty"])
 print("Budget:", state["budget"])
 print("Downpayment", state["Downpayment"])
 print("monthlyinstall:", state["monthlyinstall"])
 print("Location:", state["location"])
 print("payment type:", state["payment_type"])
+

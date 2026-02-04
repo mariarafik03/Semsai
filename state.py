@@ -16,6 +16,7 @@ class AgentState(TypedDict):
     breakingbudget:Optional[str]
     breakinginstallments:Optional[str]
     candidate_compounds: Optional[list]
+    typeofproperty: Optional[str]
 
 
     

@@ -117,6 +117,7 @@ def compounds_agent(state: AgentState):
         print(f"Monthly Installment: {format_price(state.get('monthlyinstall'))}")
         print(f"Location: {state.get('location')}")
         print(f"Payment Type: {state.get('payment_type')}")
+        print(f"Type of Property: {state.get('typeofproperty')}")
 
         return state
 

@@ -16,20 +16,15 @@ def location_agent(state: AgentState):
     user_location_input = input("You: ")
     state["location"] = user_location_input
 
-    
-    """normalize_prompt = (
-        "Normalize this Egyptian location input into a standard city or neighborhood name. "
-        "Return a short, clean location name.\n"
-        f"User said: '{user_location_input}'"
+    question2 = ask_ollama(
+        "Ask the user what type of property they are interested in ( apartment, villa, chalet). Keep it short and friendly."
     )
-    normalized_location = ask_ollama(normalize_prompt).strip()
 
-    if normalized_location:
-        state["location"] = normalized_location
-        state["next_step"] = "END" # end of the graph
-        print(f"Debug: standardized location: {normalized_location}")
-    else:
-        print("Agent: I couldn't understand that location. Let's try again.")
-        return location_agent(state)  # retry"""
+    print("Agent:", question2)
+    typeinput = input("You: ")
+    state["typeofproperty"] = typeinput
 
-    return state  
+
+
+    return state    
+
