@@ -12,6 +12,7 @@ const developerSchema = new mongoose.Schema({
     google_reviews_score: { type: Number, default: 0 },
     facebook_reviews_score: { type: Number, default: 0 },
     delivery_delays: { type: String, enum: ['None', 'Low', 'High'], default: 'None' },
+    developer_score: Number // Calculated score
 }, { timestamps: true });
 
 const Developer = mongoose.model('Developer', developerSchema, 'developers');

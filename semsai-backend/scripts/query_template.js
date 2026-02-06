@@ -1,68 +1,45 @@
 
 /**
  * 🛠️ SEMSAI CUSTOM QUERY TEMPLATE
- * 
- * Use this file to write your own logic to query the database.
- * 
- * HOW TO RUN:
- * 1. Write your code inside the `run()` function.
- * 2. Open terminal.
- * 3. Run: node scripts/query_template.js
  */
 
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
-// ✅ ALL MODELS IMPORTED
 import Compound from '../models/Compound.js';
 import Unit from '../models/Unit.js';
-import Residential from '../models/Residential.js';
-import Developer from '../models/Developer.js';
-import User from '../models/User.js';
-import Location from '../models/Location.js';
-import Media from '../models/Media.js';
-import Contact from '../models/Contact.js';
-import Payment from '../models/Payment.js';
-// Smart Scoring & Metrics
-import CompoundScores from '../models/CompoundScores.js';
-import MarketMetrics from '../models/MarketMetrics.js';
-import PriceHistory from '../models/PriceHistory.js';
 
-// Load variables from .env
 dotenv.config();
 
 const run = async () => {
     try {
-        // 1. Connect to Database (Do not touch)
         await mongoose.connect(process.env.MONGO_URI);
         console.log('✅ Connected to MongoDB\n');
 
         // ==========================================
-        // 👇 WRITE YOUR CODE BELOW THIS LINE 👇
+        // 🔍 FIND UNITS BY ID: 697155d794190b07bca8ac60
         // ==========================================
+        const targetId = '697155d794190b07bca8ac60';
+        console.log(`Searching for units with Compound ID: ${targetId}...\n`);
 
-        console.log("Hello! Writing my custom query...");
+        const units = await Unit.find({ compound_id: targetId });
 
-        // EXAMPLE 1: Find 3 Compounds
-        // const comps = await Compound.find({}).limit(3);
-        // console.log(comps);
+        console.log(`\n📦 Found ${units.length} units:\n`);
 
-        // EXAMPLE 2: Count Units with price > 10M
-        // const expensiveCount = await Unit.countDocuments({ price: { $gt: 10000000 } });
-        // console.log(`Super expensive units: ${expensiveCount}`);
-
-        // ==========================================
-        // 👆 WRITE YOUR CODE ABOVE THIS LINE 👆
-        // ==========================================
+        if (units.length > 0) {
+            units.forEach((unit, i) => {
+                console.log(`#${i + 1} Type: ${unit.type}`);
+                console.log(`    Price: ${unit.price ? unit.price.toLocaleString() + ' EGP' : 'N/A'}`);
+                console.log(`    URL: ${unit.url || 'N/A'}`);
+                console.log('----------------');
+            });
+        }
 
     } catch (error) {
         console.error('❌ Error executing query:', error);
     } finally {
-        // 3. Disconnect (Do not touch)
         await mongoose.connection.close();
         console.log('\n🔌 Disconnected');
     }
 };
 
-// Execute the function
 run();
