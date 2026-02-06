@@ -11,11 +11,19 @@ import random
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
-    # MongoDB
+    # MongoDB - Primary SRV connection (requires DNS)
     mongo_uri: str = Field(
         default="mongodb+srv://semsai_user:EA-xQASp73Y9_fF@cluster0.vdtyjnl.mongodb.net/semsai?retryWrites=true&w=majority&appName=Cluster0",
         env="MONGO_URI"
     )
+    
+    # MongoDB - Fallback direct connection (no DNS SRV lookup needed)
+    # These are the resolved hosts from the SRV record
+    mongo_uri_direct: str = Field(
+        default="mongodb://semsai_user:EA-xQASp73Y9_fF@cluster0-shard-00-00.vdtyjnl.mongodb.net:27017,cluster0-shard-00-01.vdtyjnl.mongodb.net:27017,cluster0-shard-00-02.vdtyjnl.mongodb.net:27017/semsai?ssl=true&replicaSet=atlas-zq3q9v-shard-0&authSource=admin&retryWrites=true&w=majority",
+        env="MONGO_URI_DIRECT"
+    )
+    
     database_name: str = Field(default="semsai", env="DATABASE_NAME")
     
     # Nawy URLs

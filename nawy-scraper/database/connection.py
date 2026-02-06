@@ -23,19 +23,39 @@ class DatabaseClient:
     
     def connect(self) -> bool:
         """Establish connection to MongoDB."""
+        # Try SRV connection first
+        if self._try_connect(settings.mongo_uri, "SRV"):
+            return True
+        
+        # Fallback to direct connection (no DNS SRV lookup)
+        logger.warning("⚠️ SRV connection failed, trying direct connection...")
+        if self._try_connect(settings.mongo_uri_direct, "Direct"):
+            return True
+        
+        logger.error("❌ All MongoDB connection attempts failed")
+        return False
+    
+    def _try_connect(self, uri: str, conn_type: str) -> bool:
+        """Try to connect with a specific URI."""
         try:
             self._client = MongoClient(
-                settings.mongo_uri,
-                serverSelectionTimeoutMS=5000,
-                connectTimeoutMS=10000,
+                uri,
+                serverSelectionTimeoutMS=30000,
+                connectTimeoutMS=30000,
+                socketTimeoutMS=60000,
+                retryWrites=True,
+                retryReads=True,
             )
             # Test connection
             self._client.admin.command('ping')
             self._db = self._client[settings.database_name]
-            logger.info(f"✅ Connected to MongoDB: {settings.database_name}")
+            logger.info(f"✅ Connected to MongoDB ({conn_type}): {settings.database_name}")
             return True
         except ConnectionFailure as e:
-            logger.error(f"❌ Failed to connect to MongoDB: {e}")
+            logger.warning(f"⚠️ {conn_type} connection failed: {e}")
+            return False
+        except Exception as e:
+            logger.warning(f"⚠️ {conn_type} connection error: {str(e)[:100]}")
             return False
     
     def disconnect(self):

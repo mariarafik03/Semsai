@@ -215,6 +215,20 @@ class SmartUnitScraper(BaseScraper):
             if match:
                 nawy_id = match.group(1)
             
+            # === EXTRACT PROPERTY TYPE FROM URL ===
+            # URL pattern: /property/12345-apartment-for-sale-in-...
+            # or /property/12345-villa-for-sale-in-...
+            property_type_from_url = ''
+            property_types_list = ['apartment', 'duplex', 'villa', 'townhouse', 'twinhouse', 
+                                   'chalet', 'penthouse', 'studio', 'office', 'retail', 
+                                   'cabin', 'clinic', 'loft', 'pharmacy', 'building', 'administrative']
+            
+            url_lower = url.lower()
+            for pt in property_types_list:
+                if f'-{pt}-' in url_lower or url_lower.endswith(f'-{pt}'):
+                    property_type_from_url = pt.capitalize()
+                    break
+            
             # === PARSE HTML ===
             
             # Name/Title
@@ -223,11 +237,67 @@ class SmartUnitScraper(BaseScraper):
             if name_elem:
                 name = self.clean_text(name_elem.get_text())
             
-            # Location (under title)
+            # === EXTRACT PROPERTY TYPE FROM TITLE ===
+            # Pattern: "Apartment For Sale In..." or "Villa for sale in..."
+            property_type_from_title = ''
+            if name:
+                name_lower = name.lower()
+                for pt in property_types_list:
+                    if name_lower.startswith(pt) or f' {pt} ' in name_lower:
+                        property_type_from_title = pt.capitalize()
+                        break
+            
+            # === LOCATION - Get from specific elements ===
+            # Location is typically in H2 under the title, like "Al Maqsad , New Capital City, Egypt"
             location = ''
-            location_elem = soup.select_one('h1 + div, h1 ~ p, [class*="location"]')
-            if location_elem:
-                location = self.clean_text(location_elem.get_text())
+            
+            # Try to find location from __NEXT_DATA__ first (most reliable)
+            if prop_data:
+                # Try compound area/city
+                compound_data = prop_data.get('compound', {})
+                if isinstance(compound_data, dict):
+                    area_data = compound_data.get('area', {})
+                    city_data = compound_data.get('city', {})
+                    compound_name_loc = compound_data.get('name', '')
+                    
+                    area_name = area_data.get('name', '') if isinstance(area_data, dict) else ''
+                    city_name = city_data.get('name', '') if isinstance(city_data, dict) else ''
+                    
+                    location_parts = []
+                    if compound_name_loc:
+                        location_parts.append(compound_name_loc)
+                    if area_name:
+                        location_parts.append(area_name)
+                    if city_name and city_name not in location_parts:
+                        location_parts.append(city_name)
+                    
+                    if location_parts:
+                        location = ', '.join(location_parts)
+                
+                # Also try direct location field
+                if not location:
+                    location = prop_data.get('location', '') or prop_data.get('address', '')
+            
+            # Fallback to HTML - look for H2 after H1 (location subtitle)
+            if not location:
+                # Look for the location subtitle (H2 after H1)
+                h2_elems = soup.select('h2')
+                for h2 in h2_elems:
+                    h2_text = self.clean_text(h2.get_text())
+                    # Location typically contains city or compound name, not sale type
+                    if h2_text and 'Egypt' in h2_text or 'Cairo' in h2_text or 'New Capital' in h2_text:
+                        location = h2_text
+                        break
+                    # Or it contains compound name (ends with area)
+                    if h2_text and ',' in h2_text and 'sale' not in h2_text.lower():
+                        location = h2_text
+                        break
+            
+            # If still no location, try the breadcrumb or location class
+            if not location:
+                breadcrumb = soup.select_one('[class*="breadcrumb"], nav a')
+                if breadcrumb:
+                    location = self.clean_text(breadcrumb.get_text())
             
             # Price
             price = None
@@ -239,29 +309,55 @@ class SmartUnitScraper(BaseScraper):
             # === PARSE DETAILS TABLE ===
             details = self._parse_details_table(soup)
             
-            # Property type (first column header like "Duplex", "Apartment")
-            property_type = details.get('property_type', '')
+            # Property type - prioritize URL extraction (most accurate)
+            # Priority: 1. URL, 2. Title, 3. Details table, 4. __NEXT_DATA__
+            property_type = property_type_from_url  # Most reliable - from URL slug
+            
             if not property_type:
-                # Try from __NEXT_DATA__
+                property_type = property_type_from_title  # Second - from page title
+            
+            if not property_type:
+                property_type = details.get('property_type', '')  # Third - from page text
+            
+            if not property_type:
+                # Last resort - try from __NEXT_DATA__
                 property_type = prop_data.get('type', '')
                 if isinstance(property_type, dict):
                     property_type = property_type.get('name', '')
             
-            # Area
+            # Area - with min/max support for ranges
             area = details.get('area')
-            if not area and prop_data:
-                area = prop_data.get('area') or prop_data.get('size')
+            area_min = None
+            area_max = None
+            
+            # Try to get area from __NEXT_DATA__ first (more accurate)
+            if prop_data:
+                # Check for area range
+                area_min_data = prop_data.get('area_min') or prop_data.get('min_area')
+                area_max_data = prop_data.get('area_max') or prop_data.get('max_area')
+                
+                if area_min_data and area_max_data and area_min_data != area_max_data:
+                    area_min = area_min_data
+                    area_max = area_max_data
+                    area = None  # Don't duplicate if we have range
+                elif not area:
+                    area = prop_data.get('area') or prop_data.get('size')
             
             # Reference No
             reference_no = details.get('reference_no', nawy_id)
             
-            # Bedrooms & Bathrooms
+            # NOTE: Price is handled after details parsing with proper priority
+            # 1. price_from_details (About section "Price: 7,000,000")
+            # 2. __NEXT_DATA__
+            # 3. HTML element
+            
+            # Bedrooms & Bathrooms - prefer details table as it's more accurate
             bedrooms = details.get('bedrooms')
-            if not bedrooms and prop_data:
+            if bedrooms is None and prop_data:
                 bedrooms = prop_data.get('bedrooms')
             
             bathrooms = details.get('bathrooms')
-            if not bathrooms and prop_data:
+            if bathrooms is None and prop_data:
                 bathrooms = prop_data.get('bathrooms')
             
             # Delivery
@@ -290,6 +386,35 @@ class SmartUnitScraper(BaseScraper):
             if not finishing and prop_data:
                 finishing = prop_data.get('finishing', '')
             
+            # Floor & View - new fields from details
+            floor = details.get('floor', '')
+            view_direction = details.get('view', '')
+            
+            # === PAYMENT INFO FROM DETAILS ===
+            down_payment = details.get('down_payment')
+            price_from_details = details.get('price')
+            remaining_amount = details.get('remaining_amount')
+            payment_end_year = details.get('payment_end_year')
+            
+            # === PRICE MIN/MAX ===
+            # Some units have price ranges
+            price_min = None
+            price_max = None
+            if prop_data:
+                price_min = prop_data.get('price_min') or prop_data.get('min_price')
+                price_max = prop_data.get('price_max') or prop_data.get('max_price')
+            
+            # === PRICE PRIORITY ===
+            # 1. Price from details table (About section has "Price: 7,000,000")
+            # 2. __NEXT_DATA__ price
+            # 3. HTML price element
+            if price_from_details:
+                price = price_from_details  # Most accurate - from About section
+            elif prop_data:
+                prop_price = prop_data.get('price')
+                if prop_price and isinstance(prop_price, (int, float)):
+                    price = int(prop_price)
+            
             # === AMENITIES ===
             amenities = self._parse_amenities(soup)
             if not amenities and prop_data:
@@ -305,8 +430,23 @@ class SmartUnitScraper(BaseScraper):
             
             # === PAYMENT PLAN ===
             payment_plan = await self._parse_payment_plan(soup)
-            if not payment_plan.get('down_payments') and prop_data:
-                payment_plan = self._extract_payment_plan_from_data(prop_data)
+            
+            # Add down payment from details if not in payment_plan
+            if down_payment and not payment_plan.get('down_payment'):
+                payment_plan['down_payment'] = down_payment
+            
+            # Add remaining amount info
+            if remaining_amount:
+                payment_plan['remaining_amount'] = remaining_amount
+            if payment_end_year:
+                payment_plan['payment_end_year'] = payment_end_year
+            
+            # Fallback to __NEXT_DATA__ for payment plan
+            if not payment_plan.get('down_payment') and prop_data:
+                extra_payment = self._extract_payment_plan_from_data(prop_data)
+                for key, value in extra_payment.items():
+                    if key not in payment_plan or not payment_plan[key]:
+                        payment_plan[key] = value
             
             # === DESCRIPTION ===
             description = self._parse_description(soup)
@@ -342,17 +482,24 @@ class SmartUnitScraper(BaseScraper):
                 # Property details
                 'property_type': property_type,
                 'area': area,
+                'area_min': area_min,
+                'area_max': area_max,
                 'price': price,
+                'price_min': price_min,
+                'price_max': price_max,
                 'bedrooms': bedrooms,
                 'bathrooms': bathrooms,
                 'delivery_year': delivery_year,
                 'sale_type': sale_type,
                 'finishing': finishing,
+                'floor': floor,
+                'view': view_direction,
                 
                 # Amenities
                 'amenities': amenities,
                 
-                # Payment
+                # Payment - include both payment_plan object and top-level down_payment
+                'down_payment': down_payment,
                 'payment_plan': payment_plan,
                 
                 # Content
@@ -367,6 +514,7 @@ class SmartUnitScraper(BaseScraper):
             unit = {k: v for k, v in unit.items() if v is not None and v != '' and v != [] and v != {}}
             
             return unit
+
             
         except Exception as e:
             logger.error(f"Error scraping unit {url}: {e}")
@@ -377,12 +525,8 @@ class SmartUnitScraper(BaseScraper):
         details = {}
         
         try:
-            # Look for the details section
-            # The structure is usually: PropertyType + Area on header, then rows of label -> value
-            
-            # Try to find property type and area from header-like elements
-            # Pattern: "Duplex" followed by "287m²"
-            all_text = soup.get_text()
+            # Get all text from the page
+            all_text = soup.get_text(separator=' ')
             
             # Property types to look for
             property_types = ['Apartment', 'Duplex', 'Villa', 'Townhouse', 'Twinhouse', 
@@ -394,78 +538,171 @@ class SmartUnitScraper(BaseScraper):
                     details['property_type'] = pt
                     break
             
-            # Find area (pattern: XXXm² or XXX m²)
-            area_match = re.search(r'(\d+(?:,\d+)?)\s*m[²2]', all_text)
-            if area_match:
-                area_str = area_match.group(1).replace(',', '')
-                details['area'] = int(area_str)
+            # ==== IMPROVED PATTERNS FOR NAWY FORMAT ====
+            # Format: "Number Of Bedrooms : 3" or "Bedrooms : 3" or "3 Bedrooms"
             
-            # Parse key-value pairs from table-like structures
-            # Look for common labels
-            label_patterns = {
-                'reference_no': [r'Reference\s*No\.?\s*[:\-]?\s*(\d+)', r'Ref\.?\s*[:\-]?\s*(\d+)'],
-                'bedrooms': [r'Bedrooms?\s*[:\-]?\s*(\d+)', r'Beds?\s*[:\-]?\s*(\d+)'],
-                'bathrooms': [r'Bathrooms?\s*[:\-]?\s*(\d+)', r'Baths?\s*[:\-]?\s*(\d+)'],
-                'delivery_in': [r'Delivery\s*(?:In|Date)?\s*[:\-]?\s*(20\d{2})', r'التسليم\s*[:\-]?\s*(20\d{2})'],
-                'compound': [r'Compound\s*[:\-]?\s*([A-Za-z][A-Za-z\s\-]+?)(?=Sale|Finishing|Details|$)'],
-                'sale_type': [r'Sale\s*Type\s*[:\-]?\s*(Resale|Developer\s*Sale|Primary)'],
-                # Finishing: only capture specific known values
-                'finishing': [r'Finishing\s*[:\-]?\s*(Finished|Semi[\-\s]?Finished|Furnished|Core\s*(?:and|\&)?\s*Shell|Not\s*Finished)'],
-            }
+            # Bedrooms - multiple patterns
+            bedroom_patterns = [
+                r'Number\s*Of\s*Bedrooms?\s*[:\-]?\s*(\d+)',
+                r'Bedrooms?\s*[:\-]?\s*(\d+)',
+                r'(\d+)\s*Bedrooms?',
+                r'Beds?\s*[:\-]?\s*(\d+)',
+                r'(\d+)\s*Beds?',
+            ]
+            for pattern in bedroom_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    details['bedrooms'] = int(match.group(1))
+                    break
             
-            for key, patterns in label_patterns.items():
-                for pattern in patterns:
-                    match = re.search(pattern, all_text, re.IGNORECASE)
-                    if match:
-                        value = match.group(1).strip()
-                        if key in ['bedrooms', 'bathrooms', 'delivery_in', 'reference_no']:
-                            try:
-                                details[key] = int(value)
-                            except:
-                                details[key] = value
-                        else:
-                            details[key] = value
-                        break
+            # Bathrooms - multiple patterns
+            bathroom_patterns = [
+                r'Number\s*Of\s*Bathrooms?\s*[:\-]?\s*(\d+)',
+                r'Bathrooms?\s*[:\-]?\s*(\d+)',
+                r'(\d+)\s*Bathrooms?',
+                r'Baths?\s*[:\-]?\s*(\d+)',
+                r'(\d+)\s*Baths?',
+            ]
+            for pattern in bathroom_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    details['bathrooms'] = int(match.group(1))
+                    break
             
-            # Try parsing actual table/div structure
-            rows = soup.select('tr, [class*="detail"], [class*="info"] > div')
-            for row in rows:
-                text = row.get_text(separator=' ')
-                
-                if 'Reference' in text:
-                    match = re.search(r'(\d{4,})', text)
-                    if match:
-                        details['reference_no'] = int(match.group(1))
-                
-                elif 'Bedroom' in text or 'Bed' in text:
-                    match = re.search(r'(\d+)', text)
-                    if match:
-                        details['bedrooms'] = int(match.group(1))
-                
-                elif 'Bathroom' in text or 'Bath' in text:
-                    match = re.search(r'(\d+)', text)
-                    if match:
-                        details['bathrooms'] = int(match.group(1))
-                
-                elif 'Delivery' in text:
-                    match = re.search(r'(20\d{2})', text)
-                    if match:
-                        details['delivery_in'] = int(match.group(1))
-                
-                elif 'Sale Type' in text:
-                    if 'Resale' in text:
-                        details['sale_type'] = 'Resale'
-                    elif 'Developer' in text:
-                        details['sale_type'] = 'Developer Sale'
-                
-                elif 'Finishing' in text:
-                    # Check Semi before Finished since Semi-Finished contains 'Finished'
-                    if 'Semi' in text:
-                        details['finishing'] = 'Semi-Finished'
-                    elif 'Unfinished' in text or 'Core' in text:
-                        details['finishing'] = 'Unfinished'
-                    elif 'Finished' in text:
-                        details['finishing'] = 'Finished'
+            # Area - patterns like "Built up area: 145" or "121 m²"
+            # NOTE: About section uses "Built up area: 145" format
+            area_patterns = [
+                r'Built\s*up\s*area\s*[:\-]?\s*(\d+(?:,\d+)?)',  # "Built up area: 145"
+                r'Built\s*Up\s*Area\s*[:\-]?\s*(\d+(?:,\d+)?)',  # "Built Up Area : 121"
+                r'Area\s*[:\-]?\s*(\d+(?:,\d+)?)\s*(?:m|sqm)?',  # "Area: 121" or "Area: 121 m"
+                r'(\d+(?:,\d+)?)\s*m[²2]',  # "121 m²"
+                r'(\d+(?:,\d+)?)\s*sqm',  # "121 sqm"
+            ]
+            for pattern in area_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    area_str = match.group(1).replace(',', '')
+                    details['area'] = int(area_str)
+                    break
+            
+            # Reference Number
+            ref_patterns = [
+                r'Reference\s*No\.?\s*[:\-]?\s*(\d+)',
+                r'Ref\.?\s*[:\-]?\s*(\d+)',
+                r'Property\s*ID\s*[:\-]?\s*(\d+)',
+            ]
+            for pattern in ref_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    details['reference_no'] = int(match.group(1))
+                    break
+            
+            # Delivery - patterns like "Delivery : Ready To Move" or "Delivery : 2025"
+            delivery_patterns = [
+                r'Delivery\s*[:\-]?\s*(Ready\s*To\s*Move)',
+                r'Delivery\s*[:\-]?\s*(20\d{2})',
+                r'Delivery\s*(?:In|Date)?\s*[:\-]?\s*(20\d{2})',
+            ]
+            for pattern in delivery_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    value = match.group(1).strip()
+                    if value.lower().replace(' ', '') == 'readytomove':
+                        details['delivery_in'] = 'Ready To Move'
+                    else:
+                        try:
+                            details['delivery_in'] = int(value)
+                        except:
+                            details['delivery_in'] = value
+                    break
+            
+            # Finishing - keep EXACT values from Nawy
+            # Values: Finished, Not Finished, Semi-Finished, Furnished, Flexi Finished
+            finishing_patterns = [
+                r'Finishing\s*[:\-]?\s*(Finished|Not\s*Finished|Semi[\-\s]?Finished|Furnished|Flexi\s*Finished|Core\s*(?:and|\&)?\s*Shell)',
+            ]
+            for pattern in finishing_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    # Keep the exact value as found on the page
+                    finishing_val = match.group(1).strip()
+                    # Only normalize spacing, not the actual value
+                    finishing_val = ' '.join(finishing_val.split())  # normalize whitespace
+                    details['finishing'] = finishing_val
+                    break
+
+            
+            # Floor
+            floor_patterns = [
+                r'Floor\s*[:\-]?\s*(\w+\s*Floor)',
+                r'Floor\s*[:\-]?\s*(\d+)',
+            ]
+            for pattern in floor_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    details['floor'] = match.group(1).strip()
+                    break
+            
+            # View
+            view_patterns = [
+                r'View\s*[:\-]?\s*(Bahary|Garden|Pool|Sea|Street|Corner|Main)',
+            ]
+            for pattern in view_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    details['view'] = match.group(1).strip()
+                    break
+            
+            # Sale Type
+            if 'Resale' in all_text:
+                details['sale_type'] = 'Resale'
+            elif 'Developer Sale' in all_text or 'Primary' in all_text:
+                details['sale_type'] = 'Developer Sale'
+            
+            # Down Payment - patterns like "Down Payment : 3,500,000" or "Down Payment:3500000"
+            dp_patterns = [
+                r'Down\s*Payment\s*[:\-]?\s*([\d,]+(?:\.\d+)?)',
+            ]
+            for pattern in dp_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    dp_str = match.group(1).replace(',', '')
+                    try:
+                        details['down_payment'] = int(float(dp_str))
+                    except:
+                        pass
+                    break
+            
+            # Price - patterns like "Price : 7,000,000" or "7,000,000 EGP"
+            price_patterns = [
+                r'Price\s*[:\-]?\s*([\d,]+(?:\.\d+)?)',
+                r'([\d,]+)\s*EGP',
+            ]
+            for pattern in price_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    price_str = match.group(1).replace(',', '')
+                    try:
+                        details['price'] = int(float(price_str))
+                    except:
+                        pass
+                    break
+            
+            # Remaining installments - patterns like "Remaining : 3,500,000 Till 2034"
+            remaining_patterns = [
+                r'Remaining\s*[:\-]?\s*([\d,]+)\s*(?:Till|Until|Over)?\s*(20\d{2})?',
+            ]
+            for pattern in remaining_patterns:
+                match = re.search(pattern, all_text, re.IGNORECASE)
+                if match:
+                    remaining_str = match.group(1).replace(',', '')
+                    try:
+                        details['remaining_amount'] = int(remaining_str)
+                        if match.group(2):
+                            details['payment_end_year'] = int(match.group(2))
+                    except:
+                        pass
+                    break
                         
         except Exception as e:
             logger.debug(f"Error parsing details table: {e}")

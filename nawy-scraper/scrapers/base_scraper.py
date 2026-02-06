@@ -147,8 +147,8 @@ class BaseScraper:
                 
                 response = await self.page.goto(
                     url,
-                    timeout=settings.timeout,
-                    wait_until='networkidle'
+                    timeout=settings.timeout or 60000,
+                    wait_until='domcontentloaded'  # Changed from networkidle to be faster
                 )
                 
                 if response and response.status == 200:
