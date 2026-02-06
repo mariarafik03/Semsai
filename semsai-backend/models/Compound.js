@@ -30,23 +30,23 @@ const compoundSchema = new mongoose.Schema({
         occupancy_rate: Number
     }],
 
-    amenities: {
-        clubhouse: Boolean,
-        gym: Boolean,
-        cafes: Boolean,
-        restaurants: Boolean,
-        parks: Boolean,
-        nightlife_nearby: Boolean,
-        commercial_strip: Boolean,
-        food_court: Boolean,
-        outdoor_pools: Boolean,
-        children_play_area: Boolean,
-        barbecue_area: Boolean,
-        bicycle_lanes: Boolean,
-        jogging_trail: Boolean
-    },
+    amenities: [String], // Changed to array of strings for flexibility
+    // amenities: { ... } // (Old object schema removed for flexibility)
+
+    // Captured Payment Info (Summary)
+    payment_plans_summary: String,
     is_gated: { type: Boolean, default: true },
-    unit_count: Number
+    unit_count: Number,
+
+    // Financial Calculation Assumptions (Defaults per compound)
+    financial_profile: {
+        vacancy_rate: { type: Number, default: 5 }, // Percentage (0-100)
+        property_tax_rate: { type: Number, default: 1.5 }, // Percentage of unit price
+        insurance_cost: { type: Number, default: 2000 }, // Fixed annual cost
+        maintenance_cost: { type: Number, default: 5000 }, // Fixed annual cost
+        management_fee_rate: { type: Number, default: 10 }, // Percentage of gross rent
+        utilities_cost: { type: Number, default: 0 } // Fixed annual cost (if landlord pays)
+    }
 }, { timestamps: true });
 
 const Compound = mongoose.model('Compound', compoundSchema, 'compounds');

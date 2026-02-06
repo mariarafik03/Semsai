@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import Compound from '../models/Compound.js';
 import CompoundScores from '../models/CompoundScores.js';
 import MarketMetrics from '../models/MarketMetrics.js';
+import Developer from '../models/Developer.js';
 
 dotenv.config();
 
@@ -85,6 +86,39 @@ const calculateScores = async () => {
 
         } catch (err) {
             console.error(`Error processing ${compound.name}:`, err.message);
+        }
+    }
+
+    // ==========================================
+    // 6. Calculate Developer Scores
+    // ==========================================
+    const developers = await Developer.find();
+    console.log(`Processing ${developers.length} developers...`);
+
+    const calculateDeveloperScore = (rating, totalProjects) => {
+        if (rating == null || totalProjects == null) return null;
+
+        const projectScore = Math.log(totalProjects + 1);
+
+        const score =
+            (rating * 0.7) +
+            (projectScore * 0.3);
+
+        return Number(score.toFixed(3));
+    };
+
+    for (const dev of developers) {
+        try {
+            const score = calculateDeveloperScore(dev.rating, dev.total_projects);
+
+            if (score !== null) {
+                await Developer.findByIdAndUpdate(dev._id, { developer_score: score });
+                console.log(`✓ Developer: ${dev.dev_name} -> Score: ${score}`);
+            } else {
+                console.log(`⚠️ Developer: ${dev.dev_name} -> Skipped (Missing Data)`);
+            }
+        } catch (err) {
+            console.error(`Error processing developer ${dev.dev_name}:`, err.message);
         }
     }
 
