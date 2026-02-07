@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional
+from typing import Any, TypedDict, Optional
 
 class AgentState(TypedDict):
     user_input: Optional[str]
@@ -17,6 +17,7 @@ class AgentState(TypedDict):
     breakinginstallments:Optional[str]
     candidate_compounds: Optional[list]
     typeofproperty: Optional[str]
+    final_candidates: Optional[list[dict[str, Any]]]
 
 
     

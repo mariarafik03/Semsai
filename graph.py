@@ -18,9 +18,15 @@ class StateGraph:
         self.entry_point = name
 
     def step(self, state):
-        current_node = state["next_step"] or self.entry_point
-        fn = self.nodes[current_node]
-        state = fn(state)  # run agent
-        next_node = self.edges[current_node](state)
-        state["next_step"] = next_node
-        return state, next_node
+     current_node = state.get("next_step") or self.entry_point
+     fn = self.nodes[current_node]
+
+     new_state = fn(state)  # run agent
+     if new_state is not None:
+        state = new_state  # only overwrite if agent returned a state
+
+     edge = self.edges[current_node]
+     next_node = edge(state) if callable(edge) else edge
+
+     state["next_step"] = next_node
+     return state, next_node
