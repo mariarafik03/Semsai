@@ -91,9 +91,12 @@ def compounds_agent(state: AgentState):
         location = state.get("location")
         comp_query: Dict[str, Any] = {}
         if location:
-            comp_query["location"] = {"$regex": str(location), "$options": "i"}
+            location = str(location).strip()
+            comp_query["location"] = {"$regex": re.escape(location), "$options": "i"}
 
+        print(f"Searching for compounds in location: '{location}'")
         compounds = list(db["compounds"].find(comp_query, {"name": 1, "compound_name": 1, "location": 1}))
+        print(f"Found {len(compounds)} compound candidates in location.")
 
         candidate_compounds: List[Dict[str, Any]] = []
 
@@ -110,12 +113,13 @@ def compounds_agent(state: AgentState):
             # ✅ choose which price to filter/sort on based on user_type
             chosen_min_price: Any = None
             if user_type:
-                if str(user_type).strip().lower() == "apartment":
+                user_type_str = str(user_type).strip().lower()
+                if user_type_str == "apartment":
                     chosen_min_price = min_apartment_price
-                elif str(user_type).strip().lower() == "villa":
+                elif user_type_str == "villa":
                     chosen_min_price = min_villa_price
                 else:
-                    raw_other = _min_price_for_type(db, comp_oid, str(user_type))
+                    raw_other = _min_price_for_type(db, comp_oid, user_type_str.capitalize())
                     chosen_min_price = float(raw_other) if raw_other is not None else None
             else:
                 prices = [p for p in [min_apartment_price, min_villa_price] if p is not None]
@@ -137,7 +141,7 @@ def compounds_agent(state: AgentState):
         candidate_compounds.sort(key=lambda x: x["min_unit_price"])
         state["candidate_compounds"] = candidate_compounds
 
-        print(f"Top compounds within budget: {len(candidate_compounds)}")
+        print(f"Total candidate compounds within budget {format_price(budget)}: {len(candidate_compounds)}")
 
         # ✅ print with difference between villa and apartment
         for c in candidate_compounds[:10]:
