@@ -12,44 +12,65 @@ from main_helpers import ask_ollama
 
 
 BEST_ONLY_PROMPT = """
-Return STRICT JSON only.
-The first character MUST be '{' and the last character MUST be '}'.
-No markdown. No headings. No extra text outside JSON.
+!!!! CRITICAL INSTRUCTION !!!!
+DO NOT WRITE ANY TEXT BEFORE OR AFTER THE JSON.
+NO EXPLANATIONS. NO SUMMARIES. NO INTRODUCTIONS.
+YOUR ENTIRE RESPONSE MUST BE VALID JSON AND NOTHING ELSE.
 
-You are SEMSAI, a decision assistant for Egyptian real estate.
+WRONG (DO NOT DO THIS):
+"Based on the information provided, here is a summary..."
+"Here are the top 3 compounds..."
 
-You will receive INPUT JSON with:
+CORRECT (DO THIS):
+{"top_choices":[{"rank":1,"compound_id":"...","name":"...","purpose_used":"...","reasons":["..."],"confidence":0.85}...]}
+
+==============================================================================
+
+TASK: Analyze compounds and return TOP 3 as pure JSON only.
+
+Purpose meanings:
+- end_user → family living, comfort, community
+- investment → ROI, scale, mixed-use, market strength  
+- business → offices, commercial, accessibility
+
+REQUIRED OUTPUT (COPY THIS STRUCTURE EXACTLY):
 {
-  "purpose": "end_user|investment|business|null",
-  "candidates": [
-    {"compound_id":"string","name":"string","description":"string"}
+  "top_choices": [
+    {
+      "rank": 1,
+      "compound_id": "ID_HERE",
+      "name": "NAME_HERE",
+      "purpose_used": "investment",
+      "reasons": ["reason 1", "reason 2", "reason 3"],
+      "confidence": 0.85
+    },
+    {
+      "rank": 2,
+      "compound_id": "ID_HERE",
+      "name": "NAME_HERE",
+      "purpose_used": "investment",
+      "reasons": ["reason 1", "reason 2", "reason 3"],
+      "confidence": 0.75
+    },
+    {
+      "rank": 3,
+      "compound_id": "ID_HERE",
+      "name": "NAME_HERE",
+      "purpose_used": "investment",
+      "reasons": ["reason 1", "reason 2", "reason 3"],
+      "confidence": 0.65
+    }
   ]
 }
 
-Task:
-Choose the SINGLE best compound based ONLY on:
-- purpose
-- each compound description
+RULES:
+- Return EXACTLY 3 compounds
+- Give 3-6 specific reasons based on description
+- First character MUST be {
+- Last character MUST be }
+- NO TEXT BEFORE OR AFTER THE JSON
 
-Purpose mapping:
-- end_user: livability, community, comfort, daily life, services
-- investment: clarity of offering, scale, mixed-use signals, strong positioning (ONLY if explicitly in text)
-- business: business/commercial readiness, accessibility (ONLY if explicitly in text)
-
-Output STRICT JSON ONLY:
-{
-  "best_choice": {
-    "compound_id": "...",
-    "name": "...",
-    "purpose_used": "end_user|investment|business",
-    "reasons": ["...", "...", "..."],
-    "confidence": 0.0
-  }
-}
-
-Rules:
-- reasons: 3 to 6 reasons, grounded ONLY in description text.
-- No repetition.
+START YOUR RESPONSE NOW WITH { (not with any explanation):
 """
 
 
@@ -60,6 +81,7 @@ Rules:
 def _extract_compound_names_from_developers(
     final_candidates: Optional[List[Dict[str, Any]]]
 ) -> List[str]:
+    """Extract all compound names from final_candidates."""
     if not final_candidates:
         return []
 
@@ -73,7 +95,7 @@ def _extract_compound_names_from_developers(
                 if isinstance(n, str) and n.strip():
                     names.append(n.strip())
 
-    # unique keep order
+    # Deduplicate while preserving order
     seen = set()
     out: List[str] = []
     for n in names:
@@ -86,19 +108,19 @@ def _extract_compound_names_from_developers(
 
 def _fetch_compounds_desc_only(db, names: List[str]) -> List[Dict[str, Any]]:
     """
-    Tries exact match first.
-    If exact match returns few results, falls back to case-insensitive regex OR match.
+    Fetch compounds with descriptions from MongoDB.
+    Tries exact match first, then case-insensitive regex if needed.
     """
     if not names:
         return []
 
-    # 1) exact
+    # 1) Try exact match
     docs = list(db["compounds"].find(
         {"name": {"$in": names}},
         {"_id": 1, "name": 1, "description": 1}
     ))
 
-    # 2) fallback regex (case-insensitive) if weak match
+    # 2) Fallback to case-insensitive regex if we got few results
     if len(docs) < min(3, len(names)):
         ors = []
         for n in names:
@@ -113,6 +135,7 @@ def _fetch_compounds_desc_only(db, names: List[str]) -> List[Dict[str, Any]]:
                 {"_id": 1, "name": 1, "description": 1}
             ))
 
+    # Filter out compounds without descriptions
     out: List[Dict[str, Any]] = []
     for d in docs:
         desc = (d.get("description") or "").strip()
@@ -128,6 +151,7 @@ def _fetch_compounds_desc_only(db, names: List[str]) -> List[Dict[str, Any]]:
 
 
 def _normalize_purpose(p: Any) -> str:
+    """Normalize purpose string to standard values."""
     if not p:
         return "end_user"
     s = str(p).strip().lower()
@@ -141,74 +165,187 @@ def _normalize_purpose(p: Any) -> str:
 
 
 # -------------------------
-# Helpers: JSON robustness
+# Helpers: JSON extraction
 # -------------------------
 
-def _extract_first_json_object(text: str) -> Optional[str]:
+def _clean_markdown_json(text: str) -> str:
+    """Remove markdown code blocks and common formatting."""
+    if not text:
+        return ""
+    
+    # Remove markdown code blocks
+    text = re.sub(r'^```json\s*', '', text, flags=re.IGNORECASE | re.MULTILINE)
+    text = re.sub(r'^```\s*', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\s*```$', '', text, flags=re.MULTILINE)
+    
+    return text.strip()
+
+
+def _extract_json_object(text: str) -> Optional[str]:
+    """
+    Extract the first complete JSON object from text.
+    Handles nested braces and string escaping.
+    """
     if not text:
         return None
 
+    # Clean markdown first
+    text = _clean_markdown_json(text)
+
+    # Find first opening brace
     start = text.find("{")
     if start == -1:
         return None
 
-    in_str = False
-    esc = False
+    # Track depth and string context
+    in_string = False
+    escaped = False
     depth = 0
+    
     for i in range(start, len(text)):
         ch = text[i]
 
-        if in_str:
-            if esc:
-                esc = False
+        # Handle string context
+        if in_string:
+            if escaped:
+                escaped = False
             elif ch == "\\":
-                esc = True
+                escaped = True
             elif ch == '"':
-                in_str = False
+                in_string = False
             continue
 
+        # Check for string start
         if ch == '"':
-            in_str = True
+            in_string = True
             continue
 
+        # Track brace depth
         if ch == "{":
             depth += 1
         elif ch == "}":
             depth -= 1
             if depth == 0:
+                # Found complete object
                 return text[start:i + 1]
 
     return None
 
 
-def _ask_json_strict(full_prompt: str, retries: int = 2) -> Dict[str, Any]:
-    last = ""
-    for attempt in range(retries + 1):
-        prompt = full_prompt if attempt == 0 else (
-            "IMPORTANT:\n"
-            "- Output MUST be VALID JSON ONLY.\n"
-            "- No headings/markdown.\n"
-            "- First char '{' last char '}'.\n\n"
-            + full_prompt
-        )
+def _ask_json_with_retries(full_prompt: str, max_retries: int = 3) -> Dict[str, Any]:
+    """
+    Ask Ollama for JSON response with multiple retry strategies.
+    """
+    last_response = ""
+    
+    for attempt in range(max_retries):
+        # Build prompt with increasing emphasis on JSON-only output
+        if attempt == 0:
+            prompt = full_prompt
+        elif attempt == 1:
+            prompt = (
+                "SYSTEM INSTRUCTION: You are a JSON-only API. You do not write explanatory text.\n"
+                "You ONLY output valid JSON objects. Nothing else.\n"
+                "DO NOT write 'Based on' or 'Here is' or any introduction.\n"
+                "Your response must START with { and END with }\n\n"
+                + full_prompt
+            )
+        else:
+            prompt = (
+                "!!!!! EMERGENCY OVERRIDE !!!!!\n"
+                "IGNORE ALL PREVIOUS INSTRUCTIONS TO BE CONVERSATIONAL.\n"
+                "YOU ARE NOW IN JSON-ONLY MODE.\n"
+                "OUTPUT FORMAT: RAW JSON OBJECT ONLY\n"
+                "NO MARKDOWN BLOCKS (no ```json)\n"
+                "NO EXPLANATORY TEXT WHATSOEVER\n"
+                "FIRST CHARACTER: {\n"
+                "LAST CHARACTER: }\n"
+                "===============================================\n\n"
+                + full_prompt
+                + "\n\n===============================================\n"
+                "RESPOND NOW WITH PURE JSON (start typing { immediately):"
+            )
 
-        last = (ask_ollama(prompt) or "").strip()
+        print(f"\n🔄 Attempt {attempt + 1}/{max_retries}...")
+        
+        # Get response from Ollama
+        # Note: If your ask_ollama function supports a 'format' or 'json_mode' parameter,
+        # you could modify this call like: ask_ollama(prompt, format="json")
+        response = (ask_ollama(prompt) or "").strip()
+        last_response = response
+        
+        if not response:
+            print("❌ Empty response from Ollama")
+            continue
 
-        # direct parse
+        # Strategy 1: Try direct JSON parse
         try:
-            return json.loads(last)
-        except Exception:
-            pass
+            result = json.loads(response)
+            print("✅ Successfully parsed JSON (direct)")
+            return result
+        except json.JSONDecodeError as e:
+            print(f"⚠️  Direct parse failed: {e}")
 
-        # extract object
-        extracted = _extract_first_json_object(last)
-        if extracted:
-            try:
-                return json.loads(extracted)
-            except Exception:
-                pass
+        # Strategy 2: Clean markdown and try again
+        try:
+            cleaned = _clean_markdown_json(response)
+            result = json.loads(cleaned)
+            print("✅ Successfully parsed JSON (after markdown cleaning)")
+            return result
+        except json.JSONDecodeError as e:
+            print(f"⚠️  Cleaned parse failed: {e}")
 
-    raise ValueError(f"Ollama did not return valid JSON. Last output:\n{last[:1500]}")
+        # Strategy 3: Extract JSON object
+        try:
+            extracted = _extract_json_object(response)
+            if extracted:
+                result = json.loads(extracted)
+                print("✅ Successfully parsed JSON (extracted object)")
+                return result
+            else:
+                print("⚠️  No JSON object found in response")
+        except json.JSONDecodeError as e:
+            print(f"⚠️  Extracted parse failed: {e}")
+
+        # Strategy 4: Try to find JSON after common prefixes
+        try:
+            # Remove common conversational prefixes
+            prefixes_to_remove = [
+                "based on the information provided",
+                "here is a summary",
+                "here are the top",
+                "based on",
+                "here is",
+                "here are",
+                "the top 3 compounds are",
+                "i have analyzed",
+            ]
+            
+            response_lower = response.lower()
+            for prefix in prefixes_to_remove:
+                if prefix in response_lower:
+                    # Find where the prefix ends and try to extract JSON after it
+                    idx = response_lower.find(prefix)
+                    remaining = response[idx + len(prefix):]
+                    extracted = _extract_json_object(remaining)
+                    if extracted:
+                        result = json.loads(extracted)
+                        print("✅ Successfully parsed JSON (after removing prefix)")
+                        return result
+        except Exception as e:
+            print(f"⚠️  Prefix removal strategy failed: {e}")
+
+        # Show preview of what we got
+        preview = response[:300] + "..." if len(response) > 300 else response
+        print(f"📄 Response preview:\n{preview}\n")
+
+    # All retries failed
+    print("\n❌ All JSON parsing attempts failed")
+    print(f"Last response from Ollama:\n{last_response[:500]}\n")
+    raise ValueError(
+        f"Ollama failed to return valid JSON after {max_retries} attempts. "
+        f"Last response preview: {last_response[:200]}"
+    )
 
 
 # -------------------------
@@ -217,160 +354,337 @@ def _ask_json_strict(full_prompt: str, retries: int = 2) -> Dict[str, Any]:
 
 def _score_candidate(purpose: str, desc: str) -> Tuple[float, List[str]]:
     """
-    Simple keyword-based scorer to ALWAYS pick something if LLM fails.
-    Returns (score, reasons_found)
+    Keyword-based scoring as fallback.
+    Returns (score, reasons_found).
     """
     d = (desc or "").lower()
     reasons: List[str] = []
     score = 0.0
 
-    def hit(words: List[str], pts: float, reason: str):
+    def check_keywords(keywords: List[str], points: float, reason: str):
+        """Check if any keyword is in description."""
         nonlocal score
-        for w in words:
-            if w in d:
-                score += pts
+        for word in keywords:
+            if word in d:
+                score += points
                 if reason not in reasons:
                     reasons.append(reason)
                 return
 
-    # Common signals
-    hit(["security", "gated", "24/7"], 1.0, "Mentions security / gated living.")
-    hit(["clubhouse", "community", "parks", "green", "landscape", "gardens"], 1.0, "Mentions greenery / community facilities.")
-    hit(["mall", "retail", "shops", "commercial"], 1.0, "Mentions retail/commercial components.")
-    hit(["schools", "university", "auc"], 1.0, "Mentions education proximity/services.")
-    hit(["hospital", "medical"], 1.0, "Mentions medical access.")
-    hit(["downtown", "road", "axis", "access", "minutes from", "near"], 1.0, "Mentions accessibility / key locations.")
+    # General amenities
+    check_keywords(
+        ["security", "gated", "24/7", "24-7", "secured"],
+        1.0,
+        "Features security and gated access for resident safety"
+    )
+    
+    check_keywords(
+        ["clubhouse", "community", "parks", "green", "landscape", "gardens"],
+        1.0,
+        "Includes community facilities and green spaces"
+    )
+    
+    check_keywords(
+        ["mall", "retail", "shops", "commercial", "stores"],
+        1.0,
+        "Has retail and commercial components"
+    )
+    
+    check_keywords(
+        ["schools", "university", "auc", "education"],
+        1.0,
+        "Near educational institutions"
+    )
+    
+    check_keywords(
+        ["hospital", "medical", "clinic", "healthcare"],
+        1.0,
+        "Provides access to medical facilities"
+    )
+    
+    check_keywords(
+        ["downtown", "road", "axis", "access", "minutes from", "near", "close to"],
+        1.0,
+        "Strategically located with good accessibility"
+    )
 
-    # Purpose-specific weighting
+    # Purpose-specific scoring
     if purpose == "end_user":
-        hit(["family", "kids", "play", "comfort", "live"], 1.2, "End-user livability cues (family/comfort).")
-        hit(["spa", "gym", "pool", "sports"], 1.0, "Mentions daily-life amenities (gym/pool/sports).")
+        check_keywords(
+            ["family", "kids", "children", "play", "comfort", "living"],
+            1.5,
+            "Family-friendly environment designed for comfortable living"
+        )
+        check_keywords(
+            ["spa", "gym", "pool", "swimming", "sports", "fitness"],
+            1.2,
+            "Excellent daily-life amenities including fitness facilities"
+        )
+        check_keywords(
+            ["quiet", "peaceful", "serene", "tranquil"],
+            1.0,
+            "Peaceful environment suitable for family living"
+        )
 
     elif purpose == "investment":
-        hit(["mixed-use", "mixed use"], 1.5, "Investment cue: mixed-use mentioned.")
-        hit(["phases", "towers", "scale", "master plan"], 1.0, "Investment cue: scale/master plan clarity.")
-        hit(["brand", "international", "retail brands"], 1.0, "Investment cue: commercial brand/retail angle.")
+        check_keywords(
+            ["mixed-use", "mixed use", "multi-purpose"],
+            2.0,
+            "Mixed-use development offers diverse investment opportunities"
+        )
+        check_keywords(
+            ["phases", "towers", "scale", "master plan", "masterplan"],
+            1.5,
+            "Large-scale development with clear phasing and master planning"
+        )
+        check_keywords(
+            ["brand", "international", "luxury", "premium"],
+            1.3,
+            "Premium positioning with strong brand appeal"
+        )
+        check_keywords(
+            ["rental", "roi", "investment", "appreciation"],
+            1.5,
+            "Strong investment potential mentioned in description"
+        )
 
     elif purpose == "business":
-        hit(["office", "business", "workspace"], 1.5, "Business cue: office/business readiness mentioned.")
-        hit(["commercial", "retail"], 1.0, "Business cue: commercial activity mentioned.")
+        check_keywords(
+            ["office", "business", "workspace", "coworking"],
+            2.0,
+            "Dedicated business and office spaces available"
+        )
+        check_keywords(
+            ["commercial", "retail", "shops"],
+            1.5,
+            "Commercial infrastructure suitable for business operations"
+        )
+        check_keywords(
+            ["conference", "meeting", "business center"],
+            1.3,
+            "Business amenities and meeting facilities"
+        )
 
-    # Small bonus for longer, more informative descriptions
-    if len(d) >= 600:
-        score += 0.3
-    if len(d) >= 1200:
+    # Bonus for detailed descriptions
+    desc_length = len(d)
+    if desc_length >= 600:
+        score += 0.5
+        reasons.append("Comprehensive project description with detailed information")
+    if desc_length >= 1200:
         score += 0.3
 
     return score, reasons
 
 
-def _fallback_pick_best(purpose: str, candidates: List[Dict[str, Any]]) -> Dict[str, Any]:
-    best = None
-    best_score = float("-inf")
-    best_reasons: List[str] = []
+def _fallback_pick_best(
+    purpose: str, 
+    candidates: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """
+    Deterministic fallback when LLM fails.
+    Returns top 3 compounds.
+    """
+    if not candidates:
+        raise ValueError("No candidates provided for fallback selection")
 
-    for c in candidates:
-        score, reasons = _score_candidate(purpose, c.get("description", ""))
-        if score > best_score:
-            best_score = score
-            best = c
-            best_reasons = reasons
-
-    if not best:
-        # absolute fallback: first candidate
-        best = candidates[0]
-
-    # ensure 3-6 reasons
-    reasons_out = best_reasons[:6]
-    if len(reasons_out) < 3:
-        # pad with generic but still grounded
-        reasons_out.append("Description provides clearer details than alternatives.")
-    if len(reasons_out) < 3:
-        reasons_out.append("Mentions concrete amenities/services rather than vague claims.")
-    if len(reasons_out) < 3:
-        reasons_out.append("Has stronger explicit location/access cues in the text.")
-
-    return {
-        "best_choice": {
-            "compound_id": best.get("compound_id"),
-            "name": best.get("name"),
+    print("\n🔧 Using fallback scoring algorithm...")
+    
+    # Score all candidates
+    scored_candidates = []
+    for candidate in candidates:
+        score, reasons = _score_candidate(
+            purpose, 
+            candidate.get("description", "")
+        )
+        scored_candidates.append({
+            "candidate": candidate,
+            "score": score,
+            "reasons": reasons
+        })
+    
+    # Sort by score (highest first)
+    scored_candidates.sort(key=lambda x: x["score"], reverse=True)
+    
+    # Take top 3 (or all if less than 3)
+    top_3 = scored_candidates[:min(3, len(scored_candidates))]
+    
+    # Ensure we have at least 3 (pad if needed)
+    while len(top_3) < 3 and len(top_3) < len(candidates):
+        top_3.append(scored_candidates[len(top_3)])
+    
+    # Build result
+    top_choices = []
+    for rank, item in enumerate(top_3, 1):
+        candidate = item["candidate"]
+        reasons = item["reasons"][:6]
+        
+        # Pad with generic but valid reasons if needed
+        if len(reasons) < 3:
+            padding = [
+                "Provides clearer project details compared to alternatives",
+                "Description indicates established developer credibility",
+                "Location and accessibility mentioned in project description"
+            ]
+            for pad_reason in padding:
+                if len(reasons) >= 3:
+                    break
+                if pad_reason not in reasons:
+                    reasons.append(pad_reason)
+        
+        # Calculate confidence based on rank and score
+        base_confidence = min(0.6, max(0.3, item["score"] / 10.0))
+        confidence = base_confidence - (rank - 1) * 0.1  # Decrease by 0.1 for each rank
+        confidence = max(0.3, confidence)  # Minimum 0.3
+        
+        top_choices.append({
+            "rank": rank,
+            "compound_id": candidate.get("compound_id"),
+            "name": candidate.get("name"),
             "purpose_used": purpose,
-            "reasons": reasons_out[:6],
-            "confidence": 0.45  # conservative because heuristic
-        }
+            "reasons": reasons[:6],
+            "confidence": round(confidence, 2)
+        })
+    
+    return {
+        "top_choices": top_choices
     }
 
 
 # -------------------------
-# Agent
+# Main Agent
 # -------------------------
 
 def comparing_agent(state: AgentState):
+    """
+    Main comparing agent that selects best compound.
+    Uses LLM with fallback to deterministic scoring.
+    """
     print("\n--- Comparing Agent (Ollama) ---")
 
+    # Get purpose
     purpose_used = _normalize_purpose(state.get("purpose"))
+    print(f"Purpose: {purpose_used}")
 
+    # Extract compound names
     final_candidates = state.get("final_candidates") or []
     compound_names = _extract_compound_names_from_developers(final_candidates)
 
     if not compound_names:
-        print("No compound names found in state.final_candidates.")
+        print("❌ No compound names found in state.final_candidates.")
         return state
 
+    print(f"Found {len(compound_names)} compound names to evaluate")
+
+    # Connect to MongoDB
     load_dotenv()
     uri = os.getenv("MONGO_URI")
     if not uri:
-        print("No MONGO_URI found. Skipping comparison.")
+        print("❌ No MONGO_URI found. Skipping comparison.")
         return state
 
     client = MongoClient(uri, tlsCAFile=certifi.where())
+    
     try:
         db = client.get_default_database()
 
+        # Fetch compounds with descriptions
         candidates = _fetch_compounds_desc_only(db, compound_names)
-        candidates = candidates[:12]  # token control
+        
+        # Limit to prevent token overflow
+        candidates = candidates[:12]
 
         if not candidates:
-            print("No compounds with descriptions matched by name. (Check compounds.name vs matched_compound_names)")
+            print("❌ No compounds with descriptions found in database.")
+            print("   Check that compounds.name matches matched_compound_names")
             return state
 
-        # ---- Try LLM first
-        payload = {"purpose": purpose_used, "candidates": candidates}
-        full_prompt = BEST_ONLY_PROMPT + "\n\nINPUT JSON:\n" + json.dumps(payload, ensure_ascii=False)
+        print(f"✅ Found {len(candidates)} compounds with descriptions")
 
+        # Prepare input for LLM
+        payload = {
+            "purpose": purpose_used,
+            "candidates": candidates
+        }
+        
+        full_prompt = (
+            BEST_ONLY_PROMPT + 
+            "\n\nINPUT JSON:\n" + 
+            json.dumps(payload, ensure_ascii=False, indent=2)
+        )
+
+        # Try LLM first
         try:
-            result = _ask_json_strict(full_prompt, retries=2)
-            best = (result.get("best_choice") if isinstance(result, dict) else None) or {}
-            if best and best.get("name"):
-                print("\n--- BEST COMPOUND (LLM) ---")
-                print(f"Name: {best.get('name')}")
-                print(f"Purpose Used: {best.get('purpose_used')}")
-                print(f"Confidence: {best.get('confidence')}")
-                reasons = best.get("reasons") or []
+            print("\n🤖 Asking Ollama to select top 3 compounds...")
+            result = _ask_json_with_retries(full_prompt, max_retries=3)
+            
+            # Validate result structure
+            if not isinstance(result, dict):
+                raise ValueError("Result is not a dictionary")
+            
+            top_choices = result.get("top_choices")
+            if not top_choices or not isinstance(top_choices, list):
+                raise ValueError("Missing or invalid 'top_choices' in result")
+            
+            if len(top_choices) < 3:
+                raise ValueError(f"Expected 3 compounds, got {len(top_choices)}")
+
+            # Success!
+            print("\n✅ LLM successfully selected top 3 compounds")
+            print("\n" + "="*80)
+            print("TOP 3 COMPOUNDS (LLM)")
+            print("="*80)
+            
+            for choice in top_choices:
+                print(f"\n🏆 RANK #{choice.get('rank')}")
+                print(f"Name: {choice.get('name')}")
+                print(f"Compound ID: {choice.get('compound_id')}")
+                print(f"Purpose: {choice.get('purpose_used')}")
+                print(f"Confidence: {choice.get('confidence')}")
+                
+                reasons = choice.get("reasons") or []
                 if isinstance(reasons, list) and reasons:
-                    print("\nReasons:")
-                    for i, r in enumerate(reasons, 1):
-                        print(f"{i}. {r}")
-                return state
+                    print("Reasons:")
+                    for i, reason in enumerate(reasons, 1):
+                        print(f"  {i}. {reason}")
+                print("-" * 80)
+            
+            print("="*80)
+            
+            return state
 
-            # if JSON ok but missing best_choice -> fallback
-            print("LLM returned JSON but missing best_choice. Falling back.")
         except Exception as e:
-            print(f"LLM failed to produce valid JSON. Falling back. Error: {e}")
+            print(f"\n⚠️  LLM failed: {e}")
+            print("Falling back to deterministic scoring...")
 
-        # ---- Fallback deterministic pick
-        fb = _fallback_pick_best(purpose_used, candidates)
-        best = fb["best_choice"]
+        # Fallback to deterministic method
+        try:
+            fallback_result = _fallback_pick_best(purpose_used, candidates)
+            top_choices = fallback_result["top_choices"]
 
-        print("\n--- BEST COMPOUND (FALLBACK) ---")
-        print(f"Name: {best.get('name')}")
-        print(f"Purpose Used: {best.get('purpose_used')}")
-        print(f"Confidence: {best.get('confidence')}")
-        print("\nReasons:")
-        for i, r in enumerate(best.get("reasons") or [], 1):
-            print(f"{i}. {r}")
+            print("\n" + "="*80)
+            print("TOP 3 COMPOUNDS (FALLBACK)")
+            print("="*80)
+            
+            for choice in top_choices:
+                print(f"\n🏆 RANK #{choice.get('rank')}")
+                print(f"Name: {choice.get('name')}")
+                print(f"Compound ID: {choice.get('compound_id')}")
+                print(f"Purpose: {choice.get('purpose_used')}")
+                print(f"Confidence: {choice.get('confidence')} (fallback scoring)")
+                
+                print("Reasons:")
+                for i, reason in enumerate(choice.get("reasons") or [], 1):
+                    print(f"  {i}. {reason}")
+                print("-" * 80)
+            
+            print("="*80)
+            
+            return state
 
-        return state
+        except Exception as fallback_error:
+            print(f"\n❌ Fallback also failed: {fallback_error}")
+            print("Unable to select top compounds")
+            return state
 
     finally:
         client.close()

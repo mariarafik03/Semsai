@@ -203,7 +203,7 @@ def developers_agent(state: AgentState):
     if not candidate_compounds:
         print("No candidate compounds found.")
         state["top_developers"] = []
-        state["final_candidates"] = []
+        state["final_compounds"] = []
         return state
 
     print(f"Searching developers for {len(candidate_compounds)} candidate compounds")
@@ -211,30 +211,39 @@ def developers_agent(state: AgentState):
     limit_count = 3
     top_developers = get_top_developers_by_score(state, limit_count)
 
-    # ✅ Store output in final_candidates (as requested)
+
     state["top_developers"] = top_developers
-    state["final_candidates"] = top_developers
 
-    if top_developers:
-        print(f"\nTop {len(top_developers)} Developers (Ranked by Class):\n")
-        print("=" * 80)
+    
+    matched_names = set()
+    for dev in top_developers:
+        for nm in (dev.get("matched_compound_names") or []):
+            if isinstance(nm, str) and nm.strip():
+                matched_names.add(" ".join(nm.strip().lower().split()))
 
-        for idx, dev in enumerate(top_developers, 1):
-            print(f"\n{idx}. {dev.get('name', 'Unknown')}")
-            print(f"   Developer Class: {dev.get('Developer_Class', 'N/A')}")
-            print(f"   Class Score: {dev.get('class_score', 0)}")
-            print(f"   Matching Compounds: {dev.get('compound_count', 0)}")
+    final_compounds = []
+    for c in candidate_compounds:
+        cname = c.get("compound_name")
+        if not cname:
+            continue
+        cname_norm = " ".join(str(cname).strip().lower().split())
+        if cname_norm in matched_names:
+            final_compounds.append({
+                "compound_id": c.get("compound_id"),
+                "compound_name": c.get("compound_name"),
+                "location": c.get("location"),
+                "min_unit_price": c.get("min_unit_price"),
+            })
 
-            matched_names = dev.get("matched_compound_names", [])
-            if matched_names:
-                print(f"   Their Matched Compounds:")
-                for name in matched_names:
-                    print(f"      • {name}")
+    
+    final_compounds.sort(key=lambda x: float(x.get("min_unit_price") or 1e18))
+    final_compounds = final_compounds[:10]
 
-            if dev.get("website"):
-                print(f"   Website: {dev.get('website')}")
-    else:
-        print("No developers found to display.")
+    state["final_compounds"] = final_compounds
 
-    state["next_step"] = "developers_agent"
+    print(f"\n✅ Final compounds selected: {len(final_compounds)}")
+    for x in final_compounds[:10]:
+        print(f"  - {x.get('compound_name')} | min_price={x.get('min_unit_price')}")
+
+    state["next_step"] = "compound_features_agent"
     return state

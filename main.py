@@ -7,7 +7,10 @@ from agents.location_agent import location_agent
 from agents.compounds_agent import compounds_agent, format_price
 from agents.developers_agent import developers_agent  
 from agents.comparing_agent import comparing_agent  
-
+from agents.compound_features_agent import compound_features_agent
+from agents.user_prefrences_agent import user_preferences_agent
+from agents.compound_ranking_agent import compound_ranking_agent
+from agents.final_output_agent import final_output_agent 
 state = {
     "user_input": None,
     "purpose": None,
@@ -36,8 +39,11 @@ graph.add_node("location_agent", location_agent)
 graph.add_node("developers_agent", developers_agent)
 
 graph.add_node("compounds_agent", compounds_agent)
-graph.add_node("comparing_agent", comparing_agent)  # placeholder for next step
-
+#graph.add_node("comparing_agent", comparing_agent)  # placeholder for next step
+graph.add_node("compound_features_agent",compound_features_agent)
+graph.add_node("user_preferences_agent", user_preferences_agent)  # placeholder for next step
+graph.add_node("compound_ranking_agent", compound_ranking_agent)  # placeholder for next step
+graph.add_node("final_output_agent", final_output_agent)
 
 graph.add_edge("purpose_agent", lambda s: "budget_agent" if s.get("purpose") else "questioning_agent")
 graph.add_edge("questioning_agent", lambda s: "budget_agent")
@@ -45,8 +51,12 @@ graph.add_edge("budget_agent", lambda s: "location_agent" )
 graph.add_edge("location_agent", lambda s: "compounds_agent")
 
 graph.add_edge("compounds_agent", lambda s: "developers_agent")
-graph.add_edge("developers_agent", lambda s: "comparing_agent")
-graph.add_edge("comparing_agent", lambda s: END)
+graph.add_edge("developers_agent", lambda s: "compound_features_agent")
+graph.add_edge("compound_features_agent", lambda s: "user_preferences_agent")
+graph.add_edge("user_preferences_agent", lambda s: "compound_ranking_agent")
+graph.add_edge("compound_ranking_agent", lambda s: "final_output_agent")
+graph.add_edge("final_output_agent", lambda s: END)
+#graph.add_edge("comparing_agent", lambda s: END)
 
 graph.set_entry_point("purpose_agent")
 

@@ -18,7 +18,8 @@ class AgentState(TypedDict):
     candidate_compounds: Optional[list]
     typeofproperty: Optional[str]
     final_candidates: Optional[list[dict[str, Any]]]
-
-
+    features_limit: int = 1
+    features_force_refresh: bool = True
+    
     
 
