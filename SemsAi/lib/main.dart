@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:SemsAi/business_logic/auth/auth_cubit.dart';
-import 'package:SemsAi/business_logic/home/home_cubit.dart';
-import 'package:SemsAi/business_logic/favorite/favorite_cubit.dart';
-import 'package:SemsAi/business_logic/chat/chat_cubit.dart';
-import 'package:SemsAi/business_logic/map/map_cubit.dart';
-import 'package:SemsAi/data/repositories/auth_repository.dart';
-import 'package:SemsAi/data/repositories/conversation_repository.dart';
-import 'package:SemsAi/presentation/routes/app_routes.dart';
-import 'package:SemsAi/core/strings.dart';
+import 'package:SemsAi/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:SemsAi/features/home/presentation/cubit/home_cubit.dart';
+import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
+import 'package:SemsAi/features/chat/presentation/cubit/chat_cubit.dart';
+import 'package:SemsAi/features/map/presentation/cubit/map_cubit.dart';
+import 'package:SemsAi/features/auth/data/repo/auth_repository.dart';
+import 'package:SemsAi/features/chat/data/repo/conversation_repository.dart';
+import 'package:SemsAi/core/routing/app_router.dart';
+import 'package:SemsAi/core/routing/app_routes.dart';
 
 void main() {
-  runApp(MyApp(appRouter: AppRoutes()));
+  runApp(MyApp(appRouter: AppRouter()));
 }
 
 class MyApp extends StatelessWidget {
-  final AppRoutes appRouter;
+  final AppRouter appRouter;
   const MyApp({super.key, required this.appRouter});
 
   @override
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        initialRoute: AppStrings.splashRoute,
+        initialRoute: AppRoutes.splash,
         onGenerateRoute: appRouter.generateRoute,
       ),
     );
