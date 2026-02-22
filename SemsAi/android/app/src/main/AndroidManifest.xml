@@ -6,7 +6,8 @@
     <application
         android:label="flutter_application_1"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
             <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyAYeGMt1_T_wt6oVa46POv87xIonyhX6RY"/>
 

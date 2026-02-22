@@ -49,6 +49,9 @@ const compoundSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+// Speed up the explore map query that filters by lat/lng existence
+compoundSchema.index({ lat: 1, lng: 1 });
+
 const Compound = mongoose.model('Compound', compoundSchema, 'compounds');
 
 export default Compound;
