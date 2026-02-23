@@ -59,24 +59,24 @@ class _SplashScreenState extends State<SplashScreen>
 
     _glowController.forward();
     Future.delayed(
-      const Duration(milliseconds: 300),
+      Duration(milliseconds: 300),
       () => _iconController.forward(),
     );
     Future.delayed(
-      const Duration(milliseconds: 500),
+      Duration(milliseconds: 500),
       () => _textController.forward(),
     );
     Future.delayed(
-      const Duration(milliseconds: 1500),
+      Duration(milliseconds: 1500),
       () => _dotsController.repeat(),
     );
 
-    Timer(const Duration(milliseconds: 3200), () {
+    Timer(Duration(milliseconds: 3200), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             pageBuilder: (_, __, ___) => widget.nextScreen,
-            transitionDuration: const Duration(milliseconds: 600),
+            transitionDuration: Duration(milliseconds: 600),
             transitionsBuilder: (_, anim, __, child) =>
                 FadeTransition(opacity: anim, child: child),
           ),
@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Glow orb
+          // balls of light expanding from the center to create a magical glow effect
           AnimatedBuilder(
             animation: _glowScale,
             builder: (_, __) => Transform.scale(
@@ -128,7 +128,6 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
-          // Main content
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -136,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
               ScaleTransition(
                 scale: _iconScale,
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
@@ -148,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ],
                   ),
                   child: ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
+                    shaderCallback: (bounds) => LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [_gold, _accent],
@@ -232,7 +231,7 @@ class _SplashScreenState extends State<SplashScreen>
                           height: 1,
                           color: _gold.withValues(alpha: 0.3 * progress),
                         ),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Text(
                           AppStrings.tagLine,
                           style: TextStyle(
@@ -242,7 +241,7 @@ class _SplashScreenState extends State<SplashScreen>
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10),
                         Container(
                           width: 20,
                           height: 1,
@@ -269,7 +268,7 @@ class _SplashScreenState extends State<SplashScreen>
                     final scale = 0.8 + 0.4 * sin(value * pi);
                     final opacity = 0.3 + 0.7 * sin(value * pi);
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 4),
                       child: Transform.scale(
                         scale: scale,
                         child: Opacity(

@@ -45,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Text(
                     'Profile',
                     style: TextStyle(
@@ -54,20 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 28),
-
-                  // User Info Card
+                  SizedBox(height: 28),
                   _buildUserCard(userName, userEmail),
-                  const SizedBox(height: 20),
-
-                  // Default Region Card
+                  SizedBox(height: 20),
                   _buildRegionCard(),
-
-                  const Spacer(),
-
-                  // Sign Out Button
+                  Spacer(),
                   _buildSignOutButton(context),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
               ),
             );
@@ -88,7 +80,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Row(
         children: [
-          // Avatar
           Container(
             width: 52,
             height: 52,
@@ -106,9 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               size: 28,
             ),
           ),
-          const SizedBox(width: 14),
-
-          // Name & Email
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3),
                 Text(
                   email,
                   style: TextStyle(color: AppColors.textMuted, fontSize: 13),
@@ -146,11 +135,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row
           Row(
             children: [
               Icon(Icons.location_on_outlined, color: AppColors.gold, size: 20),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Default Region',
                 style: TextStyle(
@@ -161,12 +149,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 14),
-
-          // Dropdown
+          SizedBox(height: 14),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
               color: AppColors.bg,
               borderRadius: BorderRadius.circular(10),
@@ -223,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFDC2626),
+          backgroundColor: Color(0xFFDC2626),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -259,10 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 (route) => false,
               );
             },
-            child: Text(
-              'Sign Out',
-              style: TextStyle(color: const Color(0xFFDC2626)),
-            ),
+            child: Text('Sign Out', style: TextStyle(color: Color(0xFFDC2626))),
           ),
         ],
       ),

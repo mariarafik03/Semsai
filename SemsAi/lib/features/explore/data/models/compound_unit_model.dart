@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// A single payment plan attached to a unit
 class PaymentPlan {
   final String? frequency;
   final int? years;
@@ -47,7 +46,6 @@ class PaymentPlan {
     );
   }
 
-  /// Down-payment as a percentage of unit price
   double? get downPaymentPercent {
     if (downPayment != null && unitPrice != null && unitPrice! > 0) {
       return (downPayment! / unitPrice!) * 100;
@@ -151,10 +149,10 @@ class CompoundUnit extends Equatable {
     return null;
   }
 
-  /// Best price: price > priceMin > priceMax
+  
   double? get displayPrice => price ?? priceMin;
 
-  /// Price range text
+  
   String? get priceRangeText {
     if (priceMin != null && priceMax != null && priceMin != priceMax) {
       return 'Up to ${_short(priceMax!)} EGP';
@@ -162,10 +160,10 @@ class CompoundUnit extends Equatable {
     return null;
   }
 
-  /// Best area: area > areaMin
+  
   double? get displayArea => area ?? areaMin;
 
-  /// First non-cash payment plan
+  
   PaymentPlan? get bestPlan {
     if (paymentPlans.isEmpty) return null;
     final nonCash = paymentPlans.where((p) => !p.isCash).toList();

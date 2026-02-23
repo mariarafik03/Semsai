@@ -4,7 +4,7 @@ import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/recommendations/presentation/screens/widgets/recommendation_card.dart';
 
 class RecommendationsScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> results;
+  final Map<String, dynamic> results;
   final String sessionId;
 
   const RecommendationsScreen({
@@ -36,6 +36,11 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     super.dispose();
   }
 
+  List<Map<String, dynamic>> get _topCompounds {
+    final raw = widget.results['top_compounds'] as List<dynamic>? ?? [];
+    return raw.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +50,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
           children: [
             _buildHeader(),
             Expanded(
-              child: widget.results.isEmpty
+              child: _topCompounds.isEmpty
                   ? _buildEmpty()
                   : _buildResultsList(),
             ),
@@ -121,7 +126,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                     ),
                   ),
                   Text(
-                    'Top ${widget.results.length} matches for you',
+                    'Top ${_topCompounds.length} matches for you',
                     style: TextStyle(
                       color: AppColors.gold.withValues(alpha: 0.8),
                       fontSize: 12,
@@ -139,15 +144,23 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
   // ─── Results List ───────────────────────────
 
   Widget _buildResultsList() {
+    final compounds = _topCompounds;
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      itemCount: widget.results.length,
+      itemCount: compounds.length,
       itemBuilder: (context, index) {
-        final item = widget.results[index];
+        final item = compounds[index];
         final delay = index * 0.15;
         return RecommendationCard(
-          data: item,
-          rank: (item['rank'] as int?) ?? (index + 1),
+          data: {
+            'name': item['compound_name'] ?? 'Unknown',
+            'location': item['location'] ?? '',
+            'confidence': (item['score'] as num?) ?? 0.0,
+            'reasons': item['reasons'] ?? [],
+            'min_unit_price': item['min_unit_price'],
+            'units': item['units'] ?? [],
+          },
+          rank: index + 1,
           entranceDelay: delay,
           parentCtrl: _entranceCtrl,
         );

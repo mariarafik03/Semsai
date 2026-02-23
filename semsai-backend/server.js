@@ -156,7 +156,7 @@ app.get('/developers', async (req, res) => {
 
 app.post('/conversation/step', async (req, res) => {
   try {
-    const pythonServiceUrl = 'http://127.0.0.1:8000/agents/step';
+    const pythonServiceUrl = process.env.AGENTS_URL || 'http://127.0.0.1:8000/agents/step';
     const response = await axios.post(pythonServiceUrl, req.body);
     res.json(response.data);
   } catch (err) {

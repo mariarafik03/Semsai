@@ -30,10 +30,7 @@ class ExploreLoadingView extends StatelessWidget {
               child: Shimmer(
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   children: List.generate(
                     5,
                     (_) => Container(
@@ -60,8 +57,8 @@ class ExploreLoadingView extends StatelessWidget {
                         color: AppColors.gold,
                         strokeWidth: 2.5,
                       ),
-                      const SizedBox(height: 14),
-                      const Text(
+                      SizedBox(height: 14),
+                      Text(
                         AppStrings.loadingProperties,
                         style: TextStyle(
                           color: AppColors.textMuted,
@@ -78,14 +75,12 @@ class ExploreLoadingView extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.cardBg,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(22),
-                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
                 ),
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: EdgeInsets.only(top: 8),
                       child: Container(
                         width: 36,
                         height: 4,
@@ -98,10 +93,10 @@ class ExploreLoadingView extends StatelessWidget {
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                        padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
                         children: List.generate(
                           4,
-                          (_) => const PropertyCardSkeleton(),
+                          (_) => PropertyCardSkeleton(),
                         ),
                       ),
                     ),

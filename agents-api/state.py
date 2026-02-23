@@ -1,6 +1,7 @@
 """
 Conversation state shared across all agents.
 Mirrors the original AgentState but adds conversation tracking.
+Updated for the full 10-agent pipeline.
 """
 from typing import Any, Optional
 
@@ -27,11 +28,28 @@ def new_state() -> dict[str, Any]:
         "breakingbudget": None,
         "breakinginstallments": None,
 
-        # --- results ---
+        # --- results (compounds / developers) ---
         "candidate_compounds": None,
         "top_developers": None,
         "final_candidates": None,
+        "final_compounds": None,
         "top_choices": None,
+
+        # --- compound features ---
+        "compound_features_stats": None,
+        "features_limit": 0,
+        "features_force_refresh": True,
+
+        # --- user preferences ---
+        "user_preferences": None,
+
+        # --- ranking ---
+        "ranked_compounds": None,
+        "top_compounds": None,
+
+        # --- final output ---
+        "final_best_compound": None,
+        "final_report": None,
 
         # --- conversation tracking ---
         "phase": "purpose",          # current phase name

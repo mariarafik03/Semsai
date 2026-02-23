@@ -70,7 +70,6 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
               ),
             ),
           ),
-          // Back button
           Positioned(
             top: topPad + 8,
             left: 16,
@@ -86,7 +85,7 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
                     color: AppColors.border.withValues(alpha: 0.5),
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_back_rounded,
                   color: AppColors.textPrimary,
                   size: 20,
@@ -94,7 +93,6 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
               ),
             ),
           ),
-          // Page dots
           if (widget.images.length > 1)
             Positioned(
               bottom: 14,
@@ -105,8 +103,8 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
                 children: List.generate(
                   widget.images.length > 5 ? 5 : widget.images.length,
                   (i) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    duration: Duration(milliseconds: 250),
+                    margin: EdgeInsets.symmetric(horizontal: 3),
                     width: _current == i ? 20 : 8,
                     height: 8,
                     decoration: BoxDecoration(

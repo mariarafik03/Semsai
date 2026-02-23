@@ -35,10 +35,14 @@ def _units_match(comp_oid: ObjectId) -> Dict[str, Any]:
 
 def _min_price_for_type(db, comp_oid: ObjectId, wanted_type: str) -> Any:
     unit_query: Dict[str, Any] = _units_match(comp_oid)
+    # Use multiple exact-match variants instead of $regex (Atlas free tier blocks regex)
+    wt = wanted_type.strip()
+    type_variants = [wt, wt.lower(), wt.upper(), wt.capitalize(), wt.title()]
+    type_variants = list(set(type_variants))
     unit_query["$or"] = [
-        {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-        {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-        {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+        {"type": {"$in": type_variants}},
+        {"property_type": {"$in": type_variants}},
+        {"unit_type": {"$in": type_variants}},
     ]
     min_unit = db["units"].find_one(
         unit_query, sort=[("price", 1)], projection={"price": 1}
@@ -71,7 +75,10 @@ def compounds_agent(state: dict[str, Any]) -> dict[str, Any]:
         location = state.get("location")
         comp_query: Dict[str, Any] = {}
         if location:
-            comp_query["location"] = {"$regex": re.escape(str(location).strip()), "$options": "i"}
+            loc = str(location).strip()
+            # Use exact match variants instead of $regex (Atlas free tier blocks regex)
+            loc_variants = [loc, loc.lower(), loc.upper(), loc.title(), loc.capitalize()]
+            comp_query["location"] = {"$in": list(set(loc_variants))}
 
         compounds = list(db["compounds"].find(comp_query, {"name": 1, "compound_name": 1, "location": 1}))
 

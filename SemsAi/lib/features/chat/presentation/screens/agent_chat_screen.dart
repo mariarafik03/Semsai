@@ -99,7 +99,10 @@ class _AgentChatScreenState extends State<AgentChatScreen>
                   }
 
                   if (state is ChatLoaded) {
-                    return _buildMessageList(state.messages);
+                    return _buildMessageList(
+                      state.messages,
+                      isLoading: state.isTyping,
+                    );
                   }
 
                   if (state is ChatError) {
@@ -226,6 +229,20 @@ class _AgentChatScreenState extends State<AgentChatScreen>
         return 'Finding the right area...';
       case 'processing':
         return 'Searching properties...';
+      case 'user_preferences':
+        return 'Learning your preferences...';
+      case 'ranking':
+        return 'Ranking best options...';
+      case 'compounds':
+        return 'Finding compounds...';
+      case 'developers':
+        return 'Evaluating developers...';
+      case 'compound_features':
+        return 'Analyzing features...';
+      case 'compound_ranking':
+        return 'Scoring compounds...';
+      case 'final_output':
+        return 'Preparing results...';
       default:
         return '';
     }

@@ -38,14 +38,13 @@ class ChatCubit extends Cubit<ChatState> {
 
     final current = state as ChatLoaded;
 
-    // Add user message immediately
+    // Add user message immediately + show typing indicator
     final updatedMessages = [
       ...current.messages,
       {'role': 'user', 'content': message},
     ];
 
-    emit(current.copyWith(messages: updatedMessages));
-    emit(ChatLoading());
+    emit(current.copyWith(messages: updatedMessages, isTyping: true));
 
     try {
       final response = await conversationRepository.respond(
@@ -56,14 +55,7 @@ class ChatCubit extends Cubit<ChatState> {
       final agentMessage = response['message'] as String? ?? '';
       final phase = response['phase'] as String? ?? current.phase;
       final done = response['done'] as bool? ?? false;
-      final rawResults = response['results'] as List<dynamic>?;
-
-      List<Map<String, dynamic>>? results;
-      if (rawResults != null) {
-        results = rawResults
-            .map((r) => Map<String, dynamic>.from(r as Map))
-            .toList();
-      }
+      final rawResults = response['results'] as Map<String, dynamic>?;
 
       final allMessages = [
         ...updatedMessages,
@@ -77,13 +69,16 @@ class ChatCubit extends Cubit<ChatState> {
           phase: phase,
           messages: allMessages,
           done: done,
-          results: results,
+          isTyping: false,
+          results: rawResults,
         ),
       );
     } catch (e) {
+      // Recover state with messages preserved, stop typing
+      emit(current.copyWith(messages: updatedMessages, isTyping: false));
       emit(ChatError(e.toString()));
-      // Recover state
-      emit(current.copyWith(messages: updatedMessages));
+      // Re-emit loaded state so user can retry
+      emit(current.copyWith(messages: updatedMessages, isTyping: false));
     }
   }
 
