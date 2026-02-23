@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/widgets/app_cached_image.dart';
+import 'package:SemsAi/features/recommendations/presentation/screens/compound_detail_screen.dart';
 
 class RecommendationCard extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -57,7 +58,17 @@ class _RecommendationCardState extends State<RecommendationCard>
           begin: const Offset(0, 0.2),
           end: Offset.zero,
         ).animate(_fadeSlide),
-        child: _buildCard(),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => CompoundDetailScreen(compound: widget.data),
+              ),
+            );
+          },
+          child: _buildCard(),
+        ),
       ),
     );
   }
@@ -69,6 +80,8 @@ class _RecommendationCardState extends State<RecommendationCard>
     final confidence = widget.data['confidence'] as num? ?? 0.0;
     final purpose = widget.data['purpose_used'] as String? ?? '';
     final reasons = (widget.data['reasons'] as List<dynamic>?) ?? [];
+    final units = (widget.data['units'] as List<dynamic>?) ?? [];
+    final minPrice = widget.data['min_unit_price'];
 
     final medal = widget.rank == 1
         ? '🥇'
@@ -337,11 +350,175 @@ class _RecommendationCardState extends State<RecommendationCard>
                         ),
                       ),
                 ],
+
+                // Starting price
+                if (minPrice != null) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A2332),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.payments_outlined,
+                          color: AppColors.gold,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'From ${_formatPrice(minPrice)}',
+                          style: TextStyle(
+                            color: AppColors.gold,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // Units
+                if (units.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.apartment_rounded,
+                        color: AppColors.gold.withValues(alpha: 0.7),
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Available Units',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ...units.take(3).map((u) {
+                    final unit = Map<String, dynamic>.from(u as Map);
+                    return _buildUnitRow(unit);
+                  }),
+                ],
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  String _formatPrice(dynamic value) {
+    try {
+      final num = double.parse(value.toString());
+      if (num >= 1000000) {
+        return '${(num / 1000000).toStringAsFixed(1)}M EGP';
+      } else if (num >= 1000) {
+        return '${(num / 1000).toStringAsFixed(0)}K EGP';
+      }
+      return '${num.toStringAsFixed(0)} EGP';
+    } catch (_) {
+      return 'N/A';
+    }
+  }
+
+  Widget _buildUnitRow(Map<String, dynamic> unit) {
+    final type = (unit['type'] as String?) ?? '';
+    final price = unit['price'];
+    final area = unit['area'];
+    final beds = unit['bedrooms'];
+    final baths = unit['bathrooms'];
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.bg.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        children: [
+          // Type icon
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(
+              type.toLowerCase().contains('villa')
+                  ? Icons.villa_outlined
+                  : Icons.apartment_outlined,
+              color: AppColors.gold,
+              size: 14,
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  price != null ? _formatPrice(price) : 'Price N/A',
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    if (type.isNotEmpty) _unitDetail(Icons.home_outlined, type),
+                    if (area != null) ...[
+                      if (type.isNotEmpty) const SizedBox(width: 10),
+                      _unitDetail(Icons.square_foot, '${area}m²'),
+                    ],
+                    if (beds != null) ...[
+                      const SizedBox(width: 10),
+                      _unitDetail(Icons.bed_outlined, '$beds bed'),
+                    ],
+                    if (baths != null) ...[
+                      const SizedBox(width: 10),
+                      _unitDetail(Icons.bathtub_outlined, '$baths bath'),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _unitDetail(IconData icon, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 11, color: AppColors.textMuted),
+        const SizedBox(width: 3),
+        Text(
+          text,
+          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+        ),
+      ],
     );
   }
 }

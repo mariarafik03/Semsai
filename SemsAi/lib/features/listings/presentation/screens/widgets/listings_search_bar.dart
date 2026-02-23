@@ -18,7 +18,7 @@ class ListingsSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.cardBg,
@@ -28,23 +28,20 @@ class ListingsSearchBar extends StatelessWidget {
         child: TextField(
           controller: controller,
           onChanged: onChanged,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+          style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             hintText: AppStrings.searchHint,
-            hintStyle: const TextStyle(
-              color: AppColors.textMuted,
-              fontSize: 14,
-            ),
-            prefixIcon: const Icon(
+            hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
+            prefixIcon: Icon(
               Icons.search,
               color: AppColors.textMuted,
               size: 20,
             ),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+            contentPadding: EdgeInsets.symmetric(vertical: 12),
             suffixIcon: controller.text.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.close,
                       color: AppColors.textMuted,
                       size: 18,

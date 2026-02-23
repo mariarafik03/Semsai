@@ -4,7 +4,6 @@ import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/core/networking/api_client.dart';
 
 class ListingsService {
-  /// Fetch paginated listings with optional filters
   static Future<ListingsResponse> getListings({
     int page = 1,
     int limit = 20,
@@ -52,7 +51,7 @@ class ListingsService {
     throw Exception('Failed to load listings: ${res.statusCode}');
   }
 
-  /// Fetch filter options (regions + property types)
+
   static Future<FiltersResponse> getFilters() async {
     final res = await ApiClient.get('/units/filters');
     if (res.statusCode == 200) {

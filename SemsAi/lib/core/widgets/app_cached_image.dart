@@ -113,7 +113,7 @@ class _ShimmerRectState extends State<_ShimmerRect>
           child: Center(
             child: Icon(
               Icons.apartment_rounded,
-              color: AppColors.gold.withValues(alpha: 0.08),
+              color: AppColors.gold.withValues(alpha: 0.8),
               size: 28,
             ),
           ),

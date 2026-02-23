@@ -55,15 +55,14 @@ class _CompoundSheetState extends State<CompoundSheet> {
       ),
       decoration: BoxDecoration(
         color: _cardBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         border: Border.all(color: _border),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle
           Padding(
-            padding: const EdgeInsets.only(top: 12),
+            padding: EdgeInsets.only(top: 12),
             child: Container(
               width: 40,
               height: 4,
@@ -75,20 +74,19 @@ class _CompoundSheetState extends State<CompoundSheet> {
           ),
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 12, 0),
+            padding: EdgeInsets.fromLTRB(20, 14, 12, 0),
             child: Row(
               children: [
                 ShaderMask(
-                  shaderCallback: (b) => const LinearGradient(
-                    colors: [_gold, _accent],
-                  ).createShader(b),
-                  child: const Icon(
+                  shaderCallback: (b) =>
+                      LinearGradient(colors: [_gold, _accent]).createShader(b),
+                  child: Icon(
                     Icons.location_on_rounded,
                     color: Colors.white,
                     size: 24,
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,16 +129,16 @@ class _CompoundSheetState extends State<CompoundSheet> {
             ),
           ),
 
-          // Info chips
+          // Info
           if (c.startPrice != null || c.unitCount != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 children: [
                   if (c.unitCount != null)
                     _infoChip(Icons.grid_view_rounded, '${c.unitCount} units'),
                   if (c.startPrice != null) ...[
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10),
                     _infoChip(
                       Icons.payments_outlined,
                       _fmtPrice(c.startPrice!),
@@ -151,7 +149,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
               ),
             ),
 
-          const Divider(color: _border, height: 1),
+          Divider(color: _border, height: 1),
 
           // Units
           if (_loading)
@@ -160,7 +158,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
               child: CircularProgressIndicator(strokeWidth: 2, color: _gold),
             )
           else if (_units == null || _units!.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(32),
               child: Text(
                 AppStrings.noUnitsFound,
@@ -170,10 +168,10 @@ class _CompoundSheetState extends State<CompoundSheet> {
           else
             Flexible(
               child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 24),
                 shrinkWrap: true,
                 itemCount: _units!.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (_, __) => SizedBox(height: 8),
                 itemBuilder: (_, i) => UnitRow(unit: _units![i]),
               ),
             ),
@@ -184,7 +182,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
 
   Widget _infoChip(IconData icon, String text, {bool gold = false}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: gold
             ? _gold.withValues(alpha: 0.12)
@@ -198,7 +196,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 13, color: gold ? _gold : _textMuted),
-          const SizedBox(width: 5),
+          SizedBox(width: 5),
           Text(
             text,
             style: TextStyle(
@@ -221,8 +219,6 @@ class _CompoundSheetState extends State<CompoundSheet> {
   }
 }
 
-// ─── Unit Row (inside compound sheet) ──────────────────────────
-
 class UnitRow extends StatelessWidget {
   final CompoundUnit unit;
 
@@ -243,7 +239,7 @@ class UnitRow extends StatelessWidget {
         ).push(MaterialPageRoute(builder: (_) => UnitDetailScreen(unit: unit)));
       },
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.03),
           borderRadius: BorderRadius.circular(12),
@@ -265,7 +261,7 @@ class UnitRow extends StatelessWidget {
                     : _thumb(),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +271,7 @@ class UnitRow extends StatelessWidget {
                       Expanded(
                         child: Text(
                           unit.type.isNotEmpty ? unit.type : unit.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: _textPrimary,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -286,7 +282,7 @@ class UnitRow extends StatelessWidget {
                       ),
                       if (unit.saleType != null)
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 6,
                             vertical: 2,
                           ),
@@ -311,7 +307,7 @@ class UnitRow extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Wrap(
                     spacing: 8,
                     children: [
@@ -326,7 +322,7 @@ class UnitRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'EGP ${_fmtPrice(unit.displayPrice!)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: _gold,
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
@@ -344,7 +340,7 @@ class UnitRow extends StatelessWidget {
 
   Widget _thumb() {
     return Container(
-      color: const Color(0xFF0A0E1A),
+      color: Color(0xFF0A0E1A),
       child: Center(
         child: Icon(
           Icons.apartment_rounded,

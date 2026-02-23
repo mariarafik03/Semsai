@@ -1,1 +1,1 @@
-# agents package
+# agents package — full 10-agent pipeline

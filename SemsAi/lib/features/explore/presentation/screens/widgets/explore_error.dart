@@ -21,8 +21,8 @@ class ExploreErrorView extends StatelessWidget {
               color: AppColors.gold.withValues(alpha: 0.5),
               size: 40,
             ),
-            const SizedBox(height: 12),
-            const Text(
+            SizedBox(height: 12),
+            Text(
               AppStrings.loadFailed,
               style: TextStyle(
                 color: AppColors.textPrimary,
@@ -30,21 +30,18 @@ class ExploreErrorView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             GestureDetector(
               onTap: onRetry,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 10,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     colors: [AppColors.gold, AppColors.goldLight],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
+                child: Text(
                   AppStrings.retry,
                   style: TextStyle(
                     color: AppColors.bg,

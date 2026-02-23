@@ -52,9 +52,9 @@ class AreaChip extends StatelessWidget {
               ),
             ),
             if (count != null) ...[
-              const SizedBox(width: 5),
+               SizedBox(width: 5),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                padding:  EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.bg.withValues(alpha: 0.25)

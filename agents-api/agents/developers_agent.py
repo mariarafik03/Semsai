@@ -30,11 +30,13 @@ def developers_agent(state: dict[str, Any]) -> dict[str, Any]:
     if not candidates:
         state["top_developers"] = []
         state["final_candidates"] = []
+        state["final_compounds"] = []
         return state
 
     load_dotenv()
     uri = os.getenv("MONGO_URI")
     if not uri:
+        state["final_compounds"] = state.get("final_compounds") or []
         return state
 
     client = MongoClient(uri, tlsCAFile=certifi.where())
@@ -125,6 +127,34 @@ def developers_agent(state: dict[str, Any]) -> dict[str, Any]:
 
         state["top_developers"] = results
         state["final_candidates"] = results
+
+        # Build final_compounds from candidate_compounds matched by top developers
+        matched_names = set()
+        for dev in results:
+            for nm in (dev.get("matched_compound_names") or []):
+                if isinstance(nm, str) and nm.strip():
+                    matched_names.add(" ".join(nm.strip().lower().split()))
+
+        final_compounds = []
+        for c in candidates:
+            cname = c.get("compound_name")
+            if not cname:
+                continue
+            cname_norm = " ".join(str(cname).strip().lower().split())
+            if cname_norm in matched_names:
+                final_compounds.append({
+                    "compound_id": c.get("compound_id"),
+                    "compound_name": c.get("compound_name"),
+                    "location": c.get("location"),
+                    "min_unit_price": c.get("min_unit_price"),
+                })
+
+        final_compounds.sort(key=lambda x: float(x.get("min_unit_price") or 1e18))
+        final_compounds = final_compounds[:10]
+        state["final_compounds"] = final_compounds
+
+        print(f"Final compounds selected: {len(final_compounds)}")
+
         return state
 
     finally:

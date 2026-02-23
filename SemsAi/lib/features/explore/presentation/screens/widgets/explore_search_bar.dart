@@ -20,10 +20,10 @@ class ExploreSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 250),
       height: isOpen ? 52 : 46,
-      margin: const EdgeInsets.fromLTRB(12, 6, 12, 2),
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      margin: EdgeInsets.fromLTRB(12, 6, 12, 2),
+      padding: EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(14),
@@ -44,9 +44,8 @@ class ExploreSearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
-              style:
-                  const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-              decoration: const InputDecoration(
+              style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
+              decoration: InputDecoration(
                 hintText: AppStrings.searchHint,
                 hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 13),
                 border: InputBorder.none,
@@ -58,7 +57,7 @@ class ExploreSearchBar extends StatelessWidget {
           if (query.isNotEmpty)
             GestureDetector(
               onTap: onClear,
-              child: const Icon(
+              child: Icon(
                 Icons.close_rounded,
                 color: AppColors.textMuted,
                 size: 18,

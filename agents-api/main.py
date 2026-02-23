@@ -1,6 +1,9 @@
 """
-SemsAi Agents API — FastAPI server that wraps the AI agent pipeline.
+SemsAi Agents API — FastAPI server that wraps the full 10-agent pipeline.
 Flutter communicates via REST. Each conversation has a session with state.
+
+Pipeline: purpose → questioning → budget → location → compounds → developers
+          → compound_features → user_preferences → compound_ranking → final_output
 """
 import uuid
 import traceback
@@ -17,13 +20,16 @@ from agents.budget_agent import budget_agent
 from agents.location_agent import location_agent
 from agents.compounds_agent import compounds_agent
 from agents.developers_agent import developers_agent
-from agents.comparing_agent import comparing_agent
+from agents.compound_features_agent import compound_features_agent
+from agents.user_preferences_agent import user_preferences_agent
+from agents.compound_ranking_agent import compound_ranking_agent
+from agents.final_output_agent import final_output_agent
 
 # ──────────────────────────────────────────────
 # App
 # ──────────────────────────────────────────────
 
-app = FastAPI(title="SemsAi Agents API", version="1.0.0")
+app = FastAPI(title="SemsAi Agents API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -58,15 +64,29 @@ class ChatResponse(BaseModel):
     message: str
     phase: str
     done: bool = False
-    results: list[dict[str, Any]] | None = None
+    results: dict[str, Any] | None = None
 
 
 # ──────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────
 
+# Interactive agents need user_input
+INTERACTIVE_PHASES = {"purpose", "questioning", "budget", "location", "user_preferences"}
+
+# Autonomous agents run without user input
+AUTONOMOUS_PHASES = {"compounds", "developers", "compound_features", "compound_ranking", "final_output"}
+
+# Phase → next phase mapping (pipeline order)
+PHASE_ORDER = [
+    "purpose", "questioning", "budget", "location",
+    "compounds", "developers", "compound_features",
+    "user_preferences", "compound_ranking", "final_output",
+]
+
+
 def _run_interactive_agent(state: dict, user_input: str | None) -> dict:
-    """Run the current interactive agent (purpose/questioning/budget/location)."""
+    """Run the current interactive agent."""
     phase = state.get("phase", "purpose")
 
     if phase == "purpose":
@@ -77,23 +97,46 @@ def _run_interactive_agent(state: dict, user_input: str | None) -> dict:
         return budget_agent(state, user_input)
     elif phase == "location":
         return location_agent(state, user_input)
+    elif phase == "user_preferences":
+        return user_preferences_agent(state, user_input)
     else:
         return state
 
 
 def _run_processing_pipeline(state: dict) -> dict:
-    """Run compounds → developers → comparing (no user input needed)."""
+    """Run all autonomous agents sequentially:
+    compounds → developers → compound_features → compound_ranking → final_output.
+    """
     print("[pipeline] Running compounds_agent...")
     state = compounds_agent(state)
-    print(f"[pipeline] Found {len(state.get('candidate_compounds', []))} candidates")
+    print(f"[pipeline] Found {len(state.get('candidate_compounds') or [])} candidates")
 
     print("[pipeline] Running developers_agent...")
     state = developers_agent(state)
-    print(f"[pipeline] Found {len(state.get('final_candidates', []))} developers")
+    print(f"[pipeline] Found {len(state.get('final_compounds') or [])} final compounds")
 
-    print("[pipeline] Running comparing_agent...")
-    state = comparing_agent(state)
-    print(f"[pipeline] Got {len(state.get('top_choices', []))} top choices")
+    print("[pipeline] Running compound_features_agent...")
+    state = compound_features_agent(state)
+    stats = state.get("compound_features_stats", {})
+    print(f"[pipeline] Features extracted: {stats.get('processed', 0)}")
+
+    # After compound_features, we need user preferences (interactive)
+    state["phase"] = "user_preferences"
+    state["sub_phase"] = None
+    state["awaiting_input"] = False  # auto-advance to generate first question
+    return state
+
+
+def _run_ranking_pipeline(state: dict) -> dict:
+    """Run ranking + final output after user preferences are collected."""
+    print("[pipeline] Running compound_ranking_agent...")
+    state = compound_ranking_agent(state)
+    top = state.get("top_compounds", [])
+    print(f"[pipeline] Ranked compounds: {len(state.get('ranked_compounds', []))}, top: {len(top)}")
+
+    print("[pipeline] Running final_output_agent...")
+    state = final_output_agent(state)
+    print(f"[pipeline] Final report: {state.get('final_report', 'N/A')}")
 
     state["done"] = True
     return state
@@ -102,35 +145,50 @@ def _run_processing_pipeline(state: dict) -> dict:
 def _advance(state: dict, user_input: str | None = None) -> dict:
     """
     Keep advancing the conversation until we need user input or we're done.
-    This handles auto-advancing between phases.
+    Handles auto-advancing between phases.
     """
-    max_steps = 20  # safety limit
+    max_steps = 30  # safety limit
     steps = 0
 
     while steps < max_steps:
         steps += 1
         phase = state.get("phase", "purpose")
 
-        # ---- Processing phase (no user input) ----
+        # ---- Processing phase (autonomous: compounds → developers → features) ----
         if phase == "processing":
             state = _run_processing_pipeline(state)
+            # Phase is now "user_preferences" — loop back to re-read it
+            continue
+
+        # ---- Ranking phase (autonomous: ranking → final_output) ----
+        elif phase == "ranking":
+            state = _run_ranking_pipeline(state)
             return state
 
         # ---- Interactive phase ----
-        state = _run_interactive_agent(state, user_input)
+        elif phase in INTERACTIVE_PHASES:
+            state = _run_interactive_agent(state, user_input)
+            # After first step, clear user_input (only used once)
+            user_input = None
 
-        # After first step, clear user_input (only used once)
-        user_input = None
+            # If agent needs user input, stop and return
+            if state.get("awaiting_input"):
+                return state
 
-        # If agent needs user input, stop and return
-        if state.get("awaiting_input"):
+            # If done
+            if state.get("done"):
+                return state
+
+            # Otherwise, continue advancing (phase may have changed)
+            continue
+
+        # ---- Finished ----
+        elif state.get("done"):
             return state
 
-        # If done
-        if state.get("done"):
-            return state
-
-        # Otherwise, continue advancing (phase may have changed)
+        # Safety: unknown phase
+        print(f"[warn] Unknown phase: {phase}")
+        return state
 
     return state
 
@@ -186,14 +244,12 @@ async def respond(req: ChatRequest):
             done=state.get("done", False),
         )
 
-        if state.get("done") and state.get("top_choices"):
-            response.results = state["top_choices"]
+        # Attach results when done
+        if state.get("done"):
+            response.results = _build_results(state)
 
         # If the agent auto-advanced and has a message but needs more input
-        # (e.g. budget_agent sends "Got it! You chose cash." then asks budget)
-        # We combine the messages
         if not state.get("awaiting_input") and not state.get("done"):
-            # Keep advancing
             combined_msg = state.get("agent_message") or ""
             state = _advance(state)
             sessions[req.session_id] = state
@@ -207,14 +263,45 @@ async def respond(req: ChatRequest):
             response.phase = state.get("phase", "unknown")
             response.done = state.get("done", False)
 
-            if state.get("done") and state.get("top_choices"):
-                response.results = state["top_choices"]
+            if state.get("done"):
+                response.results = _build_results(state)
 
         return response
 
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def _build_results(state: dict) -> dict[str, Any]:
+    """Build the results payload for the frontend."""
+    best = state.get("final_best_compound") or {}
+    top = state.get("top_compounds") or []
+
+    return {
+        "best_compound": best,
+        "top_compounds": [
+            {
+                "compound_name": c.get("compound_name"),
+                "location": c.get("location"),
+                "score": c.get("score") or c.get("total_score"),
+                "min_unit_price": c.get("min_unit_price"),
+                "reasons": c.get("reasons", [])[:3],
+                "units": c.get("units", []),
+            }
+            for c in top
+        ],
+        "summary": {
+            "purpose": state.get("purpose"),
+            "budget": state.get("budget"),
+            "location": state.get("location"),
+            "property_type": state.get("typeofproperty"),
+            "payment_type": state.get("payment_type"),
+            "downpayment": state.get("Downpayment"),
+            "monthly_installment": state.get("monthlyinstall"),
+        },
+        "final_report": state.get("final_report"),
+    }
 
 
 @app.get("/chat/status/{session_id}")
@@ -226,7 +313,7 @@ async def get_status(session_id: str):
     return {
         "phase": state.get("phase"),
         "done": state.get("done", False),
-        "has_results": state.get("top_choices") is not None,
+        "has_results": state.get("final_best_compound") is not None,
     }
 
 
@@ -239,20 +326,9 @@ async def get_results(session_id: str):
     if not state.get("done"):
         raise HTTPException(status_code=400, detail="Conversation not finished yet")
 
-    return {
-        "purpose": state.get("purpose"),
-        "budget": state.get("budget"),
-        "location": state.get("location"),
-        "property_type": state.get("typeofproperty"),
-        "payment_type": state.get("payment_type"),
-        "downpayment": state.get("Downpayment"),
-        "monthly_installment": state.get("monthlyinstall"),
-        "top_choices": state.get("top_choices", []),
-        "candidate_count": len(state.get("candidate_compounds", [])),
-        "developer_count": len(state.get("final_candidates", [])),
-    }
+    return _build_results(state)
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "semsai-agents"}
+    return {"status": "ok", "service": "semsai-agents", "version": "2.0.0"}

@@ -27,20 +27,20 @@ class PropertiesPanel extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-        border: const Border(top: BorderSide(color: AppColors.border)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        border: Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 16,
-            offset: const Offset(0, -4),
+            offset: Offset(0, -4),
           ),
         ],
       ),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: 8),
             child: Container(
               width: 36,
               height: 4,
@@ -51,19 +51,19 @@ class PropertiesPanel extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+            padding: EdgeInsets.fromLTRB(16, 10, 16, 8),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.location_on_outlined,
                   color: AppColors.gold,
                   size: 18,
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Flexible(
                   child: Text(
                     areaName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
@@ -72,16 +72,13 @@ class PropertiesPanel extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Text(
                   '· ${compounds.length} Compounds',
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 13,
-                  ),
+                  style: TextStyle(color: AppColors.textMuted, fontSize: 13),
                 ),
-                const Spacer(),
-                const Icon(
+                Spacer(),
+                Icon(
                   Icons.keyboard_arrow_up_rounded,
                   color: AppColors.textMuted,
                   size: 22,
@@ -91,16 +88,18 @@ class PropertiesPanel extends StatelessWidget {
           ),
           Expanded(
             child: compounds.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       AppStrings.noProperties,
-                      style:
-                          TextStyle(color: AppColors.textMuted, fontSize: 13),
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 13,
+                      ),
                     ),
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
                     itemCount: compounds.length,
                     itemBuilder: (_, i) => RepaintBoundary(
                       child: _PropertyCard(
@@ -116,8 +115,6 @@ class PropertiesPanel extends StatelessWidget {
     );
   }
 }
-
-// ── Property Card ──────────────────────────────────────────────
 
 class _PropertyCard extends StatelessWidget {
   const _PropertyCard({
@@ -138,18 +135,16 @@ class _PropertyCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 190,
-        margin: const EdgeInsets.only(right: 12),
+        margin: EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: AppColors.bg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: AppColors.border.withValues(alpha: 0.6),
-          ),
+          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 8,
-              offset: const Offset(0, 2),
+              offset: Offset(0, 2),
             ),
           ],
         ),
@@ -218,7 +213,7 @@ class _PropertyCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         MiniIcon(Icons.favorite_border_rounded),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         MiniIcon(Icons.ios_share_rounded),
                       ],
                     ),
@@ -227,13 +222,13 @@ class _PropertyCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     compound.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -242,7 +237,7 @@ class _PropertyCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (compound.startPrice != null) ...[
-                    const SizedBox(height: 3),
+                    SizedBox(height: 3),
                     Text(
                       'EGP ${_fmtPrice(compound.startPrice!)}',
                       style: TextStyle(

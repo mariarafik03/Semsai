@@ -16,18 +16,56 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  void _goToChat() => setState(() => _currentIndex = 3);
+  void _goToChat() => setState(() => _currentIndex = 2);
 
   late final List<Widget> _screens = [
     ListingsScreen(onNavigateToChat: _goToChat),
     ExploreScreen(),
-    FavouriteScreen(),
     AgentChatScreen(),
+    FavouriteScreen(),
     ProfileScreen(),
   ];
 
+  Widget _buildNavItem(
+    IconData icon,
+    IconData activeIcon,
+    String label,
+    int index,
+  ) {
+    final bool isSelected = _currentIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _currentIndex = index),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isSelected ? activeIcon : icon,
+                color: isSelected ? AppColors.gold : AppColors.textMuted,
+                size: 24,
+              ),
+              SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? AppColors.gold : AppColors.textMuted,
+                  fontSize: isSelected ? 12 : 11,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isChatSelected = _currentIndex == 2;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: IndexedStack(index: _currentIndex, children: _screens),
@@ -36,58 +74,103 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppColors.cardBg,
           border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
         ),
-        child: NavigationBar(
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          indicatorColor: AppColors.gold.withValues(alpha: 0.15),
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (i) => setState(() => _currentIndex = i),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          overlayColor: WidgetStateProperty.all(Colors.transparent),
-          labelTextStyle: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return TextStyle(
-                color: AppColors.gold,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              );
-            }
-            return TextStyle(
-              color: AppColors.textMuted,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            );
-          }),
-          destinations: [
-            NavigationDestination(
-              icon: Icon(Icons.grid_view_outlined, color: AppColors.textMuted),
-              selectedIcon: Icon(
-                Icons.grid_view_rounded,
-                color: AppColors.gold,
-              ),
-              label: 'Listings',
+        child: SafeArea(
+          child: SizedBox(
+            height: 80,
+            child: Row(
+              children: [
+                _buildNavItem(
+                  Icons.grid_view_outlined,
+                  Icons.grid_view_rounded,
+                  'Listings',
+                  0,
+                ),
+                _buildNavItem(
+                  Icons.explore_outlined,
+                  Icons.explore,
+                  'Explore',
+                  1,
+                ),
+
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _currentIndex = 2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(0, -16),
+                          child: Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: isChatSelected
+                                    ? [AppColors.gold, AppColors.goldLight]
+                                    : [
+                                        AppColors.gold.withValues(alpha: 0.85),
+                                        AppColors.goldLight.withValues(
+                                          alpha: 0.85,
+                                        ),
+                                      ],
+                              ),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(
+                                    alpha: isChatSelected ? 0.5 : 0.3,
+                                  ),
+                                  blurRadius: isChatSelected ? 18 : 12,
+                                  spreadRadius: isChatSelected ? 2 : 0,
+                                  offset: const Offset(0, 4),
+                                ),
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(alpha: 0.15),
+                                  blurRadius: 30,
+                                  spreadRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              isChatSelected
+                                  ? Icons.smart_toy_rounded
+                                  : Icons.smart_toy_outlined,
+                              color: AppColors.bg,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                        Transform.translate(
+                          offset: const Offset(0, -12),
+                          child: Text(
+                            'AI Chat',
+                            style: TextStyle(
+                              color: isChatSelected
+                                  ? AppColors.gold
+                                  : AppColors.textMuted,
+                              fontSize: isChatSelected ? 12 : 11,
+                              fontWeight: isChatSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildNavItem(
+                  Icons.favorite_border,
+                  Icons.favorite,
+                  'Favorites',
+                  3,
+                ),
+                _buildNavItem(Icons.person_outline, Icons.person, 'Profile', 4),
+              ],
             ),
-            NavigationDestination(
-              icon: Icon(Icons.explore_outlined, color: AppColors.textMuted),
-              selectedIcon: Icon(Icons.explore, color: AppColors.gold),
-              label: 'Explore',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite_border, color: AppColors.textMuted),
-              selectedIcon: Icon(Icons.favorite, color: AppColors.gold),
-              label: 'Favorites',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.chat_bubble_outline, color: AppColors.textMuted),
-              selectedIcon: Icon(Icons.chat_bubble, color: AppColors.gold),
-              label: 'AI Chat',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline, color: AppColors.textMuted),
-              selectedIcon: Icon(Icons.person, color: AppColors.gold),
-              label: 'Profile',
-            ),
-          ],
+          ),
         ),
       ),
     );
