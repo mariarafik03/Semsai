@@ -89,15 +89,17 @@ def state_router(state: dict) -> str:
     if state.get("final_best_compound") is None:
         return "final_output_agent"
 
-    # ── Unit scoring ────────────────────────────────────────────────────────
+    # ── Unit routing via unit_agent ──────────────────────────────────────
     if state.get("route") is None:
         return "unit_agent"
 
+    # invest → investment scoring agent
     if state.get("route") == "rent":
         return "rent_agent"
 
+    # live → interactive unit filter
     if state.get("route") in ("live", "living"):
-        return "living_agent"
+        return "unit_filter_node"
 
     return END
 
@@ -120,7 +122,14 @@ graph.add_node("compound_ranking_agent",  compound_ranking_agent)
 graph.add_node("final_output_agent",      final_output_agent)
 graph.add_node("unit_agent",              unit_agent)
 graph.add_node("rent_agent",              rent_agent)
-graph.add_node("living_agent",            living_agent)
+
+# Wrapper so interactive_unit_filter gets ask_ollama automatically
+def _unit_filter_wrapper(state):
+    state = interactive_unit_filter(state, ask_ollama)
+    state["units_filtered"] = True
+    return state
+
+graph.add_node("unit_filter_node",        _unit_filter_wrapper)
 
 # ── Entry ───────────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -135,8 +144,8 @@ for _node in [
 ]:
     graph.add_edge(_node, state_router)
 
-graph.add_edge("rent_agent",    lambda s: END)
-graph.add_edge("living_agent",  lambda s: END)
+graph.add_edge("rent_agent",        lambda s: END)
+graph.add_edge("unit_filter_node",  lambda s: END)
 
 # ---------------------------------------------------------------------------
 # Run

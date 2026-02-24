@@ -280,7 +280,7 @@ def interactive_unit_filter(state: AgentState, ask_ollama) -> AgentState:
     ranked_units  += missed
 
     print(f"\n   Reasoning: {ranked_result.reasoning}")
-    print(f"   {len(ranked_units)} units ranked — passing to scoring agent.\n")
+    #print(f"   {len(ranked_units)} units ranked — passing to scoring agent.\n")
 
     state["candidate_units"] = ranked_units
     return state
