@@ -4,6 +4,12 @@ from main_helpers import ask_ollama
 def purpose_agent(state: AgentState):
     print("\n--- Purpose Agent (Ollama) ---")
 
+    # Skip if extraction agent already resolved the purpose
+    if state.get("purpose"):
+        print(f"   Purpose already set: {state['purpose']}  — skipping.")
+        state["next_step"] = "budget_agent"
+        return state
+
     if not state.get("user_input") or state.get("retry"):
         question = ask_ollama(
             "Start a friendly conversation with the user and ask why they are interested in real estate. "

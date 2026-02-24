@@ -138,7 +138,6 @@ def compound_features_agent(state: AgentState) -> AgentState:
             "failed": 0,
             "source_key": source_key,
         }
-        state["next_step"] = "compound_ranking_agent"
         return state
 
     print(f"Using compounds list from state['{source_key}'] (count={len(compounds_list)})")
@@ -193,7 +192,6 @@ def compound_features_agent(state: AgentState) -> AgentState:
                 "failed": 0,
                 "source_key": source_key,
             }
-            state["next_step"] = "compound_ranking_agent"
             return state
 
 
@@ -304,7 +302,6 @@ def compound_features_agent(state: AgentState) -> AgentState:
         print("Skipped (no desc/missing doc/short):", skipped_no_desc)
         print("Failed:", failed)
 
-        state["next_step"] = "user_preferences_agent"
         return state
 
     finally:

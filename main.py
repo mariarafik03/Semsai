@@ -1,4 +1,5 @@
 from graph import StateGraph, END
+from agents.extraction_agent import extraction_agent
 from agents.purpose_agent import purpose_agent
 from agents.questioning_agent import questioning_agent
 from agents.budget_agent import budget_agent
@@ -21,6 +22,7 @@ state = {
     "location": None,
     "next_step": None,
     "payment_type": None,
+    "payment_type_confirmed": False,        # ← NEW: ensures payment type is always verified with user
     "Downpayment": None,
     "monthlyinstall": None,
     "retry": None,
@@ -31,61 +33,110 @@ state = {
     "candidate_compounds": None,
     "typeofproperty": None,
     "final_candidates": None,
-    "candidate_units": None,       # populated by compounds_agent / unit fetching
-    "selected_compound": None,     # populated by comparing_agent / compound selection
-    "top_investment_units": None,  # populated by rent_agent
+    "candidate_units": None,
+    "selected_compound": None,
+    "top_investment_units": None,
     "route": None,
 }
 
 # ---------------------------------------------------------------------------
-# Wrap interactive_unit_filter so it fits the graph's single-argument node API
-# while still receiving ask_ollama via closure
+# State Router  — single source of truth for all routing
 # ---------------------------------------------------------------------------
-def unit_filter_node(state):
-    return interactive_unit_filter(state, ask_ollama=ask_ollama)
+def state_router(state: dict) -> str:
+    """
+    Decides the next node purely from what is (and isn't) in the state.
+    Agents never hard-code the next step; the router always decides.
+    """
+
+    # ── Hard stop — any agent can set abort=True to terminate gracefully ────
+    if state.get("abort"):
+        return END
+
+    # ── Gather information ──────────────────────────────────────────────────
+    if not state.get("purpose"):
+        # User rejected a guessed purpose or intent is unclear → clarify
+        if state.get("retry"):
+            return "questioning_agent"
+        return "purpose_agent"
+
+    if not state.get("budget") and not (
+        state.get("Downpayment") and state.get("monthlyinstall")
+    ):
+        return "budget_agent"
+
+    if not state.get("location"):
+        return "location_agent"
+
+    if not state.get("typeofproperty"):
+        return "questioning_agent"
+
+    # ── Compound discovery pipeline ─────────────────────────────────────────
+    if state.get("candidate_compounds") is None:
+        return "compounds_agent"
+
+    if state.get("final_compounds") is None:
+        return "developers_agent"
+
+    if state.get("compound_features_stats") is None:
+        return "compound_features_agent"
+
+    if state.get("user_preferences") is None:
+        return "user_preferences_agent"
+
+    if state.get("ranked_compounds") is None:
+        return "compound_ranking_agent"
+
+    if state.get("final_best_compound") is None:
+        return "final_output_agent"
+
+    # ── Unit scoring ────────────────────────────────────────────────────────
+    if state.get("route") is None:
+        return "unit_agent"
+
+    if state.get("route") == "rent":
+        return "rent_agent"
+
+    if state.get("route") in ("live", "living"):
+        return "living_agent"
+
+    return END
 
 # ---------------------------------------------------------------------------
 # Graph definition
 # ---------------------------------------------------------------------------
 graph = StateGraph()
+
+# ── All nodes ───────────────────────────────────────────────────────────────
+graph.add_node("extraction_agent",        extraction_agent)
 graph.add_node("purpose_agent",           purpose_agent)
-graph.add_node("questioning_agent",        questioning_agent)
-graph.add_node("budget_agent",             budget_agent)
-graph.add_node("location_agent",           location_agent)
-graph.add_node("developers_agent",         developers_agent)
-graph.add_node("compounds_agent",          compounds_agent)
-graph.add_node("compound_features_agent",  compound_features_agent)
-graph.add_node("user_preferences_agent",   user_preferences_agent)
-graph.add_node("compound_ranking_agent",   compound_ranking_agent)
-graph.add_node("final_output_agent",       final_output_agent)
-graph.add_node("unit_agent",               unit_agent)
-graph.add_node("unit_filter_node",         unit_filter_node)   # NEW
-graph.add_node("rent_agent",               rent_agent)
-graph.add_node("living_agent",             living_agent)
+graph.add_node("questioning_agent",       questioning_agent)
+graph.add_node("budget_agent",            budget_agent)
+graph.add_node("location_agent",          location_agent)
+graph.add_node("compounds_agent",         compounds_agent)
+graph.add_node("developers_agent",        developers_agent)
+graph.add_node("compound_features_agent", compound_features_agent)
+graph.add_node("user_preferences_agent",  user_preferences_agent)
+graph.add_node("compound_ranking_agent",  compound_ranking_agent)
+graph.add_node("final_output_agent",      final_output_agent)
+graph.add_node("unit_agent",              unit_agent)
+graph.add_node("rent_agent",              rent_agent)
+graph.add_node("living_agent",            living_agent)
 
-# ---------------------------------------------------------------------------
-# Edges
-# ---------------------------------------------------------------------------
-graph.add_edge("purpose_agent",          lambda s: "budget_agent" if s.get("purpose") else "questioning_agent")
-graph.add_edge("questioning_agent",      lambda s: "budget_agent")
-graph.add_edge("budget_agent",           lambda s: "location_agent")
-graph.add_edge("location_agent",         lambda s: "compounds_agent")
-graph.add_edge("compounds_agent",        lambda s: "developers_agent")
-graph.add_edge("developers_agent",       lambda s: "compound_features_agent")
-graph.add_edge("compound_features_agent",lambda s: "user_preferences_agent")
-graph.add_edge("user_preferences_agent", lambda s: "compound_ranking_agent")
-graph.add_edge("compound_ranking_agent", lambda s: "final_output_agent")
-graph.add_edge("final_output_agent",     lambda s: "unit_agent")
+# ── Entry ───────────────────────────────────────────────────────────────────
+graph.set_entry_point("extraction_agent")
 
-# unit_agent sets state["route"], then we always go to unit_filter_node
-# unit_filter_node narrows candidates, then routes to the right scoring agent
-graph.add_edge("unit_agent",             lambda s: "unit_filter_node")
-graph.add_edge("unit_filter_node",       lambda s: "rent_agent" if s.get("route") == "rent" else "living_agent")
+# ── Every node loops back to state_router (except terminals) ────────────────
+for _node in [
+    "extraction_agent", "purpose_agent", "questioning_agent",
+    "budget_agent", "location_agent", "compounds_agent",
+    "developers_agent", "compound_features_agent",
+    "user_preferences_agent", "compound_ranking_agent",
+    "final_output_agent", "unit_agent",
+]:
+    graph.add_edge(_node, state_router)
 
-graph.add_edge("rent_agent",             lambda s: END)
-graph.add_edge("living_agent",           lambda s: END)
-
-graph.set_entry_point("purpose_agent")
+graph.add_edge("rent_agent",    lambda s: END)
+graph.add_edge("living_agent",  lambda s: END)
 
 # ---------------------------------------------------------------------------
 # Run

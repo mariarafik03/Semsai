@@ -116,8 +116,11 @@ def final_output_agent(state: AgentState) -> AgentState:
     best = _pick_best_item(state)
     if not best:
         print("\n❌ No compound available to output.")
+        # Set a sentinel so the router doesn't loop back here forever,
+        # then signal abort so the graph terminates cleanly.
+        state["final_best_compound"] = {"status": "no_compound_found"}
         state["final_report"] = "No compound available."
-        state["next_step"] = None
+        state["abort"] = True
         return state
 
     compound_name = (best.get("compound_name") or best.get("name") or "Unknown").strip()
@@ -292,7 +295,4 @@ def final_output_agent(state: AgentState) -> AgentState:
 
     state["candidate_units"] = candidate_units
     state["final_report"] = f"BEST: {compound_name}"
-    
-    # Route to unit_agent
-    state["next_step"] = "unit_agent"
     return state

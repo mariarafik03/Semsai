@@ -248,7 +248,6 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         print("No final_compounds found in state. Nothing to rank.")
         state["ranked_compounds"] = []
         state["top_compounds"] = []
-        state["next_step"] = "final_output_agent"  # ✅ FIX
         return state
 
     user_prefs = state.get("user_preferences") or {}
@@ -280,7 +279,6 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         print("No valid compound_id in final_compounds.")
         state["ranked_compounds"] = []
         state["top_compounds"] = []
-        state["next_step"] = "final_output_agent"  # ✅ FIX
         return state
 
     load_dotenv()
@@ -359,7 +357,6 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         for i, r in enumerate(ranked[:5], 1):
             print(f"{i}) {r['compound_name']} | score={r['score']} | min_price={r.get('min_unit_price')}")
 
-        state["next_step"] = "final_output_agent"
         return state
 
     finally:

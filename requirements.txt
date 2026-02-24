@@ -1,21 +1,16 @@
 langchain-ollama
-pymongo
+
 certifi
 python-dotenv
 googlemaps
-pandas
 
 
-# Requirements for MongoDB Compound Scoring System
-
-# Google Maps API
 googlemaps>=4.10.0
 
-# MongoDB driver
 pymongo>=4.6.0
 dnspython>=2.4.0
 
-# Data processing
+
 pandas>=2.0.0
 
 # Optional: For Excel export

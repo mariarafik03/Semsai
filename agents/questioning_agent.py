@@ -40,9 +40,8 @@ Return ONLY the question.
         
         
         if purpose in ["rent", "invest", "live"]:
-            state["next_step"] = "budget_agent"
             state["purpose"] = purpose
-            state["breakingquest"]= True
-         
+            state["retry"] = False       # clear so router doesn't bounce here again
+            state["breakingquest"] = True
 
     return state
