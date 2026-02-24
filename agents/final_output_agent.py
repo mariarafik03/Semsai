@@ -217,6 +217,82 @@ def final_output_agent(state: AgentState) -> AgentState:
         "reasons": reasons if isinstance(reasons, list) else [],
         "features": feats if isinstance(feats, list) else [],
     }
+
+    # --------------------------------------------------------------------------------
+    # Save selected compound and fetch candidate units for unit_agent
+    # --------------------------------------------------------------------------------
+    state["selected_compound"] = {"id": str(comp_oid), "name": compound_name}
+    candidate_units = []
+    
+    if uri and comp_oid:
+        import re
+        try:
+            client = MongoClient(
+                uri,
+                tls=True,
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=20000,
+                connectTimeoutMS=20000,
+                socketTimeoutMS=20000,
+            )
+            db = client.get_default_database()
+            
+            wanted_type = str(state.get("typeofproperty") or "Apartment").strip().lower()
+            if wanted_type in ["apt", "apartments"]: wanted_type = "apartment"
+            if wanted_type in ["villas"]: wanted_type = "villa"
+            
+            budget_val = state.get("budget")
+            if budget_val is not None:
+                try: budget_val = float(budget_val)
+                except: budget_val = None
+            
+            pay_type = state.get("payment_type")
+            if pay_type:
+                pay_type = str(pay_type).strip().lower()
+                if pay_type in ["cash", "full cash", "c"]: pay_type = "cash"
+                elif pay_type in ["installment", "installments", "instalments", "plan", "monthly"]: pay_type = "installments"
+                else: pay_type = None
+
+            type_match = {
+                "$or": [
+                    {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                ]
+            }
+
+            sale_match = None
+            if pay_type == "cash":
+                sale_match = {"sale_type": {"$regex": r"^resale$", "$options": "i"}}
+            elif pay_type == "installments":
+                sale_match = {"sale_type": {"$regex": r"developer", "$options": "i"}}
+                
+            comp_str = str(comp_oid)
+            comp_match = {"compound_id": {"$in": [comp_oid, comp_str]}}
+
+            query = {"$and": [comp_match, type_match]}
+            if sale_match:
+                query["$and"].append(sale_match)
+
+            units_cursor = db["units"].find(query)
+            
+            for u in units_cursor:
+                eff_price = u.get("price") or u.get("price_min") or u.get("price_max")
+                if budget_val is not None and eff_price is not None:
+                    try:
+                        if float(eff_price) > budget_val:
+                            continue
+                    except: pass
+                candidate_units.append(u)
+                
+            print(f"\n✅ Found {len(candidate_units)} candidate units in {compound_name} matching your budget and preferences.")
+            
+        finally:
+            client.close()
+
+    state["candidate_units"] = candidate_units
     state["final_report"] = f"BEST: {compound_name}"
-    state["next_step"] = None
+    
+    # Route to unit_agent
+    state["next_step"] = "unit_agent"
     return state
