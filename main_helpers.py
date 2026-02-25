@@ -1,9 +1,21 @@
-from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
+import os
+from dotenv import load_dotenv
 
-ollama_model = ChatOllama(
-    model="qwen2.5:7b", temperature=0.3)
+load_dotenv()
+
+# Initialize the model
+model = ChatGroq(model="llama-3.3-70b-versatile", groq_api_key=os.getenv("GROQ_API_KEY"))
 
 def ask_ollama(prompt: str) -> str:
-    response = ollama_model.invoke(prompt)
+    """
+    Main helper to call the LLM. 
+    Kept the name 'ask_ollama' for compatibility with existing agents,
+    now using Groq as the backend.
+    """
+    response = model.invoke(prompt)
     return response.content.strip()
+
+def ask_groq(prompt: str) -> str:
+    return ask_ollama(prompt)
 
