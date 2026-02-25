@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 
 abstract class FavoriteState extends Equatable {
   const FavoriteState();
@@ -12,12 +13,14 @@ class FavoriteInitial extends FavoriteState {}
 class FavoriteLoading extends FavoriteState {}
 
 class FavoriteLoaded extends FavoriteState {
-  final List<String> favoriteIds;
+  final List<CompoundUnit> favorites;
 
-  const FavoriteLoaded(this.favoriteIds);
+  const FavoriteLoaded(this.favorites);
+
+  bool isFavorite(String id) => favorites.any((u) => u.id == id);
 
   @override
-  List<Object?> get props => [favoriteIds];
+  List<Object?> get props => [favorites];
 }
 
 class FavoriteError extends FavoriteState {

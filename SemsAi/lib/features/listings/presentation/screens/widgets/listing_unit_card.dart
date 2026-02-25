@@ -1,27 +1,61 @@
-import 'package:flutter/material.dart';
-
-import 'package:SemsAi/core/constants/app_colors.dart';
-import 'package:SemsAi/core/widgets/app_cached_image.dart';
 import 'package:SemsAi/core/widgets/tap_scale.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
+import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
+import 'package:SemsAi/features/favorite/presentation/cubit/favorite_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/utils/price_formatter.dart';
+import 'package:SemsAi/core/utils/app_snackbar.dart';
+import 'package:SemsAi/core/widgets/app_loading_indicator.dart';
 
 class ListingUnitCard extends StatelessWidget {
-  const ListingUnitCard({super.key, required this.unit});
+  Widget _buildImage(String? image, String heroTag, String? regionTag) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(14),
+        topRight: Radius.circular(14),
+      ),
+      child: image != null
+          ? Hero(
+              tag: heroTag,
+              child: Image.network(
+                image,
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 120,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.image, size: 40, color: Colors.grey),
+                ),
+              ),
+            )
+          : Container(
+              height: 120,
+              color: Colors.grey[200],
+              child: const Icon(Icons.image, size: 40, color: Colors.grey),
+            ),
+    );
+  }
+
+  const ListingUnitCard({
+    super.key,
+    required this.unit,
+    this.compareSelected = false,
+    this.onCompareToggle,
+    this.compareDisabled = false,
+  });
 
   final CompoundUnit unit;
+  final bool compareSelected;
+  final VoidCallback? onCompareToggle;
+  final bool compareDisabled;
 
   // ── Helpers ──
 
-  static String formatPrice(double? p) {
-    if (p == null) return 'Contact for price';
-    if (p >= 1000000) {
-      final v = p / 1000000;
-      return '${v.toStringAsFixed(v == v.roundToDouble() ? 0 : 1)}M EGP';
-    }
-    if (p >= 1000) return '${(p / 1000).toStringAsFixed(0)}K EGP';
-    return '${p.toStringAsFixed(0)} EGP';
-  }
+  // Removed: Use PriceFormatter.format instead.
 
   String _bestPaymentSummary() {
     final plan = unit.bestPlan;
@@ -51,109 +85,94 @@ class ListingUnitCard extends StatelessWidget {
     final regionTag = _extractRegion(unit.location);
     final heroTag = 'unit_img_${unit.id}';
 
-    return TapScale(
-      onTap: () => Navigator.of(context).push(
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 400),
-          reverseTransitionDuration: const Duration(milliseconds: 350),
-          pageBuilder: (_, __, ___) => UnitDetailScreen(unit: unit),
-          transitionsBuilder: (_, anim, __, child) {
-            return FadeTransition(opacity: anim, child: child);
-          },
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildImage(image, heroTag, regionTag),
-            _buildInfo(payment),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImage(String? image, String heroTag, String? regionTag) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-      child: Stack(
-        children: [
-          AspectRatio(
-            aspectRatio: 1.4,
-            child: Hero(
-              tag: heroTag,
-              child: AppCachedImage(
-                imageUrl: image,
-                fit: BoxFit.cover,
-                memCacheWidth: 300,
-              ),
+    return Stack(
+      children: [
+        TapScale(
+          onTap: () => Navigator.of(context).push(
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 400),
+              reverseTransitionDuration: const Duration(milliseconds: 350),
+              pageBuilder: (_, __, ___) => UnitDetailScreen(unit: unit),
+              transitionsBuilder: (_, anim, __, child) {
+                return FadeTransition(opacity: anim, child: child);
+              },
             ),
           ),
-          // Bottom gradient
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 40,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.55),
-                  ],
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: compareSelected
+                  ? AppColors.gold.withOpacity(0.08)
+                  : AppColors.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: compareSelected
+                    ? AppColors.gold
+                    : AppColors.border.withValues(alpha: 0.6),
+                width: compareSelected ? 2 : 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
-              ),
+              ],
             ),
-          ),
-          // Tags row
-          Positioned(
-            bottom: 6,
-            left: 6,
-            right: 6,
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (regionTag != null)
-                  Flexible(child: _tag(regionTag, AppColors.gold)),
-                if (regionTag != null) const SizedBox(width: 6),
-                Flexible(child: _tag(unit.type, AppColors.accent)),
+                _buildImage(image, heroTag, regionTag),
+                _buildInfo(payment),
               ],
             ),
           ),
-          // Heart icon
-          Positioned(
-            top: 6,
-            right: 6,
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.favorite_border_rounded,
-                color: Colors.white,
-                size: 15,
-              ),
-            ),
+        ),
+        // Tags row
+        Positioned(
+          bottom: 6,
+          left: 6,
+          right: 6,
+          child: Row(
+            children: [
+              if (regionTag != null)
+                Flexible(child: _tag(regionTag, AppColors.gold)),
+              if (regionTag != null) const SizedBox(width: 6),
+              Flexible(child: _tag(unit.type, AppColors.accent)),
+            ],
           ),
-        ],
-      ),
+        ),
+        // Heart icon
+        Positioned(
+          top: 6,
+          right: 6,
+          child: BlocBuilder<FavoriteCubit, FavoriteState>(
+            builder: (context, favState) {
+              final isFav =
+                  favState is FavoriteLoaded && favState.isFavorite(unit.id);
+              return GestureDetector(
+                onTap: () {
+                  context.read<FavoriteCubit>().toggleFavorite(unit);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    isFav
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    color: isFav ? Colors.redAccent : Colors.white,
+                    size: 15,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -181,10 +200,7 @@ class ListingUnitCard extends StatelessWidget {
               unit.developerName ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 11,
-              ),
+              style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
             ),
             const Spacer(),
             // Specs row
@@ -198,17 +214,14 @@ class ListingUnitCard extends StatelessWidget {
                 ],
                 if (unit.displayArea != null) ...[
                   const SizedBox(width: 8),
-                  _spec(
-                    Icons.straighten,
-                    '${unit.displayArea!.round()} m²',
-                  ),
+                  _spec(Icons.straighten, '${unit.displayArea!.round()} m²'),
                 ],
               ],
             ),
             const SizedBox(height: 6),
             // Price
             Text(
-              formatPrice(unit.displayPrice),
+              PriceFormatter.format(unit.displayPrice),
               style: const TextStyle(
                 color: AppColors.gold,
                 fontSize: 14,

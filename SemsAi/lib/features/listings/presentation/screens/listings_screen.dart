@@ -11,6 +11,9 @@ import 'package:SemsAi/features/listings/presentation/screens/widgets/listings_s
 import 'package:SemsAi/features/listings/presentation/screens/widgets/listings_filter_panel.dart';
 import 'package:SemsAi/features/listings/presentation/screens/widgets/listing_unit_card.dart';
 import 'package:SemsAi/features/listings/presentation/screens/widgets/ai_prompt_banner.dart';
+import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
+import 'package:SemsAi/core/widgets/app_loading_indicator.dart';
+import 'package:SemsAi/core/widgets/app_error_widget.dart';
 
 class ListingsScreen extends StatefulWidget {
   const ListingsScreen({super.key, this.onNavigateToChat});
@@ -18,10 +21,10 @@ class ListingsScreen extends StatefulWidget {
   final VoidCallback? onNavigateToChat;
 
   @override
-  State<ListingsScreen> createState() => _ListingsScreenState();
+  ListingsScreenState createState() => ListingsScreenState();
 }
 
-class _ListingsScreenState extends State<ListingsScreen> {
+class ListingsScreenState extends State<ListingsScreen> {
   // -- Data --
   final List<CompoundUnit> _units = [];
   int _page = 1;
@@ -55,8 +58,32 @@ class _ListingsScreenState extends State<ListingsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _loadFilters();
+    _initFiltersAndLoad();
+  }
+
+  Future<void> _initFiltersAndLoad() async {
+    await _loadFilters();
+    await _applyDefaultRegionThenLoad();
+  }
+
+  Future<void> _applyDefaultRegionThenLoad() async {
+    final region = await SharedPrefHelper.getDefaultRegion();
+    if (region != 'No default' && mounted) {
+      // Only set region if it actually exists in the loaded filter list
+      final regionNames = _regions.map((r) => r.name).toSet();
+      if (regionNames.contains(region)) {
+        setState(() => _selectedRegion = region);
+      } else {
+        setState(() => _selectedRegion = null);
+      }
+    } else if (mounted) {
+      setState(() => _selectedRegion = null);
+    }
     _loadListings();
+  }
+
+  void refreshDefaultRegion() {
+    _applyDefaultRegionThenLoad();
   }
 
   @override
@@ -167,16 +194,6 @@ class _ListingsScreenState extends State<ListingsScreen> {
 
   // -- Helpers --
 
-  String _formatPrice(double? p) {
-    if (p == null) return AppStrings.contactForPrice;
-    if (p >= 1000000) {
-      final v = p / 1000000;
-      return '${v.toStringAsFixed(v == v.roundToDouble() ? 0 : 1)}M EGP';
-    }
-    if (p >= 1000) return '${(p / 1000).toStringAsFixed(0)}K EGP';
-    return '${p.toStringAsFixed(0)} EGP';
-  }
-
   bool get _hasActiveFilters =>
       _selectedRegion != null ||
       _selectedType != null ||
@@ -230,11 +247,9 @@ class _ListingsScreenState extends State<ListingsScreen> {
                 maxPrice: _maxPrice,
                 priceFloor: _priceFloor,
                 priceCeil: _priceCeil,
-                formatPrice: _formatPrice,
                 onRegionChanged: (v) => setState(() => _selectedRegion = v),
                 onTypeChanged: (v) => setState(() => _selectedType = v),
-                onBedroomsChanged: (v) =>
-                    setState(() => _selectedBedrooms = v),
+                onBedroomsChanged: (v) => setState(() => _selectedBedrooms = v),
                 onPriceRangeChanged: (v) => setState(() {
                   _minPrice = v.start;
                   _maxPrice = v.end;
@@ -305,34 +320,11 @@ class _ListingsScreenState extends State<ListingsScreen> {
   // -- Body --
 
   Widget _buildBody() {
-    if (_loading) return _buildSkeletonGrid();
+    if (_loading) return const AppLoadingCenter();
     if (_hasError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              color: AppColors.textMuted,
-              size: 48,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              AppStrings.loadFailed,
-              style: const TextStyle(color: AppColors.textMuted),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _loadListings,
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: AppColors.gold),
-              child: Text(
-                AppStrings.retry,
-                style: TextStyle(color: AppColors.bg),
-              ),
-            ),
-          ],
-        ),
+      return AppErrorWidget(
+        message: AppStrings.loadFailed,
+        onRetry: _loadListings,
       );
     }
     if (_units.isEmpty) {
@@ -340,11 +332,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.search_off,
-              color: AppColors.textMuted,
-              size: 48,
-            ),
+            const Icon(Icons.search_off, color: AppColors.textMuted, size: 48),
             const SizedBox(height: 12),
             Text(
               AppStrings.noUnitsFound,
@@ -377,25 +365,12 @@ class _ListingsScreenState extends State<ListingsScreen> {
       itemCount: _units.length + (_loadingMore ? 2 : 0),
       itemBuilder: (context, i) {
         if (i >= _units.length) return const ListingCardSkeleton();
+        final unit = _units[i];
         return StaggeredCard(
           index: i,
-          child: RepaintBoundary(child: ListingUnitCard(unit: _units[i])),
+          child: RepaintBoundary(child: ListingUnitCard(unit: unit)),
         );
       },
-    );
-  }
-
-  Widget _buildSkeletonGrid() {
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 0.58,
-      ),
-      itemCount: 6,
-      itemBuilder: (_, __) => const ListingCardSkeleton(),
     );
   }
 }

@@ -329,6 +329,10 @@ async def get_results(session_id: str):
     return _build_results(state)
 
 
-@app.get("/health")
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root():
+    return {"status": "ok", "service": "semsai-agents"}
+
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok", "service": "semsai-agents", "version": "2.0.0"}

@@ -15,15 +15,16 @@ import 'package:SemsAi/features/explore/presentation/screens/widgets/map_count_b
 import 'package:SemsAi/features/explore/presentation/screens/widgets/properties_panel.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/explore_loading.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/explore_error.dart';
+import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
+  ExploreScreenState createState() => ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class ExploreScreenState extends State<ExploreScreen> {
   static const LatLng _cairoCenter = LatLng(30.0444, 31.2357);
   static const List<Color> _palette = AppColors.areaPalette;
 
@@ -75,6 +76,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       _compounds = compounds;
       _filteredCompounds = compounds;
       _deriveAreas();
+      await _applyDefaultRegion();
       setState(() => _loading = false);
     } catch (e) {
       setState(() {
@@ -82,6 +84,29 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _errorMsg = e.toString();
       });
     }
+  }
+
+  Future<void> _applyDefaultRegion() async {
+    final region = await SharedPrefHelper.getDefaultRegion();
+    if (region != 'No default') {
+      final match = _areas.any((a) => a['name'] == region);
+      if (match) {
+        _selectedArea = region;
+        _applyFilters();
+      }
+    } else {
+      _selectedArea = null;
+      _applyFilters();
+    }
+  }
+
+  void refreshDefaultRegion() {
+    _applyDefaultRegion().then((_) {
+      if (mounted) {
+        setState(() {});
+        _fitBounds();
+      }
+    });
   }
 
   void _deriveAreas() {

@@ -1,3 +1,4 @@
+import 'package:SemsAi/core/utils/price_formatter.dart';
 import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
@@ -15,7 +16,6 @@ class ListingsFilterPanel extends StatelessWidget {
     required this.maxPrice,
     required this.priceFloor,
     required this.priceCeil,
-    required this.formatPrice,
     required this.onRegionChanged,
     required this.onTypeChanged,
     required this.onBedroomsChanged,
@@ -33,7 +33,6 @@ class ListingsFilterPanel extends StatelessWidget {
   final double maxPrice;
   final double priceFloor;
   final double priceCeil;
-  final String Function(double?) formatPrice;
   final ValueChanged<String?> onRegionChanged;
   final ValueChanged<String?> onTypeChanged;
   final ValueChanged<int?> onBedroomsChanged;
@@ -126,8 +125,9 @@ class ListingsFilterPanel extends StatelessWidget {
                               ? AppColors.bg
                               : AppColors.textPrimary,
                           fontSize: 13,
-                          fontWeight:
-                              selected ? FontWeight.w600 : FontWeight.normal,
+                          fontWeight: selected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
                         ),
                       ),
                     ),
@@ -141,7 +141,7 @@ class ListingsFilterPanel extends StatelessWidget {
 
           // Budget range
           _filterLabel(
-            'Budget: ${formatPrice(minPrice)} – ${formatPrice(maxPrice)}',
+            'Budget: ${PriceFormatter.format(minPrice)} – ${PriceFormatter.format(maxPrice)}',
           ),
           const SizedBox(height: 2),
           SliderTheme(
@@ -213,13 +213,13 @@ class ListingsFilterPanel extends StatelessWidget {
   }
 
   Widget _filterLabel(String text) => Text(
-        text,
-        style: const TextStyle(
-          color: AppColors.textMuted,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      );
+    text,
+    style: const TextStyle(
+      color: AppColors.textMuted,
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+    ),
+  );
 
   Widget _buildDropdown<T>({
     required T? value,
@@ -239,13 +239,11 @@ class ListingsFilterPanel extends StatelessWidget {
           value: value,
           hint: Text(
             hint,
-            style:
-                const TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
           isExpanded: true,
           dropdownColor: AppColors.cardBg,
-          style:
-              const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+          style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
           icon: const Icon(
             Icons.keyboard_arrow_down,
             color: AppColors.textMuted,

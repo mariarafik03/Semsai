@@ -19,6 +19,16 @@ class PaymentPlan {
     this.isCash = false,
   });
 
+  Map<String, dynamic> toJson() => {
+    'frequency': frequency,
+    'years': years,
+    'down_payment': downPayment,
+    'single_installment_amount': installmentAmount,
+    'unit_price': unitPrice,
+    'currency': currency,
+    'is_cash': isCash,
+  };
+
   factory PaymentPlan.fromJson(Map<String, dynamic> json) {
     double? _d(dynamic v) {
       if (v == null) return null;
@@ -99,6 +109,29 @@ class CompoundUnit extends Equatable {
     this.paymentPlans = const [],
   });
 
+  Map<String, dynamic> toJson() => {
+    '_id': id,
+    'name': name,
+    'property_type': type,
+    'price': price,
+    'price_min': priceMin,
+    'price_max': priceMax,
+    'area': area,
+    'area_min': areaMin,
+    'area_max': areaMax,
+    'bedrooms': bedrooms,
+    'bathrooms': bathrooms,
+    'finishing': finishing,
+    'sale_type': saleType,
+    'delivery_year': deliveryYear,
+    'compound_name': compoundName,
+    'developer_name': developerName,
+    'location': location,
+    'description': description,
+    'images': images,
+    'payment_plans': paymentPlans.map((p) => p.toJson()).toList(),
+  };
+
   factory CompoundUnit.fromJson(Map<String, dynamic> json) {
     final plans = <PaymentPlan>[];
     if (json['payment_plans'] is List) {
@@ -149,10 +182,8 @@ class CompoundUnit extends Equatable {
     return null;
   }
 
-  
   double? get displayPrice => price ?? priceMin;
 
-  
   String? get priceRangeText {
     if (priceMin != null && priceMax != null && priceMin != priceMax) {
       return 'Up to ${_short(priceMax!)} EGP';
@@ -160,10 +191,8 @@ class CompoundUnit extends Equatable {
     return null;
   }
 
-  
   double? get displayArea => area ?? areaMin;
 
-  
   PaymentPlan? get bestPlan {
     if (paymentPlans.isEmpty) return null;
     final nonCash = paymentPlans.where((p) => !p.isCash).toList();

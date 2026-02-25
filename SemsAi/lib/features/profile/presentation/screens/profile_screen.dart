@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/routing/app_routes.dart';
+import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
 import 'package:SemsAi/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:SemsAi/features/auth/presentation/cubit/auth_state.dart';
 
@@ -25,6 +26,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Ain Sokhna',
     'Sheikh Zayed',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedRegion();
+  }
+
+  Future<void> _loadSavedRegion() async {
+    final region = await SharedPrefHelper.getDefaultRegion();
+    if (mounted) setState(() => _selectedRegion = region);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onChanged: (value) {
                   if (value != null) {
                     setState(() => _selectedRegion = value);
+                    SharedPrefHelper.saveDefaultRegion(value);
                   }
                 },
               ),

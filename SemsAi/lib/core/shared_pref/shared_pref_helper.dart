@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:SemsAi/features/auth/data/models/user_model.dart';
+import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefHelper {
@@ -8,6 +10,35 @@ class SharedPrefHelper {
   static const String _keyUserName = 'user_name';
   static const String _keyUserEmail = 'user_email';
   static const String _keyIsLoggedIn = 'is_logged_in';
+  static const String _keyDefaultRegion = 'default_region';
+  static const String _keyFavorites = 'favorite_units';
+
+  // ── Favorites ──
+  static Future<void> saveFavorites(List<CompoundUnit> units) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = units.map((u) => jsonEncode(u.toJson())).toList();
+    await prefs.setStringList(_keyFavorites, jsonList);
+  }
+
+  static Future<List<CompoundUnit>> getFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = prefs.getStringList(_keyFavorites) ?? [];
+    return jsonList
+        .map(
+          (s) => CompoundUnit.fromJson(jsonDecode(s) as Map<String, dynamic>),
+        )
+        .toList();
+  }
+
+  static Future<void> saveDefaultRegion(String region) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyDefaultRegion, region);
+  }
+
+  static Future<String> getDefaultRegion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyDefaultRegion) ?? 'No default';
+  }
 
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();

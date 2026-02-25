@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
+import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
+import 'package:SemsAi/features/favorite/presentation/cubit/favorite_state.dart';
 
 // ── Title Row ──────────────────────────────────────────────────
 
@@ -59,7 +62,33 @@ class UnitTitleRow extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _actionIcon(Icons.favorite_border_rounded),
+            BlocBuilder<FavoriteCubit, FavoriteState>(
+              builder: (context, favState) {
+                final isFav =
+                    favState is FavoriteLoaded && favState.isFavorite(unit.id);
+                return GestureDetector(
+                  onTap: () {
+                    context.read<FavoriteCubit>().toggleFavorite(unit);
+                  },
+                  child: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBg,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Icon(
+                      isFav
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: isFav ? Colors.redAccent : AppColors.textMuted,
+                      size: 18,
+                    ),
+                  ),
+                );
+              },
+            ),
             const SizedBox(width: 8),
             _actionIcon(Icons.ios_share_rounded),
           ],
@@ -312,10 +341,7 @@ class UnitExtraDetails extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 10,
-              ),
+              style: const TextStyle(color: AppColors.textMuted, fontSize: 10),
             ),
             Text(
               value,
