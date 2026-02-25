@@ -25,7 +25,10 @@ class StateGraph:
         current_node = self._current_node
         fn = self.nodes[current_node]
 
-        new_state = fn(state)          # run the agent
+        
+
+        
+        new_state = fn(state)       # run the agent
         if new_state is not None:
             state = new_state
 

@@ -75,7 +75,7 @@ def extraction_agent(state: AgentState) -> AgentState:
     # Greet the user and collect their opening message
     greeting = ask_ollama(
         "You are a friendly, premium real estate assistant in Egypt. "
-        "Start a warm conversation and invite the user to tell you everything "
+        "Start a warm shortconversation and invite the user to tell you everything "
         "they have in mind about the property they are looking for — purpose, "
         "budget, preferred area, type of property, payment method, etc. "
         "Encourage them to share as much as they want in a single message. "
@@ -103,7 +103,7 @@ Fields to extract:
 - budget         : total budget in EGP as an integer (convert shorthand like "3M" to 3000000, "500k" to 500000)
 - location       : area/city in Egypt  (capitalize each word, e.g. "New Cairo")
 - typeofproperty : one of "Apartment", "Villa", "Chalet"
-- payment_type   : one of "cash", "installments"
+- payment_type   : one of "cash", "installments" ony if user explicitly mentions it
 - Downpayment    : down-payment amount in EGP as an integer (only if user mentioned installments)
 - monthlyinstall : monthly installment in EGP as an integer (only if user mentioned installments)
 

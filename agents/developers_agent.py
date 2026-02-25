@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 from state import AgentState
 
+
 CLASS_RANK = {
     "A+": 5,
     "A": 4,
@@ -27,7 +28,7 @@ def _to_objectid_maybe(x):
     return x
 
 
-def get_top_developers_by_score(state: AgentState, limit_count: int = 3):
+def get_top_developers_by_score(state: AgentState):
     candidate_compounds = state.get("candidate_compounds", [])
     if not candidate_compounds:
         print("No candidate compounds found.")
@@ -45,73 +46,73 @@ def get_top_developers_by_score(state: AgentState, limit_count: int = 3):
     try:
         db = client.get_default_database()
 
-        print("\n🔍 Checking compound documents...")
-
-        # candidate_compounds is expected to contain items with compound_id
-        compound_ids_as_objectid = []
+        # ----------------------------------------
+        # Collect compound IDs
+        # ----------------------------------------
+        compound_ids = []
         for comp in candidate_compounds:
             comp_id = comp.get("compound_id")
             if comp_id:
-                compound_ids_as_objectid.append(_to_objectid_maybe(comp_id))
+                compound_ids.append(_to_objectid_maybe(comp_id))
 
-        if not compound_ids_as_objectid:
-            print("❌ No compound_id values found in candidate_compounds")
+        if not compound_ids:
+            print("❌ No compound IDs found.")
             return []
 
-        # Fetch compounds from DB using _id
+        # ----------------------------------------
+        # Fetch compounds
+        # ----------------------------------------
         compounds_from_db = list(
             db["compounds"].find(
-                {"_id": {"$in": compound_ids_as_objectid}},
-                {"name": 1, "developer_id": 1, "developer_name": 1, "developer_nawy_id": 1}
+                {"_id": {"$in": compound_ids}},
+                {
+                    "name": 1,
+                    "developer_id": 1,
+                    "developer_name": 1
+                }
             )
         )
 
         if not compounds_from_db:
-            print("❌ No compounds matched in DB for provided IDs")
+            print("❌ No compounds matched in DB.")
             return []
 
-        # Debug sample
-        sample_compound = compounds_from_db[0]
-        print("\nSample compound from DB:")
-        print(f"  - _id: {sample_compound.get('_id')}")
-        print(f"  - name: {sample_compound.get('name')}")
-        print(f"  - developer_id: {sample_compound.get('developer_id')}")
-        print(f"  - developer_name: {sample_compound.get('developer_name')}")
-        print(f"  - All keys: {list(sample_compound.keys())}")
-
-        # Build developer -> compounds mapping from compounds collection
+        # ----------------------------------------
+        # Build developer mappings
+        # ----------------------------------------
         dev_id_to_compounds = {}
         dev_id_to_name = {}
-        dev_ids_obj = []
+        dev_ids = []
 
-        print(f"\n🔍 Candidate compounds details:")
         for comp_doc in compounds_from_db:
             dev_id_raw = comp_doc.get("developer_id")
             dev_name = comp_doc.get("developer_name")
             comp_name = comp_doc.get("name")
 
-            print(f"  - {comp_name}: developer_id={dev_id_raw}, developer_name={dev_name}")
+            if not dev_id_raw:
+                continue
 
-            if dev_id_raw:
-                dev_id = _to_objectid_maybe(dev_id_raw)
-                dev_ids_obj.append(dev_id)
+            dev_id = _to_objectid_maybe(dev_id_raw)
+            dev_key = str(dev_id)
 
-                dev_id_to_compounds.setdefault(str(dev_id), []).append(comp_name)
-                if dev_name:
-                    dev_id_to_name[str(dev_id)] = dev_name
+            dev_ids.append(dev_id)
+            dev_id_to_compounds.setdefault(dev_key, []).append(comp_name)
 
-        # Deduplicate dev ids
-        dev_ids_obj = list({str(d): d for d in dev_ids_obj if d is not None}.values())
+            if dev_name:
+                dev_id_to_name[dev_key] = dev_name
 
-        print(f"\n🔍 Extracted developer_ids count: {len(dev_ids_obj)}")
+        # Deduplicate developer IDs
+        dev_ids = list({str(d): d for d in dev_ids if d}.values())
 
-        if not dev_ids_obj:
-            print("❌ No developer_ids extracted from compounds")
+        if not dev_ids:
+            print("❌ No developer IDs extracted.")
             return []
 
-        # Aggregate developers by _id (matches compounds.developer_id)
+        # ----------------------------------------
+        # Fetch developers
+        # ----------------------------------------
         pipeline = [
-            {"$match": {"_id": {"$in": dev_ids_obj}}},
+            {"$match": {"_id": {"$in": dev_ids}}},
             {
                 "$addFields": {
                     "class_score": {
@@ -141,7 +142,6 @@ def get_top_developers_by_score(state: AgentState, limit_count: int = 3):
 
         dev_docs = list(db["developers"].aggregate(pipeline))
 
-        # Build results list with compound_count from mapping
         results = []
         found_dev_ids = set()
 
@@ -150,21 +150,23 @@ def get_top_developers_by_score(state: AgentState, limit_count: int = 3):
             dev_key = str(dev_oid)
             found_dev_ids.add(dev_key)
 
-            matched_compound_names = dev_id_to_compounds.get(dev_key, [])
-            compound_count = len(matched_compound_names)
+            matched_compounds = dev_id_to_compounds.get(dev_key, [])
+            compound_count = len(matched_compounds)
 
             results.append({
-                "developer_id": dev_oid,  # keep as ObjectId
+                "developer_id": dev_oid,
                 "name": d.get("dev_name") or dev_id_to_name.get(dev_key, "Unknown"),
                 "Developer_Class": d.get("Developer_Class", "N/A"),
                 "class_score": d.get("class_score", 0),
                 "compound_count": compound_count,
-                "matched_compound_names": matched_compound_names,
+                "matched_compound_names": matched_compounds,
                 "website": d.get("website")
             })
 
-        # If some developer_ids exist in compounds but not found in developers collection, add fallback rows
-        for dev_obj in dev_ids_obj:
+        # ----------------------------------------
+        # Fallback if developer missing in collection
+        # ----------------------------------------
+        for dev_obj in dev_ids:
             dev_key = str(dev_obj)
             if dev_key not in found_dev_ids:
                 results.append({
@@ -177,18 +179,30 @@ def get_top_developers_by_score(state: AgentState, limit_count: int = 3):
                     "website": None
                 })
 
-        # Sort by class_score then compound_count, same intention as your old pipeline
-        results.sort(key=lambda r: (r.get("class_score", 0), r.get("compound_count", 0)), reverse=True)
+        if not results:
+            return []
 
-        # Limit
-        results = results[:limit_count]
+        # ----------------------------------------
+        # 🔥 NEW LOGIC: Return ONLY highest class
+        # ----------------------------------------
 
-        print(f"✅ Found {len(results)} developers using developer_id mapping")
+        # Sort by class_score first, then compound_count
+        results.sort(
+            key=lambda r: (r.get("class_score", 0), r.get("compound_count", 0)),
+            reverse=True
+        )
 
-        if results:
-            print("\n📊 Results preview:")
-            for r in results:
-                print(f"  - {r.get('name')}: {r.get('compound_count')} compounds, Class: {r.get('Developer_Class')}")
+        highest_score = results[0].get("class_score", 0)
+
+        # Keep only developers with highest class_score
+        results = [
+            r for r in results
+            if r.get("class_score", 0) == highest_score
+        ]
+
+        print(f"\n🏆 Returning ALL developers with highest class_score = {highest_score}")
+        for r in results:
+            print(f"  - {r.get('name')} | Class: {r.get('Developer_Class')} | Compounds: {r.get('compound_count')}")
 
         return results
 
@@ -201,20 +215,18 @@ def developers_agent(state: AgentState):
 
     candidate_compounds = state.get("candidate_compounds", [])
     if not candidate_compounds:
-        print("No candidate compounds found.")
         state["top_developers"] = []
         state["final_compounds"] = []
         return state
 
     print(f"Searching developers for {len(candidate_compounds)} candidate compounds")
 
-    limit_count = 3
-    top_developers = get_top_developers_by_score(state, limit_count)
-
-
+    top_developers = get_top_developers_by_score(state)
     state["top_developers"] = top_developers
 
-    
+    # ----------------------------------------
+    # Match compounds belonging to top developers
+    # ----------------------------------------
     matched_names = set()
     for dev in top_developers:
         for nm in (dev.get("matched_compound_names") or []):
@@ -226,7 +238,9 @@ def developers_agent(state: AgentState):
         cname = c.get("compound_name")
         if not cname:
             continue
+
         cname_norm = " ".join(str(cname).strip().lower().split())
+
         if cname_norm in matched_names:
             final_compounds.append({
                 "compound_id": c.get("compound_id"),
@@ -235,14 +249,15 @@ def developers_agent(state: AgentState):
                 "min_unit_price": c.get("min_unit_price"),
             })
 
-    
-    final_compounds.sort(key=lambda x: float(x.get("min_unit_price") or 1e18))
-    final_compounds = final_compounds[:10]
+    # Sort compounds by price ascending
+    final_compounds.sort(
+        key=lambda x: float(x.get("min_unit_price") or 1e18)
+    )
 
     state["final_compounds"] = final_compounds
 
     print(f"\n✅ Final compounds selected: {len(final_compounds)}")
-    for x in final_compounds[:10]:
+    for x in final_compounds:
         print(f"  - {x.get('compound_name')} | min_price={x.get('min_unit_price')}")
 
     state["next_step"] = "compound_features_agent"

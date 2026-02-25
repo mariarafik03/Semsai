@@ -12,6 +12,7 @@ from state import AgentState
 from main_helpers import ask_ollama
 
 
+
 FEATURES_COLLECTION = "compound_features"
 COMPOUNDS_COLLECTION = "compounds"
 
@@ -292,6 +293,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
             "input_count": len(compounds_list),
             "valid_ids": len(ids),
         }
+        
 
         print("\n--- Summary ---")
         print("State list used:", source_key)
@@ -301,7 +303,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
         print("Skipped (existing):", skipped_existing)
         print("Skipped (no desc/missing doc/short):", skipped_no_desc)
         print("Failed:", failed)
-
+        state["next_step"] = "embedding_agent"
         return state
 
     finally:

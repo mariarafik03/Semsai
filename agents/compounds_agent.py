@@ -308,7 +308,7 @@ def compounds_agent(state: AgentState):
                 f"sale_type={c.get('sale_type_used')} | min_price={format_price(c['min_unit_price'])}"
             )
 
-        state["next_step"] = "developer_agent"
+        state["next_step"] = "developers_agent"
         return state
 
     finally:

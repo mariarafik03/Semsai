@@ -14,6 +14,7 @@ from agents.final_output_agent import final_output_agent
 from agents.unit_agent import unit_agent, rent_agent, living_agent
 from main_helpers import ask_ollama # adjust import to wherever your ask_ollama lives
 from agents.unit_filter_node import interactive_unit_filter
+from agents.embedding_agent import embedding_agent
 state = {
     "user_input": None,
     "purpose": None,
@@ -31,12 +32,24 @@ state = {
     "breakingbudget": None,
     "breakinginstallments": None,
     "candidate_compounds": None,
+    "final_compounds": None,
+    "top_compounds": None,
+    "top_developers": None,
     "typeofproperty": None,
     "final_candidates": None,
+    "compound_features_stats": None,
+    "features_limit": 0,
+    "features_force_refresh": False,
     "candidate_units": None,
     "selected_compound": None,
     "top_investment_units": None,
     "route": None,
+    "years": None,
+    "ranked_compounds": None,
+    "user_preferences": None,
+    "final_best_compound": None,
+    "final_report": None,
+    "abort": False,
 }
 
 # ---------------------------------------------------------------------------
@@ -79,7 +92,10 @@ def state_router(state: dict) -> str:
 
     if state.get("compound_features_stats") is None:
         return "compound_features_agent"
-
+    
+    if state.get("embeddings") is None:
+        return "embedding_agent"
+   
     if state.get("user_preferences") is None:
         return "user_preferences_agent"
 
@@ -121,6 +137,7 @@ graph.add_node("final_output_agent",      final_output_agent)
 graph.add_node("unit_agent",              unit_agent)
 graph.add_node("rent_agent",              rent_agent)
 graph.add_node("living_agent",            living_agent)
+graph.add_node(("embedding_agent"),          embedding_agent)
 
 # ── Entry ───────────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -131,7 +148,7 @@ for _node in [
     "budget_agent", "location_agent", "compounds_agent",
     "developers_agent", "compound_features_agent",
     "user_preferences_agent", "compound_ranking_agent",
-    "final_output_agent", "unit_agent",
+    "final_output_agent", "unit_agent", "embedding_agent",
 ]:
     graph.add_edge(_node, state_router)
 

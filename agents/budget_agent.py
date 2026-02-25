@@ -6,19 +6,19 @@ def budget_agent(state: AgentState):
     print("\n--- Budget Agent (Ollama) ---")
 
     # ── Step 1: Always confirm payment type if not explicitly confirmed ──────
-    if not state.get("payment_type_confirmed"):
+    #if not state.get("payment_type_confirmed"):
 
         # If payment_type was extracted, confirm it — don't just trust it
-        if state.get("payment_type"):
-            prompt = (
-                f"The user seems to want to pay by {state['payment_type']}. "
-                f"Ask them to confirm this naturally in one sentence."
-            )
-            question = ask_ollama(prompt)
-            print("Agent:", question)
-            user_input = input("You: ").strip().lower()
+        #if state.get("payment_type"):
+           # prompt = (
+               # f"The user seems to want to pay by {state['payment_type']}. "
+                #f"Ask them to confirm this naturally in one sentence."
+            #)
+            #question = ask_ollama(prompt)
+            #print("Agent:", question)
+            #user_input = input("You: ").strip().lower()
 
-            confirm_prompt = (
+    """confirm_prompt = (
                 f"The user was asked to confirm '{state['payment_type']}' as payment method. "
                 f"They replied: '{user_input}'. "
                 f"Did they confirm it? Reply ONLY: yes or no."
@@ -27,10 +27,10 @@ def budget_agent(state: AgentState):
 
             if confirmed != "yes":
                 # Clear the wrongly inferred payment type
-                state["payment_type"] = None
+                state["payment_type"] = None"""
 
         # If still no payment type, ask fresh
-        if not state.get("payment_type"):
+    if not state.get("payment_type"):
             while True:
                 question = ask_ollama(
                     "Ask the user if they want to pay by cash or installments "
@@ -51,7 +51,7 @@ def budget_agent(state: AgentState):
                     break
                 print("Agent: Sorry, could you clarify — cash or installments?")
 
-        state["payment_type_confirmed"] = True  # mark as confirmed so we never ask again
+    state["payment_type_confirmed"] = True  # mark as confirmed so we never ask again
 
     # ── Step 2: Check if budget info is already complete ────────────────────
     has_cash_budget = state.get("payment_type") == "cash" and state.get("budget")
@@ -127,7 +127,7 @@ Return ONLY digits, no extra text.
     ):
 
         prompt_install = (
-            "Ask the user about their downpayment and monthly installment naturally "
+            "Ask the user about their downpayment and monthly installment and number of years naturally "
             "without being direct or listing options. Only ask, don't answer."
         )
         question_install = ask_ollama(prompt_install)
@@ -135,18 +135,23 @@ Return ONLY digits, no extra text.
 
         user_input_downpayment = input("Down payment: ")
         user_input_monthly = input("Monthly installment: ")
+        user_input_years = input("Number of years: ")
 
         digits_downpayment = "".join(filter(str.isdigit, user_input_downpayment))
         digits_monthly = "".join(filter(str.isdigit, user_input_monthly))
+        digits_years = "".join(filter(str.isdigit, user_input_years))
 
         if digits_downpayment:
             state["Downpayment"] = int(digits_downpayment)
         if digits_monthly:
             state["monthlyinstall"] = int(digits_monthly)
+        if digits_years:
+            state["years"] = int(digits_years)
 
         # Exit only if both are provided
         if state.get("Downpayment") and state.get("monthlyinstall"):
             state["next_step"] = "location_agent"
+            state["budget"]= state["Downpayment"] + state["monthlyinstall"] * 12 * state.get("years", 1)  # rough total budget estimate
             return state
 
         # Start intelligent questioning loop
