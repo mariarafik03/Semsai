@@ -8,7 +8,7 @@ def questioning_agent(state: AgentState):
     while state["breakingquest"] is False:
         previous_qs_text = "\n".join(asked_questions)
         
-        prompt = """
+        prompt = prompt = f"""
 You are an extremely intelligent, empathetic real estate assistant.
 The user has not clearly stated their purpose for buying real estate.
 Your goal is to discover the user's true intent: one of ["rent", "invest", "live", "buy"].
@@ -33,9 +33,16 @@ Return ONLY the question.
 
         
         purpose = ask_ollama(
-            f"Extract ONLY one purpose from user input (rent, invest, live, buy) if you can: '{state['user_input']}'"
-        ).strip().lower()
-        
+            f"""From this user message: '{state["user_input"]}'
+            Extract their real estate purpose. Reply with ONLY one word from this list: rent, invest, live, buy.
+            If unclear, reply: unknown"""
+            ).strip().lower()
+
+        # Also strip any extra words just in case
+        for p in ["rent", "invest", "live", "buy"]:
+            if p in purpose:
+                purpose = p
+                break
 
         
         

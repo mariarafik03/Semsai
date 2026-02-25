@@ -19,3 +19,7 @@ xlsxwriter>=3.1.0
 
 # Optional: For progress bars
 tqdm>=4.66.0
+langchain==0.2.16
+langchain-core==0.2.43
+langchain-groq==0.1.9
+langchain-huggingface==0.0.3
