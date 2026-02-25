@@ -12,7 +12,7 @@ from agents.user_prefrences_agent import user_preferences_agent
 from agents.compound_ranking_agent import compound_ranking_agent
 from agents.final_output_agent import final_output_agent 
 from agents.unit_agent import unit_agent, rent_agent, living_agent
-from main_helpers import ask_ollama # adjust import to wherever your ask_ollama lives
+from main_helpers import ask_ollama 
 from agents.unit_filter_node import interactive_unit_filter
 state = {
     "user_input": None,
@@ -37,40 +37,34 @@ state = {
     "selected_compound": None,
     "top_investment_units": None,
     "route": None,
+    "budget_validated": False, 
 }
 
 # ---------------------------------------------------------------------------
 # State Router  — single source of truth for all routing
 # ---------------------------------------------------------------------------
 def state_router(state: dict) -> str:
-    """
-    Decides the next node purely from what is (and isn't) in the state.
-    Agents never hard-code the next step; the router always decides.
-    """
 
-    # ── Hard stop — any agent can set abort=True to terminate gracefully ────
     if state.get("abort"):
         return END
 
-    # ── Gather information ──────────────────────────────────────────────────
     if not state.get("purpose"):
-        # User rejected a guessed purpose or intent is unclear → clarify
         if state.get("retry"):
             return "questioning_agent"
         return "purpose_agent"
+
+    if not state.get("location"):
+        return "location_agent"
+
+    if not state.get("typeofproperty"):
+        return "location_agent"
 
     if not state.get("budget") and not (
         state.get("Downpayment") and state.get("monthlyinstall")
     ):
         return "budget_agent"
 
-    if not state.get("location"):
-        return "location_agent"
-
-    if not state.get("typeofproperty"):
-        return "questioning_agent"
-
-    # ── Compound discovery pipeline ─────────────────────────────────────────
+    # ── Compound discovery pipeline ──────────────────────────────────────────
     if state.get("candidate_compounds") is None:
         return "compounds_agent"
 
