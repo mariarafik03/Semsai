@@ -239,7 +239,7 @@ class _PropertyCard extends StatelessWidget {
                   if (compound.startPrice != null) ...[
                     SizedBox(height: 3),
                     Text(
-                      'EGP ${_fmtPrice(compound.startPrice!)}',
+                      ' ${_fmtPrice(compound.startPrice!)}',
                       style: TextStyle(
                         color: AppColors.gold.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w700,

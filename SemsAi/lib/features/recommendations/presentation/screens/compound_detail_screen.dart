@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/utils/price_formatter.dart';
 
 class CompoundDetailScreen extends StatelessWidget {
   final Map<String, dynamic> compound;
@@ -24,25 +25,6 @@ class CompoundDetailScreen extends StatelessWidget {
           SliverAppBar(
             backgroundColor: AppColors.cardBg,
             pinned: true,
-            leading: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Center(
-                child: Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.bg,
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new,
-                    color: AppColors.textPrimary,
-                    size: 14,
-                  ),
-                ),
-              ),
-            ),
             title: Text(
               name,
               style: const TextStyle(
@@ -144,7 +126,7 @@ class CompoundDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            'Starting from ${_formatPrice(minPrice)}',
+                            'Starting from ${PriceFormatter.format(minPrice)}',
                             style: TextStyle(
                               color: AppColors.gold,
                               fontSize: 13,
@@ -277,19 +259,7 @@ class CompoundDetailScreen extends StatelessWidget {
     );
   }
 
-  String _formatPrice(dynamic value) {
-    try {
-      final n = double.parse(value.toString());
-      if (n >= 1000000) {
-        return '${(n / 1000000).toStringAsFixed(1)}M EGP';
-      } else if (n >= 1000) {
-        return '${(n / 1000).toStringAsFixed(0)}K EGP';
-      }
-      return '${n.toStringAsFixed(0)} EGP';
-    } catch (_) {
-      return 'N/A';
-    }
-  }
+  // Removed: Use PriceFormatter.format instead.
 }
 
 // ── Unit Card Widget ──
@@ -379,8 +349,8 @@ class _UnitCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                _formatPrice(price),
-                style: TextStyle(
+                PriceFormatter.format(price),
+                style: const TextStyle(
                   color: AppColors.gold,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -406,17 +376,5 @@ class _UnitCard extends StatelessWidget {
     );
   }
 
-  String _formatPrice(dynamic value) {
-    try {
-      final n = double.parse(value.toString());
-      if (n >= 1000000) {
-        return '${(n / 1000000).toStringAsFixed(1)}M';
-      } else if (n >= 1000) {
-        return '${(n / 1000).toStringAsFixed(0)}K';
-      }
-      return '${n.toStringAsFixed(0)}';
-    } catch (_) {
-      return 'N/A';
-    }
-  }
+  // Removed: Use PriceFormatter.format instead.
 }

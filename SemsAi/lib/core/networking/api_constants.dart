@@ -1,7 +1,16 @@
 class ApiConstants {
   ApiConstants._();
-  static const String baseUrl = 'http://192.168.1.3:3000';
-  static const String agentsUrl = 'http://192.168.1.3:8000';
+
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://youssif12-semsai-backend.hf.space',
+  );
+
+  static const String agentsUrl = String.fromEnvironment(
+    'API_AGENTS_URL',
+    defaultValue: 'https://youssif12-semsai-agents.hf.space',
+  );
+
   static const String tileUrl =
       'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
   static const String userAgent = 'com.semsai.app';

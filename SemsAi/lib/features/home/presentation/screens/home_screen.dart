@@ -18,9 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _goToChat() => setState(() => _currentIndex = 2);
 
+  final _listingsKey = GlobalKey<ListingsScreenState>();
+  final _exploreKey = GlobalKey<ExploreScreenState>();
+
   late final List<Widget> _screens = [
-    ListingsScreen(onNavigateToChat: _goToChat),
-    ExploreScreen(),
+    ListingsScreen(key: _listingsKey, onNavigateToChat: _goToChat),
+    ExploreScreen(key: _exploreKey),
     AgentChatScreen(),
     FavouriteScreen(),
     ProfileScreen(),
@@ -36,7 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => _currentIndex = index),
+        onTap: () {
+          setState(() => _currentIndex = index);
+          if (index == 0) _listingsKey.currentState?.refreshDefaultRegion();
+          if (index == 1) _exploreKey.currentState?.refreshDefaultRegion();
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
