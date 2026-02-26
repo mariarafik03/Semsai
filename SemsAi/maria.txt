@@ -47,7 +47,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         cid = None
 
         if isinstance(item, dict):
-            cid = item.get("compound_id")
+            cid = item.get("_id") or item.get("compound_id")
         else:
             cid = item
 
@@ -76,7 +76,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
                 "numCandidates": 200,
                 "limit": 5,
                 "filter": {
-                    "compound_id": {"$in": compound_ids}
+                    "_id": {"$in": compound_ids}
                 }
             }
         },

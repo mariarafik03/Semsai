@@ -12,7 +12,7 @@ from agents.user_prefrences_agent import user_preferences_agent
 from agents.compound_ranking_agent import compound_ranking_agent
 from agents.final_output_agent import final_output_agent 
 from agents.unit_agent import unit_agent, rent_agent, living_agent
-from main_helpers import ask_ollama # adjust import to wherever your ask_ollama lives
+from main_helpers import ask_ollama 
 from agents.unit_filter_node import interactive_unit_filter
 from agents.embedding_agent import embedding_agent
 state = {
@@ -44,46 +44,33 @@ state = {
     "selected_compound": None,
     "top_investment_units": None,
     "route": None,
-    "years": None,
-    "ranked_compounds": None,
-    "user_preferences": None,
-    "final_best_compound": None,
-    "final_report": None,
-    "abort": False,
 }
 
 # ---------------------------------------------------------------------------
 # State Router  — single source of truth for all routing
 # ---------------------------------------------------------------------------
 def state_router(state: dict) -> str:
-    """
-    Decides the next node purely from what is (and isn't) in the state.
-    Agents never hard-code the next step; the router always decides.
-    """
 
-    # ── Hard stop — any agent can set abort=True to terminate gracefully ────
     if state.get("abort"):
         return END
 
-    # ── Gather information ──────────────────────────────────────────────────
     if not state.get("purpose"):
-        # User rejected a guessed purpose or intent is unclear → clarify
         if state.get("retry"):
             return "questioning_agent"
         return "purpose_agent"
+
+    if not state.get("location"):
+        return "location_agent"
+
+    if not state.get("typeofproperty"):
+        return "location_agent"
 
     if not state.get("budget") and not (
         state.get("Downpayment") and state.get("monthlyinstall")
     ):
         return "budget_agent"
 
-    if not state.get("location"):
-        return "location_agent"
-
-    if not state.get("typeofproperty"):
-        return "questioning_agent"
-
-    # ── Compound discovery pipeline ─────────────────────────────────────────
+    # ── Compound discovery pipeline ──────────────────────────────────────────
     if state.get("candidate_compounds") is None:
         return "compounds_agent"
 
@@ -105,15 +92,17 @@ def state_router(state: dict) -> str:
     if state.get("final_best_compound") is None:
         return "final_output_agent"
 
-    # ── Unit scoring ────────────────────────────────────────────────────────
+    # ── Unit routing via unit_agent ──────────────────────────────────────
     if state.get("route") is None:
         return "unit_agent"
 
+    # invest → investment scoring agent
     if state.get("route") == "rent":
         return "rent_agent"
 
+    # live → interactive unit filter
     if state.get("route") in ("live", "living"):
-        return "living_agent"
+        return "unit_filter_node"
 
     return END
 
@@ -137,7 +126,7 @@ graph.add_node("final_output_agent",      final_output_agent)
 graph.add_node("unit_agent",              unit_agent)
 graph.add_node("rent_agent",              rent_agent)
 graph.add_node("living_agent",            living_agent)
-graph.add_node(("embedding_agent"),          embedding_agent)
+graph.add_node("embedding_agent",         embedding_agent)
 
 # ── Entry ───────────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -152,8 +141,8 @@ for _node in [
 ]:
     graph.add_edge(_node, state_router)
 
-graph.add_edge("rent_agent",    lambda s: END)
-graph.add_edge("living_agent",  lambda s: END)
+graph.add_edge("rent_agent",        lambda s: END)
+graph.add_edge("unit_filter_node",  lambda s: END)
 
 # ---------------------------------------------------------------------------
 # Run
