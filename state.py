@@ -37,4 +37,5 @@ class AgentState(TypedDict):
     final_report: Optional[str]
     abort: Optional[bool]
     embeddings: Optional[str]
+    user_id:Optional[str]
 

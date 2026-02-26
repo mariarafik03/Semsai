@@ -1,82 +1,121 @@
 from typing import List, Dict
 from state import AgentState
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+from bson import ObjectId
+
+load_dotenv()
 
 
 def compound_ranking_agent(state: AgentState) -> AgentState:
     """
-    Deterministic weighted compound ranking agent.
-    Uses feature alignment with extracted compound features.
+    Vector ranking agent using MongoDB Atlas Vector Search.
+    Production-safe version.
     """
 
-    compounds: List[Dict] = state.get("final_compounds", [])
-    prefs: Dict = state.get("user_preferences", {})
-    weights: Dict = prefs.get("ranking_weights", {})
+    client = MongoClient(os.getenv("MONGO_URI"))
+    db = client[os.getenv("DATABASE_NAME")]
 
-    FEATURE_KEYS = [
-        "project_type",
-        "coastal_water_orientation",
-        "amenities_breadth",
-        "density_scale_proxy",
-        "accessibility_context",
+    # ----------------------------
+    # User Embedding
+    # ----------------------------
+    user_id = state.get("user_id")
+
+    if not user_id:
+        print("DEBUG: user_id missing")
+        state["ranked_compounds"] = []
+        return state
+
+    user = db.users.find_one({"_id": ObjectId(str(user_id))})
+
+    if not user or "embedding" not in user:
+        print("DEBUG: user embedding not found")
+        state["ranked_compounds"] = []
+        return state
+
+    user_embedding = user["embedding"]
+
+    # ----------------------------
+    # Compound ID Filtering
+    # ----------------------------
+    compound_ids_raw = state.get("final_compounds", [])
+
+    compound_ids = []
+
+    for item in compound_ids_raw:
+        cid = None
+
+        if isinstance(item, dict):
+            cid = item.get("_id") or item.get("compound_id")
+        else:
+            cid = item
+
+        if cid:
+            try:
+                compound_ids.append(ObjectId(str(cid)))
+            except Exception:
+                pass
+
+    compound_ids = list(set(compound_ids))  # remove duplicates
+
+    if len(compound_ids) == 0:
+        print("DEBUG: No valid compound IDs")
+        state["ranked_compounds"] = []
+        return state
+
+    # ----------------------------
+    # Vector Search Pipeline
+    # ----------------------------
+    pipeline = [
+        {
+            "$vectorSearch": {
+                "index": os.getenv("VECTOR_INDEX"),
+                "path": "embedding_features",
+                "queryVector": user_embedding,
+                "numCandidates": 200,
+                "limit": 5,
+                "filter": {
+                    "_id": {"$in": compound_ids}
+                }
+            }
+        },
+        {
+            "$project": {
+                "_id": 1,
+                "compound_name": 1,
+                "score": {"$meta": "vectorSearchScore"}
+            }
+        }
     ]
 
-    def extract_feature_score(compound: Dict, key: str) -> float:
-        """
-        Converts compound feature value into numeric score (0–1).
-        You may adjust mapping logic here.
-        """
+    results = list(db.compound_features.aggregate(pipeline))
 
-        features = compound.get("features", [])
+    # ----------------------------
+    # Ranking Output
+    # ----------------------------
+    ranked_compounds = []
 
-        for f in features:
-            if f.get("key") == key:
-                val = f.get("value")
+    for r in results:
+        ranked_compounds.append({
+            "compound_id": str(r["_id"]),
+            "compound_name": r.get("compound_name", "Unknown"),
+            "score": float(r.get("score", 0))
+        })
 
-                # Example normalization logic
-                if isinstance(val, dict) and "score" in val:
-                    return float(val["score"])
+    state["ranked_compounds"] = ranked_compounds
 
-                if isinstance(val, (int, float)):
-                    return float(val)
+    # ----------------------------
+    # Print Top 3
+    # ----------------------------
+    print("\n--- Final Top 3 Ranked Compounds ---")
 
-                if isinstance(val, str):
-                    # simple categorical mapping example
-                    mapping = {
-                        "high": 1.0,
-                        "medium": 0.6,
-                        "low": 0.3,
-                    }
-                    return mapping.get(val.lower(), 0.5)
-
-        return 0.0
-
-
-    def compute_weighted_score(compound: Dict) -> float:
-        total = 0.0
-
-        for key in FEATURE_KEYS:
-            feature_score = extract_feature_score(compound, key)
-            weight = weights.get(key, 0)
-            total += feature_score * weight
-
-        return round(total, 5)
-
-
-    # Compute scores
-    scored = []
-    for compound in compounds:
-        score = compute_weighted_score(compound)
-        compound["final_score"] = score
-        scored.append(compound)
-
-    # Sort by weighted score
-    ranked = sorted(scored, key=lambda x: x["final_score"], reverse=True)
-
-    state["ranked_compounds"] = ranked
-    state["next_step"] = "final_output_agent"
-
-    print("\nRanked compounds:")
-    for c in ranked:
-        print(c.get("compound_name"), "→", c.get("final_score"))
+    if len(ranked_compounds) == 0:
+        print("No ranked compounds found.")
+    else:
+        for i, d in enumerate(ranked_compounds[:3], 1):
+            print(f"\n{i}. Compound: {d['compound_name']}")
+            print(f"   Compound ID: {d['compound_id']}")
+            print(f"   Similarity Score: {d['score']:.6f}")
 
     return state

@@ -242,6 +242,7 @@ def user_preferences_agent(state: AgentState) -> AgentState:
 
     entered_uid = input("Enter Document ID (or press Enter for guest): ").strip()
     session_user_id = entered_uid if entered_uid else f"guest_{uuid.uuid4().hex}"
+    state["user_id"]=entered_uid
 
     normalized_signals = {}
     asked_fields = set()
