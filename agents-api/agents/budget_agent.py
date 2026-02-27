@@ -1,239 +1,262 @@
+import json
+import re
+from state import AgentState
+from main_helpers import ask_ollama
+
+
+def _extract_first_number(text: str) -> int | None:
+    """Extract the FIRST number from text. Handles '5M', '500k', '3,000,000', etc."""
+    if not text:
+        return None
+
+    text = str(text).strip()
+
+    # Handle shorthand like 5M, 3.5M, 500k
+    m = re.search(r'(\d+(?:\.\d+)?)\s*[Mm](?:illion)?', text)
+    if m:
+        return int(float(m.group(1)) * 1_000_000)
+
+    m = re.search(r'(\d+(?:\.\d+)?)\s*[Kk]', text)
+    if m:
+        return int(float(m.group(1)) * 1_000)
+
+    # Find first standalone number (with optional commas)
+    m = re.search(r'\b(\d{1,3}(?:,\d{3})*|\d+)\b', text)
+    if m:
+        return int(m.group(1).replace(",", ""))
+
+    return None
+
+
+def _llm_extract_installments(user_input: str) -> dict:
+    """Use LLM to extract down_payment, monthly_installment, years from complex text."""
+    prompt = f"""
+User said: '{user_input}'
+
+Extract financial details about real estate installment payments in Egypt.
+If user mentions a range (e.g. "5 to 7 million"), use the middle value.
+Convert shorthand: 8M = 8000000, 500k = 500000, 5 million = 5000000.
+
+Return ONLY valid JSON, no markdown, no explanation:
+{{"down_payment": number_or_null, "monthly_installment": number_or_null, "years": number_or_null}}
 """
-Budget Agent — determines payment type and budget/installments.
-Refactored: step-based, no input() calls.
-"""
-from typing import Any
-from llm_helper import ask_llm
+    raw = ask_ollama(prompt).strip()
+    raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+
+    # Find JSON object in response
+    start = raw.find("{")
+    end = raw.rfind("}")
+    if start != -1 and end > start:
+        raw = raw[start:end + 1]
+
+    try:
+        return json.loads(raw)
+    except Exception:
+        return {}
 
 
-def budget_agent(state: dict[str, Any], user_input: str | None) -> dict[str, Any]:
+def budget_agent(state: AgentState):
     """
-    Sub-phases:
-      ask_payment_type → extract_payment_type
-      ask_cash_budget  → extract_cash_budget  → ask_cash_loop → extract_cash_loop
-      ask_installments → extract_installments → ask_dp_loop   → extract_dp_loop
-                                               → ask_mi_loop   → extract_mi_loop
+    Collects payment type and budget information.
+    Non-blocking: uses pending_question + user_input pattern.
     """
-    sub = state.get("sub_phase")
 
-    # ==========================================
-    # STEP 1: Ask payment type
-    # ==========================================
-    if sub is None or sub == "ask_payment_type":
-        question = ask_llm(
-            "Ask the user if they want to pay by cash or installments in a natural way. "
-            "Do not answer for them, just ask the question. Keep it short."
-        )
-        state["sub_phase"] = "extract_payment_type"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
+    user_input = state.get("user_input")
+    step = state.get("_budget_step", "init")
 
-    if sub == "extract_payment_type" and user_input:
-        extract = ask_llm(
-            f"Extract ONLY the payment type from this input. "
-            f"Return exactly one word: cash or installments.\n"
-            f"User said: '{user_input}'"
-        ).strip().lower()
-
-        for pt in ["cash", "installments"]:
-            if pt in extract:
-                extract = pt
-                break
-
-        if extract in ["cash", "installments"]:
-            state["payment_type"] = extract
-            state["agent_message"] = f"Got it! You chose {extract}."
-            if extract == "cash":
-                state["sub_phase"] = "ask_cash_budget"
-                state["awaiting_input"] = False  # auto-advance
+    # ── Determine starting step ──
+    if step == "init":
+        if state.get("payment_type"):
+            if state["payment_type"] == "cash" and not state.get("budget"):
+                step = "cash_budget"
+            elif state["payment_type"] == "installments" and not (state.get("Downpayment") and state.get("monthlyinstall")):
+                step = "installments"
             else:
-                state["sub_phase"] = "ask_installments"
-                state["awaiting_input"] = False
+                return state
         else:
-            state["agent_message"] = "Sorry, I didn't understand. Please specify 'cash' or 'installments'."
-            state["sub_phase"] = "ask_payment_type"
-            state["awaiting_input"] = False  # re-ask
+            step = "payment_type"
+        state["_budget_step"] = step
+
+    # ═══════════════════════════════════════════════════════════════
+    # Step: Ask payment type
+    # ═══════════════════════════════════════════════════════════════
+    if step == "payment_type":
+        if not user_input:
+            state["pending_question"] = "Would you prefer to pay in cash or installments?"
+            return state
+
+        lower = user_input.lower()
+        if "cash" in lower or "كاش" in lower:
+            state["payment_type"] = "cash"
+            state["payment_type_confirmed"] = True
+            state["user_input"] = None
+            state["_budget_step"] = "cash_budget"
+            return state
+        elif "install" in lower or "قسط" in lower or "تقسيط" in lower:
+            state["payment_type"] = "installments"
+            state["payment_type_confirmed"] = True
+            state["user_input"] = None
+            state["_budget_step"] = "installments"
+            return state
+        else:
+            # Try LLM
+            result = ask_ollama(
+                f"User said: '{user_input}'. Return exactly one word: cash or installments"
+            ).strip().lower()
+            if result in ("cash", "installments"):
+                state["payment_type"] = result
+                state["payment_type_confirmed"] = True
+                state["user_input"] = None
+                state["_budget_step"] = "cash_budget" if result == "cash" else "installments"
+                return state
+
+            state["pending_question"] = "Sorry, could you clarify — cash or installments?"
+            state["user_input"] = None
+            return state
+
+    # ═══════════════════════════════════════════════════════════════
+    # Step: Cash budget
+    # ═══════════════════════════════════════════════════════════════
+    if step == "cash_budget":
+        if not user_input:
+            state["pending_question"] = "What's your total budget for the property?"
+            return state
+
+        num = _extract_first_number(user_input)
+        if num and num > 10_000:
+            state["budget"] = num
+            state["user_input"] = None
+            state.pop("_budget_step", None)
+            return state
+
+        state["pending_question"] = "Could you please tell me your budget in EGP? (e.g. 3,000,000 or 3M)"
+        state["user_input"] = None
         return state
 
-    # ==========================================
-    # STEP 2a: Cash — ask budget
-    # ==========================================
-    if sub == "ask_cash_budget":
-        question = ask_llm(
-            "Ask the user about their budget for buying a property naturally. Keep it short."
-        )
-        state["sub_phase"] = "extract_cash_budget"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
+    # ═══════════════════════════════════════════════════════════════
+    # Step: Installments
+    # ═══════════════════════════════════════════════════════════════
+    if step == "installments":
+        has_dp = state.get("Downpayment") is not None
+        has_mi = state.get("monthlyinstall") is not None
 
-    if sub == "extract_cash_budget" and user_input:
-        digits = "".join(filter(str.isdigit, user_input))
-        if digits and int(digits) > 0:
-            state["budget"] = int(digits)
-            state["phase"] = "location"
-            state["sub_phase"] = None
-            state["awaiting_input"] = False
-            state["agent_message"] = None
-        else:
-            # Try LLM extraction
-            budget_guess = ask_llm(
-                f"User said: '{user_input}'. "
-                f"Estimate a numeric budget for buying property in Egypt. "
-                f"Return ONLY digits, no text."
-            ).strip()
-            digits = "".join(filter(str.isdigit, budget_guess))
-            if digits and int(digits) > 0:
-                state["budget"] = int(digits)
-                state["phase"] = "location"
-                state["sub_phase"] = None
-                state["awaiting_input"] = False
-                state["agent_message"] = None
+        # Already have both → compute budget and done
+        if has_dp and has_mi:
+            years = state.get("years", 1)
+            state["budget"] = state["Downpayment"] + state["monthlyinstall"] * 12 * years
+            state["user_input"] = None
+            state.pop("_budget_step", None)
+            return state
+
+        if user_input:
+            # ── Simple case: only ONE field is missing ──
+            if has_mi and not has_dp:
+                # We only need down payment — ANY number user gives IS the dp
+                num = _extract_first_number(user_input)
+                if num and num > 0:
+                    state["Downpayment"] = num
+                    state["user_input"] = None
+                    # Now we have both
+                    years = state.get("years", 1)
+                    state["budget"] = num + state["monthlyinstall"] * 12 * years
+                    state.pop("_budget_step", None)
+                    return state
+                # Fallback: try LLM
+                extracted = _llm_extract_installments(user_input)
+                dp = extracted.get("down_payment")
+                if dp:
+                    dp_num = _extract_first_number(str(dp))
+                    if dp_num and dp_num > 0:
+                        state["Downpayment"] = dp_num
+                        state["user_input"] = None
+                        years = state.get("years", 1)
+                        state["budget"] = dp_num + state["monthlyinstall"] * 12 * years
+                        state.pop("_budget_step", None)
+                        return state
+                # Still can't extract
+                state["pending_question"] = "I couldn't understand the amount. Please type just the number, e.g. 5000000"
+                state["user_input"] = None
+                return state
+
+            elif has_dp and not has_mi:
+                # We only need monthly installment
+                num = _extract_first_number(user_input)
+                if num and num > 0:
+                    state["monthlyinstall"] = num
+                    state["user_input"] = None
+                    years = state.get("years", 1)
+                    state["budget"] = state["Downpayment"] + num * 12 * years
+                    state.pop("_budget_step", None)
+                    return state
+                state["pending_question"] = "I couldn't understand the amount. Please type just the number, e.g. 50000"
+                state["user_input"] = None
+                return state
+
             else:
-                state["sub_phase"] = "ask_cash_loop"
-                state["awaiting_input"] = False
-        return state
+                # ── Missing both: use LLM to extract from complex message ──
+                extracted = _llm_extract_installments(user_input)
 
-    if sub == "ask_cash_loop":
-        asked = state.get("asked_questions", [])
-        previous = "\n".join(asked)
-        question = ask_llm(
-            f"You are an intelligent real estate assistant. "
-            f"The user hasn't clearly stated their budget. "
-            f"Ask ONE subtle question to discover their budget. "
-            f"Different from: {previous}\nReturn ONLY the question."
-        )
-        asked.append(question)
-        state["asked_questions"] = asked
-        state["sub_phase"] = "extract_cash_loop"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
+                dp = extracted.get("down_payment")
+                mi = extracted.get("monthly_installment")
+                yrs = extracted.get("years")
 
-    if sub == "extract_cash_loop" and user_input:
-        budget_guess = ask_llm(
-            f"User said: '{user_input}'. "
-            f"Estimate a reasonable numeric budget for buying property in Egypt. "
-            f"Return ONLY digits."
-        ).strip()
-        digits = "".join(filter(str.isdigit, budget_guess))
-        if digits and int(digits) > 0:
-            state["budget"] = int(digits)
-            state["phase"] = "location"
-            state["sub_phase"] = None
-            state["awaiting_input"] = False
-            state["agent_message"] = None
-        else:
-            state["sub_phase"] = "ask_cash_loop"
-            state["awaiting_input"] = False
-        return state
+                if dp:
+                    dp_num = _extract_first_number(str(dp))
+                    if dp_num and dp_num > 0:
+                        state["Downpayment"] = dp_num
 
-    # ==========================================
-    # STEP 2b: Installments — ask DP + monthly
-    # ==========================================
-    if sub == "ask_installments":
-        question = ask_llm(
-            "Ask the user about their downpayment and expected monthly installment naturally. "
-            "Keep it short."
-        )
-        state["sub_phase"] = "extract_installments"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
+                if mi:
+                    mi_num = _extract_first_number(str(mi))
+                    if mi_num and mi_num > 0:
+                        state["monthlyinstall"] = mi_num
 
-    if sub == "extract_installments" and user_input:
-        # Try extracting both values via LLM
-        extraction = ask_llm(
-            f"From this text, extract the downpayment and monthly installment amounts. "
-            f"Return ONLY two numbers separated by a comma (downpayment,monthly). "
-            f"If only one is mentioned, put 0 for the missing one.\n"
-            f"User said: '{user_input}'"
-        ).strip()
+                if yrs:
+                    y_num = _extract_first_number(str(yrs))
+                    if y_num and y_num > 0:
+                        state["years"] = y_num
 
-        parts = extraction.replace(" ", "").split(",")
-        dp_digits = "".join(filter(str.isdigit, parts[0] if len(parts) > 0 else ""))
-        mi_digits = "".join(filter(str.isdigit, parts[1] if len(parts) > 1 else ""))
+                state["user_input"] = None
 
-        if dp_digits and int(dp_digits) > 0:
-            state["Downpayment"] = int(dp_digits)
-        if mi_digits and int(mi_digits) > 0:
-            state["monthlyinstall"] = int(mi_digits)
+                # Check if we now have enough
+                if state.get("Downpayment") and state.get("monthlyinstall"):
+                    years = state.get("years", 1)
+                    state["budget"] = state["Downpayment"] + state["monthlyinstall"] * 12 * years
+                    state.pop("_budget_step", None)
+                    return state
 
-        if state.get("Downpayment") and state.get("monthlyinstall"):
-            state["phase"] = "location"
-            state["sub_phase"] = None
-            state["awaiting_input"] = False
-            state["agent_message"] = None
-        else:
-            # Need to ask for missing values
-            if not state.get("Downpayment"):
-                state["sub_phase"] = "ask_dp_loop"
-            else:
-                state["sub_phase"] = "ask_mi_loop"
-            state["awaiting_input"] = False
-        return state
+                # Ask about missing fields
+                has_dp = state.get("Downpayment") is not None
+                has_mi = state.get("monthlyinstall") is not None
 
-    # Ask DP loop
-    if sub == "ask_dp_loop":
-        question = ask_llm(
-            "The user chose installments but hasn't provided a downpayment amount. "
-            "Ask ONE natural question to discover it. Keep it short."
-        )
-        state["sub_phase"] = "extract_dp_loop"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
+        # ── No user_input OR still missing fields → ask the right question ──
+        has_dp = state.get("Downpayment") is not None
+        has_mi = state.get("monthlyinstall") is not None
 
-    if sub == "extract_dp_loop" and user_input:
-        guess = ask_llm(
-            f"User said: '{user_input}'. Estimate downpayment amount. Return ONLY digits."
-        ).strip()
-        digits = "".join(filter(str.isdigit, guess))
-        if digits and int(digits) > 0:
-            state["Downpayment"] = int(digits)
-            if state.get("monthlyinstall"):
-                state["phase"] = "location"
-                state["sub_phase"] = None
-                state["awaiting_input"] = False
-                state["agent_message"] = None
-            else:
-                state["sub_phase"] = "ask_mi_loop"
-                state["awaiting_input"] = False
-        else:
-            state["sub_phase"] = "ask_dp_loop"
-            state["awaiting_input"] = False
-        return state
+        if has_dp and has_mi:
+            # Actually have both now
+            years = state.get("years", 1)
+            state["budget"] = state["Downpayment"] + state["monthlyinstall"] * 12 * years
+            state.pop("_budget_step", None)
+            return state
+        elif not has_dp and not has_mi:
+            state["pending_question"] = (
+                "For installment payments, I need:\n"
+                "1. Down payment amount\n"
+                "2. Monthly installment amount\n"
+                "3. Number of years\n\n"
+                "Share all at once or one at a time!"
+            )
+        elif not has_dp:
+            state["pending_question"] = (
+                f"✅ Monthly installment: {state['monthlyinstall']:,} EGP\n\n"
+                "How much would you like to put as a down payment?"
+            )
+        elif not has_mi:
+            state["pending_question"] = (
+                f"✅ Down payment: {state['Downpayment']:,} EGP\n\n"
+                "What monthly installment amount works for you?"
+            )
 
-    # Ask monthly installment loop
-    if sub == "ask_mi_loop":
-        question = ask_llm(
-            "The user chose installments but hasn't provided a monthly installment amount. "
-            "Ask ONE natural question to discover it. Keep it short."
-        )
-        state["sub_phase"] = "extract_mi_loop"
-        state["agent_message"] = question
-        state["awaiting_input"] = True
-        return state
-
-    if sub == "extract_mi_loop" and user_input:
-        guess = ask_llm(
-            f"User said: '{user_input}'. Estimate monthly installment. Return ONLY digits."
-        ).strip()
-        digits = "".join(filter(str.isdigit, guess))
-        if digits and int(digits) > 0:
-            state["monthlyinstall"] = int(digits)
-            if state.get("Downpayment"):
-                state["phase"] = "location"
-                state["sub_phase"] = None
-                state["awaiting_input"] = False
-                state["agent_message"] = None
-            else:
-                state["sub_phase"] = "ask_dp_loop"
-                state["awaiting_input"] = False
-        else:
-            state["sub_phase"] = "ask_mi_loop"
-            state["awaiting_input"] = False
         return state
 
     return state

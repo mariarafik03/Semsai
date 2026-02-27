@@ -9,3 +9,5 @@ pinned: false
 
 # SemsAi Backend
 Node.js Express server for the SemsAi real estate app.
+
+Deployed: 2026-02-27
