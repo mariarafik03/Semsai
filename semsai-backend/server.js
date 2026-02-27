@@ -10,24 +10,38 @@ import axios from 'axios';
 
 dotenv.config();
 
+// ─── Validate required env vars ───
+if (!process.env.MONGO_URI) {
+  console.error('FATAL: MONGO_URI environment variable is not set!');
+  console.error('Please add MONGO_URI as a Secret in HF Space Settings.');
+  process.exit(1);
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Simple request logger
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.originalUrl}`);
   next();
 });
 
+
 // connect to Atlas
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('Mongo error', err));
+  .catch((err) => {
+    console.error('Mongo connection error:', err.message);
+    process.exit(1);
+  });
 
-// Route
+// Root health check (supports GET + HEAD for UptimeRobot)
 app.get('/', (req, res) => {
-  res.json({ message: 'SemsAi API running' });
+  res.json({ status: 'ok', message: 'SemsAi API running' });
+});
+app.head('/', (req, res) => {
+  res.sendStatus(200);
 });
 
 // User
@@ -125,7 +139,7 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
-// Forgot Password – check email exists, update password
+// Forgot Password check email exists, update password
 app.post('/auth/forgot-password', async (req, res) => {
   const email = req.body.email?.toLowerCase();
   const newPass = req.body.newPass;

@@ -1,7 +1,3 @@
-"""
-Compound Features Agent — extracts decision features from compound descriptions.
-Autonomous (no user input needed). Adapted from agents/compound_features_agent.py.
-"""
 import os
 import json
 from datetime import datetime
@@ -12,7 +8,9 @@ from pymongo import MongoClient
 from bson import ObjectId
 import certifi
 
-from llm_helper import ask_llm
+from state import AgentState
+from main_helpers import ask_ollama
+
 
 
 FEATURES_COLLECTION = "compound_features"
@@ -30,7 +28,7 @@ Extract EXACTLY 5 decision features that help compare compounds for users (Egypt
 
 Critical rules:
 - Use ONLY the provided text. NEVER invent facts.
-- Do NOT output raw marketing adjectives unless converted into a comparable decision feature.
+- Do NOT output raw marketing adjectives (luxury, elite, unique) unless converted into a comparable decision feature.
 - Do NOT output numeric counts unless explicitly stated in text. If not stated, use null.
 - Output MUST be valid JSON only.
 
@@ -101,35 +99,44 @@ def _to_objectid(x: Any) -> Optional[ObjectId]:
     return None
 
 
-def _pick_compounds_list_from_state(state: dict) -> Tuple[str, List[Dict[str, Any]]]:
-    """Pick the best post-developer-agent list from state."""
+def _pick_compounds_list_from_state(state: AgentState) -> Tuple[str, List[Dict[str, Any]]]:
+    """
+    Picks the best 'post-developer-agent' list from state.
+    Returns (key_name, list_of_compounds).
+    """
+   
     preferred_keys = [
-        "final_compounds",
-        "candidate_compounds",
         "final_candidates",
         "shortlisted_compounds",
         "top_compounds",
         "ranked_compounds",
         "selected_compounds",
+        "final_compounds",
+        # fallback
+        "candidate_compounds",
     ]
+
     for k in preferred_keys:
         v = state.get(k)
         if isinstance(v, list) and len(v) > 0:
             return k, v
+
     return "none", []
 
 
-def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
-    """Extract decision features for compounds. Runs autonomously."""
-    print("\n--- Compound Features Agent ---")
+def compound_features_agent(state: AgentState) -> AgentState:
+    print("\n--- Post-Developer Compound Features Agent (Ollama) ---")
 
+    
     source_key, compounds_list = _pick_compounds_list_from_state(state)
 
     if not compounds_list:
-        print("No compounds list found in state. Nothing to extract.")
+        print("No compounds list found in state (post-developer). Nothing to extract.")
         state["compound_features_stats"] = {
-            "processed": 0, "skipped_existing": 0,
-            "skipped_no_desc": 0, "failed": 0,
+            "processed": 0,
+            "skipped_existing": 0,
+            "skipped_no_desc": 0,
+            "failed": 0,
             "source_key": source_key,
         }
         return state
@@ -143,9 +150,12 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
         return state
 
     client = MongoClient(
-        uri, tls=True, tlsCAFile=certifi.where(),
+        uri,
+        tls=True,
+        tlsCAFile=certifi.where(),
         serverSelectionTimeoutMS=60000,
-        connectTimeoutMS=60000, socketTimeoutMS=60000,
+        connectTimeoutMS=60000,
+        socketTimeoutMS=60000,
     )
 
     try:
@@ -158,8 +168,10 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
         skipped_no_desc = 0
         failed = 0
 
+       
         limit = int(state.get("features_limit") or 0)
 
+       
         ids: List[ObjectId] = []
         name_by_id: Dict[ObjectId, str] = {}
 
@@ -173,24 +185,30 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
                 name_by_id[oid] = nm
 
         if not ids:
-            print("No valid compound_id found.")
+            print("No valid compound_id found in the chosen list.")
             state["compound_features_stats"] = {
-                "processed": 0, "skipped_existing": 0,
-                "skipped_no_desc": 0, "failed": 0,
+                "processed": 0,
+                "skipped_existing": 0,
+                "skipped_no_desc": 0,
+                "failed": 0,
                 "source_key": source_key,
             }
             return state
+
 
         existing = set(
             x["compound_id"]
             for x in db[FEATURES_COLLECTION].find({"compound_id": {"$in": ids}}, {"compound_id": 1})
         )
 
-        docs = list(db[COMPOUNDS_COLLECTION].find(
-            {"_id": {"$in": ids}},
-            {"name": 1, "compound_name": 1, "description": 1, "desc": 1, "about": 1, "overview": 1, "content": 1},
-        ))
-        doc_by_id = {d["_id"]: d for d in docs}
+        
+        docs = list(
+            db[COMPOUNDS_COLLECTION].find(
+                {"_id": {"$in": ids}},
+                {"name": 1, "compound_name": 1, "description": 1, "desc": 1, "about": 1, "overview": 1, "content": 1},
+            )
+        )
+        doc_by_id: Dict[ObjectId, Dict[str, Any]] = {d["_id"]: d for d in docs}
 
         for idx, oid in enumerate(ids, start=1):
             if limit and processed >= limit:
@@ -219,27 +237,32 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
                 continue
 
             desc_cut = desc[:DESC_MAX_CHARS]
+
             print(f"\n[{idx}] Extracting features for: {name or str(oid)}")
 
             try:
                 prompt = _build_prompt(name, desc_cut)
-                raw = ask_llm(prompt)
+                raw = ask_ollama(prompt)
+
                 data = _parse_json(raw)
                 _basic_validate(data)
 
                 db[FEATURES_COLLECTION].update_one(
                     {"compound_id": oid},
-                    {"$set": {
-                        "compound_id": oid,
-                        "compound_name": data.get("compound_name") or name,
-                        "features": data["features"],
-                        "missing_evidence": data.get("missing_evidence", []),
-                        "updated_at": datetime.utcnow(),
-                        "source": "ollama_feature_extractor_v2",
-                        "source_state_key": source_key,
-                    }},
+                    {
+                        "$set": {
+                            "compound_id": oid,
+                            "compound_name": data.get("compound_name") or name,
+                            "features": data["features"],
+                            "missing_evidence": data.get("missing_evidence", []),
+                            "updated_at": datetime.utcnow(),
+                            "source": "ollama_post_developer_feature_extractor_v1",
+                            "source_state_key": source_key,
+                        }
+                    },
                     upsert=True,
                 )
+
                 processed += 1
                 print(f"Saved ✅ (processed={processed})")
 
@@ -248,14 +271,16 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
                 print(f"Failed ❌ for {name or str(oid)}: {e}")
                 db[FEATURES_COLLECTION].update_one(
                     {"compound_id": oid},
-                    {"$set": {
-                        "compound_id": oid,
-                        "compound_name": name,
-                        "error": str(e),
-                        "updated_at": datetime.utcnow(),
-                        "source": "ollama_feature_extractor_v2",
-                        "source_state_key": source_key,
-                    }},
+                    {
+                        "$set": {
+                            "compound_id": oid,
+                            "compound_name": name,
+                            "error": str(e),
+                            "updated_at": datetime.utcnow(),
+                            "source": "ollama_post_developer_feature_extractor_v1",
+                            "source_state_key": source_key,
+                        }
+                    },
                     upsert=True,
                 )
 
@@ -268,11 +293,17 @@ def compound_features_agent(state: dict[str, Any]) -> dict[str, Any]:
             "input_count": len(compounds_list),
             "valid_ids": len(ids),
         }
+        
 
-        print(f"\n--- Features Summary ---")
-        print(f"Processed: {processed}, Skipped existing: {skipped_existing}")
-        print(f"Skipped no desc: {skipped_no_desc}, Failed: {failed}")
-
+        print("\n--- Summary ---")
+        print("State list used:", source_key)
+        print("Input count:", len(compounds_list))
+        print("Valid IDs:", len(ids))
+        print("Processed:", processed)
+        print("Skipped (existing):", skipped_existing)
+        print("Skipped (no desc/missing doc/short):", skipped_no_desc)
+        print("Failed:", failed)
+        state["next_step"] = "embedding_agent"
         return state
 
     finally:

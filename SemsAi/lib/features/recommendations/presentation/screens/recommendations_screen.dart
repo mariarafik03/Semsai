@@ -36,9 +36,28 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     super.dispose();
   }
 
+  // Compute single-item list from best_compound and top_units
   List<Map<String, dynamic>> get _topCompounds {
-    final raw = widget.results['top_compounds'] as List<dynamic>? ?? [];
-    return raw.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    final bestCompound =
+        widget.results['best_compound'] as Map<String, dynamic>?;
+    if (bestCompound == null ||
+        bestCompound.isEmpty ||
+        bestCompound['status'] == 'no_compound_found') {
+      return [];
+    }
+
+    // Adapt to the RecommendationCard's expected format
+    return [
+      {
+        'compound_name': bestCompound['compound_name'] ?? 'Unknown',
+        'location':
+            bestCompound['location'] ?? widget.results['location'] ?? '',
+        'score': bestCompound['score'],
+        'reasons': bestCompound['reasons'] ?? [],
+        'min_unit_price': bestCompound['min_unit_price'],
+        'units': widget.results['top_units'] ?? [],
+      },
+    ];
   }
 
   @override
@@ -140,8 +159,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
       ),
     );
   }
-
-  // ─── Results List ───────────────────────────
 
   Widget _buildResultsList() {
     final compounds = _topCompounds;
