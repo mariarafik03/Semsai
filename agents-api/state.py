@@ -3,7 +3,6 @@ from typing import Any, TypedDict, Optional
 
 class AgentState(TypedDict):
     user_input: Optional[str]
-    purpose: Optional[str]
     pending_confirmation: Optional[str]
     budget: Optional[float]
     location: Optional[str]
@@ -12,9 +11,7 @@ class AgentState(TypedDict):
     payment_type_confirmed: Optional[bool]   # ← NEW: ensures payment type is always verified with user
     Downpayment: Optional[float]
     monthlyinstall: Optional[float]
-    retry: Optional[bool]
     budget_valid: Optional[bool]
-    breakingquest: Optional[bool]
     breakingbudget: Optional[bool]
     breakinginstallments: Optional[bool]
     candidate_compounds: Optional[list]
@@ -32,8 +29,6 @@ class AgentState(TypedDict):
     final_best_compound: Optional[dict[str, Any]]
     selected_compound: Optional[dict[str, Any]]
     candidate_units: Optional[list[dict[str, Any]]]
-    top_investment_units: Optional[list[dict[str, Any]]]
-    route: Optional[str]
     final_report: Optional[str]
     abort: Optional[bool]
     embeddings: Optional[str]

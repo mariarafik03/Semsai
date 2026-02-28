@@ -18,16 +18,16 @@ class StateGraph:
         self.entry_point = name
 
     def step(self, state):
-        # Use internal cursor; first call starts at entry_point
-        if self._current_node is None:
+        # Restore cursor from state (HTTP mode) or use entry_point
+        if state.get("_graph_current_node") is not None:
+            self._current_node = state["_graph_current_node"]
+        elif self._current_node is None:
             self._current_node = self.entry_point
 
         current_node = self._current_node
+        state["_graph_current_node"] = current_node  # persist before agent (for NeedInput)
         fn = self.nodes[current_node]
 
-        
-
-        
         new_state = fn(state)       # run the agent
         if new_state is not None:
             state = new_state
@@ -36,4 +36,5 @@ class StateGraph:
         next_node = edge(state) if callable(edge) else edge
 
         self._current_node = next_node  # advance cursor
+        state["_graph_current_node"] = next_node  # persist for HTTP mode
         return state, next_node
