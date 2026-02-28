@@ -1,182 +1,240 @@
-from graph import StateGraph, END
+import os
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from pymongo import MongoClient
+import certifi
+
 from agents.extraction_agent import extraction_agent
-from agents.purpose_agent import purpose_agent
-from agents.questioning_agent import questioning_agent
 from agents.budget_agent import budget_agent
 from agents.location_agent import location_agent
 from agents.compounds_agent import compounds_agent, format_price
-from agents.developers_agent import developers_agent  
-from agents.comparing_agent import comparing_agent  
+from agents.developers_agent import developers_agent
 from agents.compound_features_agent import compound_features_agent
 from agents.user_prefrences_agent import user_preferences_agent
 from agents.compound_ranking_agent import compound_ranking_agent
-from agents.final_output_agent import final_output_agent 
-from agents.unit_agent import unit_agent, rent_agent, living_agent
-from main_helpers import ask_ollama 
-from agents.unit_filter_node import interactive_unit_filter
+from agents.final_output_agent import final_output_agent
 from agents.embedding_agent import embedding_agent
-state = {
-    "user_input": None,
-    "purpose": None,
-    "pending_confirmation": None,
-    "budget": None,
-    "location": None,
-    "next_step": None,
-    "payment_type": None,
-    "payment_type_confirmed": False,        # ← NEW: ensures payment type is always verified with user
-    "Downpayment": None,
-    "monthlyinstall": None,
-    "retry": None,
-    "budget_valid": None,
-    "breakingquest": None,
-    "breakingbudget": None,
-    "breakinginstallments": None,
-    "candidate_compounds": None,
-    "final_compounds": None,
-    "top_compounds": None,
-    "top_developers": None,
-    "typeofproperty": None,
-    "final_candidates": None,
-    "compound_features_stats": None,
-    "features_limit": 0,
-    "features_force_refresh": False,
-    "candidate_units": None,
-    "selected_compound": None,
-    "top_investment_units": None,
-    "route": None,
-}
+from graph import StateGraph, END
+from http_helpers import init_input_queue, NeedInput
 
-# ---------------------------------------------------------------------------
-# State Router  — single source of truth for all routing
-# ---------------------------------------------------------------------------
-def state_router(state: dict) -> str:
+load_dotenv()
 
-    if state.get("abort"):
+app = FastAPI(title="SemsAi Agents API")
+
+# CORS for Flutter web/mobile
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+def _router(s):
+    if s.get("abort"):
         return END
-
-    if not state.get("purpose"):
-        if state.get("retry"):
-            return "questioning_agent"
-        return "purpose_agent"
-
-    if not state.get("location"):
+    if not s.get("location"):
         return "location_agent"
-
-    if not state.get("typeofproperty"):
+    if not s.get("typeofproperty"):
         return "location_agent"
-
-    if not state.get("budget") and not (
-        state.get("Downpayment") and state.get("monthlyinstall")
-    ):
+    if not s.get("budget_valid"):
         return "budget_agent"
-
-    # ── Compound discovery pipeline ──────────────────────────────────────────
-    if state.get("candidate_compounds") is None:
+    if s.get("candidate_compounds") is None:
         return "compounds_agent"
-
-    if state.get("final_compounds") is None:
+    if s.get("final_compounds") is None:
         return "developers_agent"
-
-    if state.get("compound_features_stats") is None:
+    if s.get("compound_features_stats") is None:
         return "compound_features_agent"
-    
-    if state.get("embeddings") is None:
+    if s.get("embeddings") is None:
         return "embedding_agent"
-   
-    if state.get("user_preferences") is None:
+    if s.get("user_preferences") is None:
         return "user_preferences_agent"
-
-    if state.get("ranked_compounds") is None:
+    if s.get("ranked_compounds") is None:
         return "compound_ranking_agent"
-
-    if state.get("final_best_compound") is None:
+    if s.get("final_best_compound") is None:
         return "final_output_agent"
-
-    # ── Unit routing via unit_agent ──────────────────────────────────────
-    if state.get("route") is None:
-        return "unit_agent"
-
-    # invest → investment scoring agent
-    if state.get("route") == "rent":
-        return "rent_agent"
-
-    # live → interactive unit filter
-    if state.get("route") in ("live", "living"):
-        return "unit_filter_node"
-
     return END
 
-# ---------------------------------------------------------------------------
-# Graph definition
-# ---------------------------------------------------------------------------
-graph = StateGraph()
+def _default_state(input_state: dict) -> dict:
+    return {
+        "user_input": input_state.get("user_input"),
+        "purpose": input_state.get("purpose"),
+        "pending_confirmation": input_state.get("pending_confirmation"),
+        "budget": input_state.get("budget"),
+        "location": input_state.get("location"),
+        "next_step": input_state.get("next_step"),
+        "payment_type": input_state.get("payment_type"),
+        "payment_type_confirmed": input_state.get("payment_type_confirmed", False),
+        "Downpayment": input_state.get("Downpayment"),
+        "monthlyinstall": input_state.get("monthlyinstall"),
+        "budget_valid": input_state.get("budget_valid"),
+        "breakingbudget": input_state.get("breakingbudget"),
+        "breakinginstallments": input_state.get("breakinginstallments"),
+        "candidate_compounds": input_state.get("candidate_compounds"),
+        "final_compounds": input_state.get("final_compounds"),
+        "top_compounds": input_state.get("top_compounds"),
+        "top_developers": input_state.get("top_developers"),
+        "typeofproperty": input_state.get("typeofproperty"),
+        "final_candidates": input_state.get("final_candidates"),
+        "compound_features_stats": input_state.get("compound_features_stats"),
+        "features_limit": input_state.get("features_limit", 0),
+        "features_force_refresh": input_state.get("features_force_refresh", False),
+        "candidate_units": input_state.get("candidate_units"),
+        "selected_compound": input_state.get("selected_compound"),
+        "raw_budget_hint": input_state.get("raw_budget_hint"),
+        "_graph_current_node": input_state.get("_graph_current_node"),
+        "done": False,
+    }
 
-# ── All nodes ───────────────────────────────────────────────────────────────
-graph.add_node("extraction_agent",        extraction_agent)
-graph.add_node("purpose_agent",           purpose_agent)
-graph.add_node("questioning_agent",       questioning_agent)
-graph.add_node("budget_agent",            budget_agent)
-graph.add_node("location_agent",          location_agent)
-graph.add_node("compounds_agent",         compounds_agent)
-graph.add_node("developers_agent",        developers_agent)
-graph.add_node("compound_features_agent", compound_features_agent)
-graph.add_node("user_preferences_agent",  user_preferences_agent)
-graph.add_node("compound_ranking_agent",  compound_ranking_agent)
-graph.add_node("final_output_agent",      final_output_agent)
-graph.add_node("unit_agent",              unit_agent)
-graph.add_node("rent_agent",              rent_agent)
-graph.add_node("living_agent",            living_agent)
-graph.add_node("embedding_agent",         embedding_agent)
+def _build_graph():
+    g = StateGraph()
+    g.add_node("extraction_agent", extraction_agent)
+    g.add_node("budget_agent", budget_agent)
+    g.add_node("location_agent", location_agent)
+    g.add_node("compounds_agent", compounds_agent)
+    g.add_node("developers_agent", developers_agent)
+    g.add_node("compound_features_agent", compound_features_agent)
+    g.add_node("user_preferences_agent", user_preferences_agent)
+    g.add_node("compound_ranking_agent", compound_ranking_agent)
+    g.add_node("final_output_agent", final_output_agent)
+    g.add_node("embedding_agent", embedding_agent)
+    g.set_entry_point("extraction_agent")
+    for node in [
+        "extraction_agent", "budget_agent", "location_agent", "compounds_agent",
+        "developers_agent", "compound_features_agent",
+        "user_preferences_agent", "compound_ranking_agent",
+        "final_output_agent", "embedding_agent",
+    ]:
+        g.add_edge(node, _router)
+    return g
 
-# ── Entry ───────────────────────────────────────────────────────────────────
-graph.set_entry_point("extraction_agent")
+@app.get("/")
+def root():
+    return {"message": "SemsAi Agents API running"}
 
-# ── Every node loops back to state_router (except terminals) ────────────────
-for _node in [
-    "extraction_agent", "purpose_agent", "questioning_agent",
-    "budget_agent", "location_agent", "compounds_agent",
-    "developers_agent", "compound_features_agent",
-    "user_preferences_agent", "compound_ranking_agent",
-    "final_output_agent", "unit_agent", "embedding_agent",
-]:
-    graph.add_edge(_node, state_router)
+async def _handle_step(request: Request):
+    """Shared handler for step endpoints."""
+    state = {}
+    input_state = {}
+    try:
+        body = await request.json()
+        input_state = body.get("state") or body
+        user_input = body.get("user_input") or input_state.get("user_input")
+        
+        state = _default_state(input_state)
+        init_input_queue(state, user_input)
+        
+        graph = _build_graph()
+        next_node = None
+        
+        while next_node != END:
+            state, next_node = graph.step(state)
+            if state.get("_need_input"):
+                message = state.get("assistant_message", "")
+                return {"message": message, "state": state, "done": False}
+        
+        state["done"] = True
+        message = state.get("assistant_message") or "تم جمع المعلومات بنجاح. جاري البحث عن التوصيات..."
+        return {"message": message, "state": state, "done": True}
+    
+    except NeedInput as e:
+        return {"message": str(e.question), "state": state or input_state, "done": False}
+    except Exception as e:
+        return {"message": f"حدث خطأ: {str(e)}", "state": input_state, "done": False}
 
-graph.add_edge("rent_agent",        lambda s: END)
-graph.add_edge("unit_filter_node",  lambda s: END)
+@app.post("/agents/step")
+@app.post("/conversation/step")
+@app.post("/chat/start")
+async def step_agents(request: Request):
+    """Step-by-step conversation for Flutter chat. Receives state + user_input, returns message + state."""
+    return await _handle_step(request)
 
-# ---------------------------------------------------------------------------
-# Run
-# ---------------------------------------------------------------------------
-next_node = None
-while next_node != END:
-    state, next_node = graph.step(state)
+@app.post("/recommendations")
+async def get_recommendations(request: Request):
+    """Fetch unit recommendations based on conversation state (payment, location, budget)."""
+    try:
+        body = await request.json()
+        state = body.get("state")
+        if not state:
+            raise HTTPException(status_code=400, detail="State is required")
 
-# ---------------------------------------------------------------------------
-# Final summary
-# ---------------------------------------------------------------------------
-print("\n--- Final Plan ---")
-print(f"Purpose:             {state.get('purpose')}")
-print(f"Budget:              {format_price(state.get('budget'))}")
-print(f"Downpayment:         {format_price(state.get('Downpayment'))}")
-print(f"Monthly Installment: {format_price(state.get('monthlyinstall'))}")
-print(f"Location:            {state.get('location')}")
-print(f"Payment Type:        {state.get('payment_type')}")
-print(f"Type of Property:    {state.get('typeofproperty')}")
+        uri = os.getenv("MONGO_URI")
+        if not uri:
+            raise HTTPException(status_code=500, detail="MONGO_URI not configured")
 
-final_candidates = state.get("final_candidates") or []
-print("\n--- Final Candidates ---")
-if not final_candidates:
-    print("No final candidates.")
-else:
-    for i, d in enumerate(final_candidates, 1):
-        print(f"\n{i}. Developer: {d.get('name', 'Unknown')}")
-        print(f"   Class: {d.get('Developer_Class', 'N/A')}")
-        print(f"   Class Score: {d.get('class_score', 0)}")
-        print(f"   Matching Compounds: {d.get('compound_count', 0)}")
-        matched = d.get("matched_compound_names") or []
-        if matched:
-            print("   Compounds:")
-            for name in matched:
-                print(f"      • {name}")
-        if d.get("website"):
-            print(f"   Website: {d.get('website')}")
+        client = MongoClient(uri, tls=True, tlsCAFile=certifi.where())
+        db = client.get_default_database()
+        units_collection = db["units"]
+
+        # Build payment match
+        payment_match = {}
+        pt = (state.get("payment_type") or "").lower()
+        if pt == "cash":
+            payment_match["payment.cash"] = True
+            if state.get("budget"):
+                payment_match["payment.down_payment"] = {"$lte": int(float(state["budget"]))}
+        elif pt == "installments":
+            payment_match["payment.cash"] = False
+            if state.get("Downpayment"):
+                payment_match["payment.down_payment"] = {"$lte": int(float(state["Downpayment"]))}
+            if state.get("monthlyinstall"):
+                payment_match["payment.monthly_installment"] = {"$lte": int(float(state["monthlyinstall"]))}
+
+        # Location match
+        location_match = {}
+        if state.get("location"):
+            location_match["compound.location"] = {"$regex": str(state["location"]), "$options": "i"}
+
+        pipeline = [
+            {"$lookup": {"from": "payments", "localField": "_id", "foreignField": "unit_id", "as": "payment"}},
+            {"$unwind": "$payment"},
+        ]
+        if payment_match:
+            pipeline.append({"$match": payment_match})
+        pipeline.extend([
+            {"$lookup": {"from": "compounds", "localField": "compound_id", "foreignField": "_id", "as": "compound"}},
+            {"$unwind": "$compound"},
+        ])
+        if location_match:
+            pipeline.append({"$match": location_match})
+        pipeline.extend([
+            {"$lookup": {"from": "developers", "localField": "dev_id", "foreignField": "_id", "as": "developer"}},
+            {"$unwind": {"path": "$developer", "preserveNullAndEmptyArrays": True}},
+            {"$limit": 10},
+        ])
+
+        results = list(units_collection.aggregate(pipeline))
+
+        clean_results = []
+        for item in results:
+            compound = item.get("compound", {})
+            developer = item.get("developer", {})
+            payment = item.get("payment", {})
+            unit_fields = {k: v for k, v in item.items() if k not in ("compound", "developer", "payment")}
+            clean_results.append({
+                "unit": unit_fields,
+                "compound": compound,
+                "developer": developer,
+                "payment": payment,
+            })
+
+        client.close()
+        return clean_results
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/run")
+async def run_agents(request: Request):
+    """Full graph run (CLI style). Runs until END."""
+    input_state = await request.json()
+    state = _default_state(input_state)
+    graph = _build_graph()
+    next_node = None
+    while next_node != END:
+        state, next_node = graph.step(state)
+    state["done"] = True
+    return {"state": state}

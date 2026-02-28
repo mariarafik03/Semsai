@@ -4,8 +4,12 @@ import numpy as np
 from datetime import datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from sentence_transformers import SentenceTransformer
 import certifi
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    SentenceTransformer = None
 from state import AgentState
 
 
@@ -32,6 +36,8 @@ def embedding_agent(state: AgentState) -> AgentState:
 
     db = client[DB_NAME]
 
+    if SentenceTransformer is None:
+        raise ImportError("sentence_transformers required. pip install sentence-transformers")
     embedder = SentenceTransformer(EMBED_MODEL_NAME)
 
     print("Embedding pipeline loaded ✅")
