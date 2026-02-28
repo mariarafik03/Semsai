@@ -3,9 +3,19 @@ import 'package:SemsAi/core/networking/api_constants.dart';
 import 'package:http/http.dart' as http;
 
 class ApiClient {
+  static const Duration _timeout = Duration(seconds: 30);
+
   static Future<http.Response> get(String path) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$path');
-    return await http.get(url);
+    try {
+      print('GET request to: $url');
+      final response = await http.get(url).timeout(_timeout);
+      print('GET response status: ${response.statusCode}');
+      return response;
+    } catch (e) {
+      print('GET Error connecting to $url: $e');
+      rethrow;
+    }
   }
 
   static Future<http.Response> post(
@@ -13,11 +23,21 @@ class ApiClient {
     Map<String, dynamic> body,
   ) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$path');
-    return await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+    try {
+      print('POST request to: $url');
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(_timeout);
+      print('POST response status: ${response.statusCode}');
+      return response;
+    } catch (e) {
+      print('POST Error connecting to $url: $e');
+      rethrow;
+    }
   }
 
   static Future<bool> saveLocation(
