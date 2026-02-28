@@ -163,6 +163,37 @@ Current Context:
 
 
 # ==========================================================
+# FREE-TEXT INTERPRETER
+# ==========================================================
+
+def _interpret_free_text(question: str, mapping: Dict[str, str], user_answer: str) -> tuple[str, str]:
+    """
+    Uses the LLM to map a free-text answer to the closest option in the mapping.
+    Returns (matched_key, matched_value).
+    """
+    interpret_prompt = f"""
+The user was asked: "{question}"
+Available options: {json.dumps(mapping)}
+User's free-text answer: "{user_answer}"
+
+Return ONLY a JSON object like:
+{{"matched_key": "A", "matched_value": "..."}}
+
+Pick the closest matching option key. If nothing matches, pick the most reasonable one.
+No explanations. No markdown. Valid JSON only.
+"""
+    try:
+        raw_interp = ask_ollama(interpret_prompt)
+        interp = _safe_parse_json(raw_interp)
+        matched_key = str(interp.get("matched_key", "")).upper()
+        matched_value = interp.get("matched_value") or mapping.get(matched_key, user_answer)
+        return matched_key, matched_value
+    except Exception:
+        # Fallback: store raw answer as-is
+        return "?", user_answer
+
+
+# ==========================================================
 # STORAGE
 # ==========================================================
 
@@ -242,7 +273,7 @@ def user_preferences_agent(state: AgentState) -> AgentState:
 
     entered_uid = input("Enter Document ID (or press Enter for guest): ").strip()
     session_user_id = entered_uid if entered_uid else f"guest_{uuid.uuid4().hex}"
-    state["user_id"]=entered_uid
+    state["user_id"] = entered_uid
 
     normalized_signals = {}
     asked_fields = set()
@@ -287,23 +318,35 @@ def user_preferences_agent(state: AgentState) -> AgentState:
 
             asked_fields.add(field)
 
-            print(f"\nAgent: {data['question']}")
-            ans = input("You (A/B/C/D): ").strip().upper()
-
             mapping = schema["mapping"]
 
-            if ans not in mapping:
-                print("❌ Invalid choice. Please answer using A, B, C, or D.")
+            # Show the question and options as reference, accept free-text
+            print(f"\nAgent: {data['question']}")
+            options_display = " | ".join([f"{k}) {v}" for k, v in mapping.items()])
+            print(f"Options (for reference): {options_display}")
+            ans = input("You: ").strip()
+
+            if not ans:
+                print("❌ Please enter a response.")
                 asked_fields.remove(field)
                 continue
 
+            # Interpret the free-text answer using the LLM
+            matched_key, matched_value = _interpret_free_text(
+                question=data["question"],
+                mapping=mapping,
+                user_answer=ans
+            )
+
+            print(f"✅ Interpreted as: {matched_value}")
+
             normalized_signals[field] = {
                 "raw_answer": ans,
-                "normalized": mapping[ans]
+                "normalized": matched_value
             }
 
             history.append(f"ASSISTANT:\n{json.dumps(data)}")
-            history.append(f"USER:\n{json.dumps({'answer': ans})}")
+            history.append(f"USER:\n{json.dumps({'answer': ans, 'interpreted_as': matched_value})}")
 
             continue
 
