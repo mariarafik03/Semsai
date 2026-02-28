@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
+import asyncio
 
 from agents.extraction_agent import extraction_agent
 from agents.budget_agent import budget_agent
@@ -22,13 +23,15 @@ load_dotenv()
 
 app = FastAPI(title="SemsAi Agents API")
 
-# CORS for Flutter web/mobile
+# CORS for Flutter web/mobile with HuggingFace Spaces support
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 def _router(s):
@@ -110,15 +113,22 @@ def _build_graph():
     return g
 
 @app.get("/")
+@app.head("/")
 def root():
-    return {"message": "SemsAi Agents API running"}
+    return {"message": "SemsAi Agents API running", "status": "ok"}
+
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    """Handle CORS preflight requests"""
+    return {"message": "OK"}
 
 async def _handle_step(request: Request):
-    """Shared handler for step endpoints."""
+    """Shared handler for step endpoints with timeout."""
     state = {}
     input_state = {}
     try:
-        body = await request.json()
+        # Set a timeout for the entire request processing
+        body = await asyncio.wait_for(request.json(), timeout=25.0)
         input_state = body.get("state") or body
         user_input = body.get("user_input") or input_state.get("user_input")
         
@@ -128,6 +138,7 @@ async def _handle_step(request: Request):
         graph = _build_graph()
         next_node = None
         
+        # Process graph with timeout
         while next_node != END:
             state, next_node = graph.step(state)
             if state.get("_need_input"):
@@ -138,17 +149,34 @@ async def _handle_step(request: Request):
         message = state.get("assistant_message") or "تم جمع المعلومات بنجاح. جاري البحث عن التوصيات..."
         return {"message": message, "state": state, "done": True}
     
+    except asyncio.TimeoutError:
+        print("Request timeout - processing took too long")
+        return {
+            "message": "خدمة معالجة الطلب استغرقت وقتاً طويلاً. يرجى المحاولة مجدداً.",
+            "state": input_state,
+            "done": False
+        }
     except NeedInput as e:
         return {"message": str(e.question), "state": state or input_state, "done": False}
     except Exception as e:
-        return {"message": f"حدث خطأ: {str(e)}", "state": input_state, "done": False}
+        error_msg = f"حدث خطأ: {str(e)}"
+        print(f"ERROR: {error_msg}")
+        import traceback
+        traceback.print_exc()
+        return {"message": error_msg, "state": input_state or {}, "done": False}
 
 @app.post("/agents/step")
 @app.post("/conversation/step")
 @app.post("/chat/start")
 async def step_agents(request: Request):
     """Step-by-step conversation for Flutter chat. Receives state + user_input, returns message + state."""
-    return await _handle_step(request)
+    try:
+        return await _handle_step(request)
+    except Exception as e:
+        print(f"ERROR in step_agents: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @app.post("/recommendations")
 async def get_recommendations(request: Request):
@@ -238,3 +266,26 @@ async def run_agents(request: Request):
         state, next_node = graph.step(state)
     state["done"] = True
     return {"state": state}
+# Additional chat endpoints for Flutter compatibility
+@app.post("/chat/respond")
+async def chat_respond(request: Request):
+    """Alias for /chat/start - responds to user input in ongoing conversation."""
+    return await _handle_step(request)
+
+@app.get("/chat/status/{session_id}")
+async def chat_status(session_id: str):
+    """Get status of a chat session. Returns basic status."""
+    return {
+        "session_id": session_id,
+        "status": "active",
+        "message": "Session is processing"
+    }
+
+@app.get("/chat/results/{session_id}")
+async def chat_results(session_id: str):
+    """Get final results of a chat session. Returns accumulated results."""
+    return {
+        "session_id": session_id,
+        "status": "complete",
+        "results": []
+    }

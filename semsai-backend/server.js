@@ -18,14 +18,33 @@ if (!process.env.MONGO_URI) {
 }
 
 const app = express();
-app.use(cors());
+
+// Enhanced CORS configuration for HuggingFace Spaces
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  expose_headers: ['Content-Type'],
+  credentials: false,
+  optionsSuccessStatus: 200
+}));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.originalUrl}`);
   next();
 });
+
+// Handle OPTIONS requests for CORS preflight
+app.options('*', cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
 
 
 // connect to Atlas
@@ -40,6 +59,16 @@ mongoose.connect(process.env.MONGO_URI)
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'SemsAi API running' });
 });
+
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'SemsAi Backend API running',
+    timestamp: new Date().toISOString(),
+    agents_url: process.env.AGENTS_URL || 'https://youssif12-semsai-agents.hf.space'
+  });
+});
+
 app.head('/', (req, res) => {
   res.sendStatus(200);
 });
@@ -166,16 +195,28 @@ app.get('/developers', async (req, res) => {
   res.json(devs);
 });
 
-// Conversation Step (Proxy to Python)
-
+// Conversation Step (Proxy to Python Agents API on HuggingFace)
 app.post('/conversation/step', async (req, res) => {
   try {
-    const pythonServiceUrl = process.env.AGENTS_URL || 'http://127.0.0.1:8000/agents/step';
-    const response = await axios.post(pythonServiceUrl, req.body);
+    // IMPORTANT: Use HuggingFace Spaces URL or environment variable
+    const pythonServiceUrl = process.env.AGENTS_URL || 'https://youssif12-semsai-agents.hf.space/agents/step';
+    console.log(`Proxying to agents service: ${pythonServiceUrl}`);
+    
+    const response = await axios.post(pythonServiceUrl, req.body, {
+      timeout: 30000, // 30 second timeout
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     res.json(response.data);
   } catch (err) {
     console.error('Python service error:', err.message);
-    res.status(500).json({ error: 'Failed to communicate with agents service' });
+    console.error('Full error:', err);
+    res.status(500).json({ 
+      error: 'Failed to communicate with agents service',
+      details: err.message,
+      url: process.env.AGENTS_URL || 'https://youssif12-semsai-agents.hf.space/agents/step'
+    });
   }
 });
 

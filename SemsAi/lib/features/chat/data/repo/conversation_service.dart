@@ -4,19 +4,30 @@ import 'package:SemsAi/core/networking/api_constants.dart';
 
 class ConversationService {
   static String get _base => ApiConstants.agentsUrl;
+  static const Duration _timeout = Duration(seconds: 35);
 
   /// Start a new chat session. Returns { session_id, message, phase, done }.
   static Future<Map<String, dynamic>> startChat() async {
-    final res = await http.post(
-      Uri.parse('$_base/chat/start'),
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      print('Starting chat session with: $_base/chat/start');
+      final res = await http
+          .post(
+            Uri.parse('$_base/chat/start'),
+            headers: {'Content-Type': 'application/json'},
+          )
+          .timeout(_timeout);
 
-    if (res.statusCode != 200) {
-      throw Exception('Failed to start chat: ${res.statusCode} ${res.body}');
+      print('Start chat response status: ${res.statusCode}');
+
+      if (res.statusCode != 200) {
+        throw Exception('Failed to start chat: ${res.statusCode} ${res.body}');
+      }
+
+      return jsonDecode(res.body) as Map<String, dynamic>;
+    } catch (e) {
+      print('ERROR starting chat: $e');
+      rethrow;
     }
-
-    return jsonDecode(res.body) as Map<String, dynamic>;
   }
 
   /// Send a user message. Returns { message, phase, done, results? }.
@@ -24,38 +35,68 @@ class ConversationService {
     String sessionId,
     String message,
   ) async {
-    final res = await http.post(
-      Uri.parse('$_base/chat/respond'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'session_id': sessionId, 'message': message}),
-    );
+    try {
+      print('Sending message to: $_base/chat/respond');
+      final res = await http
+          .post(
+            Uri.parse('$_base/chat/respond'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'session_id': sessionId, 'message': message}),
+          )
+          .timeout(_timeout);
 
-    if (res.statusCode != 200) {
-      throw Exception('Failed to respond: ${res.statusCode} ${res.body}');
+      print('Respond response status: ${res.statusCode}');
+
+      if (res.statusCode != 200) {
+        throw Exception('Failed to respond: ${res.statusCode} ${res.body}');
+      }
+
+      return jsonDecode(res.body) as Map<String, dynamic>;
+    } catch (e) {
+      print('ERROR responding: $e');
+      rethrow;
     }
-
-    return jsonDecode(res.body) as Map<String, dynamic>;
   }
 
   /// Get session status.
   static Future<Map<String, dynamic>> getStatus(String sessionId) async {
-    final res = await http.get(Uri.parse('$_base/chat/status/$sessionId'));
+    try {
+      print('Getting status from: $_base/chat/status/$sessionId');
+      final res = await http
+          .get(Uri.parse('$_base/chat/status/$sessionId'))
+          .timeout(_timeout);
 
-    if (res.statusCode != 200) {
-      throw Exception('Failed to get status: ${res.body}');
+      print('Status response: ${res.statusCode}');
+
+      if (res.statusCode != 200) {
+        throw Exception('Failed to get status: ${res.body}');
+      }
+
+      return jsonDecode(res.body) as Map<String, dynamic>;
+    } catch (e) {
+      print('ERROR getting status: $e');
+      rethrow;
     }
-
-    return jsonDecode(res.body) as Map<String, dynamic>;
   }
 
   /// Get final results/recommendations.
   static Future<Map<String, dynamic>> getResults(String sessionId) async {
-    final res = await http.get(Uri.parse('$_base/chat/results/$sessionId'));
+    try {
+      print('Getting results from: $_base/chat/results/$sessionId');
+      final res = await http
+          .get(Uri.parse('$_base/chat/results/$sessionId'))
+          .timeout(_timeout);
 
-    if (res.statusCode != 200) {
-      throw Exception('Failed to get results: ${res.body}');
+      print('Results response: ${res.statusCode}');
+
+      if (res.statusCode != 200) {
+        throw Exception('Failed to get results: ${res.body}');
+      }
+
+      return jsonDecode(res.body) as Map<String, dynamic>;
+    } catch (e) {
+      print('ERROR getting results: $e');
+      rethrow;
     }
-
-    return jsonDecode(res.body) as Map<String, dynamic>;
   }
 }
