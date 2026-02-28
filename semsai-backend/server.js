@@ -38,15 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Handle OPTIONS requests for CORS preflight
-app.options('*', cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-}));
-
-
 // connect to Atlas
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))

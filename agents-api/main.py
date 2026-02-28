@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
 import asyncio
+import uuid
 
 from agents.extraction_agent import extraction_agent
 from agents.budget_agent import budget_agent
@@ -171,12 +172,35 @@ async def _handle_step(request: Request):
 async def step_agents(request: Request):
     """Step-by-step conversation for Flutter chat. Receives state + user_input, returns message + state."""
     try:
-        return await _handle_step(request)
+        body = await request.json()
+        
+        # Process the conversation step
+        result = await _handle_step(request)
+        
+        # Ensure response includes required fields for Flutter app
+        if "session_id" not in result:
+            result["session_id"] = str(uuid.uuid4())
+        if "message" not in result:
+            result["message"] = "مرحبا بك في مساعد الشراء الذكي"
+        if "done" not in result:
+            result["done"] = False
+        if "phase" not in result:
+            result["phase"] = "initial"
+            
+        print(f"Response: {result}")
+        return result
     except Exception as e:
-        print(f"ERROR in step_agents: {str(e)}")
+        error_msg = f"Error in chat: {str(e)}"
+        print(f"ERROR in step_agents: {error_msg}")
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        # Return error response in expected format
+        return {
+            "session_id": str(uuid.uuid4()),
+            "message": error_msg,
+            "done": False,
+            "phase": "error"
+        }
 
 @app.post("/recommendations")
 async def get_recommendations(request: Request):
@@ -269,23 +293,69 @@ async def run_agents(request: Request):
 # Additional chat endpoints for Flutter compatibility
 @app.post("/chat/respond")
 async def chat_respond(request: Request):
-    """Alias for /chat/start - responds to user input in ongoing conversation."""
-    return await _handle_step(request)
+    """Respond to a user message in an ongoing conversation."""
+    session_id = None
+    try:
+        body = await request.json()
+        session_id = body.get("session_id", str(uuid.uuid4()))
+        message = body.get("message", "")
+        state = body.get("state", {})
+        
+        # Add user message to state
+        input_state = state.copy() if state else {}
+        input_state["user_input"] = message
+        
+        # Process through the graph
+        state_dict = _default_state(input_state)
+        init_input_queue(state_dict, message)
+        graph = _build_graph()
+        next_node = None
+        
+        processing_steps = 0
+        while next_node != END and processing_steps < 50:
+            state_dict, next_node = graph.step(state_dict)
+            processing_steps += 1
+            if state_dict.get("_need_input"):
+                break
+        
+        assistant_message = state_dict.get("assistant_message", "جاري المعالجة...")
+        
+        return {
+            "session_id": session_id,
+            "message": assistant_message,
+            "phase": "responding",
+            "done": state_dict.get("done", False),
+            "state": state_dict
+        }
+    except Exception as e:
+        print(f"ERROR in chat_respond: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "session_id": session_id or str(uuid.uuid4()),
+            "message": f"حدث خطأ: {str(e)}",
+            "phase": "error",
+            "done": False
+        }
 
 @app.get("/chat/status/{session_id}")
 async def chat_status(session_id: str):
-    """Get status of a chat session. Returns basic status."""
+    """Get status of a chat session."""
     return {
         "session_id": session_id,
         "status": "active",
-        "message": "Session is processing"
+        "phase": "processing",
+        "message": "جاري معالجة طلبك"
     }
 
 @app.get("/chat/results/{session_id}")
 async def chat_results(session_id: str):
-    """Get final results of a chat session. Returns accumulated results."""
+    """Get final results of a chat session."""
     return {
         "session_id": session_id,
         "status": "complete",
-        "results": []
+        "phase": "complete",
+        "message": "تمت معالجة الطلب",
+        "results": [],
+        "done": True
     }
