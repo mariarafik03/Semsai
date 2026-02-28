@@ -1,5 +1,7 @@
+import re
 from state import AgentState
 from main_helpers import ask_ollama
+from agents.Normalization import normalize_location
 
 # ---- Constants ----
 MAX_RETRIES = 3
@@ -128,6 +130,14 @@ def location_agent(state: AgentState) -> AgentState:
                 handle_llm_failure("location extraction")
                 retries += 1
                 continue
+
+            # Try normalization first (handles slang like tagmo3, october, etc.)
+            normalized = normalize_location(user_location_input) or normalize_location(extracted_location)
+
+            if normalized:
+                state["location"] = normalized
+                print(f"   ✓ Location set to: {state['location']}")
+                break
 
             # Validate the extracted location is actually in our supported areas
             if not is_valid_location(extracted_location):

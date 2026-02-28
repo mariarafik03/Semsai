@@ -1,6 +1,9 @@
+import re
 import json
 from state import AgentState
 from main_helpers import ask_ollama
+from agents.Normalization import normalize_location
+import json
 
 # ---------------------------------------------------------------------------
 # Known valid values for normalization
@@ -55,14 +58,13 @@ def _parse_numeric(raw) -> int | None:
         return int(digits)
     return None
 
-
 # ---------------------------------------------------------------------------
 # Extraction Agent
 # ---------------------------------------------------------------------------
 
 def extraction_agent(state: AgentState) -> AgentState:
     """
-    Entry-point agent.  Greets the user, collects their opening message,
+    Entry-point agent. Greets the user, collects their opening message,
     then uses the LLM to extract every recognisable field in one pass.
 
     Fields it tries to extract:
@@ -75,7 +77,7 @@ def extraction_agent(state: AgentState) -> AgentState:
     # Greet the user and collect their opening message
     greeting = ask_ollama(
         "You are a friendly, premium real estate assistant in Egypt. "
-        "Start a warm shortconversation and invite the user to tell you everything "
+        "Start a warm short conversation and invite the user to tell you everything "
         "they have in mind about the property they are looking for — purpose, "
         "budget, preferred area, type of property, payment method, etc. "
         "Encourage them to share as much as they want in a single message. "
@@ -85,7 +87,6 @@ def extraction_agent(state: AgentState) -> AgentState:
     user_input = input("You: ").strip()
 
     if not user_input:
-        # Nothing to extract — downstream agents will ask everything
         state["user_input"] = ""
         return state
 
@@ -100,14 +101,16 @@ Only include a field if the user **clearly** mentioned it; do NOT guess.
 
 Fields to extract:
 - purpose        : one of "rent", "invest", "live"  (if the user says "buy" with no further detail, leave null)
-- budget         : total budget in EGP as an integer (convert shorthand like "3M" to 3000000, "500k" to 500000)
+- budget         : total budget in EGP as an integer
+                   (convert shorthand: "3M" → 3000000, "500k" → 500000, "3 million" → 3000000)
+                   ⚠ If the number has NO unit (e.g. "10", "30", "5"), return null — do NOT guess the scale.
 - location       : area/city in Egypt  (capitalize each word, e.g. "New Cairo")
 - typeofproperty : one of "Apartment", "Villa", "Chalet"
-- payment_type   : one of "cash", "installments" ony if user explicitly mentions it
+- payment_type   : one of "cash", "installments" only if user explicitly mentions it
 - Downpayment    : down-payment amount in EGP as an integer (only if user mentioned installments)
 - monthlyinstall : monthly installment in EGP as an integer (only if user mentioned installments)
 
-User message: \"{user_input}\"
+User message: "{user_input}"
 
 Respond ONLY with valid JSON. Use null for any field you cannot extract.
 Example:
@@ -131,6 +134,7 @@ Example:
         extracted = json.loads(raw)
     except json.JSONDecodeError:
         print("   (Could not parse extraction — downstream agents will ask.)")
+        state["raw_budget_hint"] = user_input
         return state
 
     # ---- Apply extracted values with validation ----
@@ -141,25 +145,46 @@ Example:
         state["purpose"] = purpose
         print(f"   ✓ Purpose: {purpose}")
 
-    # Budget
-    budget = _parse_numeric(extracted.get("budget"))
-    if budget and budget > 0:
+    # Budget — only accept if realistically sized (>=100k = user gave a full EGP amount)
+    # If bare number with no unit (e.g. "10"), LLM returns null per prompt instructions
+    # and we store raw_budget_hint so budget_agent can clarify naturally
+    budget_raw = extracted.get("budget")
+    budget = _parse_numeric(budget_raw)
+    if budget and budget >= 100_000:
         state["budget"] = budget
         print(f"   ✓ Budget: {budget:,} EGP")
+    else:
+        # Ambiguous or missing — store raw input so budget_agent can reference it
+        state["raw_budget_hint"] = user_input
+        if budget_raw:
+            print(f"   ℹ Budget '{budget_raw}' has no unit — budget_agent will clarify with user.")
 
     # Location
+    # Location
     location = (extracted.get("location") or "").strip()
-    if location:
-        state["location"] = location.title()
-        print(f"   ✓ Location: {state['location']}")
+    normalized = None  # 👈 always initialize first
 
+    if location:
+        # Try normalizing LLM's extracted value first
+        normalized = normalize_location(location)
+    
+        # If that fails, try normalizing directly from raw user input
+        if not normalized:
+            normalized = normalize_location(user_input)
+
+    if normalized:
+        state["location"] = normalized
+        print(f"   ✓ Location: {normalized}")
+    elif location:
+        state["location"] = location.title()
+        print(f"   ✓ Location (raw): {state['location']}")
     # Property type
     prop_type = _normalize_property_type(extracted.get("typeofproperty") or "")
     if prop_type:
         state["typeofproperty"] = prop_type
         print(f"   ✓ Property type: {prop_type}")
 
-    # Payment type
+    # Payment type — only if explicitly stated by user, never assumed
     pay_type = _normalize_payment_type(extracted.get("payment_type") or "")
     if pay_type:
         state["payment_type"] = pay_type
