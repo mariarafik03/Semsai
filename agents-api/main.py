@@ -88,10 +88,11 @@ def _default_state(input_state: dict) -> dict:
         "selected_compound": input_state.get("selected_compound"),
         "raw_budget_hint": input_state.get("raw_budget_hint"),
         "_graph_current_node": input_state.get("_graph_current_node"),
+        "_waiting_for_agent": input_state.get("_waiting_for_agent"),  # Track which agent is waiting for input
         "done": False,
     }
 
-def _build_graph():
+def _build_graph(entry_point=None):
     g = StateGraph()
     g.add_node("extraction_agent", extraction_agent)
     g.add_node("budget_agent", budget_agent)
@@ -103,7 +104,10 @@ def _build_graph():
     g.add_node("compound_ranking_agent", compound_ranking_agent)
     g.add_node("final_output_agent", final_output_agent)
     g.add_node("embedding_agent", embedding_agent)
-    g.set_entry_point("extraction_agent")
+    
+    # Use provided entry point or default to extraction_agent
+    g.set_entry_point(entry_point or "extraction_agent")
+    
     for node in [
         "extraction_agent", "budget_agent", "location_agent", "compounds_agent",
         "developers_agent", "compound_features_agent",
@@ -123,72 +127,82 @@ async def options_handler(path: str):
     """Handle CORS preflight requests"""
     return {"message": "OK"}
 
-async def _handle_step(request: Request):
-    """Shared handler for step endpoints with timeout."""
-    state = {}
-    input_state = {}
+@app.post("/agents/step")
+@app.post("/conversation/step")
+async def step_agents(request: Request):
+    """Step-by-step conversation for Flutter chat. Receives state + user_input, returns message + state."""
     try:
-        # Set a timeout for the entire request processing
-        body = await asyncio.wait_for(request.json(), timeout=25.0)
+        # Handle empty body gracefully
+        try:
+            body = await request.json()
+        except:
+            body = {}
+        
         input_state = body.get("state") or body
-        user_input = body.get("user_input") or input_state.get("user_input")
+        user_input = body.get("user_input") or input_state.get("user_input", "")
         
         state = _default_state(input_state)
         init_input_queue(state, user_input)
         
-        graph = _build_graph()
+        # Determine entry point: use saved agent if waiting (but NOT extraction_agent - only runs once)
+        entry_agent = state.get("_waiting_for_agent")
+        
+        # extraction_agent only runs once at the very beginning
+        # After that, always use router to determine next agent
+        if entry_agent == "extraction_agent" or not entry_agent:
+            entry_agent = _router(state)
+        
+        # If we're already at END, return completion
+        if entry_agent == END:
+            state["done"] = True
+            return {
+                "session_id": body.get("session_id", str(uuid.uuid4())),
+                "message": "تمت معالجة جميع الخطوات. جاري جمع التوصيات...",
+                "done": True,
+                "phase": "complete",
+                "state": state
+            }
+        
+        # Build graph with the next agent as entry point
+        graph = _build_graph(entry_point=entry_agent)
         next_node = None
         
-        # Process graph with timeout
-        while next_node != END:
-            state, next_node = graph.step(state)
-            if state.get("_need_input"):
-                message = state.get("assistant_message", "")
-                return {"message": message, "state": state, "done": False}
+        try:
+            while next_node != END:
+                state, next_node = graph.step(state)
+                if state.get("_need_input"):
+                    message = state.get("assistant_message", "")
+                    state["_waiting_for_agent"] = entry_agent  # Save agent for next call
+                    return {"message": message, "state": state, "done": False}
+        except NeedInput as e:
+            # Return the actual agent's question instead of error
+            question = str(e.question) if e.question else state.get("assistant_message", "جاري المعالجة...")
+            # Save the current agent only if it's not extraction_agent
+            if entry_agent != "extraction_agent":
+                state["_waiting_for_agent"] = entry_agent
+            return {"message": question, "state": state, "done": False}
         
         state["done"] = True
         message = state.get("assistant_message") or "تم جمع المعلومات بنجاح. جاري البحث عن التوصيات..."
-        return {"message": message, "state": state, "done": True}
-    
-    except asyncio.TimeoutError:
-        print("Request timeout - processing took too long")
-        return {
-            "message": "خدمة معالجة الطلب استغرقت وقتاً طويلاً. يرجى المحاولة مجدداً.",
-            "state": input_state,
-            "done": False
-        }
-    except NeedInput as e:
-        return {"message": str(e.question), "state": state or input_state, "done": False}
-    except Exception as e:
-        error_msg = f"حدث خطأ: {str(e)}"
-        print(f"ERROR: {error_msg}")
-        import traceback
-        traceback.print_exc()
-        return {"message": error_msg, "state": input_state or {}, "done": False}
-
-@app.post("/agents/step")
-@app.post("/conversation/step")
-@app.post("/chat/start")
-async def step_agents(request: Request):
-    """Step-by-step conversation for Flutter chat. Receives state + user_input, returns message + state."""
-    try:
-        body = await request.json()
-        
-        # Process the conversation step
-        result = await _handle_step(request)
+        state["_waiting_for_agent"] = None  # Clear waiting agent when moving to next
         
         # Ensure response includes required fields for Flutter app
-        if "session_id" not in result:
-            result["session_id"] = str(uuid.uuid4())
-        if "message" not in result:
-            result["message"] = "مرحبا بك في مساعد الشراء الذكي"
-        if "done" not in result:
-            result["done"] = False
-        if "phase" not in result:
-            result["phase"] = "initial"
-            
-        print(f"Response: {result}")
-        return result
+        return {
+            "session_id": body.get("session_id", str(uuid.uuid4())),
+            "message": message,
+            "done": state["done"],
+            "phase": "complete" if state["done"] else "processing",
+            "state": state
+        }
+    except NeedInput as e:
+        # Return the actual agent's question
+        return {
+            "session_id": body.get("session_id", str(uuid.uuid4())) if 'body' in locals() else str(uuid.uuid4()),
+            "message": str(e.question) if e.question else "جاري المعالجة...",
+            "done": False,
+            "phase": "asking",
+            "state": body.get("state", {}) if 'body' in locals() else {}
+        }
     except Exception as e:
         error_msg = f"Error in chat: {str(e)}"
         print(f"ERROR in step_agents: {error_msg}")
@@ -196,10 +210,80 @@ async def step_agents(request: Request):
         traceback.print_exc()
         # Return error response in expected format
         return {
-            "session_id": str(uuid.uuid4()),
+            "session_id": body.get("session_id", str(uuid.uuid4())) if 'body' in locals() else str(uuid.uuid4()),
             "message": error_msg,
             "done": False,
-            "phase": "error"
+            "phase": "error",
+            "state": body.get("state", {}) if 'body' in locals() else {}
+        }
+
+@app.post("/chat/start")
+async def chat_start(request: Request):
+    """Start a new chat session. Handles both empty and non-empty requests."""
+    try:
+        # Try to get request body, but handle empty body gracefully
+        try:
+            body = await request.json()
+        except:
+            body = {}  # Empty body - start fresh conversation
+        
+        # Process the conversation with empty state
+        state = {}
+        
+        try:
+            state = _default_state(body)
+            init_input_queue(state, body.get("user_input", ""))
+            
+            # Start with extraction agent
+            graph = _build_graph(entry_point="extraction_agent")
+            next_node = None
+            
+            # Process graph to get the first agent's message
+            message = None
+            waiting_agent = None
+            try:
+                while next_node != END:
+                    state, next_node = graph.step(state)
+                    if state.get("_need_input"):
+                        message = state.get("assistant_message", "")
+                        waiting_agent = "extraction_agent"  # extraction_agent asked the question
+                        break
+            except NeedInput as e:
+                # Get the actual agent's question
+                message = str(e.question) if e.question else state.get("assistant_message", "")
+                waiting_agent = "extraction_agent"
+            
+            # If no message, get from assistant_message field
+            if not message:
+                message = state.get("assistant_message", "مرحبا بك في مساعد الشراء الذكي! أين تريد شراء عقار؟")
+            
+            state["_waiting_for_agent"] = waiting_agent
+            
+        except Exception as e:
+            print(f"Error in chat_start graph processing: {str(e)}")
+            message = "مرحبا بك في مساعد الشراء الذكي! أين تريد شراء عقار؟"
+            state = _default_state({})
+            state["_waiting_for_agent"] = "extraction_agent"
+        
+        return {
+            "session_id": str(uuid.uuid4()),
+            "message": message,
+            "phase": "purpose",
+            "done": False,
+            "state": state
+        }
+        
+    except Exception as e:
+        error_msg = f"Error starting chat: {str(e)}"
+        print(f"ERROR in chat_start: {error_msg}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "session_id": str(uuid.uuid4()),
+            "message": "مرحبا بك في مساعد الشراء الذكي! أين تريد شراء عقار؟",
+            "phase": "purpose",
+            "done": False,
+            "state": {"_waiting_for_agent": "extraction_agent"}
         }
 
 @app.post("/recommendations")
@@ -296,10 +380,24 @@ async def chat_respond(request: Request):
     """Respond to a user message in an ongoing conversation."""
     session_id = None
     try:
-        body = await request.json()
+        # Handle empty body gracefully
+        try:
+            body = await request.json()
+        except:
+            body = {}
+        
         session_id = body.get("session_id", str(uuid.uuid4()))
         message = body.get("message", "")
         state = body.get("state", {})
+        
+        if not message:
+            return {
+                "session_id": session_id,
+                "message": "لم تكتب رسالة. يرجى محاولة مجدداً.",
+                "phase": "error",
+                "done": False,
+                "state": state
+            }
         
         # Add user message to state
         input_state = state.copy() if state else {}
@@ -308,17 +406,78 @@ async def chat_respond(request: Request):
         # Process through the graph
         state_dict = _default_state(input_state)
         init_input_queue(state_dict, message)
-        graph = _build_graph()
+        
+        # Determine entry point: use saved agent if waiting (but NOT extraction_agent)
+        # extraction_agent only runs once at the beginning
+        entry_agent = state_dict.get("_waiting_for_agent")
+        if entry_agent == "extraction_agent" or not entry_agent:
+            # Move past extraction_agent - use router to find next agent
+            entry_agent = _router(state_dict)
+        
+        # If we're already at END, we're done
+        if entry_agent == END:
+            state_dict["done"] = True
+            return {
+                "session_id": session_id,
+                "message": "تمت معالجة جميع خطوات البحث. جاري جمع التوصيات...",
+                "phase": "complete",
+                "done": True,
+                "state": state_dict
+            }
+        
+        # Build graph with the appropriate entry point
+        graph = _build_graph(entry_point=entry_agent)
         next_node = None
         
-        processing_steps = 0
-        while next_node != END and processing_steps < 50:
-            state_dict, next_node = graph.step(state_dict)
-            processing_steps += 1
-            if state_dict.get("_need_input"):
-                break
+        try:
+            processing_steps = 0
+            while next_node != END and processing_steps < 50:
+                state_dict, next_node = graph.step(state_dict)
+                processing_steps += 1
+                if state_dict.get("_need_input"):
+                    break
+        except NeedInput as e:
+            # Return the actual agent's question, and save which agent to continue with
+            assistant_message = str(e.question) if e.question else "جاري المعالجة..."
+            # Only save waiting_for_agent if it's not extraction_agent
+            if entry_agent != "extraction_agent":
+                state_dict["_waiting_for_agent"] = entry_agent
+            else:
+                state_dict["_waiting_for_agent"] = None
+            return {
+                "session_id": session_id,
+                "message": assistant_message,
+                "phase": "asking",
+                "done": False,
+                "state": state_dict
+            }
+        
+        # If we reach here, the agent chain might have progressed
+        # Check if we should continue to the next agent
+        next_agent = _router(state_dict)
+        if next_agent != END and next_agent != entry_agent:
+            # Continue with next agent - clear waiting_for_agent
+            state_dict["_waiting_for_agent"] = None
+            graph = _build_graph(entry_point=next_agent)
+            next_node = None
+            try:
+                while next_node != END:
+                    state_dict, next_node = graph.step(state_dict)
+                    if state_dict.get("_need_input"):
+                        break
+            except NeedInput as e:
+                assistant_message = str(e.question) if e.question else "جاري المعالجة..."
+                state_dict["_waiting_for_agent"] = next_agent
+                return {
+                    "session_id": session_id,
+                    "message": assistant_message,
+                    "phase": "asking",
+                    "done": False,
+                    "state": state_dict
+                }
         
         assistant_message = state_dict.get("assistant_message", "جاري المعالجة...")
+        state_dict["_waiting_for_agent"] = None  # Clear waiting agent
         
         return {
             "session_id": session_id,
@@ -335,7 +494,8 @@ async def chat_respond(request: Request):
             "session_id": session_id or str(uuid.uuid4()),
             "message": f"حدث خطأ: {str(e)}",
             "phase": "error",
-            "done": False
+            "done": False,
+            "state": body.get("state", {}) if 'body' in locals() else {}
         }
 
 @app.get("/chat/status/{session_id}")
