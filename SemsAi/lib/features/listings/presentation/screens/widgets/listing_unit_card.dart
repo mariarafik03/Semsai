@@ -142,6 +142,35 @@ class ListingUnitCard extends StatelessWidget {
             ],
           ),
         ),
+        // Compare toggle
+        if (onCompareToggle != null)
+          Positioned(
+            top: 6,
+            left: 6,
+            child: GestureDetector(
+              onTap: onCompareToggle,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: compareSelected
+                      ? AppColors.gold
+                      : Colors.black.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(7),
+                  border: compareSelected
+                      ? Border.all(color: AppColors.goldLight, width: 1)
+                      : null,
+                ),
+                child: Icon(
+                  compareSelected
+                      ? Icons.compare_arrows_rounded
+                      : Icons.compare_arrows_outlined,
+                  color: compareSelected ? AppColors.bg : Colors.white,
+                  size: 15,
+                ),
+              ),
+            ),
+          ),
         // Heart icon
         Positioned(
           top: 6,

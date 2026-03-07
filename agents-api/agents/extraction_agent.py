@@ -221,4 +221,6 @@ Example:
     else:
         print("   ✅ All key info extracted!")
 
+    state["next_step"] = "location_agent"
+
     return state

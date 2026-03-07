@@ -9,6 +9,7 @@ import 'package:SemsAi/features/explore/data/models/compound_model.dart';
 import 'package:SemsAi/features/explore/data/repo/explore_service.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/circle_dot.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/area_chip.dart';
+import 'package:SemsAi/features/explore/presentation/screens/widgets/area_chip.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/compound_sheet.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/explore_search_bar.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/map_count_badge.dart';

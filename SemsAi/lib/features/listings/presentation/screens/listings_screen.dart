@@ -14,6 +14,11 @@ import 'package:SemsAi/features/listings/presentation/screens/widgets/ai_prompt_
 import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
 import 'package:SemsAi/core/widgets/app_loading_indicator.dart';
 import 'package:SemsAi/core/widgets/app_error_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:SemsAi/features/comparison/presentation/cubit/comparison_cubit.dart';
+import 'package:SemsAi/features/comparison/presentation/cubit/comparison_state.dart';
+import 'package:SemsAi/features/comparison/presentation/widgets/comparison_bottom_bar.dart';
+import 'package:SemsAi/core/utils/app_snackbar.dart';
 
 class ListingsScreen extends StatefulWidget {
   const ListingsScreen({super.key, this.onNavigateToChat});
@@ -279,6 +284,12 @@ class ListingsScreenState extends State<ListingsScreen> {
                             setState(() => _bannerDismissed = true),
                       ),
                     ),
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: ComparisonBottomBar(),
+                  ),
                 ],
               ),
             ),
@@ -368,7 +379,28 @@ class ListingsScreenState extends State<ListingsScreen> {
         final unit = _units[i];
         return StaggeredCard(
           index: i,
-          child: RepaintBoundary(child: ListingUnitCard(unit: unit)),
+          child: RepaintBoundary(
+            child: BlocBuilder<ComparisonCubit, ComparisonState>(
+              builder: (context, compState) {
+                final isSelected = compState.isSelected(unit.id);
+                return ListingUnitCard(
+                  unit: unit,
+                  compareSelected: isSelected,
+                  compareDisabled: compState.isFull && !isSelected,
+                  onCompareToggle: () {
+                    final cubit = context.read<ComparisonCubit>();
+                    final ok = cubit.toggle(unit);
+                    if (!ok) {
+                      AppSnackBar.error(
+                        context,
+                        'You can compare up to 3 properties',
+                      );
+                    }
+                  },
+                );
+              },
+            ),
+          ),
         );
       },
     );

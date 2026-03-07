@@ -277,7 +277,10 @@ def user_preferences_agent(state: AgentState) -> AgentState:
 
     print("\n--- User Preferences Agent ---")
 
-    entered_uid = input("Enter Document ID (or press Enter for guest): ").strip()
+    if "_input_queue" in state:
+        entered_uid = get_user_input(state, "Enter Document ID (or press Enter for guest):")
+    else:
+        entered_uid = input("Enter Document ID (or press Enter for guest): ").strip()
     session_user_id = entered_uid if entered_uid else f"guest_{uuid.uuid4().hex}"
     state["user_id"] = entered_uid
 
@@ -330,7 +333,10 @@ def user_preferences_agent(state: AgentState) -> AgentState:
             print(f"\nAgent: {data['question']}")
             options_display = " | ".join([f"{k}) {v}" for k, v in mapping.items()])
             print(f"Options (for reference): {options_display}")
-            ans = input("You: ").strip()
+            if "_input_queue" in state:
+                    ans = get_user_input(state, data["question"])
+            else:
+                 ans = input("You: ").strip()
 
             if not ans:
                 print("❌ Please enter a response.")

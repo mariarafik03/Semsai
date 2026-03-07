@@ -186,6 +186,24 @@ app.get('/developers', async (req, res) => {
   res.json(devs);
 });
 
+// Developer by name (case-insensitive search)
+app.get('/developers/search', async (req, res) => {
+  try {
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ error: 'name query parameter required' });
+
+    const dev = await Developer.findOne({
+      dev_name: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    }).lean();
+
+    if (!dev) return res.status(404).json({ error: 'Developer not found' });
+    res.json(dev);
+  } catch (err) {
+    console.error('Developer search error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch developer' });
+  }
+});
+
 // Conversation Step (Proxy to Python Agents API on HuggingFace)
 app.post('/conversation/step', async (req, res) => {
   try {

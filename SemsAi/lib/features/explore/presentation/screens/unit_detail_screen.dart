@@ -5,6 +5,7 @@ import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_image_gallery.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_payment_plans.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_detail_info.dart';
+import 'package:SemsAi/features/listings/presentation/screens/developer_profile_screen.dart';
 
 class UnitDetailScreen extends StatelessWidget {
   final CompoundUnit unit;
@@ -36,10 +37,24 @@ class UnitDetailScreen extends StatelessWidget {
 
                   if (unit.developerName != null &&
                       unit.developerName!.isNotEmpty)
-                    UnitInfoCard(
-                      icon: Icons.business_rounded,
-                      label: AppStrings.developer,
-                      value: unit.developerName!,
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => DeveloperProfileScreen(
+                            developerName: unit.developerName!,
+                          ),
+                        ),
+                      ),
+                      child: UnitInfoCard(
+                        icon: Icons.business_rounded,
+                        label: AppStrings.developer,
+                        value: unit.developerName!,
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: AppColors.gold,
+                          size: 14,
+                        ),
+                      ),
                     ),
 
                   if (unit.paymentPlans.isNotEmpty) ...[

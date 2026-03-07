@@ -5,6 +5,7 @@ import 'package:SemsAi/features/home/presentation/cubit/home_cubit.dart';
 import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
 import 'package:SemsAi/features/chat/presentation/cubit/chat_cubit.dart';
 import 'package:SemsAi/features/map/presentation/cubit/map_cubit.dart';
+import 'package:SemsAi/features/comparison/presentation/cubit/comparison_cubit.dart';
 import 'package:SemsAi/features/auth/data/repo/auth_repository.dart';
 import 'package:SemsAi/features/chat/data/repo/conversation_repository.dart';
 import 'package:SemsAi/core/routing/app_router.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
               ChatCubit(conversationRepository: ConversationRepositoryImpl()),
         ),
         BlocProvider<MapCubit>(create: (context) => MapCubit()),
+        BlocProvider<ComparisonCubit>(create: (context) => ComparisonCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
