@@ -2,6 +2,7 @@
 from .extraction_agent import extraction_agent
 from .budget_agent import budget_agent
 from .location_agent import location_agent
+from .property_type_agent import property_type_agent
 from .compounds_agent import compounds_agent, format_price
 from .developers_agent import developers_agent
 from .compound_features_agent import compound_features_agent
@@ -14,6 +15,7 @@ __all__ = [
     "extraction_agent",
     "budget_agent",
     "location_agent",
+    "property_type_agent",
     "compounds_agent",
     "format_price",
     "developers_agent",

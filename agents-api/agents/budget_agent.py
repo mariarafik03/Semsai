@@ -151,7 +151,7 @@ def _extract_new_location(user_input: str) -> str | None:
     return result
 
 
-def _ask_for_cash_budget() -> int | None:
+def _ask_for_cash_budget(state) -> int | None:
     """
     Directly ask the user for their cash budget in a clear, simple way.
     Tries up to 3 times before giving up. Returns parsed integer or None.
@@ -162,7 +162,10 @@ def _ask_for_cash_budget() -> int | None:
             "Be clear and direct. One sentence only. Do not answer, only ask."
         )
         print("Agent:", question)
-        user_input = input("You: ").strip()
+        if "_input_queue" in state:
+            user_input = get_user_input(state, question)
+        else:
+            user_input = input("You: ").strip()
 
         # Try direct parse first
         parsed = parse_numeric_amount(user_input)
@@ -207,7 +210,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                 "or consider a different location or property type. Only ask, don't answer."
             )
             print("Agent:", message)
-            user_input = input("You: ")
+            if "_input_queue" in state:
+                user_input = get_user_input(state, message)
+            else:
+                user_input = input("You: ")
 
             intent = _detect_intent(user_input)
 
@@ -219,7 +225,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                         "Ask them which area in Egypt they'd like to look at instead. Only ask, don't answer."
                     )
                     print("Agent:", clarify)
-                    new_location_input = input("You: ")
+                    if "_input_queue" in state:
+                        new_location_input = get_user_input(state, clarify)
+                    else:
+                        new_location_input = input("You: ")
                     new_location = _extract_new_location(new_location_input) or new_location_input.strip()
 
                 print(f"   ✓ Location changed to: {new_location}")
@@ -241,7 +250,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                         " Only ask, don't answer."
                     )
                     print("Agent:", no_data_msg)
-                    user_input2 = input("You: ")
+                    if "_input_queue" in state:
+                        user_input2 = get_user_input(state, no_data_msg)
+                    else:
+                        user_input2 = input("You: ")
                     new_loc2 = _extract_new_location(user_input2)
                     if new_loc2:
                         state["location"] = new_loc2
@@ -259,7 +271,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                     "Ask them what type they'd prefer — apartment, villa, chalet, etc. Only ask, don't answer."
                 )
                 print("Agent:", clarify)
-                new_type_input = input("You: ").strip()
+                if "_input_queue" in state:
+                    new_type_input = get_user_input(state, clarify)
+                else:
+                    new_type_input = input("You: ").strip()
                 new_type = ask_ollama(
                     f"User said: '{new_type_input}'. Extract property type (apartment/villa/chalet/townhouse). "
                     "Return ONLY the type word."
@@ -344,7 +359,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                 "Only ask, don't answer."
             )
             print("Agent:", message)
-            user_input = input("You: ")
+            if "_input_queue" in state:
+                user_input = get_user_input(state, message)
+            else:
+                user_input = input("You: ")
 
             intent = _detect_intent(user_input)
 
@@ -355,7 +373,11 @@ def validate_budget_against_db(state: AgentState) -> None:
                         "Ask the user which area they'd like to look at instead. Only ask, don't answer."
                     )
                     print("Agent:", ask_loc)
-                    new_location = _extract_new_location(input("You: ")) or input("You: ").strip()
+                    if "_input_queue" in state:
+                        loc_input = get_user_input(state, ask_loc)
+                    else:
+                        loc_input = input("You: ").strip()
+                    new_location = _extract_new_location(loc_input) or loc_input.strip()
 
                 print(f"   ✓ Location changed to: {new_location}")
                 state["location"] = new_location
@@ -379,7 +401,10 @@ def validate_budget_against_db(state: AgentState) -> None:
                     "Ask the user what property type they'd prefer instead. Only ask, don't answer."
                 )
                 print("Agent:", clarify)
-                new_type_input = input("You: ").strip()
+                if "_input_queue" in state:
+                    new_type_input = get_user_input(state, clarify)
+                else:
+                    new_type_input = input("You: ").strip()
                 new_type = ask_ollama(
                     f"User said: '{new_type_input}'. Extract property type. Return ONLY the type word."
                 ).strip().capitalize()
@@ -404,13 +429,23 @@ def validate_budget_against_db(state: AgentState) -> None:
                 if user_down < min_down:
                     parsed_down = parse_numeric_amount(user_input)
                     if parsed_down is None:
-                        parsed_down = parse_numeric_amount(input("Revised down payment: "))
+                        q_down = "Revised down payment:"
+                        if "_input_queue" in state:
+                            raw_down = get_user_input(state, q_down)
+                        else:
+                            raw_down = input("Revised down payment: ")
+                        parsed_down = parse_numeric_amount(raw_down)
                     if parsed_down is not None:
                         state["Downpayment"] = parsed_down
                         user_down = parsed_down
 
                 if user_monthly < min_monthly:
-                    parsed_monthly = parse_numeric_amount(input("Revised monthly installment: "))
+                    q_monthly = "Revised monthly installment:"
+                    if "_input_queue" in state:
+                        raw_monthly = get_user_input(state, q_monthly)
+                    else:
+                        raw_monthly = input("Revised monthly installment: ")
+                    parsed_monthly = parse_numeric_amount(raw_monthly)
                     if parsed_monthly is not None:
                         state["monthlyinstall"] = parsed_monthly
                         user_monthly = parsed_monthly
@@ -520,7 +555,10 @@ def budget_agent(state: AgentState):
                 f"{bare_number} thousand EGP, or something else. Only ask, don't answer."
             )
             print("Agent:", confirm_q)
-            scale_input = input("You: ").strip()
+            if "_input_queue" in state:
+                scale_input = get_user_input(state, confirm_q)
+            else:
+                scale_input = input("You: ").strip()
 
             # Try to parse the confirmed amount directly first
             confirmed_amount = parse_numeric_amount(scale_input)
@@ -555,7 +593,7 @@ def budget_agent(state: AgentState):
 
         # ── 3b: No bare number found — directly ask for budget ──
         # Keep asking until we get a valid number (max 3 attempts via helper)
-        parsed_budget = _ask_for_cash_budget()
+        parsed_budget = _ask_for_cash_budget(state)
         if parsed_budget is not None:
             state["budget"] = parsed_budget
             if state.get("location") and state.get("typeofproperty"):
@@ -581,9 +619,14 @@ def budget_agent(state: AgentState):
         question_install = ask_ollama(prompt_install)
         print("Agent:", question_install)
 
-        user_input_downpayment = input("Down payment: ")
-        user_input_monthly = input("Monthly installment: ")
-        user_input_years = input("Number of years: ")
+        if "_input_queue" in state:
+            user_input_downpayment = get_user_input(state, "Down payment:")
+            user_input_monthly = get_user_input(state, "Monthly installment:")
+            user_input_years = get_user_input(state, "Number of years:")
+        else:
+            user_input_downpayment = input("Down payment: ")
+            user_input_monthly = input("Monthly installment: ")
+            user_input_years = input("Number of years: ")
 
         parsed_down = parse_numeric_amount(user_input_downpayment)
         parsed_monthly = parse_numeric_amount(user_input_monthly)
@@ -611,7 +654,10 @@ def budget_agent(state: AgentState):
                     "One sentence only. Only ask, don't answer."
                 )
                 print("Agent:", q)
-                raw = input("You: ").strip()
+                if "_input_queue" in state:
+                    raw = get_user_input(state, q)
+                else:
+                    raw = input("You: ").strip()
                 parsed = parse_numeric_amount(raw)
                 if parsed is None:
                     parsed = parse_numeric_amount(
@@ -628,7 +674,10 @@ def budget_agent(state: AgentState):
                     "One sentence only. Only ask, don't answer."
                 )
                 print("Agent:", q)
-                raw = input("You: ").strip()
+                if "_input_queue" in state:
+                    raw = get_user_input(state, q)
+                else:
+                    raw = input("You: ").strip()
                 parsed = parse_numeric_amount(raw)
                 if parsed is None:
                     parsed = parse_numeric_amount(

@@ -17,6 +17,7 @@ from agents.user_prefrences_agent import user_preferences_agent
 from agents.compound_ranking_agent import compound_ranking_agent
 from agents.final_output_agent import final_output_agent
 from agents.embedding_agent import embedding_agent
+from agents.property_type_agent import property_type_agent
 from graph import StateGraph, END
 from http_helpers import init_input_queue, NeedInput
 
@@ -41,7 +42,7 @@ def _router(s):
     if not s.get("location"):
         return "location_agent"
     if not s.get("typeofproperty"):
-        return "location_agent"
+        return "property_type_agent"
     if not s.get("budget_valid"):
         return "budget_agent"
     if s.get("candidate_compounds") is None:
@@ -87,6 +88,11 @@ def _default_state(input_state: dict) -> dict:
         "candidate_units": input_state.get("candidate_units"),
         "selected_compound": input_state.get("selected_compound"),
         "raw_budget_hint": input_state.get("raw_budget_hint"),
+        "embeddings": input_state.get("embeddings"),
+        "user_preferences": input_state.get("user_preferences"),
+        "ranked_compounds": input_state.get("ranked_compounds"),
+        "final_best_compound": input_state.get("final_best_compound"),
+        "user_id": input_state.get("user_id"),
         "_graph_current_node": input_state.get("_graph_current_node"),
         "_waiting_for_agent": input_state.get("_waiting_for_agent"),  # Track which agent is waiting for input
         "done": False,
@@ -97,6 +103,7 @@ def _build_graph(entry_point=None):
     g.add_node("extraction_agent", extraction_agent)
     g.add_node("budget_agent", budget_agent)
     g.add_node("location_agent", location_agent)
+    g.add_node("property_type_agent", property_type_agent)
     g.add_node("compounds_agent", compounds_agent)
     g.add_node("developers_agent", developers_agent)
     g.add_node("compound_features_agent", compound_features_agent)
@@ -109,7 +116,7 @@ def _build_graph(entry_point=None):
     g.set_entry_point(entry_point or "extraction_agent")
     
     for node in [
-        "extraction_agent", "budget_agent", "location_agent", "compounds_agent",
+        "extraction_agent", "budget_agent", "location_agent","property_type_agent", "compounds_agent",
         "developers_agent", "compound_features_agent",
         "user_preferences_agent", "compound_ranking_agent",
         "final_output_agent", "embedding_agent",
@@ -172,14 +179,17 @@ async def step_agents(request: Request):
                 state, next_node = graph.step(state)
                 if state.get("_need_input"):
                     message = state.get("assistant_message", "")
-                    state["_waiting_for_agent"] = entry_agent  # Save agent for next call
+                    # Save the ACTUAL agent that needs input, not the graph entry point
+                    waiting = state.get("_graph_current_node") or entry_agent
+                    state["_waiting_for_agent"] = waiting
                     return {"message": message, "state": state, "done": False}
         except NeedInput as e:
             # Return the actual agent's question instead of error
             question = str(e.question) if e.question else state.get("assistant_message", "جاري المعالجة...")
-            # Save the current agent only if it's not extraction_agent
-            if entry_agent != "extraction_agent":
-                state["_waiting_for_agent"] = entry_agent
+            # Save the ACTUAL agent that needs input (persisted by graph.step before running the agent)
+            waiting = state.get("_graph_current_node") or entry_agent
+            if waiting != "extraction_agent":
+                state["_waiting_for_agent"] = waiting
             return {"message": question, "state": state, "done": False}
         
         state["done"] = True
@@ -435,6 +445,7 @@ async def chat_respond(request: Request):
                 state_dict, next_node = graph.step(state_dict)
                 processing_steps += 1
                 if state_dict.get("_need_input"):
+<<<<<<< HEAD
                     break
         except NeedInput as e:
             # Return the actual agent's question, and save which agent to continue with
@@ -442,6 +453,26 @@ async def chat_respond(request: Request):
             # Only save waiting_for_agent if it's not extraction_agent
             if entry_agent != "extraction_agent":
                 state_dict["_waiting_for_agent"] = entry_agent
+=======
+                    # Save the ACTUAL agent that needs input
+                    waiting = state_dict.get("_graph_current_node") or entry_agent
+                    state_dict["_waiting_for_agent"] = waiting
+                    assistant_message = state_dict.get("assistant_message", "جاري المعالجة...")
+                    return {
+                        "session_id": session_id,
+                        "message": assistant_message,
+                        "phase": "asking",
+                        "done": False,
+                        "state": state_dict
+                    }
+        except NeedInput as e:
+            # Return the actual agent's question, and save which agent to continue with
+            assistant_message = str(e.question) if e.question else "جاري المعالجة..."
+            # Save the ACTUAL agent that needs input
+            waiting = state_dict.get("_graph_current_node") or entry_agent
+            if waiting != "extraction_agent":
+                state_dict["_waiting_for_agent"] = waiting
+>>>>>>> be1f05f (comparison feature & developer profile)
             else:
                 state_dict["_waiting_for_agent"] = None
             return {
@@ -456,18 +487,42 @@ async def chat_respond(request: Request):
         # Check if we should continue to the next agent
         next_agent = _router(state_dict)
         if next_agent != END and next_agent != entry_agent:
+<<<<<<< HEAD
             # Continue with next agent - clear waiting_for_agent
             state_dict["_waiting_for_agent"] = None
+=======
+            # Continue with next agent - clear stale graph state
+            state_dict["_waiting_for_agent"] = None
+            state_dict["_graph_current_node"] = None
+>>>>>>> be1f05f (comparison feature & developer profile)
             graph = _build_graph(entry_point=next_agent)
             next_node = None
             try:
                 while next_node != END:
                     state_dict, next_node = graph.step(state_dict)
                     if state_dict.get("_need_input"):
+<<<<<<< HEAD
                         break
             except NeedInput as e:
                 assistant_message = str(e.question) if e.question else "جاري المعالجة..."
                 state_dict["_waiting_for_agent"] = next_agent
+=======
+                        # Save the ACTUAL agent that needs input
+                        waiting = state_dict.get("_graph_current_node") or next_agent
+                        state_dict["_waiting_for_agent"] = waiting
+                        assistant_message = state_dict.get("assistant_message", "جاري المعالجة...")
+                        return {
+                            "session_id": session_id,
+                            "message": assistant_message,
+                            "phase": "asking",
+                            "done": False,
+                            "state": state_dict
+                        }
+            except NeedInput as e:
+                assistant_message = str(e.question) if e.question else "جاري المعالجة..."
+                waiting = state_dict.get("_graph_current_node") or next_agent
+                state_dict["_waiting_for_agent"] = waiting
+>>>>>>> be1f05f (comparison feature & developer profile)
                 return {
                     "session_id": session_id,
                     "message": assistant_message,

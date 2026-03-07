@@ -15,7 +15,7 @@ def ask_ollama(prompt: str) -> str:
     try:
         client = openai.OpenAI(api_key=api_key or None)
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=512,
             temperature=0.7
