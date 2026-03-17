@@ -1,170 +1,340 @@
-import re
+"""
+agents/budget_agent.py  (HTTP-safe refactor)
+─────────────────────────────────────────────
+waiting_for values used
+───────────────────────
+"payment_type"           → asked cash vs installments
+"cash_budget"            → asked for total budget (direct attempt)
+"cash_budget_loop_{n}"   → intelligent loop question n
+"install_both"           → asked for downpayment + monthly in one go
+"install_dp_loop_{n}"    → intelligent loop for down payment
+"install_mi_loop_{n}"    → intelligent loop for monthly installment
+"""
+
 from state import AgentState
 from main_helpers import ask_ollama
-from .Normalization import normalize_location
-from http_helpers import get_user_input
 
-# ---- Constants ----
-MAX_RETRIES = 3
-
-VALID_LOCATIONS = {
-    "new cairo", "new capital", "north coast", "6th of october",
-    "maadi", "zamalek", "heliopolis", "nasr city", "sheikh zayed",
-    "fifth settlement", "obour", "shorouk", "mostakbal city",
-    "ain sokhna", "ras el hekma", "sahel", "marassi", "sidi abdel rahman"
-}
-
-PROPERTY_MAP = {
-    "villa": "Villa",
-    "vila": "Villa",
-    "apartment": "Apartment",
-    "flat": "Apartment",
-    "chalet": "Chalet",
-    "studio": "Apartment",       # map studio → Apartment
-    "penthouse": "Apartment",    # map penthouse → Apartment
-    "duplex": "Apartment",       # map duplex → Apartment
-    "townhouse": "Villa",        # map townhouse → Villa
-}
-
-SUPPORTED_TYPES_MSG = "Apartment, Villa, or Chalet"
+MAX_LOOP = 5   # max intelligent-question attempts before giving up
 
 
-# ---- Helpers ----
-
-def safe_ask_ollama(prompt: str) -> str | None:
-    """
-    Wrapper around ask_ollama that catches all exceptions.
-    Returns None on failure instead of crashing.
-    """
+def _ask(prompt: str) -> str:
     try:
-        result = ask_ollama(prompt)
-        if result is None:
-            return None
-        return result.strip()
+        return (ask_ollama(prompt) or "").strip()
     except Exception as e:
-        print(f"[ERROR] LLM call failed: {e}")
-        return None
+        print(f"[ERROR] budget_agent LLM call failed: {e}")
+        return ""
 
 
-def extract_property_type(llm_output: str) -> str | None:
-    """
-    Extract and normalize property type from LLM output.
-    Returns None if no match found.
-    """
-    if not llm_output:
-        return None
-    llm_output = llm_output.lower()
-    for key, value in PROPERTY_MAP.items():
-        if key in llm_output:
-            return value
-    return None
+def _digits(text: str) -> str:
+    return "".join(filter(str.isdigit, str(text or "")))
 
 
-def is_valid_location(extracted: str) -> bool:
-    """
-    Validates that the extracted location is within Greater Cairo or North Coast.
-    Uses a known-locations list as a guardrail against LLM hallucinations.
-    """
-    if not extracted:
-        return False
-    lowered = extracted.lower().strip()
-    # Check against known valid areas
-    for loc in VALID_LOCATIONS:
-        if loc in lowered or lowered in loc:
-            return True
-    return False
+# ---------------------------------------------------------------------------
+# Agent
+# ---------------------------------------------------------------------------
 
+def budget_agent(state: AgentState) -> AgentState:
 
-def handle_llm_failure(context: str) -> None:
-    """Prints a consistent error message when the LLM fails."""
-    print(f"[ERROR] The assistant encountered an issue with {context}. Please try again later.")
+    user_input = (state.get("user_input") or "").strip()
+    waiting    = state.get("waiting_for") or ""
 
+    # ════════════════════════════════════════════════════════════════════
+    # STEP 1 — Confirm / collect payment type
+    # ════════════════════════════════════════════════════════════════════
 
-# ---- Main Agent ----
+    if not state.get("payment_type"):
 
-def location_agent(state: AgentState) -> AgentState:
-    print("\n--- Location Agent ---")
+        if waiting == "payment_type":
+            # User replied — extract payment type
+            extracted = _ask(
+                f"Extract ONLY the payment type from this input. "
+                f"Return exactly one word: cash or installments, or unknown if unclear.\n"
+                f"User said: '{user_input}'"
+            ).lower()
 
-    # =============================
-    # 1️⃣ Location
-    # =============================
-    if state.get("location"):
-        print(f"   Location already set: {state['location']}  — skipping.")
-    else:
-        question = safe_ask_ollama(
-            "You are a friendly real estate assistant. "
-            "Ask the user where they would like to buy a property in Egypt in a natural way. "
-            "Do not answer yourself, just ask the question."
-        )
-
-        if question:
-            print("Agent:", question)
-        else:
-            print("Agent: Where would you like to buy a property? (e.g., New Cairo, North Coast)")
-
-        retries = 0
-        while retries < MAX_RETRIES:
-            if "_input_queue" in state:
-                q = question or "Where would you like to buy a property?"
-                user_location_input = get_user_input(state, q)
+            if extracted in ("cash", "installments"):
+                state["payment_type"]           = extracted
+                state["payment_type_confirmed"] = True
+                state["waiting_for"]            = None
+                # Fall through to budget collection below
             else:
-                user_location_input = input("You: ").strip()
-
-            # Empty input
-            if not user_location_input:
-                print("Agent: Please enter a valid location in Egypt.")
-                retries += 1
-                continue
-
-            # Input too long (likely a paragraph, not a location)
-            if len(user_location_input) > 100:
-                print("Agent: That seems too long. Please enter just the area name, e.g. 'New Cairo'.")
-                retries += 1
-                continue
-
-            extracted_location = safe_ask_ollama(
-                "Extract ONLY the location name from the user input. "
-                "It must be a real area inside Greater Cairo or the North Coast of Egypt. "
-                "Capitalize the first letter of each word (e.g., New Cairo, New Capital, North Coast). "
-                "Return ONLY the location name, nothing else. "
-                f"User input: '{user_location_input}'"
-            )
-
-            # LLM failed to respond
-            if extracted_location is None:
-                handle_llm_failure("location extraction")
-                retries += 1
-                continue
-
-            # Try normalization first (handles slang like tagmo3, october, etc.)
-            normalized = normalize_location(user_location_input) or normalize_location(extracted_location)
-
-            if normalized:
-                state["location"] = normalized
-                print(f"   ✓ Location set to: {state['location']}")
-                break
-
-            # Validate the extracted location is actually in our supported areas
-            if not is_valid_location(extracted_location):
-                print(
-                    f"Agent: I couldn't recognize '{extracted_location}' as a supported area. "
-                    "We currently cover Greater Cairo (New Cairo, New Capital, Maadi, etc.) "
-                    "and the North Coast. Could you try again?"
-                )
-                retries += 1
-                continue
-
-            state["location"] = extracted_location.title()
-            print(f"   ✓ Location set to: {state['location']}")
-            break
+                state["agent_message"] = "Sorry, could you clarify — cash or installments?"
+                state["waiting_for"]   = "payment_type"
+                return state
 
         else:
-            print(
-                f"Agent: I'm sorry, I couldn't capture a valid location after {MAX_RETRIES} attempts. "
-                "Please restart and try again."
-            )
-            # Optionally raise or return early depending on your pipeline
+            # First time — ask
+            question = _ask(
+                "Ask the user if they want to pay by cash or installments "
+                "in a natural, friendly way. Only ask, don't answer."
+            ) or "Would you like to pay in cash or by installments?"
+
+            state["agent_message"] = question
+            state["waiting_for"]   = "payment_type"
             return state
 
-    state["next_step"] = "property_type_agent"
+    state["payment_type_confirmed"] = True
+
+    # Quick exit if budget already complete
+    has_cash        = state.get("payment_type") == "cash"        and state.get("budget")
+    has_installments = (
+        state.get("payment_type") == "installments"
+        and state.get("Downpayment")
+        and state.get("monthlyinstall")
+    )
+    if has_cash or has_installments:
+        return state
+
+    # ════════════════════════════════════════════════════════════════════
+    # STEP 2a — CASH
+    # ════════════════════════════════════════════════════════════════════
+
+    if state["payment_type"] == "cash" and not state.get("budget"):
+
+        # ── Direct first attempt ─────────────────────────────────────────
+        if waiting == "cash_budget":
+            d = _digits(user_input)
+            if d:
+                state["budget"]      = int(d)
+                state["waiting_for"] = None
+                return state
+
+            # Digits not found directly — try LLM inference then loop
+            guess = _ask(
+                f"User said: '{user_input}'.\n"
+                "Estimate a reasonable numeric budget for buying a property in Egypt. "
+                "Return ONLY digits."
+            )
+            d = _digits(guess)
+            if d:
+                state["budget"]      = int(d)
+                state["waiting_for"] = None
+                return state
+
+            # Enter intelligent loop
+            state["_cash_loop_asked"] = []
+            state["waiting_for"] = "cash_budget_loop_1"
+            first_q = _ask(_cash_loop_prompt([]))
+            state["agent_message"] = first_q
+            return state
+
+        # ── Intelligent loop ─────────────────────────────────────────────
+        if waiting.startswith("cash_budget_loop_"):
+            attempt = int(waiting.split("_")[-1])
+            asked   = state.get("_cash_loop_asked") or []
+
+            guess = _ask(
+                f"User said: '{user_input}'.\n"
+                "Estimate a reasonable numeric budget for buying a property in Egypt. "
+                "Return ONLY digits."
+            )
+            d = _digits(guess)
+            if d:
+                state["budget"]           = int(d)
+                state["waiting_for"]      = None
+                state["_cash_loop_asked"] = None
+                return state
+
+            if attempt >= MAX_LOOP:
+                state["agent_message"] = (
+                    "I wasn't able to determine your budget. "
+                    "Could you please tell me a number directly?"
+                )
+                state["waiting_for"] = "cash_budget"   # reset to direct question
+                return state
+
+            asked.append(user_input)
+            state["_cash_loop_asked"] = asked
+            next_q = _ask(_cash_loop_prompt(asked))
+            state["agent_message"] = next_q
+            state["waiting_for"]   = f"cash_budget_loop_{attempt + 1}"
+            return state
+
+        # ── First ask ────────────────────────────────────────────────────
+        question = _ask(
+            "Ask the user about their budget naturally without being direct."
+        ) or "What's the approximate budget you have in mind?"
+
+        state["agent_message"] = question
+        state["waiting_for"]   = "cash_budget"
+        return state
+
+    # ════════════════════════════════════════════════════════════════════
+    # STEP 2b — INSTALLMENTS
+    # ════════════════════════════════════════════════════════════════════
+
+    if state["payment_type"] == "installments" and (
+        not state.get("Downpayment") or not state.get("monthlyinstall")
+    ):
+
+        # ── Handle reply to initial combined question ────────────────────
+        if waiting == "install_both":
+            lines = user_input.split("\n")
+            # Try to parse all three values
+            if len(lines) >= 3:
+                d_dp = _digits(lines[0])
+                d_mi = _digits(lines[1])
+                d_yr = _digits(lines[2])
+                if d_dp: state["Downpayment"]    = int(d_dp)
+                if d_mi: state["monthlyinstall"] = int(d_mi)
+                if d_yr: state["years"]          = int(d_yr)
+            else:
+                # Try extracting from free text
+                d = _digits(user_input)
+                if d and not state.get("Downpayment"):
+                    state["Downpayment"] = int(d)
+
+            if state.get("Downpayment") and state.get("monthlyinstall"):
+                _finalise_installments(state)
+                return state
+
+            # Missing something — fall through to loop questions below
+            state["waiting_for"] = None
+            waiting = ""
+
+        # ── Intelligent loop for missing downpayment ─────────────────────
+        if not state.get("Downpayment"):
+
+            if waiting.startswith("install_dp_loop_"):
+                attempt = int(waiting.split("_")[-1])
+                asked   = state.get("_dp_loop_asked") or []
+
+                guess = _ask(
+                    f"User said: '{user_input}'.\n"
+                    "Estimate a reasonable down payment for buying a property in Egypt. "
+                    "Return ONLY digits."
+                )
+                d = _digits(guess)
+                if d:
+                    state["Downpayment"]     = int(d)
+                    state["waiting_for"]     = None
+                    state["_dp_loop_asked"]  = None
+                else:
+                    if attempt >= MAX_LOOP:
+                        state["agent_message"] = "Please tell me your down payment amount directly."
+                        state["waiting_for"]   = "install_dp_loop_1"
+                        return state
+
+                    asked.append(user_input)
+                    state["_dp_loop_asked"] = asked
+                    next_q = _ask(_dp_loop_prompt(asked))
+                    state["agent_message"]  = next_q
+                    state["waiting_for"]    = f"install_dp_loop_{attempt + 1}"
+                    return state
+
+            elif waiting not in ("install_both",):
+                # First time asking about downpayment
+                asked = state.get("_dp_loop_asked") or []
+                q = _ask(_dp_loop_prompt(asked))
+                state["agent_message"] = q
+                state["waiting_for"]   = "install_dp_loop_1"
+                state["_dp_loop_asked"] = []
+                return state
+
+        # ── Intelligent loop for missing monthly installment ─────────────
+        if not state.get("monthlyinstall"):
+
+            if waiting.startswith("install_mi_loop_"):
+                attempt = int(waiting.split("_")[-1])
+                asked   = state.get("_mi_loop_asked") or []
+
+                guess = _ask(
+                    f"User said: '{user_input}'.\n"
+                    "Estimate a reasonable monthly installment for buying a property in Egypt. "
+                    "Return ONLY digits."
+                )
+                d = _digits(guess)
+                if d:
+                    state["monthlyinstall"]  = int(d)
+                    state["waiting_for"]     = None
+                    state["_mi_loop_asked"]  = None
+                else:
+                    if attempt >= MAX_LOOP:
+                        state["agent_message"] = "Please tell me your monthly installment amount directly."
+                        state["waiting_for"]   = "install_mi_loop_1"
+                        return state
+
+                    asked.append(user_input)
+                    state["_mi_loop_asked"] = asked
+                    next_q = _ask(_mi_loop_prompt(asked))
+                    state["agent_message"]  = next_q
+                    state["waiting_for"]    = f"install_mi_loop_{attempt + 1}"
+                    return state
+
+            else:
+                # First time asking about monthly
+                asked = state.get("_mi_loop_asked") or []
+                q = _ask(_mi_loop_prompt(asked))
+                state["agent_message"] = q
+                state["waiting_for"]   = "install_mi_loop_1"
+                state["_mi_loop_asked"] = []
+                return state
+
+        # ── First combined ask (both missing) ────────────────────────────
+        if not state.get("Downpayment") and not state.get("monthlyinstall") and not waiting:
+            question = _ask(
+                "Ask the user about their downpayment, monthly installment, "
+                "and number of years naturally without being direct. "
+                "Only ask, don't answer."
+            ) or (
+                "Could you share your down payment, monthly installment, "
+                "and how many years you'd like? (one per line is fine)"
+            )
+            state["agent_message"] = question
+            state["waiting_for"]   = "install_both"
+            return state
+
+        # Both collected
+        if state.get("Downpayment") and state.get("monthlyinstall"):
+            _finalise_installments(state)
+
     return state
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _finalise_installments(state: dict) -> None:
+    years = state.get("years") or 1
+    state["budget"] = (
+        state["Downpayment"] + state["monthlyinstall"] * 12 * years
+    )
+    state["next_step"] = "location_agent"
+
+
+def _cash_loop_prompt(asked: list) -> str:
+    previous = "\n".join(asked)
+    return f"""
+You are an intelligent, empathetic real estate assistant.
+The user has not clearly stated their budget.
+Ask ONE subtle, natural question to guide them toward revealing it.
+Never ask "What is your budget?" directly.
+Make it completely different from previous questions:
+{previous}
+Output ONLY the question.
+"""
+
+
+def _dp_loop_prompt(asked: list) -> str:
+    previous = "\n".join(asked)
+    return f"""
+You are an intelligent real estate assistant.
+The user chose installments but hasn't provided their down payment.
+Ask ONE natural question to guide them. Never ask directly.
+Different from previous:
+{previous}
+Return ONLY the question.
+"""
+
+
+def _mi_loop_prompt(asked: list) -> str:
+    previous = "\n".join(asked)
+    return f"""
+You are an intelligent real estate assistant.
+The user chose installments but hasn't provided their monthly installment.
+Ask ONE natural question to guide them. Never ask directly.
+Different from previous:
+{previous}
+Return ONLY the question.
+"""
