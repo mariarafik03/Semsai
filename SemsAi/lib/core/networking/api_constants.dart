@@ -3,12 +3,12 @@ class ApiConstants {
 
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://youssif12-semsai-backend.hf.space',
+    defaultValue: 'https://semsai-team-semsai-backend.hf.space',
   );
 
   static const String agentsUrl = String.fromEnvironment(
     'API_AGENTS_URL',
-    defaultValue: 'https://youssif12-semsai-agents.hf.space',
+    defaultValue: 'https://semsai-team-semsai-agents.hf.space',
   );
 
   static const String tileUrl =

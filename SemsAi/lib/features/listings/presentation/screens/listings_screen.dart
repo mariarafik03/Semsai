@@ -218,6 +218,7 @@ class ListingsScreenState extends State<ListingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
@@ -240,33 +241,38 @@ class ListingsScreenState extends State<ListingsScreen> {
                 _loadListings();
               },
             ),
-            AnimatedCrossFade(
-              firstChild: const SizedBox.shrink(),
-              secondChild: ListingsFilterPanel(
-                regions: _regions,
-                types: _types,
-                selectedRegion: _selectedRegion,
-                selectedType: _selectedType,
-                selectedBedrooms: _selectedBedrooms,
-                minPrice: _minPrice,
-                maxPrice: _maxPrice,
-                priceFloor: _priceFloor,
-                priceCeil: _priceCeil,
-                onRegionChanged: (v) => setState(() => _selectedRegion = v),
-                onTypeChanged: (v) => setState(() => _selectedType = v),
-                onBedroomsChanged: (v) => setState(() => _selectedBedrooms = v),
-                onPriceRangeChanged: (v) => setState(() {
-                  _minPrice = v.start;
-                  _maxPrice = v.end;
-                }),
-                onReset: _resetFilters,
-                onApply: _applyFilters,
+            Flexible(
+              flex: 0,
+              child: AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: SingleChildScrollView(
+                  child: ListingsFilterPanel(
+                    regions: _regions,
+                    types: _types,
+                    selectedRegion: _selectedRegion,
+                    selectedType: _selectedType,
+                    selectedBedrooms: _selectedBedrooms,
+                    minPrice: _minPrice,
+                    maxPrice: _maxPrice,
+                    priceFloor: _priceFloor,
+                    priceCeil: _priceCeil,
+                    onRegionChanged: (v) => setState(() => _selectedRegion = v),
+                    onTypeChanged: (v) => setState(() => _selectedType = v),
+                    onBedroomsChanged: (v) => setState(() => _selectedBedrooms = v),
+                    onPriceRangeChanged: (v) => setState(() {
+                      _minPrice = v.start;
+                      _maxPrice = v.end;
+                    }),
+                    onReset: _resetFilters,
+                    onApply: _applyFilters,
+                  ),
+                ),
+                crossFadeState: _filtersOpen
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 300),
+                sizeCurve: Curves.easeInOut,
               ),
-              crossFadeState: _filtersOpen
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 300),
-              sizeCurve: Curves.easeInOut,
             ),
             _buildResultsBar(),
             Expanded(

@@ -143,8 +143,7 @@ class CompoundUnit extends Equatable {
     return CompoundUnit(
       id: json['_id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      type: (json['property_type'] ?? json['unit_type'] ?? json['type'] ?? '')
-          .toString(),
+      type: _extractType(json['property_type'] ?? json['unit_type'] ?? json['type'] ?? ''),
       price: _toDouble(json['price']),
       priceMin: _toDouble(json['price_min']),
       priceMax: _toDouble(json['price_max']),
@@ -172,6 +171,11 @@ class CompoundUnit extends Equatable {
     if (v is num) return v.toDouble();
     if (v is String) return double.tryParse(v);
     return null;
+  }
+
+  static String _extractType(dynamic v) {
+    if (v is Map) return (v['name'] ?? '').toString();
+    return v.toString();
   }
 
   static int? _toInt(dynamic v) {

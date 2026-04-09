@@ -5,6 +5,7 @@ import 'package:SemsAi/features/explore/presentation/screens/explore_screen.dart
 import 'package:SemsAi/features/favorite/presentation/screens/favourite_screen.dart';
 import 'package:SemsAi/features/chat/presentation/screens/agent_chat_screen.dart';
 import 'package:SemsAi/features/profile/presentation/screens/profile_screen.dart';
+import 'package:SemsAi/features/portfolio/presentation/screens/portfolio_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ExploreScreen(key: _exploreKey),
     AgentChatScreen(),
     FavouriteScreen(),
+    PortfolioScreen(),
     ProfileScreen(),
   ];
 
@@ -174,7 +176,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Favorites',
                   3,
                 ),
-                _buildNavItem(Icons.person_outline, Icons.person, 'Profile', 4),
+                _buildNavItem(
+                  Icons.assessment_outlined,
+                  Icons.assessment,
+                  'Portfolio',
+                  4,
+                ),
+                _buildNavItem(Icons.person_outline, Icons.person, 'Profile', 5),
               ],
             ),
           ),

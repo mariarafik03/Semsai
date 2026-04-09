@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "SemsAi",
+			"path": "../../../../../.."
+		},
+		{
+			"name": "agents",
+			"path": "../../../../../../../../agents"
+		}
+	],
+	"settings": {}
+}

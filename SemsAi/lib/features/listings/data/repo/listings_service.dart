@@ -51,18 +51,12 @@ class ListingsService {
     throw Exception('Failed to load listings: ${res.statusCode}');
   }
 
-
   static Future<FiltersResponse> getFilters() async {
     final res = await ApiClient.get('/units/filters');
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       final regions = (data['regions'] as List)
-          .map(
-            (r) => RegionFilter(
-              name: r['name'] as String,
-              count: r['count'] as int,
-            ),
-          )
+          .map((r) => RegionFilter(name: r['name'] as String))
           .toList();
       final types = List<String>.from(data['types'] as List);
       return FiltersResponse(regions: regions, types: types);
@@ -94,7 +88,6 @@ class FiltersResponse {
 
 class RegionFilter {
   final String name;
-  final int count;
 
-  const RegionFilter({required this.name, required this.count});
+  const RegionFilter({required this.name});
 }
