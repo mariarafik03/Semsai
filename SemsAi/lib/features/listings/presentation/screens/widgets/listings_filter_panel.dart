@@ -64,7 +64,7 @@ class ListingsFilterPanel extends StatelessWidget {
                   (r) => DropdownMenuItem(
                     value: r.name,
                     child: Text(
-                      '${r.name} (${r.count})',
+                      '${r.name}',
                       style: const TextStyle(fontSize: 13),
                     ),
                   ),
