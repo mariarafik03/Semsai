@@ -1,5 +1,6 @@
 END = "END"
 
+
 class StateGraph:
     def __init__(self):
         self.nodes = {}
@@ -31,6 +32,13 @@ class StateGraph:
         new_state = fn(state)       # run the agent
         if new_state is not None:
             state = new_state
+
+        # HTTP pause mode: agent asked a question and is waiting for user input.
+        # Keep cursor on the SAME node so next turn resumes this agent.
+        if state.get("waiting_for"):
+            self._current_node = current_node
+            state["_graph_current_node"] = current_node
+            return state, current_node
 
         edge = self.edges[current_node]
         next_node = edge(state) if callable(edge) else edge

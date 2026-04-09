@@ -10,6 +10,130 @@ import axios from 'axios';
 
 dotenv.config();
 
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+function toNumber(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function normalizePortfolioInput(body = {}) {
+  const units = Array.isArray(body.units) ? body.units : [];
+  return {
+    netMonthlyIncome: toNumber(body.netMonthlyIncome),
+    incomeType: (body.incomeType || 'salary').toString().toLowerCase(),
+    monthlyFixedExpenses: toNumber(body.monthlyFixedExpenses),
+    availableCash: toNumber(body.availableCash),
+    creditAccess: Boolean(body.creditAccess),
+    riskProfile: (body.riskProfile || 'moderate').toString().toLowerCase(),
+    maxInstallmentRatio: toNumber(body.maxInstallmentRatio, 0.4),
+    units: units.map((unit) => ({
+      monthlyInstallment: toNumber(unit?.monthlyInstallment),
+      remainingBalance: toNumber(unit?.remainingBalance),
+      marketValue: toNumber(unit?.marketValue),
+    })),
+  };
+}
+
+function validatePortfolioInput(input) {
+  if (input.netMonthlyIncome <= 0) return 'netMonthlyIncome must be greater than 0';
+  if (input.monthlyFixedExpenses < 0) return 'monthlyFixedExpenses cannot be negative';
+  if (input.availableCash < 0) return 'availableCash cannot be negative';
+  if (input.maxInstallmentRatio <= 0 || input.maxInstallmentRatio > 1) {
+    return 'maxInstallmentRatio must be between 0 and 1';
+  }
+  if (!['salary', 'freelance'].includes(input.incomeType)) {
+    return "incomeType must be 'salary' or 'freelance'";
+  }
+  if (!['conservative', 'moderate', 'aggressive'].includes(input.riskProfile)) {
+    return "riskProfile must be 'conservative', 'moderate', or 'aggressive'";
+  }
+
+  for (const unit of input.units) {
+    if (unit.monthlyInstallment < 0 || unit.remainingBalance < 0 || unit.marketValue < 0) {
+      return 'Unit values cannot be negative';
+    }
+  }
+
+  return null;
+}
+
+function calculatePortfolio(input) {
+  const totalInstallments = input.units.reduce(
+    (sum, unit) => sum + unit.monthlyInstallment,
+    0
+  );
+  const totalRemainingBalance = input.units.reduce(
+    (sum, unit) => sum + unit.remainingBalance,
+    0
+  );
+  const totalMarketValue = input.units.reduce((sum, unit) => sum + unit.marketValue, 0);
+
+  const freeCashflow =
+    input.netMonthlyIncome - input.monthlyFixedExpenses - totalInstallments;
+  const dti = totalInstallments / input.netMonthlyIncome;
+  const monthlyBurn = input.monthlyFixedExpenses + totalInstallments;
+  const runwayMonths = monthlyBurn > 0 ? input.availableCash / monthlyBurn : 0;
+  const riskBuffer = input.maxInstallmentRatio - dti;
+
+  const cashflowScore = clamp(
+    (freeCashflow / (input.netMonthlyIncome * 0.4)) * 100,
+    0,
+    100
+  );
+
+  let riskScore = clamp(
+    (riskBuffer / input.maxInstallmentRatio) * 100,
+    0,
+    100
+  );
+  if (input.incomeType === 'freelance') {
+    riskScore -= 15;
+  }
+  riskScore = clamp(riskScore, 0, 100);
+
+  const liquidityScore = clamp((runwayMonths / 6) * 100, 0, 100);
+
+  let flexibilityScore = 50;
+  flexibilityScore += Math.min(input.units.length * 10, 30);
+  if (input.creditAccess) flexibilityScore += 25;
+  flexibilityScore = clamp(flexibilityScore, 0, 100);
+
+  const finalScore = clamp(
+    cashflowScore * 0.3 +
+      riskScore * 0.3 +
+      liquidityScore * 0.2 +
+      flexibilityScore * 0.2,
+    0,
+    100
+  );
+
+  let healthBand = 'risky';
+  if (finalScore >= 75) healthBand = 'healthy';
+  else if (finalScore >= 50) healthBand = 'watch';
+
+  return {
+    inputSnapshot: input,
+    metrics: {
+      totalInstallments,
+      totalRemainingBalance,
+      totalMarketValue,
+      freeCashflow,
+      dti,
+      runwayMonths,
+      riskBuffer,
+    },
+    scores: {
+      cashflowScore,
+      riskScore,
+      liquidityScore,
+      flexibilityScore,
+    },
+    finalScore,
+    healthBand,
+  };
+}
+
 // ─── Validate required env vars ───
 if (!process.env.MONGO_URI) {
   console.error('FATAL: MONGO_URI environment variable is not set!');
@@ -451,7 +575,7 @@ app.get('/units/listings', async (req, res) => {
       filter.location = { $regex: req.query.region, $options: 'i' };
     }
     if (req.query.type) {
-      filter.property_type = { $regex: `^${req.query.type}$`, $options: 'i' };
+      filter['property_type.name'] = { $regex: `^${req.query.type}$`, $options: 'i' };
     }
     if (req.query.bedrooms) {
       const beds = parseInt(req.query.bedrooms);
@@ -511,13 +635,15 @@ app.get('/units/listings', async (req, res) => {
 // ─── Listings filter options (distinct regions + types) ───
 app.get('/units/filters', async (req, res) => {
   try {
-    const [regions, types] = await Promise.all([
+    // property_type is now an object {name: 'Apartment'}, so get distinct name
+    const [regions, typesRaw, typeNames] = await Promise.all([
       Unit.distinct('location'),
       Unit.distinct('property_type'),
+      Unit.distinct('property_type.name'),
     ]);
 
     const cleanRegions = regions
-      .filter(r => r && r.trim())
+      .filter(r => r && typeof r === 'string' && r.trim())
       .map(r => {
         const parts = r.split(',').map(p => p.trim());
         return parts.length >= 2 ? parts[parts.length - 2] : parts[0];
@@ -531,7 +657,12 @@ app.get('/units/filters', async (req, res) => {
       .slice(0, 25)
       .map(([name, count]) => ({ name, count }));
 
-    const cleanTypes = types.filter(t => t && t.trim()).sort();
+    // Merge string types and object.name types
+    const allTypes = new Set([
+      ...typesRaw.filter(t => typeof t === 'string' && t.trim()).map(t => t.trim()),
+      ...typeNames.filter(t => t && typeof t === 'string' && t.trim()),
+    ]);
+    const cleanTypes = [...allTypes].sort();
 
     res.json({ regions: sortedRegions, types: cleanTypes });
   } catch (err) {
@@ -585,6 +716,24 @@ app.get('/explore/areas', async (req, res) => {
   } catch (err) {
     console.error('Areas error:', err);
     res.status(500).json({ error: 'Failed to fetch areas' });
+  }
+});
+
+// Portfolio analysis (Phase 1 deterministic engine)
+app.post('/portfolio/analyze', async (req, res) => {
+  try {
+    const input = normalizePortfolioInput(req.body);
+    const validationError = validatePortfolioInput(input);
+
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
+    }
+
+    const result = calculatePortfolio(input);
+    return res.json(result);
+  } catch (err) {
+    console.error('Portfolio analyze error:', err);
+    return res.status(500).json({ error: 'Failed to analyze portfolio' });
   }
 });
 
