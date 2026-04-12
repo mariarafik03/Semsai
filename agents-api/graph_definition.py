@@ -44,10 +44,6 @@ def state_router(state: dict) -> str:
     if state.get("abort"):
         return END
 
-    # ── 1. Purpose ───────────────────────────────────────────────────────
-    if not state.get("purpose"):
-        return "questioning_agent"
-
     # ── 2. Payment type (must come before budget check) ──────────────────
     if not state.get("payment_type"):
         return "budget_agent"
@@ -101,7 +97,7 @@ graph = StateGraph()
 
 # ── Nodes ────────────────────────────────────────────────────────────────────
 graph.add_node("extraction_agent",        extraction_agent)
-graph.add_node("questioning_agent",       questioning_agent)
+#graph.add_node("questioning_agent",       questioning_agent)
 graph.add_node("budget_agent",            budget_agent)
 graph.add_node("location_agent",          location_agent)
 graph.add_node("compounds_agent",         compounds_agent)
@@ -118,7 +114,7 @@ graph.set_entry_point("extraction_agent")
 # ── Edges (all route through state_router) ───────────────────────────────────
 for _node in [
     "extraction_agent",
-    "questioning_agent",
+    #"questioning_agent",
     "budget_agent",
     "location_agent",
     "compounds_agent",
