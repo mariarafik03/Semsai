@@ -22,7 +22,7 @@ class StateGraph:
         # Restore cursor from state (HTTP mode) or use entry_point
         if state.get("_graph_current_node") is not None:
             self._current_node = state["_graph_current_node"]
-        elif self._current_node is None:
+        else:
             self._current_node = self.entry_point
 
         current_node = self._current_node

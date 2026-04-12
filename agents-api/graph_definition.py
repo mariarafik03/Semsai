@@ -5,7 +5,6 @@ Builds and exports the compiled StateGraph singleton.
 
 Full pipeline (HTTP-safe):
     extraction_agent
-    → questioning_agent       (purpose)
     → budget_agent            (payment_type + budget)
     → location_agent          (location + typeofproperty)
     → compounds_agent         (candidate_compounds)
@@ -22,7 +21,6 @@ from graph import StateGraph, END
 
 # ── Agent imports ─────────────────────────────────────────────────────────────
 from agents.extraction_agent         import extraction_agent
-from agents.questioning_agent        import questioning_agent
 from agents.budget_agent             import budget_agent
 from agents.location_agent           import location_agent
 from agents.compounds_agent          import compounds_agent
@@ -97,7 +95,6 @@ graph = StateGraph()
 
 # ── Nodes ────────────────────────────────────────────────────────────────────
 graph.add_node("extraction_agent",        extraction_agent)
-#graph.add_node("questioning_agent",       questioning_agent)
 graph.add_node("budget_agent",            budget_agent)
 graph.add_node("location_agent",          location_agent)
 graph.add_node("compounds_agent",         compounds_agent)
@@ -114,7 +111,6 @@ graph.set_entry_point("extraction_agent")
 # ── Edges (all route through state_router) ───────────────────────────────────
 for _node in [
     "extraction_agent",
-    #"questioning_agent",
     "budget_agent",
     "location_agent",
     "compounds_agent",
