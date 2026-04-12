@@ -250,6 +250,10 @@ def _save_preferences(
                     "preferences":      preferences,
                     "weights":          weights,
                     "signals":          signals,
+                },
+                "$setOnInsert": {
+                    "email": f"agent_{user_id}@semsai.local",
+                    "created_at": datetime.now(timezone.utc),
                 }
             },
             upsert=True,

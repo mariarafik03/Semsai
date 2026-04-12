@@ -260,6 +260,7 @@ def final_output_agent(state: AgentState) -> AgentState:
                 "$or": [
                     {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
                     {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
                     {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
                 ]
             }

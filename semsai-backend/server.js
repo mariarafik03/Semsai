@@ -736,6 +736,65 @@ app.post('/portfolio/analyze', async (req, res) => {
     return res.status(500).json({ error: 'Failed to analyze portfolio' });
   }
 });
+// ─── Portfolio: Matching Units ───
+app.post('/portfolio/matching-units', async (req, res) => {
+  try {
+    const { availableCash, freeCashflow, riskProfile, location, propertyType } = req.body;
+
+    const maxBudget = toNumber(availableCash, 0);
+    const maxInstallment = toNumber(freeCashflow, 0) * 0.6; // max 60% of free cashflow
+
+    if (maxBudget <= 0 && maxInstallment <= 0) {
+      return res.json({ units: [], message: 'Insufficient budget for new investments' });
+    }
+
+    // Build query
+    const query = {};
+
+    // Type filter
+    if (propertyType) {
+      const typeLower = propertyType.toLowerCase();
+      query['$or'] = [
+        { type: { $regex: new RegExp(`^${typeLower}$`, 'i') } },
+        { property_type: { $regex: new RegExp(`^${typeLower}$`, 'i') } },
+        { 'property_type.name': { $regex: new RegExp(`^${typeLower}$`, 'i') } },
+      ];
+    }
+
+    // Location filter
+    if (location) {
+      query.location = { $regex: new RegExp(location, 'i') };
+    }
+
+    // Price filter: units affordable with available cash
+    if (maxBudget > 0) {
+      query['$and'] = query['$and'] || [];
+      query['$and'].push({
+        $or: [
+          { price: { $lte: maxBudget, $gt: 0 } },
+          { price_min: { $lte: maxBudget, $gt: 0 } },
+        ]
+      });
+    }
+
+    const units = await Unit.find(query)
+      .sort({ price: 1 })
+      .limit(20)
+      .lean();
+
+    // Return full documents so the client can render full detail screens
+    const cleaned = units.map(u => {
+      // Convert ObjectId to string
+      u._id = u._id.toString();
+      return u;
+    });
+
+    return res.json({ units: cleaned, count: cleaned.length });
+  } catch (err) {
+    console.error('Matching units error:', err);
+    return res.status(500).json({ error: 'Failed to fetch matching units' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
