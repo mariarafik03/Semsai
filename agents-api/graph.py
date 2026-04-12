@@ -19,31 +19,22 @@ class StateGraph:
         self.entry_point = name
 
     def step(self, state):
-        node_from_state = state.get("_graph_current_node")
-        if (node_from_state is None or 
-            node_from_state == END or 
-            node_from_state not in self.nodes):
+        # Restore cursor from state (HTTP mode) or use entry_point
+        if state.get("_graph_current_node") is not None:
+            self._current_node = state["_graph_current_node"]
+        elif self._current_node is None:
             self._current_node = self.entry_point
-        else:
-            self._current_node = node_from_state
-    
-        # ← THIS LINE WAS MISSING
+
         current_node = self._current_node
-
-        state.pop("_graph_current_node", None)
-        state["_graph_current_node"] = current_node
-
-        if current_node not in self.nodes:
-            raise RuntimeError(
-                f"Graph node '{current_node}' is not registered. "
-                f"Known nodes: {list(self.nodes.keys())}"
-            )
-
+        state["_graph_current_node"] = current_node  # persist before agent (for NeedInput)
         fn = self.nodes[current_node]
-        new_state = fn(state)
+
+        new_state = fn(state)       # run the agent
         if new_state is not None:
             state = new_state
 
+        # HTTP pause mode: agent asked a question and is waiting for user input.
+        # Keep cursor on the SAME node so next turn resumes this agent.
         if state.get("waiting_for"):
             self._current_node = current_node
             state["_graph_current_node"] = current_node
@@ -52,6 +43,6 @@ class StateGraph:
         edge = self.edges[current_node]
         next_node = edge(state) if callable(edge) else edge
 
-        self._current_node = next_node
-        state["_graph_current_node"] = next_node
+        self._current_node = next_node  # advance cursor
+        state["_graph_current_node"] = next_node  # persist for HTTP mode
         return state, next_node

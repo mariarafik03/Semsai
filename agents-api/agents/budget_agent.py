@@ -94,28 +94,16 @@ def budget_agent(state: AgentState) -> AgentState:
         # ── Direct first attempt ─────────────────────────────────────────
         if waiting == "cash_budget":
             d = _digits(user_input)
-            if d:
+            if d and len(d) >= 4:  # at least 4 digits to be a real budget
                 state["budget"]      = int(d)
                 state["waiting_for"] = None
                 return state
 
-            # Digits not found directly — try LLM inference then loop
-            guess = _ask(
-                f"User said: '{user_input}'.\n"
-                "Estimate a reasonable numeric budget for buying a property in Egypt. "
-                "Return ONLY digits."
-            )
-            d = _digits(guess)
-            if d:
-                state["budget"]      = int(d)
-                state["waiting_for"] = None
-                return state
-
-            # Enter intelligent loop
+            # No valid number found — enter intelligent loop to ask again
             state["_cash_loop_asked"] = []
             state["waiting_for"] = "cash_budget_loop_1"
             first_q = _ask(_cash_loop_prompt([]))
-            state["agent_message"] = first_q
+            state["agent_message"] = first_q or "Could you give me an approximate number for your budget?"
             return state
 
         # ── Intelligent loop ─────────────────────────────────────────────
@@ -123,13 +111,9 @@ def budget_agent(state: AgentState) -> AgentState:
             attempt = int(waiting.split("_")[-1])
             asked   = state.get("_cash_loop_asked") or []
 
-            guess = _ask(
-                f"User said: '{user_input}'.\n"
-                "Estimate a reasonable numeric budget for buying a property in Egypt. "
-                "Return ONLY digits."
-            )
-            d = _digits(guess)
-            if d:
+            # Try to extract digits from user input directly
+            d = _digits(user_input)
+            if d and len(d) >= 4:
                 state["budget"]           = int(d)
                 state["waiting_for"]      = None
                 state["_cash_loop_asked"] = None
@@ -146,7 +130,7 @@ def budget_agent(state: AgentState) -> AgentState:
             asked.append(user_input)
             state["_cash_loop_asked"] = asked
             next_q = _ask(_cash_loop_prompt(asked))
-            state["agent_message"] = next_q
+            state["agent_message"] = next_q or "What budget range are you comfortable with?"
             state["waiting_for"]   = f"cash_budget_loop_{attempt + 1}"
             return state
 

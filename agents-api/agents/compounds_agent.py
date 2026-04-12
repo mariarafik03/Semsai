@@ -105,11 +105,12 @@ def _build_units_pipeline(
     limit: int = 300
 ) -> List[Dict[str, Any]]:
 
-    # match type across possible fields
+    # match type across possible fields (including nested object format)
     type_match = {
         "$or": [
             {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
             {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
             {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
         ]
     }

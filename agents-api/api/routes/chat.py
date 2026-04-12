@@ -58,10 +58,36 @@ async def chat(request: ChatRequest) -> ChatResponse:
     # ── 3. Persist state ─────────────────────────────────────────────────
     await save_state(session_id, state)
 
-    # ── 4. Respond ───────────────────────────────────────────────────────
+    # ── 4. Build results (only when done) ────────────────────────────────
+    results = None
+    if is_done:
+        best = state.get("final_best_compound")
+        units = state.get("candidate_units") or []
+        # Serialize ObjectId and other non-JSON types
+        safe_units = []
+        for u in units[:20]:  # limit to top 20 units
+            su = {}
+            for k, v in (u if isinstance(u, dict) else {}).items():
+                if hasattr(v, '__str__') and type(v).__name__ == 'ObjectId':
+                    su[k] = str(v)
+                else:
+                    su[k] = v
+            safe_units.append(su)
+
+        results = {
+            "best_compound": best,
+            "top_units": safe_units,
+            "location": state.get("location"),
+            "typeofproperty": state.get("typeofproperty"),
+            "budget": state.get("budget"),
+            "payment_type": state.get("payment_type"),
+        }
+
+    # ── 5. Respond ───────────────────────────────────────────────────────
     return ChatResponse(
         session_id=session_id,
         reply=reply,
         done=is_done,
+        results=results,
         state_snapshot=state if DEBUG_MODE else None,
     )

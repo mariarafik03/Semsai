@@ -279,17 +279,6 @@ class ListingsScreenState extends State<ListingsScreen> {
               child: Stack(
                 children: [
                   _buildBody(),
-                  if (widget.onNavigateToChat != null && !_bannerDismissed)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: AiPromptBanner(
-                        onTap: widget.onNavigateToChat!,
-                        onDismiss: () =>
-                            setState(() => _bannerDismissed = true),
-                      ),
-                    ),
                   const Positioned(
                     left: 0,
                     right: 0,

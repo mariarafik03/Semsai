@@ -41,6 +41,10 @@ class ChatResponse(BaseModel):
         default=False,
         description="True when the conversation has fully completed (graph reached END).",
     )
+    results: Optional[dict[str, Any]] = Field(
+        default=None,
+        description="Final results when done=True. Contains best_compound, top_units, etc.",
+    )
     state_snapshot: Optional[dict[str, Any]] = Field(
         default=None,
         description="(Debug / admin only) Full state dict. Omit in production.",

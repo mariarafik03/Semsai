@@ -15,7 +15,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
     """
 
     client = MongoClient(os.getenv("MONGO_URI"))
-    db = client[os.getenv("DATABASE_NAME")]
+    db = client.get_default_database()
 
     # ----------------------------
     # User Embedding
@@ -27,7 +27,12 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         state["ranked_compounds"] = []
         return state
 
-    user = db.users.find_one({"_id": ObjectId(str(user_id))})
+    # user_preferences_agent stores by ObjectId if valid, else by user_id field
+    user_id_str = str(user_id).strip()
+    if ObjectId.is_valid(user_id_str):
+        user = db.users.find_one({"_id": ObjectId(user_id_str)})
+    else:
+        user = db.users.find_one({"user_id": user_id_str})
 
     if not user or "embedding" not in user:
         print("DEBUG: user embedding not found")
@@ -67,29 +72,34 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
     # ----------------------------
     # Vector Search Pipeline
     # ----------------------------
-    pipeline = [
-        {
-            "$vectorSearch": {
-                "index": os.getenv("VECTOR_INDEX"),
-                "path": "embedding_features",
-                "queryVector": user_embedding,
-                "numCandidates": 200,
-                "limit": 5,
-                "filter": {
-                    "compound_id": {"$in": compound_ids}
+    vector_index = os.getenv("VECTOR_INDEX", "compound_features_vector_index")
+    try:
+        pipeline = [
+            {
+                "$vectorSearch": {
+                    "index": vector_index,
+                    "path": "embedding_features",
+                    "queryVector": user_embedding,
+                    "numCandidates": 200,
+                    "limit": 5,
+                    "filter": {
+                        "compound_id": {"$in": compound_ids}
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "compound_name": 1,
+                    "score": {"$meta": "vectorSearchScore"}
                 }
             }
-        },
-        {
-            "$project": {
-                "_id": 1,
-                "compound_name": 1,
-                "score": {"$meta": "vectorSearchScore"}
-            }
-        }
-    ]
+        ]
 
-    results = list(db.compound_features.aggregate(pipeline))
+        results = list(db.compound_features.aggregate(pipeline))
+    except Exception as e:
+        print(f"DEBUG: Vector search failed: {e}")
+        results = []
 
     # ----------------------------
     # Ranking Output
