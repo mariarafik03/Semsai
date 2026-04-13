@@ -132,7 +132,7 @@ async def chat_respond(request: Request):
             body = await request.json()
         except Exception:
             body = {}
-
+            
         session_id = body.get("session_id")
         if not session_id:
             raise HTTPException(status_code=400, detail="session_id is required")

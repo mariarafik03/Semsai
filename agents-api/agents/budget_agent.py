@@ -34,6 +34,7 @@ def _digits(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 def budget_agent(state: AgentState) -> AgentState:
+    print("in budget agent")
 
     user_input = (state.get("user_input") or "").strip()
     waiting    = state.get("waiting_for") or ""

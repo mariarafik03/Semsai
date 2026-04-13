@@ -43,33 +43,37 @@ def state_router(state: dict) -> str:
         return END
     # ── 2. Location + property type ──────────────────────────────────────
     if not state.get("location") or not state.get("typeofproperty"):
+        print("DEBUG: going location agent", flush=True)
         return "location_agent"
     # ── 3. Payment type (must come before budget check) ──────────────────
     if not state.get("payment_type"):
+        print("DEBUG: going budget agent", flush=True)
         return "budget_agent"
-
-    
-
     # ── 4. Budget ────────────────────────────────────────────────────────
     budget_ok = bool(state.get("budget"))
     installments_ok = bool(state.get("Downpayment") and state.get("monthlyinstall"))
     if not budget_ok and not installments_ok:
+        print("DEBUG: going budget agent", flush=True)
         return "budget_agent"
 
     # ── 5. Compound discovery ────────────────────────────────────────────
     if state.get("candidate_compounds") is None:
+        print("DEBUG: going compounds agent", flush=True)
         return "compounds_agent"
 
     # ── 6. Developer filtering ───────────────────────────────────────────
     if state.get("final_compounds") is None:
+        print("going developers agent")
         return "developers_agent"
 
     # ── 7. Feature extraction ────────────────────────────────────────────
-    if state.get("compound_features_stats") is None:
+    if state.get("compound_features_stats") is None:    
+        print("going compound features agent")
         return "compound_features_agent"
 
     # ── 8. Embedding generation ──────────────────────────────────────────
     if state.get("embeddings") is None:
+        print("going embedding agent")
         return "embedding_agent"
 
     # ── 9. User preferences interview ────────────────────────────────────
