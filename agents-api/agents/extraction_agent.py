@@ -51,9 +51,20 @@ def _normalize_property_type(raw: str) -> str | None:
 def _parse_numeric(raw) -> int | None:
     if raw is None:
         return None
-    raw_str = str(raw).strip().replace(",", "").replace("_", "")
-    digits = "".join(filter(str.isdigit, raw_str))
-    return int(digits) if digits else None
+
+    raw_str = str(raw).strip().lower().replace(",", "").replace("_", "")
+
+    multiplier = 1
+    if "m" in raw_str:
+        multiplier = 1_000_000
+    elif "k" in raw_str:
+        multiplier = 1_000
+
+    try:
+        number = float("".join(ch for ch in raw_str if ch.isdigit() or ch == "."))
+        return int(number * multiplier)
+    except:
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +108,7 @@ Respond ONLY with valid JSON. Use null for missing fields.
         raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
         try:
+            print(f"DEBUG [extraction_agent]: RAW LLM output -> {raw}")
             extracted = json.loads(raw)
             print(f"DEBUG [extraction_agent]: Extracted JSON data -> {extracted}")
         except json.JSONDecodeError:
@@ -109,16 +121,25 @@ Respond ONLY with valid JSON. Use null for missing fields.
         if (budget := _parse_numeric(extracted.get("budget"))) and budget > 0:
             state["budget"] = budget
 
-        # --- UPDATED LOCATION LOGIC ---
-        if raw_loc := extracted.get("location"):
-            # Use the external dictionary-based normalizer
+        # --- IMPROVED LOCATION LOGIC ---
+        raw_loc = (extracted.get("location") or "").strip()
+
+        normalized_loc = None
+
+        # 1. Try extracted location
+        if raw_loc:
             normalized_loc = normalize_location(raw_loc)
-            if normalized_loc:
-                state["location"] = normalized_loc
-            else:
-                # Fallback to Title Case if not in the dictionary
-                state["location"] = raw_loc.strip().title()
-        # ------------------------------
+
+        # 2. ALWAYS fallback to full message
+        if not normalized_loc:
+            normalized_loc = normalize_location(user_input)
+
+        # 3. Apply result
+        if normalized_loc:
+            state["location"] = normalized_loc
+        elif raw_loc:
+            state["location"] = raw_loc.title()
+        # --------------------------------
 
         if prop_type := _normalize_property_type(extracted.get("typeofproperty") or ""):
             state["typeofproperty"] = prop_type
