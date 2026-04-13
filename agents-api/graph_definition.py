@@ -41,14 +41,14 @@ def state_router(state: dict) -> str:
     # ── Hard stop ────────────────────────────────────────────────────────
     if state.get("abort"):
         return END
-
-    # ── 2. Payment type (must come before budget check) ──────────────────
+    # ── 2. Location + property type ──────────────────────────────────────
+    if not state.get("location") or not state.get("typeofproperty"):
+        return "location_agent"
+    # ── 3. Payment type (must come before budget check) ──────────────────
     if not state.get("payment_type"):
         return "budget_agent"
 
-    # ── 3. Location + property type ──────────────────────────────────────
-    if not state.get("location") or not state.get("typeofproperty"):
-        return "location_agent"
+    
 
     # ── 4. Budget ────────────────────────────────────────────────────────
     budget_ok = bool(state.get("budget"))
