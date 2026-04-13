@@ -12,7 +12,7 @@ import json
 from state import AgentState
 from main_helpers import ask_ollama
 # Import the new normalization logic
-from Normalization import normalize_location
+from .Normalization import normalize_location
 
 VALID_PURPOSES      = {"rent", "invest", "live"}
 VALID_PAYMENT_TYPES = {"cash", "installments"}
