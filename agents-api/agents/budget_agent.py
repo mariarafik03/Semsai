@@ -1,23 +1,20 @@
 """
-agents/budget_agent.py  (HTTP-safe refactor)
+agents/budget_agent.py  (Fixed - Direct questions)
 ─────────────────────────────────────────────
 waiting_for values used
 ───────────────────────
 "payment_type"           → asked cash vs installments
-"cash_budget"            → asked for total budget (direct attempt)
-"cash_budget_loop_{n}"   → intelligent loop question n
-"install_both"           → asked for downpayment + monthly in one go
-"install_dp_loop_{n}"    → intelligent loop for down payment
-"install_mi_loop_{n}"    → intelligent loop for monthly installment
+"cash_budget"            → asked for total budget (direct)
+"install_both"           → asked for downpayment + monthly
+"install_dp"             → asked for down payment only
+"install_mi"             → asked for monthly installment only
 """
 
 from state import AgentState
 from main_helpers import ask_ollama
 
-MAX_LOOP = 5   # max intelligent-question attempts before giving up
-
-
 def _ask(prompt: str) -> str:
+    """Wrapper for LLM calls with error handling"""
     try:
         return (ask_ollama(prompt) or "").strip()
     except Exception as e:
@@ -26,6 +23,7 @@ def _ask(prompt: str) -> str:
 
 
 def _digits(text: str) -> str:
+    """Extract only digits from text"""
     return "".join(filter(str.isdigit, str(text or "")))
 
 
@@ -59,25 +57,20 @@ def budget_agent(state: AgentState) -> AgentState:
                 state["waiting_for"]            = None
                 # Fall through to budget collection below
             else:
-                state["agent_message"] = "Sorry, could you clarify — cash or installments?"
+                state["agent_message"] = "I didn't catch that. Would you prefer to pay in **cash** or by **installments**?"
                 state["waiting_for"]   = "payment_type"
                 return state
 
         else:
-            # First time — ask
-            question = _ask(
-                "Ask the user if they want to pay by cash or installments "
-                "in a natural, friendly way. Only ask, don't answer."
-            ) or "Would you like to pay in cash or by installments?"
-
-            state["agent_message"] = question
+            # First time — ask directly
+            state["agent_message"] = "Would you like to pay in **cash** or by **installments**?"
             state["waiting_for"]   = "payment_type"
             return state
 
     state["payment_type_confirmed"] = True
 
     # Quick exit if budget already complete
-    has_cash        = state.get("payment_type") == "cash"        and state.get("budget")
+    has_cash = state.get("payment_type") == "cash" and state.get("budget")
     has_installments = (
         state.get("payment_type") == "installments"
         and state.get("Downpayment")
@@ -87,60 +80,39 @@ def budget_agent(state: AgentState) -> AgentState:
         return state
 
     # ════════════════════════════════════════════════════════════════════
-    # STEP 2a — CASH
+    # STEP 2a — CASH PAYMENT
     # ════════════════════════════════════════════════════════════════════
 
     if state["payment_type"] == "cash" and not state.get("budget"):
 
-        # ── Direct first attempt ─────────────────────────────────────────
         if waiting == "cash_budget":
+            # Try to extract budget from user input
             d = _digits(user_input)
-            if d and len(d) >= 4:  # at least 4 digits to be a real budget
+            if d and len(d) >= 4:  # at least 4 digits for a valid budget
                 state["budget"]      = int(d)
                 state["waiting_for"] = None
                 return state
-
-            # No valid number found — enter intelligent loop to ask again
-            state["_cash_loop_asked"] = []
-            state["waiting_for"] = "cash_budget_loop_1"
-            first_q = _ask(_cash_loop_prompt([]))
-            state["agent_message"] = first_q or "Could you give me an approximate number for your budget?"
-            return state
-
-        # ── Intelligent loop ─────────────────────────────────────────────
-        if waiting.startswith("cash_budget_loop_"):
-            attempt = int(waiting.split("_")[-1])
-            asked   = state.get("_cash_loop_asked") or []
-
-            # Try to extract digits from user input directly
-            d = _digits(user_input)
-            if d and len(d) >= 4:
-                state["budget"]           = int(d)
-                state["waiting_for"]      = None
-                state["_cash_loop_asked"] = None
-                return state
-
-            if attempt >= MAX_LOOP:
+            
+            # Check if user says they don't know
+            lower_input = user_input.lower()
+            if any(phrase in lower_input for phrase in ["don't know", "not sure", "no idea", "unsure"]):
                 state["agent_message"] = (
-                    "I wasn't able to determine your budget. "
-                    "Could you please tell me a number directly?"
+                    "No problem! To help you, could you share a **range**? "
+                    "For example: 1-3 million EGP, or 500K-1M EGP?"
                 )
-                state["waiting_for"] = "cash_budget"   # reset to direct question
+                state["waiting_for"] = "cash_budget"
                 return state
-
-            asked.append(user_input)
-            state["_cash_loop_asked"] = asked
-            next_q = _ask(_cash_loop_prompt(asked))
-            state["agent_message"] = next_q or "What budget range are you comfortable with?"
-            state["waiting_for"]   = f"cash_budget_loop_{attempt + 1}"
+            
+            # If still no number, ask again more directly
+            state["agent_message"] = (
+                "I need a number to proceed. What's your budget? "
+                "(You can give me a range like 1-2 million EGP)"
+            )
+            state["waiting_for"] = "cash_budget"
             return state
 
-        # ── First ask ────────────────────────────────────────────────────
-        question = _ask(
-            "Ask the user about their budget naturally without being direct."
-        ) or "What's the approximate budget you have in mind?"
-
-        state["agent_message"] = question
+        # First time asking
+        state["agent_message"] = "What's your total budget for the property?"
         state["waiting_for"]   = "cash_budget"
         return state
 
@@ -148,130 +120,74 @@ def budget_agent(state: AgentState) -> AgentState:
     # STEP 2b — INSTALLMENTS
     # ════════════════════════════════════════════════════════════════════
 
-    if state["payment_type"] == "installments" and (
-        not state.get("Downpayment") or not state.get("monthlyinstall")
-    ):
+    if state["payment_type"] == "installments":
 
-        # ── Handle reply to initial combined question ────────────────────
-        if waiting == "install_both":
-            lines = user_input.split("\n")
-            # Try to parse all three values
-            if len(lines) >= 3:
-                d_dp = _digits(lines[0])
-                d_mi = _digits(lines[1])
-                d_yr = _digits(lines[2])
-                if d_dp: state["Downpayment"]    = int(d_dp)
-                if d_mi: state["monthlyinstall"] = int(d_mi)
-                if d_yr: state["years"]          = int(d_yr)
-            else:
-                # Try extracting from free text
-                d = _digits(user_input)
-                if d and not state.get("Downpayment"):
-                    state["Downpayment"] = int(d)
-
-            if state.get("Downpayment") and state.get("monthlyinstall"):
-                _finalise_installments(state)
-                return state
-
-            # Missing something — fall through to loop questions below
-            state["waiting_for"] = None
-            waiting = ""
-
-        # ── Intelligent loop for missing downpayment ─────────────────────
+        # ── Handle downpayment ───────────────────────────────────────────
         if not state.get("Downpayment"):
-
-            if waiting.startswith("install_dp_loop_"):
-                attempt = int(waiting.split("_")[-1])
-                asked   = state.get("_dp_loop_asked") or []
-
-                guess = _ask(
-                    f"User said: '{user_input}'.\n"
-                    "Estimate a reasonable down payment for buying a property in Egypt. "
-                    "Return ONLY digits."
-                )
-                d = _digits(guess)
-                if d:
-                    state["Downpayment"]     = int(d)
-                    state["waiting_for"]     = None
-                    state["_dp_loop_asked"]  = None
+            
+            if waiting in ("install_dp", "install_both"):
+                # Try to extract downpayment
+                d = _digits(user_input)
+                if d and len(d) >= 4:
+                    state["Downpayment"] = int(d)
+                    state["waiting_for"] = None
+                    # Continue to monthly installment
                 else:
-                    if attempt >= MAX_LOOP:
-                        state["agent_message"] = "Please tell me your down payment amount directly."
-                        state["waiting_for"]   = "install_dp_loop_1"
+                    # Check if unsure
+                    lower_input = user_input.lower()
+                    if any(phrase in lower_input for phrase in ["don't know", "not sure", "no idea"]):
+                        state["agent_message"] = (
+                            "That's okay! A typical down payment is 10-30% of the property value. "
+                            "Could you share an approximate amount?"
+                        )
+                        state["waiting_for"] = "install_dp"
                         return state
-
-                    asked.append(user_input)
-                    state["_dp_loop_asked"] = asked
-                    next_q = _ask(_dp_loop_prompt(asked))
-                    state["agent_message"]  = next_q
-                    state["waiting_for"]    = f"install_dp_loop_{attempt + 1}"
+                    
+                    state["agent_message"] = "Please provide your down payment amount (in EGP):"
+                    state["waiting_for"] = "install_dp"
                     return state
-
-            elif waiting not in ("install_both",):
-                # First time asking about downpayment
-                asked = state.get("_dp_loop_asked") or []
-                q = _ask(_dp_loop_prompt(asked))
-                state["agent_message"] = q
-                state["waiting_for"]   = "install_dp_loop_1"
-                state["_dp_loop_asked"] = []
-                return state
-
-        # ── Intelligent loop for missing monthly installment ─────────────
-        if not state.get("monthlyinstall"):
-
-            if waiting.startswith("install_mi_loop_"):
-                attempt = int(waiting.split("_")[-1])
-                asked   = state.get("_mi_loop_asked") or []
-
-                guess = _ask(
-                    f"User said: '{user_input}'.\n"
-                    "Estimate a reasonable monthly installment for buying a property in Egypt. "
-                    "Return ONLY digits."
-                )
-                d = _digits(guess)
-                if d:
-                    state["monthlyinstall"]  = int(d)
-                    state["waiting_for"]     = None
-                    state["_mi_loop_asked"]  = None
-                else:
-                    if attempt >= MAX_LOOP:
-                        state["agent_message"] = "Please tell me your monthly installment amount directly."
-                        state["waiting_for"]   = "install_mi_loop_1"
-                        return state
-
-                    asked.append(user_input)
-                    state["_mi_loop_asked"] = asked
-                    next_q = _ask(_mi_loop_prompt(asked))
-                    state["agent_message"]  = next_q
-                    state["waiting_for"]    = f"install_mi_loop_{attempt + 1}"
-                    return state
-
+            
             else:
-                # First time asking about monthly
-                asked = state.get("_mi_loop_asked") or []
-                q = _ask(_mi_loop_prompt(asked))
-                state["agent_message"] = q
-                state["waiting_for"]   = "install_mi_loop_1"
-                state["_mi_loop_asked"] = []
+                # First time asking
+                state["agent_message"] = "How much can you pay as a **down payment**?"
+                state["waiting_for"]   = "install_dp"
                 return state
 
-        # ── First combined ask (both missing) ────────────────────────────
-        if not state.get("Downpayment") and not state.get("monthlyinstall") and not waiting:
-            question = _ask(
-                "Ask the user about their downpayment, monthly installment, "
-                "and number of years naturally without being direct. "
-                "Only ask, don't answer."
-            ) or (
-                "Could you share your down payment, monthly installment, "
-                "and how many years you'd like? (one per line is fine)"
-            )
-            state["agent_message"] = question
-            state["waiting_for"]   = "install_both"
-            return state
+        # ── Handle monthly installment ───────────────────────────────────
+        if not state.get("monthlyinstall"):
+            
+            if waiting in ("install_mi", "install_both"):
+                # Try to extract monthly installment
+                d = _digits(user_input)
+                if d and len(d) >= 3:
+                    state["monthlyinstall"] = int(d)
+                    state["waiting_for"] = None
+                    # Finalize
+                    _finalise_installments(state)
+                    return state
+                else:
+                    # Check if unsure
+                    lower_input = user_input.lower()
+                    if any(phrase in lower_input for phrase in ["don't know", "not sure", "no idea"]):
+                        state["agent_message"] = (
+                            "No worries! Could you share what you're comfortable paying monthly? "
+                            "For example: 10,000 EGP, 20,000 EGP, etc."
+                        )
+                        state["waiting_for"] = "install_mi"
+                        return state
+                    
+                    state["agent_message"] = "Please provide your monthly installment amount:"
+                    state["waiting_for"] = "install_mi"
+                    return state
+            
+            else:
+                # First time asking
+                state["agent_message"] = "What **monthly installment** amount are you comfortable with?"
+                state["waiting_for"]   = "install_mi"
+                return state
 
         # Both collected
-        if state.get("Downpayment") and state.get("monthlyinstall"):
-            _finalise_installments(state)
+        _finalise_installments(state)
 
     return state
 
@@ -281,45 +197,10 @@ def budget_agent(state: AgentState) -> AgentState:
 # ---------------------------------------------------------------------------
 
 def _finalise_installments(state: dict) -> None:
-    years = state.get("years") or 1
+    """Calculate total budget from installment details"""
+    years = state.get("years") or 5  # default to 5 years if not specified
     state["budget"] = (
         state["Downpayment"] + state["monthlyinstall"] * 12 * years
     )
     state["next_step"] = "location_agent"
-
-
-def _cash_loop_prompt(asked: list) -> str:
-    previous = "\n".join(asked)
-    return f"""
-You are an intelligent, empathetic real estate assistant.
-The user has not clearly stated their budget.
-Ask ONE subtle, natural question to guide them toward revealing it.
-Never ask "What is your budget?" directly.
-Make it completely different from previous questions:
-{previous}
-Output ONLY the question.
-"""
-
-
-def _dp_loop_prompt(asked: list) -> str:
-    previous = "\n".join(asked)
-    return f"""
-You are an intelligent real estate assistant.
-The user chose installments but hasn't provided their down payment.
-Ask ONE natural question to guide them. Never ask directly.
-Different from previous:
-{previous}
-Return ONLY the question.
-"""
-
-
-def _mi_loop_prompt(asked: list) -> str:
-    previous = "\n".join(asked)
-    return f"""
-You are an intelligent real estate assistant.
-The user chose installments but hasn't provided their monthly installment.
-Ask ONE natural question to guide them. Never ask directly.
-Different from previous:
-{previous}
-Return ONLY the question.
-"""
+    state["waiting_for"] = None
