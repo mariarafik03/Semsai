@@ -37,57 +37,121 @@ from agents.final_output_agent       import final_output_agent
 # ---------------------------------------------------------------------------
 
 def state_router(state: dict) -> str:
+    """
+    Routes to the next agent based on state.
+    
+    CRITICAL: If any agent sets state["waiting_for"], 
+    we MUST return END to pause the graph and wait for user input.
+    """
 
-    # ── Hard stop ────────────────────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # PRIORITY 1: Check if waiting for user input
+    # ══════════════════════════════════════════════════════════════════════
+    
+    if state.get("waiting_for"):
+        print(f"⏸️  PAUSING GRAPH - waiting for: {state['waiting_for']}", flush=True)
+        print(f"📤 Message to user: {state.get('agent_message', 'N/A')[:100]}...", flush=True)
+        return END  # STOP HERE - wait for user response
+
+    # ══════════════════════════════════════════════════════════════════════
+    # PRIORITY 2: Hard abort
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("abort"):
+        print("🛑 ABORT flag set - ending graph", flush=True)
         return END
-    # ── 2. Location + property type ──────────────────────────────────────
+
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 1: Extraction (already complete if we're here)
+    # ══════════════════════════════════════════════════════════════════════
+    
+    # Extraction runs first and doesn't wait for user input
+    
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 2: Budget Agent (payment type + budget collection)
+    # ══════════════════════════════════════════════════════════════════════
+    
+    # Check if budget agent is complete
+    if not state.get("budget_agent_complete"):
+        # Need to run or continue budget agent
+        has_payment_type = bool(state.get("payment_type"))
+        has_budget = bool(state.get("budget"))
+        has_installments = bool(state.get("Downpayment") and state.get("monthlyinstall"))
+        
+        # If missing any of these, go to budget agent
+        if not has_payment_type or (not has_budget and not has_installments):
+            print("DEBUG: going budget agent", flush=True)
+            return "budget_agent"
+
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 3: Location Agent (location + property type)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if not state.get("location") or not state.get("typeofproperty"):
         print("DEBUG: going location agent", flush=True)
         return "location_agent"
-    # ── 3. Payment type (must come before budget check) ──────────────────
-    if not state.get("payment_type"):
-        print("DEBUG: going budget agent", flush=True)
-        return "budget_agent"
-    # ── 4. Budget ────────────────────────────────────────────────────────
-    budget_ok = bool(state.get("budget"))
-    installments_ok = bool(state.get("Downpayment") and state.get("monthlyinstall"))
-    if not budget_ok and not installments_ok:
-        print("DEBUG: going budget agent", flush=True)
-        return "budget_agent"
 
-    # ── 5. Compound discovery ────────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 4: Compounds Agent (find candidate compounds)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("candidate_compounds") is None:
         print("DEBUG: going compounds agent", flush=True)
         return "compounds_agent"
 
-    # ── 6. Developer filtering ───────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 5: Developers Agent (filter by developer quality)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("final_compounds") is None:
-        print("going developers agent")
+        print("going developers agent", flush=True)
         return "developers_agent"
 
-    # ── 7. Feature extraction ────────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 6: Features Agent (extract compound features)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("compound_features_stats") is None:    
-        print("going compound features agent")
+        print("going compound features agent", flush=True)
         return "compound_features_agent"
 
-    # ── 8. Embedding generation ──────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 7: Embedding Agent (generate embeddings)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("embeddings") is None:
-        print("going embedding agent")
+        print("going embedding agent", flush=True)
         return "embedding_agent"
 
-    # ── 9. User preferences interview ────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 8: User Preferences Agent (interactive interview)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("user_preferences") is None:
+        print("going user preferences agent", flush=True)
         return "user_preferences_agent"
 
-    # ── 10. Vector ranking ───────────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 9: Ranking Agent (rank compounds by preferences)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("ranked_compounds") is None:
+        print("going ranking agent", flush=True)
         return "compound_ranking_agent"
 
-    # ── 11. Final output ─────────────────────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 10: Final Output Agent (generate report)
+    # ══════════════════════════════════════════════════════════════════════
+    
     if state.get("final_best_compound") is None:
+        print("going final output agent", flush=True)
         return "final_output_agent"
 
+    # ══════════════════════════════════════════════════════════════════════
+    # All done!
+    # ══════════════════════════════════════════════════════════════════════
+    
+    print("✅ All agents complete - ending graph", flush=True)
     return END
 
 
