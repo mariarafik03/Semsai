@@ -19,8 +19,11 @@ waiting_for values used
 from state import AgentState
 from main_helpers import ask_ollama
 
+from .Normalization import normalize_location
+
 MAX_RETRIES = 3
 
+# We keep VALID_LOCATIONS for basic validation but use normalize_location for extraction
 VALID_LOCATIONS = {
     "new cairo", "new capital", "north coast", "6th of october",
     "maadi", "zamalek", "heliopolis", "nasr city", "sheikh zayed",
@@ -51,8 +54,8 @@ def _safe_ask(prompt: str) -> str:
 def _is_valid_location(text: str) -> bool:
     if not text:
         return False
-    lowered = text.lower().strip()
-    return any(loc in lowered or lowered in loc for loc in VALID_LOCATIONS)
+    # If it's already normalized, it's valid
+    return True
 
 
 def _extract_property_type(llm_output: str) -> str | None:
@@ -84,7 +87,7 @@ def location_agent(state: AgentState) -> AgentState:
             # Determine attempt number from flag (e.g. "location_retry_2" → 2)
             attempt = int(waiting.split("_")[-1]) if waiting.startswith("location_retry") else 1
 
-            if not user_input or len(user_input) > 100:
+            if not user_input or len(user_input) > 200:
                 # Bad input — retry if attempts remain
                 if attempt >= MAX_RETRIES:
                     state["agent_message"] = (
@@ -96,22 +99,26 @@ def location_agent(state: AgentState) -> AgentState:
 
                 state["agent_message"] = (
                     "Please enter just the area name, e.g. 'New Cairo'."
-                    if len(user_input) > 100
+                    if len(user_input) > 200
                     else "Please enter a valid location in Egypt."
                 )
                 state["waiting_for"] = f"location_retry_{attempt + 1}"
                 return state
 
-            extracted = _safe_ask(
-                "Extract ONLY the location name from the user input. "
-                "It must be a real area inside Greater Cairo or the North Coast of Egypt. "
-                "Capitalize the first letter of each word (e.g., New Cairo, North Coast). "
-                "Return ONLY the location name, nothing else. "
-                f"User input: '{user_input}'"
-            )
+            # Try to normalize directly from user input first
+            normalized = normalize_location(user_input)
+            
+            if not normalized:
+                # If direct normalization fails, use LLM to extract then normalize
+                raw_extracted = _safe_ask(
+                    "Extract ONLY the location name from the user input. "
+                    "Return ONLY the location name, nothing else. "
+                    f"User input: '{user_input}'"
+                )
+                normalized = normalize_location(raw_extracted)
 
-            if _is_valid_location(extracted):
-                state["location"] = extracted.title()
+            if normalized:
+                state["location"] = normalized
                 state["waiting_for"] = None
                 # Fall through to property-type section below
             else:
@@ -124,7 +131,7 @@ def location_agent(state: AgentState) -> AgentState:
                     return state
 
                 state["agent_message"] = (
-                    f"I couldn't recognise '{extracted}' as a supported area. "
+                    f"I couldn't recognise '{user_input}' as a supported area. "
                     "We cover Greater Cairo and the North Coast. Could you try again?"
                 )
                 state["waiting_for"] = f"location_retry_{attempt + 1}"

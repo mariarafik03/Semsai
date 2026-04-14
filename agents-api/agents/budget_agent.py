@@ -342,87 +342,94 @@ def budget_agent(state: AgentState) -> AgentState:
                 return state
 
     # ════════════════════════════════════════════════════════════════════
-    # STEP 3 — LOCATION
+    # STEP 3 — SEARCH & NEGOTIATE
     # ════════════════════════════════════════════════════════════════════
 
-    if state.get("budget") and not state.get("location"):
-        print("  → Need location")
-        
-        if waiting == "location":
-            # Extract location from user input
-            extracted_location = _ask(
-                f"Extract the location/area name from this input. "
-                f"Return ONLY the location name, nothing else.\n"
-                f"User said: '{user_input}'"
-            ).strip()
-            
-            print(f"  → Extracted location: {extracted_location}")
-            
-            if extracted_location and len(extracted_location) > 2:
-                state["location"] = extracted_location
-                state["waiting_for"] = None
-                print(f"  ✅ Location set: {extracted_location}")
-                
-                # Search for matching units
-                matching_units = _search_units(state)
-                
-                if matching_units:
-                    # Store in state (overwrite candidate_units with matches)
-                    state["candidate_units"] = matching_units
-                    
-                    # Format units for display
-                    unit_display = _format_unit_display(
-                        matching_units, 
-                        state.get("payment_type", "cash"),
-                        limit=5
-                    )
-                    
-                    state["agent_message"] = (
-                        f"Great! I found **{len(matching_units)}** unit(s) in {extracted_location} "
-                        f"within your budget:\n\n"
-                        f"{unit_display}\n\n"
-                        f"Would you like to see more details or refine your search?"
-                    )
-                    print(f"  ✅ Found {len(matching_units)} matching units")
-                else:
-                    state["agent_message"] = (
-                        f"I couldn't find any units in {extracted_location} within your budget of "
-                        f"{state['budget']:,.0f} EGP.\n\n"
-                        f"Would you like to:\n"
-                        f"1. Try a different location\n"
-                        f"2. Increase your budget\n"
-                        f"3. See nearby areas"
-                    )
-                    print(f"  ⚠️  No matching units found")
-                
-                # Mark as complete
-                state["budget_agent_complete"] = True
-                state["next_step"] = "compounds_agent"  # or whatever your next agent is
-                print("  ✅ Budget agent COMPLETE")
-                print("="*60 + "\n")
-                return state
-            else:
-                state["agent_message"] = "I didn't catch the location. Which area are you interested in?"
-                state["waiting_for"] = "location"
-                print("  ⏸️  Invalid location - asking again")
-                return state
-        
-        else:
-            # First time asking for location
-            state["agent_message"] = "Which area or location are you interested in?"
-            state["waiting_for"] = "location"
-            print("  ⏸️  Asking for location (first time)")
-            return state
-
-    # ════════════════════════════════════════════════════════════════════
-    # All collected — mark complete
-    # ════════════════════════════════════════════════════════════════════
-    
     if state.get("budget") and state.get("location"):
-        state["budget_agent_complete"] = True
-        state["next_step"] = "compounds_agent"
-        print("  ✅ Budget agent COMPLETE (all data present)")
-        print("="*60 + "\n")
+        print("  → Performing search and check...")
+        
+        # Search for matching units
+        matching_units = _search_units(state)
+        
+        if matching_units:
+            # Store in state
+            state["candidate_units"] = matching_units
+            
+            # Format units for display
+            unit_display = _format_unit_display(
+                matching_units, 
+                state.get("payment_type", "cash"),
+                limit=5
+            )
+            
+            state["agent_message"] = (
+                f"Great news! I found **{len(matching_units)}** unit(s) in {state['location']} "
+                f"that match your criteria:\n\n"
+                f"{unit_display}\n\n"
+                f"Would you like to explore these further or refine your preferences?"
+            )
+            state["budget_agent_complete"] = True
+            print(f"  ✅ Found {len(matching_units)} matching units. Agent COMPLETE.")
+        else:
+            # ─────────────────────────────────────────────────────────────
+            # NEGOTIATION LOGIC
+            # ─────────────────────────────────────────────────────────────
+            print("  ⚠️ No matching units found - Starting negotiation")
+            
+            # If we're already in a negotiation choice, handle the response
+            if waiting == "negotiate_no_results":
+                print(f"  → Processing negotiation choice: {user_input}")
+                choice = _ask(
+                    "The user was told no properties match their budget/location/type. "
+                    "They were asked to choose: change location, change property type, or adjust budget. "
+                    f"Based on their response: '{user_input}', which one do they want to change? "
+                    "Return ONLY one word: location, type, or budget. If unclear, return unknown."
+                ).lower()
+                
+                print(f"  → Choice detected: {choice}")
+                
+                if "location" in choice:
+                    state["location"] = None
+                    state["waiting_for"] = None
+                    return state
+                elif "type" in choice:
+                    state["typeofproperty"] = None
+                    state["waiting_for"] = None
+                    return state
+                elif "budget" in choice:
+                    state["budget"] = None
+                    state["Downpayment"] = None
+                    state["monthlyinstall"] = None
+                    state["waiting_for"] = None
+                    return state
+                else:
+                    # User might have just given a new location/budget directly
+                    # Let's clear waiting and see if the router/extraction can pick it up
+                    # or just ask more clearly.
+                    state["agent_message"] = "I'm sorry, I didn't quite catch that. Would you like to change your **location**, **property type**, or **budget**?"
+                    state["waiting_for"] = "negotiate_no_results"
+                    return state
+
+            # Construct the negotiation message
+            location = state.get('location')
+            budget = state.get('budget')
+            prop_type = state.get('typeofproperty', 'property')
+            
+            state["agent_message"] = (
+                f"I've searched our current listings, but I couldn't find any **{prop_type}s** in **{location}** "
+                f"within your budget of **{budget:,.0f} EGP**.\n\n"
+                f"To help you find the right home, would you like to:\n"
+                f"1. **Change Location**: Look in a different area where prices might fit better?\n"
+                f"2. **Change Property Type**: For example, would you consider an Apartment if you were looking for a Villa?\n"
+                f"3. **Adjust Budget**: Increase your budget slightly to see more options?\n\n"
+                f"What would you like to do?"
+            )
+            state["waiting_for"] = "negotiate_no_results"
+            
+            # We DON'T mark budget_agent_complete = True because we want to stay here
+            # until there's a match or the user decides to proceed anyway.
+            print("  ⏸️ Waiting for negotiation choice")
+            return state
 
     return state
 

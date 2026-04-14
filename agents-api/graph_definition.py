@@ -68,7 +68,15 @@ def state_router(state: dict) -> str:
     # Extraction runs first and doesn't wait for user input
     
     # ══════════════════════════════════════════════════════════════════════
-    # STEP 2: Budget Agent (payment type + budget collection)
+    # STEP 2: Location Agent (location + property type)
+    # ══════════════════════════════════════════════════════════════════════
+    
+    if not state.get("location") or not state.get("typeofproperty"):
+        print("DEBUG: going location agent", flush=True)
+        return "location_agent"
+
+    # ══════════════════════════════════════════════════════════════════════
+    # STEP 3: Budget Agent (payment type + budget collection + search)
     # ══════════════════════════════════════════════════════════════════════
     
     # Check if budget agent is complete
@@ -82,14 +90,6 @@ def state_router(state: dict) -> str:
         if not has_payment_type or (not has_budget and not has_installments):
             print("DEBUG: going budget agent", flush=True)
             return "budget_agent"
-
-    # ══════════════════════════════════════════════════════════════════════
-    # STEP 3: Location Agent (location + property type)
-    # ══════════════════════════════════════════════════════════════════════
-    
-    if not state.get("location") or not state.get("typeofproperty"):
-        print("DEBUG: going location agent", flush=True)
-        return "location_agent"
 
     # ══════════════════════════════════════════════════════════════════════
     # STEP 4: Compounds Agent (find candidate compounds)
