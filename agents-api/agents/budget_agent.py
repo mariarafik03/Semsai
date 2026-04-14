@@ -1,6 +1,10 @@
 """
-agents/budget_agent.py  (With Location & Unit Search from MongoDB)
-─────────────────────────────────────────────────────────────────────
+agents/budget_agent.py  (Fixed with proper flow control)
+─────────────────────────────────────────────────────────────
+This agent MUST be called multiple times in a conversation loop.
+It will set state["waiting_for"] when it needs user input.
+The orchestrator MUST check this and return to user before proceeding.
+
 waiting_for values used
 ───────────────────────
 "payment_type"           → asked cash vs installments
@@ -39,7 +43,7 @@ def _search_units(state: AgentState) -> List[Dict[str, Any]]:
         all_units = state.get("candidate_units", [])
         
         if not all_units:
-            print("[WARNING] No candidate_units in state")
+            print("[WARNING] No candidate_units in state for search")
             return []
         
         matching_units = []
@@ -66,6 +70,7 @@ def _search_units(state: AgentState) -> List[Dict[str, Any]]:
         # Sort by price (ascending)
         matching_units.sort(key=lambda u: u.get("price", 0))
         
+        print(f"[DEBUG] Found {len(matching_units)} matching units for location={location}, budget={budget}")
         return matching_units
     
     except Exception as e:
@@ -144,16 +149,36 @@ def _format_unit_display(units: List[Dict[str, Any]], payment_type: str, limit: 
 # ---------------------------------------------------------------------------
 
 def budget_agent(state: AgentState) -> AgentState:
-    print("in budget agent")
+    """
+    Budget collection agent - handles payment type, budget, and location.
+    
+    CRITICAL: This agent sets state["waiting_for"] when it needs user input.
+    The orchestrator MUST check this and pause before proceeding to next agent.
+    
+    Returns:
+        state with either:
+        - waiting_for = some value → STOP and return to user
+        - budget_agent_complete = True → proceed to next agent
+    """
+    print("\n" + "="*60)
+    print("🏦 BUDGET AGENT")
+    print("="*60)
 
     user_input = (state.get("user_input") or "").strip()
     waiting    = state.get("waiting_for") or ""
+
+    print(f"  User input: {user_input[:50]}..." if len(user_input) > 50 else f"  User input: {user_input}")
+    print(f"  Waiting for: {waiting}")
+    print(f"  Payment type: {state.get('payment_type')}")
+    print(f"  Budget: {state.get('budget')}")
+    print(f"  Location: {state.get('location')}")
 
     # ════════════════════════════════════════════════════════════════════
     # STEP 1 — Confirm / collect payment type
     # ════════════════════════════════════════════════════════════════════
 
     if not state.get("payment_type"):
+        print("  → Need payment type")
 
         if waiting == "payment_type":
             # User replied — extract payment type
@@ -163,20 +188,25 @@ def budget_agent(state: AgentState) -> AgentState:
                 f"User said: '{user_input}'"
             ).lower()
 
+            print(f"  → Extracted payment type: {extracted}")
+
             if extracted in ("cash", "installments"):
                 state["payment_type"]           = extracted
                 state["payment_type_confirmed"] = True
                 state["waiting_for"]            = None
+                print(f"  ✅ Payment type set: {extracted}")
                 # Fall through to budget collection below
             else:
                 state["agent_message"] = "I didn't catch that. Would you prefer to pay in **cash** or by **installments**?"
                 state["waiting_for"]   = "payment_type"
+                print("  ⏸️  Waiting for payment type (retry)")
                 return state
 
         else:
             # First time — ask directly
             state["agent_message"] = "Would you like to pay in **cash** or by **installments**?"
             state["waiting_for"]   = "payment_type"
+            print("  ⏸️  Asking for payment type (first time)")
             return state
 
     state["payment_type_confirmed"] = True
@@ -186,13 +216,17 @@ def budget_agent(state: AgentState) -> AgentState:
     # ════════════════════════════════════════════════════════════════════
 
     if state["payment_type"] == "cash" and not state.get("budget"):
+        print("  → Need cash budget")
 
         if waiting == "cash_budget":
             # Try to extract budget from user input
             d = _digits(user_input)
+            print(f"  → Extracted digits: {d}")
+            
             if d and len(d) >= 4:  # at least 4 digits for a valid budget
                 state["budget"]      = int(d)
                 state["waiting_for"] = None
+                print(f"  ✅ Budget set: {state['budget']:,} EGP")
                 # Continue to location
             else:
                 # Check if user says they don't know
@@ -203,6 +237,7 @@ def budget_agent(state: AgentState) -> AgentState:
                         "For example: 1-3 million EGP, or 500K-1M EGP?"
                     )
                     state["waiting_for"] = "cash_budget"
+                    print("  ⏸️  User unsure - asking for range")
                     return state
                 
                 # If still no number, ask again more directly
@@ -211,12 +246,14 @@ def budget_agent(state: AgentState) -> AgentState:
                     "(You can give me a range like 1-2 million EGP)"
                 )
                 state["waiting_for"] = "cash_budget"
+                print("  ⏸️  No valid number - asking again")
                 return state
 
         else:
             # First time asking
             state["agent_message"] = "What's your total budget for the property?"
             state["waiting_for"]   = "cash_budget"
+            print("  ⏸️  Asking for cash budget (first time)")
             return state
 
     # ════════════════════════════════════════════════════════════════════
@@ -224,16 +261,21 @@ def budget_agent(state: AgentState) -> AgentState:
     # ════════════════════════════════════════════════════════════════════
 
     if state["payment_type"] == "installments" and not state.get("budget"):
+        print("  → Need installment details")
 
         # ── Handle downpayment ───────────────────────────────────────────
         if not state.get("Downpayment"):
+            print("    → Need down payment")
             
             if waiting in ("install_dp", "install_both"):
                 # Try to extract downpayment
                 d = _digits(user_input)
+                print(f"    → Extracted digits: {d}")
+                
                 if d and len(d) >= 4:
                     state["Downpayment"] = int(d)
                     state["waiting_for"] = None
+                    print(f"    ✅ Down payment set: {state['Downpayment']:,} EGP")
                     # Continue to monthly installment
                 else:
                     # Check if unsure
@@ -244,29 +286,37 @@ def budget_agent(state: AgentState) -> AgentState:
                             "Could you share an approximate amount?"
                         )
                         state["waiting_for"] = "install_dp"
+                        print("    ⏸️  User unsure about DP - providing guidance")
                         return state
                     
                     state["agent_message"] = "Please provide your down payment amount (in EGP):"
                     state["waiting_for"] = "install_dp"
+                    print("    ⏸️  No valid DP - asking again")
                     return state
             
             else:
                 # First time asking
                 state["agent_message"] = "How much can you pay as a **down payment**?"
                 state["waiting_for"]   = "install_dp"
+                print("    ⏸️  Asking for down payment (first time)")
                 return state
 
         # ── Handle monthly installment ───────────────────────────────────
         if not state.get("monthlyinstall"):
+            print("    → Need monthly installment")
             
             if waiting in ("install_mi", "install_both"):
                 # Try to extract monthly installment
                 d = _digits(user_input)
+                print(f"    → Extracted digits: {d}")
+                
                 if d and len(d) >= 3:
                     state["monthlyinstall"] = int(d)
                     state["waiting_for"] = None
+                    print(f"    ✅ Monthly installment set: {state['monthlyinstall']:,} EGP")
                     # Calculate total budget
                     _finalise_installments(state)
+                    print(f"    ✅ Total budget calculated: {state['budget']:,} EGP")
                 else:
                     # Check if unsure
                     lower_input = user_input.lower()
@@ -276,16 +326,19 @@ def budget_agent(state: AgentState) -> AgentState:
                             "For example: 10,000 EGP, 20,000 EGP, etc."
                         )
                         state["waiting_for"] = "install_mi"
+                        print("    ⏸️  User unsure about monthly - providing guidance")
                         return state
                     
                     state["agent_message"] = "Please provide your monthly installment amount:"
                     state["waiting_for"] = "install_mi"
+                    print("    ⏸️  No valid monthly - asking again")
                     return state
             
             else:
                 # First time asking
                 state["agent_message"] = "What **monthly installment** amount are you comfortable with?"
                 state["waiting_for"]   = "install_mi"
+                print("    ⏸️  Asking for monthly installment (first time)")
                 return state
 
     # ════════════════════════════════════════════════════════════════════
@@ -293,6 +346,7 @@ def budget_agent(state: AgentState) -> AgentState:
     # ════════════════════════════════════════════════════════════════════
 
     if state.get("budget") and not state.get("location"):
+        print("  → Need location")
         
         if waiting == "location":
             # Extract location from user input
@@ -302,15 +356,18 @@ def budget_agent(state: AgentState) -> AgentState:
                 f"User said: '{user_input}'"
             ).strip()
             
+            print(f"  → Extracted location: {extracted_location}")
+            
             if extracted_location and len(extracted_location) > 2:
                 state["location"] = extracted_location
                 state["waiting_for"] = None
+                print(f"  ✅ Location set: {extracted_location}")
                 
                 # Search for matching units
                 matching_units = _search_units(state)
                 
                 if matching_units:
-                    # Store in state
+                    # Store in state (overwrite candidate_units with matches)
                     state["candidate_units"] = matching_units
                     
                     # Format units for display
@@ -326,6 +383,7 @@ def budget_agent(state: AgentState) -> AgentState:
                         f"{unit_display}\n\n"
                         f"Would you like to see more details or refine your search?"
                     )
+                    print(f"  ✅ Found {len(matching_units)} matching units")
                 else:
                     state["agent_message"] = (
                         f"I couldn't find any units in {extracted_location} within your budget of "
@@ -335,19 +393,25 @@ def budget_agent(state: AgentState) -> AgentState:
                         f"2. Increase your budget\n"
                         f"3. See nearby areas"
                     )
+                    print(f"  ⚠️  No matching units found")
                 
                 # Mark as complete
                 state["budget_agent_complete"] = True
+                state["next_step"] = "compounds_agent"  # or whatever your next agent is
+                print("  ✅ Budget agent COMPLETE")
+                print("="*60 + "\n")
                 return state
             else:
                 state["agent_message"] = "I didn't catch the location. Which area are you interested in?"
                 state["waiting_for"] = "location"
+                print("  ⏸️  Invalid location - asking again")
                 return state
         
         else:
             # First time asking for location
             state["agent_message"] = "Which area or location are you interested in?"
             state["waiting_for"] = "location"
+            print("  ⏸️  Asking for location (first time)")
             return state
 
     # ════════════════════════════════════════════════════════════════════
@@ -356,6 +420,9 @@ def budget_agent(state: AgentState) -> AgentState:
     
     if state.get("budget") and state.get("location"):
         state["budget_agent_complete"] = True
+        state["next_step"] = "compounds_agent"
+        print("  ✅ Budget agent COMPLETE (all data present)")
+        print("="*60 + "\n")
 
     return state
 
