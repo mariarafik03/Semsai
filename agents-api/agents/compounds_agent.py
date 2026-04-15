@@ -9,159 +9,307 @@ import certifi
 from state import AgentState
 
 
-# ─────────────────────────────────────────────────────────────
+# -----------------------
 # Helpers
-# ─────────────────────────────────────────────────────────────
+# -----------------------
 
-def _safe_price(val: Any) -> Optional[int]:
-    """Convert price to int safely."""
-    if val is None:
+def format_price(value: Any) -> str:
+    if value is None:
+        return "N/A"
+    try:
+        return f"{int(float(value)):,}"
+    except Exception:
+        return "N/A"
+
+
+def _safe_float(x: Any, default: float = 0.0) -> float:
+    try:
+        if x is None:
+            return default
+        return float(x)
+    except Exception:
+        return default
+
+
+def _normalize_type(t: Any) -> Optional[str]:
+    if not t:
         return None
+    s = str(t).strip().lower()
+    if s in {"apt", "apartment", "apartments"}:
+        return "Apartment"
+    if s in {"villa", "villas"}:
+        return "Villa"
+    return str(t).strip()
 
-    if isinstance(val, (int, float)):
-        return int(val)
 
-    # extract digits from string
-    digits = "".join(filter(str.isdigit, str(val)))
-    if digits:
-        return int(digits)
+def _normalize_payment_type(p: Any) -> Optional[str]:
+    """
+    Returns: "cash" | "installments" | None
+    """
+    if not p:
+        return None
+    s = str(p).strip().lower()
+    if s in {"cash", "full cash", "c"}:
+        return "cash"
+    if s in {"installment", "installments", "instalments", "plan", "monthly"}:
+        return "installments"
+    return None
+
+
+def _sale_type_match_from_payment(payment_type: Optional[str]) -> Optional[Dict[str, Any]]:
+    """
+    Units have sale_type like:
+      - "Resale"
+      - "Developer Sale"
+    If payment_type is:
+      - cash        -> filter Resale only
+      - installments-> filter Developer Sale only
+      - None/other  -> no filter
+    """
+    if payment_type == "cash":
+        return {"sale_type": {"$regex": r"^resale$", "$options": "i"}}
+
+    if payment_type == "installments":
+        # include common variations "Developer Sale", "Developer", etc.
+        return {"sale_type": {"$regex": r"developer", "$options": "i"}}
 
     return None
 
 
-def _extract_compound_names(state: dict) -> List[str]:
-    """Extract compound names from previous agent."""
-    final_candidates = state.get("final_candidates") or []
+def _compute_budget_if_missing(db, state: AgentState) -> Optional[float]:
+    budget = state.get("budget")
+    if budget is not None:
+        try:
+            return float(budget)
+        except Exception:
+            return None
 
-    names = []
-    for dev in final_candidates:
-        arr = dev.get("matched_compound_names") or []
-        for n in arr:
-            if isinstance(n, str) and n.strip():
-                names.append(n.strip())
+    downpayment = _safe_float(state.get("Downpayment"), 0.0)
+    monthly_install = _safe_float(state.get("monthlyinstall"), 0.0)
 
-    # deduplicate
-    seen = set()
-    out = []
-    for n in names:
-        k = n.lower()
-        if k not in seen:
-            seen.add(k)
-            out.append(n)
+    plan = db["payments"].find_one({}, sort=[("duration", -1)], projection={"duration": 1})
+    if not plan or not plan.get("duration"):
+        return None
 
-    return out
+    months = int(plan["duration"])
+    budget = downpayment + monthly_install * months
+    state["budget"] = budget
+    return float(budget)
 
 
-def _fetch_compounds(db, names: List[str]) -> List[Dict[str, Any]]:
-    """Fetch compounds with price + description."""
+def _build_units_pipeline(
+    wanted_type: str,
+    location: Optional[str],
+    budget: float,
+    payment_type: Optional[str],
+    limit: int = 300
+) -> List[Dict[str, Any]]:
 
-    if not names:
-        return []
+    # match type across possible fields (including nested object format)
+    type_match = {
+        "$or": [
+            {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+        ]
+    }
 
-    # try exact match
-    docs = list(db["compounds"].find(
-        {"name": {"$in": names}},
-        {"_id": 1, "name": 1, "price": 1, "description": 1}
-    ))
+    # location match on UNITS
+    loc_match: Optional[Dict[str, Any]] = None
+    if location:
+        loc_match = {"location": {"$regex": str(location), "$options": "i"}}
 
-    # fallback regex
-    if len(docs) < len(names):
-        ors = []
-        for n in names:
-            ors.append({"name": {"$regex": f"^{re.escape(n)}$", "$options": "i"}})
+    # sale_type filter based on payment choice
+    sale_match = _sale_type_match_from_payment(payment_type)
 
-        docs = list(db["compounds"].find(
-            {"$or": ors},
-            {"_id": 1, "name": 1, "price": 1, "description": 1}
-        ))
+    base_and: List[Dict[str, Any]] = [type_match]
+    if loc_match:
+        base_and.append(loc_match)
+    if sale_match:
+        base_and.append(sale_match)
 
-    results = []
-    for d in docs:
-        price = _safe_price(d.get("price"))
+    # Extract "$oid" safely WITHOUT using compound_id.$oid (Mongo forbids field paths starting with $)
+    oid_from_export_obj = {
+        "$let": {
+            "vars": {"arr": {"$objectToArray": "$compound_id"}},
+            "in": {
+                "$first": {
+                    "$map": {
+                        "input": {
+                            "$filter": {
+                                "input": "$$arr",
+                                "as": "it",
+                                "cond": {"$eq": ["$$it.k", "$oid"]},
+                            }
+                        },
+                        "as": "f",
+                        "in": "$$f.v",
+                    }
+                }
+            },
+        }
+    }
 
-        results.append({
-            "compound_id": str(d["_id"]),
-            "name": d.get("name"),
-            "price": price,
-            "description": d.get("description") or ""
-        })
+    # Build a string version of compound id regardless of storage shape
+    compound_oid_str_expr = {
+        "$switch": {
+            "branches": [
+                {"case": {"$eq": [{"$type": "$compound_id"}, "objectId"]}, "then": {"$toString": "$compound_id"}},
+                {"case": {"$eq": [{"$type": "$compound_id"}, "string"]}, "then": "$compound_id"},
+                {"case": {"$eq": [{"$type": "$compound_id"}, "object"]}, "then": oid_from_export_obj},
+            ],
+            "default": None,
+        }
+    }
 
-    return results
+    pipeline: List[Dict[str, Any]] = [
+        {"$match": {"$and": base_and}},
+
+        # effective_price = price OR price_min OR price_max
+        {
+            "$addFields": {
+                "effective_price": {"$ifNull": ["$price", {"$ifNull": ["$price_min", "$price_max"]}]}
+            }
+        },
+        {"$match": {"effective_price": {"$ne": None, "$lte": float(budget)}}},
+
+        # normalize compound_id to a string we can convert to ObjectId
+        {"$addFields": {"compound_oid_str": compound_oid_str_expr}},
+
+        # convert to ObjectId (if convertible)
+        {
+            "$addFields": {
+                "compound_oid": {
+                    "$cond": [
+                        {
+                            "$and": [
+                                {"$ne": ["$compound_oid_str", None]},
+                                {"$ne": ["$compound_oid_str", ""]},
+                                {"$eq": [{"$strLenCP": "$compound_oid_str"}, 24]},
+                            ]
+                        },
+                        {"$toObjectId": "$compound_oid_str"},
+                        None,
+                    ]
+                }
+            }
+        },
+        {"$match": {"compound_oid": {"$ne": None}}},
+
+        # group by compound_oid to get min price per compound
+        {
+            "$group": {
+                "_id": "$compound_oid",
+                "min_unit_price": {"$min": "$effective_price"},
+                "sample_unit_location": {"$first": "$location"},
+                "sample_sale_type": {"$first": "$sale_type"},
+            }
+        },
+
+        {"$sort": {"min_unit_price": 1}},
+        {"$limit": int(limit)},
+
+        # lookup compound info
+        {
+            "$lookup": {
+                "from": "compounds",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "compound_doc",
+            }
+        },
+        {"$unwind": {"path": "$compound_doc", "preserveNullAndEmptyArrays": True}},
+
+        {
+            "$project": {
+                "_id": 0,
+                "compound_id": "$_id",
+                "min_unit_price": 1,
+                "sale_type_used": "$sample_sale_type",
+                "compound_name": {"$ifNull": ["$compound_doc.name", "$compound_doc.compound_name"]},
+                "compound_location": {"$ifNull": ["$compound_doc.location", "$sample_unit_location"]},
+            }
+        },
+    ]
+
+    return pipeline
 
 
-# ─────────────────────────────────────────────────────────────
+# -----------------------
 # Agent
-# ─────────────────────────────────────────────────────────────
+# -----------------------
 
-def compounds_agent(state: AgentState) -> AgentState:
-    print("\n--- compounds_agent ---")
+def compounds_agent(state: AgentState):
+    print("\n--- Compounds Agent ---")
 
-    # Prevent re-fetch unless needed
-    if state.get("candidate_compounds") is not None:
-        print("Skipping fetch (already exists)")
-        return state
-
-    # Get compound names
-    compound_names = _extract_compound_names(state)
-
-    if not compound_names:
-        print("❌ No compound names found")
-        state["candidate_compounds"] = []
-        return state
-
-    print(f"Found {len(compound_names)} compound names")
-
-    # DB connection
     load_dotenv()
     uri = os.getenv("MONGO_URI")
-
     if not uri:
-        print("❌ Missing MONGO_URI")
-        state["candidate_compounds"] = []
+        print("Missing MONGO_URI. Skipping compound lookup.")
         return state
 
-    client = MongoClient(uri, tlsCAFile=certifi.where())
+    client = MongoClient(
+        uri,
+        tls=True,
+        tlsCAFile=certifi.where(),
+        serverSelectionTimeoutMS=20000,
+        connectTimeoutMS=20000,
+    )
 
     try:
         db = client.get_default_database()
 
-        compounds = _fetch_compounds(db, compound_names)
+        wanted_type = _normalize_type(state.get("typeofproperty")) or "Apartment"
+        location = state.get("location")  # e.g. "New Cairo"
+        payment_type = _normalize_payment_type(state.get("payment_type"))  # "cash" | "installments" | None
 
-        if not compounds:
-            print("❌ No compounds fetched from DB")
-            state["candidate_compounds"] = []
+        budget = _compute_budget_if_missing(db, state)
+        if budget is None:
+            print("Budget missing/invalid and could not be computed.")
             return state
 
-        print(f"✅ Retrieved {len(compounds)} compounds")
+        pipeline = _build_units_pipeline(
+            wanted_type=wanted_type,
+            location=location,
+            budget=budget,
+            payment_type=payment_type,
+            limit=300
+        )
 
-        # ─────────────────────────────────────────────
-        # 🔥 PRICE ANALYSIS (CRITICAL PART)
-        # ─────────────────────────────────────────────
+        results = list(db["units"].aggregate(pipeline, allowDiskUse=True))
 
-        prices = [c["price"] for c in compounds if c.get("price")]
+        candidate_compounds: List[Dict[str, Any]] = []
+        for r in results:
+            name = (r.get("compound_name") or "").strip()
+            loc = (r.get("compound_location") or "").strip()
 
-        if prices:
-            min_price = min(prices)
-            state["min_price_in_market"] = min_price
+            candidate_compounds.append({
+                "compound_id": r.get("compound_id"),
+                "compound_name": name if name else "Unknown Compound",
+                "location": loc,
+                "wanted_type": wanted_type,
+                "payment_type_used": payment_type or "any",
+                "sale_type_used": r.get("sale_type_used"),
+                "min_unit_price": float(r.get("min_unit_price") or 0),
+            })
 
-            user_budget = state.get("budget")
+        state["candidate_compounds"] = candidate_compounds
 
-            if user_budget:
-                state["budget_valid"] = user_budget >= min_price
-                print(f"💰 Budget: {user_budget:,}")
-                print(f"🏷️ Min price: {min_price:,}")
-                print(f"✅ Budget valid: {state['budget_valid']}")
-            else:
-                state["budget_valid"] = None
+        print(f"Type used for comparison: {wanted_type}")
+        print(f"Location filter (units): {location}")
+        print(f"Payment type (state): {state.get('payment_type')} -> normalized: {payment_type or 'any'}")
+        print(f"Budget: {format_price(budget)}")
+        print(f"Top compounds within budget: {len(candidate_compounds)}")
 
-        else:
-            print("⚠️ No price data available")
-            state["min_price_in_market"] = None
-            state["budget_valid"] = True  # don't block flow
+        for c in candidate_compounds[:10]:
+            print(
+                f"- {c['compound_name']} | {c['location']} | "
+                f"type={c['wanted_type']} | pay={c['payment_type_used']} | "
+                f"sale_type={c.get('sale_type_used')} | min_price={format_price(c['min_unit_price'])}"
+            )
 
-        # Save compounds
-        state["candidate_compounds"] = compounds
-
+        state["next_step"] = "developers_agent"
         return state
 
     finally:
