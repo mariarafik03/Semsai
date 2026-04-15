@@ -9,6 +9,7 @@ GET  /chat/results/{session_id} — fetch final property recommendations
 GET  /chat/history/{user_id}    — fetch user's past conversation summaries
 """
 
+import asyncio
 import traceback
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
@@ -19,6 +20,7 @@ from api.session import (
     load_state, save_state, new_session_id,
     load_profile, save_profile, append_history, load_history,
 )
+from api.db import update_user_chat_preferences
 from graph_runner import run_graph_turn, make_initial_state
 from graph_definition import graph
 
@@ -219,15 +221,23 @@ async def get_results(session_id: str, user_id: str) -> ResultsResponse:
     results = _get_results(state)
 
     # ── Persist long-term memory ──────────────────────────────────────────
+    # 1. Redis profile (fast, used to pre-fill next session)
     await save_profile(user_id, state)
 
+    # 2. MongoDB user doc — merge chat preferences into the existing user
+    #    document that user_preferences_agent already created.
+    #    PyMongo is synchronous so we run it in a thread-pool.
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, update_user_chat_preferences, user_id, state)
+
+    # 3. Redis history (conversation summary list)
     summary = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "purpose":       state.get("purpose"),
-        "budget":        state.get("budget"),
-        "location":      state.get("location"),
+        "timestamp":      datetime.now(timezone.utc).isoformat(),
+        "purpose":        state.get("purpose"),
+        "budget":         state.get("budget"),
+        "location":       state.get("location"),
         "typeofproperty": state.get("typeofproperty"),
-        "top_result":    _top_result_name(results),
+        "top_result":     _top_result_name(results),
     }
     await append_history(user_id, session_id, summary)
 
