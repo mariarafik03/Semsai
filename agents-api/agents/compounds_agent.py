@@ -7,6 +7,7 @@ from pymongo import MongoClient
 import certifi
 
 from state import AgentState
+from .Normalization import normalize_location
 
 
 # -----------------------
@@ -265,18 +266,49 @@ def compounds_agent(state: AgentState):
             return state
 
         elif "2" in choice_text or "location" in choice_text:
-            # Change location — reset location + type + budget; router → location_agent
-            state["location"]      = None
-            state["typeofproperty"] = None
-            state["budget_valid"]   = None
-            print("→ No-units choice: change location")
+            # Try to extract the new location inline from the user's message
+            # e.g. "change location to Maadi" → extract "Maadi"
+            new_location = normalize_location(user_input)
+            if new_location:
+                state["location"]     = new_location
+                state["budget_valid"] = None
+                state["agent_message"] = (
+                    f"\u2705 Location changed to **{new_location}**. "
+                    f"Searching for units there..."
+                )
+                print(f"\u2713 No-units: location changed to {new_location}")
+            else:
+                # No inline location — reset and let location_agent ask fresh
+                state["location"]       = None
+                state["typeofproperty"] = None
+                state["budget_valid"]   = None
+                print("\u2192 No-units: change location (will ask fresh)")
             return state
 
         elif "3" in choice_text or "type" in choice_text or "property" in choice_text:
-            # Change property type — reset type + budget; router → location_agent (type section)
-            state["typeofproperty"] = None
-            state["budget_valid"]   = None
-            print("→ No-units choice: change property type")
+            # Try to extract the new property type inline
+            # e.g. "let's try apartments instead"
+            _PROP_MAP = {
+                "villa": "Villa",      "vila": "Villa",
+                "apartment": "Apartment", "flat": "Apartment",
+                "chalet": "Chalet",    "studio": "Apartment",
+                "penthouse": "Apartment", "duplex": "Apartment",
+                "townhouse": "Villa",
+            }
+            new_type = next((v for k, v in _PROP_MAP.items() if k in choice_text), None)
+            if new_type:
+                state["typeofproperty"] = new_type
+                state["budget_valid"]   = None
+                state["agent_message"] = (
+                    f"\u2705 Property type changed to **{new_type}**. "
+                    f"Searching for units now..."
+                )
+                print(f"\u2713 No-units: property type changed to {new_type}")
+            else:
+                # No inline type — reset and let location_agent ask fresh
+                state["typeofproperty"] = None
+                state["budget_valid"]   = None
+                print("\u2192 No-units: change type (will ask fresh)")
             return state
 
         else:

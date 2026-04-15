@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from state import AgentState
 from main_helpers import ask_ollama
+from .Normalization import normalize_location
 
 # Load environment variables for MongoDB
 load_dotenv()
@@ -107,20 +108,53 @@ def budget_agent(state: AgentState) -> AgentState:
             return state
 
         elif "2" in choice_text or "location" in choice_text:
-            # User wants to change location (reset both location + type for clean slate)
-            state["location"] = None
-            state["typeofproperty"] = None
-            state["budget_valid"] = None
-            state["waiting_for"] = None
-            print("→ Budget exceeded choice: change location")
+            # Try to extract the new location directly from the user's message
+            # e.g. "change the location to new cairo" → extract "New Cairo"
+            new_location = normalize_location(user_input)
+            if new_location:
+                state["location"]     = new_location
+                state["budget_valid"] = None
+                state["waiting_for"]  = None
+                state["agent_message"] = (
+                    f"\u2705 Location changed to **{new_location}**. "
+                    f"Let me check availability there..."
+                )
+                print(f"\u2713 Location changed to: {new_location}")
+            else:
+                # No inline location found — reset and let location_agent ask fresh
+                state["location"]       = None
+                state["typeofproperty"] = None
+                state["budget_valid"]   = None
+                state["waiting_for"]    = None
+                print("\u2192 Budget exceeded: change location (will ask fresh)")
             return state
 
         elif "3" in choice_text or "type" in choice_text or "property" in choice_text:
-            # User wants to change property type only
-            state["typeofproperty"] = None
-            state["budget_valid"] = None
-            state["waiting_for"] = None
-            print("→ Budget exceeded choice: change property type")
+            # Try to extract the new property type directly from the user's message
+            # e.g. "change to apartment" or "I'd prefer a chalet"
+            _PROP_MAP = {
+                "villa": "Villa",      "vila": "Villa",
+                "apartment": "Apartment", "flat": "Apartment",
+                "chalet": "Chalet",    "studio": "Apartment",
+                "penthouse": "Apartment", "duplex": "Apartment",
+                "townhouse": "Villa",
+            }
+            new_type = next((v for k, v in _PROP_MAP.items() if k in choice_text), None)
+            if new_type:
+                state["typeofproperty"] = new_type
+                state["budget_valid"]   = None
+                state["waiting_for"]    = None
+                state["agent_message"] = (
+                    f"\u2705 Property type changed to **{new_type}**. "
+                    f"Let me check what's available..."
+                )
+                print(f"\u2713 Property type changed to: {new_type}")
+            else:
+                # No inline type found — reset and let location_agent ask fresh
+                state["typeofproperty"] = None
+                state["budget_valid"]   = None
+                state["waiting_for"]    = None
+                print("\u2192 Budget exceeded: change type (will ask fresh)")
             return state
 
         else:
