@@ -161,9 +161,9 @@ def budget_agent(state: AgentState) -> AgentState:
             # Couldn't understand — re-ask
             state["agent_message"] = (
                 "I didn't quite catch that. Please choose one of:\n\n"
-                "1\ufe0f\u20e3 **Increase my budget**\n"
-                "2\ufe0f\u20e3 **Change location**\n"
-                "3\ufe0f\u20e3 **Change property type**"
+                "1\ufe0f\u20e3 Increase my budget\n"
+                "2\ufe0f\u20e3 Change location\n"
+                "3\ufe0f\u20e3 Change property type"
             )
             state["waiting_for"] = "budget_exceeded_choice"
             return state
@@ -191,7 +191,7 @@ def budget_agent(state: AgentState) -> AgentState:
                 return state
         else:
             # First time asking for payment type
-            state["agent_message"] = "How would you like to pay? We offer **cash** and **installment** plans."
+            state["agent_message"] = "How would you like to pay? We offer cash and installment plans."
             state["waiting_for"] = "payment_type"
             return state
 
@@ -231,12 +231,12 @@ def budget_agent(state: AgentState) -> AgentState:
                     state["waiting_for"] = None  # ✅ FIX: Clear waiting flag
                     print(f"✓ Downpayment set to: {amount:,} EGP")
                 else:
-                    state["agent_message"] = "What is the **down payment** amount you are comfortable with? (e.g., 500,000 EGP)"
+                    state["agent_message"] = "What is the down payment amount you are comfortable with? (e.g., 500,000 EGP)"
                     state["waiting_for"] = "downpayment"
                     return state
             else:
                 # First time asking for downpayment
-                state["agent_message"] = "To find the best plan, what is your preferred **down payment**?"
+                state["agent_message"] = "To find the best plan, what is your preferred down payment?"
                 state["waiting_for"] = "downpayment"
                 return state
         
@@ -250,12 +250,12 @@ def budget_agent(state: AgentState) -> AgentState:
                     state["waiting_for"] = None  # ✅ FIX: Clear waiting flag
                     print(f"✓ Monthly installment set to: {amount:,} EGP")
                 else:
-                    state["agent_message"] = "What is the maximum **monthly installment** you can pay? (e.g., 20,000 EGP)"
+                    state["agent_message"] = "What is the maximum monthly installment you can pay? (e.g., 20,000 EGP)"
                     state["waiting_for"] = "monthly"
                     return state
             else:
                 # First time asking for monthly installment
-                state["agent_message"] = "And what is your maximum **monthly installment**?"
+                state["agent_message"] = "And what is your maximum monthly installment?"
                 state["waiting_for"] = "monthly"
                 return state
 
@@ -286,12 +286,12 @@ def budget_agent(state: AgentState) -> AgentState:
                     
                     if user_budget < min_p:
                         state["agent_message"] = (
-                            f"\u26a0\ufe0f In **{loc}**, the cheapest **{ptype}** starts at **{min_p:,} EGP**. "
-                            f"Your budget is **{user_budget:,} EGP**.\n\n"
+                            f"\u26a0\ufe0f In {loc}, the cheapest {ptype} starts at {min_p:,} EGP. "
+                            f"Your budget is {user_budget:,} EGP.\n\n"
                             f"What would you like to do?\n\n"
-                            f"1\ufe0f\u20e3 **Increase my budget**\n"
-                            f"2\ufe0f\u20e3 **Change location**\n"
-                            f"3\ufe0f\u20e3 **Change property type**"
+                            f"1\ufe0f\u20e3 Increase my budget\n"
+                            f"2\ufe0f\u20e3 Change location\n"
+                            f"3\ufe0f\u20e3 Change property type"
                         )
                         state["waiting_for"] = "budget_exceeded_choice"
                         return state
@@ -305,16 +305,16 @@ def budget_agent(state: AgentState) -> AgentState:
                     if user_dp < min_dp or user_mi < min_mi:
                         issues = []
                         if user_dp < min_dp:
-                            issues.append(f"• Minimum down payment required: **{min_dp:,} EGP** (yours: {user_dp:,})") 
+                            issues.append(f"• Minimum down payment required: {min_dp:,} EGP (yours: {user_dp:,})") 
                         if user_mi < min_mi:
-                            issues.append(f"• Minimum monthly installment required: **{min_mi:,} EGP** (yours: {user_mi:,})")
+                            issues.append(f"• Minimum monthly installment required: {min_mi:,} EGP (yours: {user_mi:,})")
                         state["agent_message"] = (
-                            f"\u26a0\ufe0f Market prices in **{loc}** for **{ptype}** via installments are higher than your current figures:\n\n"
+                            f"\u26a0\ufe0f Market prices in {loc} for {ptype} via installments are higher than your current figures:\n\n"
                             + "\n".join(issues)
                             + "\n\nWhat would you like to do?\n\n"
-                            "1\ufe0f\u20e3 **Increase my budget / installments**\n"
-                            "2\ufe0f\u20e3 **Change location**\n"
-                            "3\ufe0f\u20e3 **Change property type**"
+                            "1\ufe0f\u20e3 Increase my budget / installments\n"
+                            "2\ufe0f\u20e3 Change location\n"
+                            "3\ufe0f\u20e3 Change property type"
                         )
                         state["waiting_for"] = "budget_exceeded_choice"
                         return state
