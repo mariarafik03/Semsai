@@ -1,5 +1,6 @@
 """
 main.py — FastAPI application entry point
+✅ FIXED: Proper session handling, better error messages, debug logging
 """
 
 import json
@@ -96,7 +97,10 @@ async def health():
 
 @app.post("/chat/start")
 async def chat_start(request: Request):
-    """Start a new session and return the first assistant question."""
+    """
+    Start a new session and return the first assistant question.
+    ✅ FIXED: Now properly saves state to Redis
+    """
     try:
         try:
             body = await request.json()
@@ -104,10 +108,18 @@ async def chat_start(request: Request):
             body = {}
 
         session_id = body.get("session_id") or new_session_id()
+        print(f"\n{'='*60}")
+        print(f"📝 /chat/start called — session_id: {session_id}")
+        print(f"{'='*60}")
+        
         state = make_initial_state(session_id)
 
+        # Run the first graph turn (extraction agent will ask first question)
         state, reply, done = await run_graph_turn(graph, state, "")
+        
+        # ✅ FIX: SAVE STATE TO REDIS BEFORE RETURNING
         await save_state(session_id, state)
+        print(f"✓ State saved to Redis for session {session_id}")
 
         response = {
             "session_id": session_id,
@@ -116,26 +128,39 @@ async def chat_start(request: Request):
             "done": done,
             "state": _json_safe(state),
         }
+        
         if done:
             response["results"] = _build_results(state)
+            
+        print(f"✓ /chat/start response: {reply[:100]}...")
         return response
 
     except Exception as e:
+        print(f"❌ /chat/start error: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"chat_start failed: {e}") from e
 
 
 @app.post("/chat/respond")
 async def chat_respond(request: Request):
-    """Continue an existing session with one user message."""
+    """
+    Continue an existing session with one user message.
+    ✅ FIXED: Better error handling and state loading
+    """
     try:
         try:
             body = await request.json()
-        except Exception:
-            body = {}
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid JSON: {e}") from e
             
         session_id = body.get("session_id")
         if not session_id:
             raise HTTPException(status_code=400, detail="session_id is required")
+
+        print(f"\n{'='*60}")
+        print(f"💬 /chat/respond called — session_id: {session_id}")
+        print(f"{'='*60}")
 
         message = (body.get("message") or "").strip()
         if not message:
@@ -147,18 +172,31 @@ async def chat_respond(request: Request):
                 "state": _json_safe(body.get("state") or {}),
             }
 
+        # ✅ FIX: Try loading from body first, then Redis
         state = body.get("state") if isinstance(body.get("state"), dict) else None
+        
         if state is None:
+            print(f"⏳ Loading state from Redis for session {session_id}...")
             state = await load_state(session_id)
+        else:
+            print(f"✓ State loaded from request body")
 
         if state is None:
+            print(f"❌ Session {session_id} not found in Redis")
             raise HTTPException(
                 status_code=404,
-                detail="Session not found or expired. Start a new chat.",
+                detail=f"Session '{session_id}' not found or expired. Please start a new chat.",
             )
 
+        print(f"📨 User message: {message}")
+        print(f"🔍 Current waiting_for: {state.get('waiting_for')}")
+        
+        # Run graph turn with user's message
         state, reply, done = await run_graph_turn(graph, state, message)
+        
+        # ✅ FIX: Always save state after processing
         await save_state(session_id, state)
+        print(f"✓ State saved to Redis")
 
         response = {
             "session_id": session_id,
@@ -167,18 +205,27 @@ async def chat_respond(request: Request):
             "done": done,
             "state": _json_safe(state),
         }
+        
         if done:
             response["results"] = _build_results(state)
+            
+        print(f"✓ Response: {reply[:100]}...")
         return response
 
     except HTTPException:
         raise
     except Exception as e:
+        print(f"❌ /chat/respond error: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"chat_respond failed: {e}") from e
 
 
 @app.get("/chat/status/{session_id}")
 async def chat_status(session_id: str):
+    """Get the current status of a session"""
+    print(f"🔍 /chat/status called for session {session_id}")
+    
     state = await load_state(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -194,6 +241,9 @@ async def chat_status(session_id: str):
 
 @app.get("/chat/results/{session_id}")
 async def chat_results(session_id: str):
+    """Get final results for a completed session"""
+    print(f"📊 /chat/results called for session {session_id}")
+    
     state = await load_state(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -202,6 +252,27 @@ async def chat_results(session_id: str):
         raise HTTPException(status_code=400, detail="Conversation not finished yet")
 
     return _build_results(state)
+
+
+# ---------------------------------------------------------------------------
+# Debug endpoint (helpful during development)
+# ---------------------------------------------------------------------------
+
+@app.get("/debug/session/{session_id}", tags=["debug"])
+async def debug_session(session_id: str):
+    """
+    Get full state dump for debugging
+    """
+    state = await load_state(session_id)
+    if state is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    return {
+        "session_id": session_id,
+        "state": _json_safe(state),
+        "waiting_for": state.get("waiting_for"),
+        "phase": _phase_from_state(state),
+    }
 
 
 # ---------------------------------------------------------------------------
