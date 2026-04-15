@@ -51,17 +51,19 @@ def state_router(state: dict) -> str:
         print(f"🛑 Router: Abort flag set → END")
         return END
 
+    # ── 4. Location + property type ──────────────────────────────────────
+    if not state.get("location") or not state.get("typeofproperty"):
+        print(f"→ Router: Missing location/property → location_agent")
+        return "location_agent"
+
+
     # ── 3. Budget & Payment (MUST come BEFORE location check) ───────────
     # ✅ FIX: Check budget FIRST, because we need payment info regardless of location
     if not state.get("payment_type") or not state.get("budget_valid"):
         print(f"→ Router: Missing payment/budget → budget_agent")
         return "budget_agent"
 
-    # ── 4. Location + property type ──────────────────────────────────────
-    if not state.get("location") or not state.get("typeofproperty"):
-        print(f"→ Router: Missing location/property → location_agent")
-        return "location_agent"
-
+   
     # ── 5. Compound discovery ────────────────────────────────────────────
     if state.get("candidate_compounds") is None:
         print(f"→ Router: Finding compounds → compounds_agent")

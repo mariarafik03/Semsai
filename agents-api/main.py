@@ -1,7 +1,11 @@
-"""
-main.py — FastAPI application entry point
-✅ FIXED: Proper session handling, better error messages, debug logging
-"""
+import os
+import sys
+
+# Ensure the directory containing main.py is in the Python path
+# This allows 'import api' and others to work even if the folder has a hyphen.
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 
 import json
 from contextlib import asynccontextmanager
