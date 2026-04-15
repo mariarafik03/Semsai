@@ -4,10 +4,10 @@ graph_definition.py
 Builds and exports the compiled StateGraph singleton.
 
 Full pipeline (HTTP-safe):
-    extraction_agent
-    → budget_agent            (payment_type + budget)
-    → location_agent          (location + typeofproperty)
-    → compounds_agent         (candidate_compounds)
+    extraction_agent          (greet + extract fields from opening message)
+    → location_agent          (location + typeofproperty — if not already extracted)
+    → budget_agent            (payment_type + budget/installments — validated against DB)
+    → compounds_agent         (candidate_compounds — with no-units fallback loop)
     → developers_agent        (final_compounds)
     → compound_features_agent (compound_features_stats)
     → embedding_agent         (embeddings)
@@ -15,6 +15,11 @@ Full pipeline (HTTP-safe):
     → compound_ranking_agent  (ranked_compounds)
     → final_output_agent      (final_best_compound)
     → END
+
+If no units are found matching location + type + budget, the user is offered:
+    1. Increase budget  →  loops back to budget_agent
+    2. Change location  →  loops back to location_agent
+    3. Change type      →  loops back to location_agent (property-type section)
 """
 
 from graph import StateGraph, END
@@ -38,33 +43,37 @@ from agents.final_output_agent       import final_output_agent
 
 def state_router(state: dict) -> str:
     """
-    ✅ FIXED: Added debug logging and proper routing order
+    Routes the graph to the next agent based on what state is currently missing.
+
+    Order:
+      1. waiting_for set  → END  (agent is paused waiting for user)
+      2. abort flag set   → END
+      3. location / typeofproperty missing → location_agent
+      4. payment_type / budget_valid missing → budget_agent
+      5. candidate_compounds is None → compounds_agent   (includes no-units fallback)
+      6–11. rest of pipeline
     """
-    # ── 1. Interruption Check (CRITICAL) ────────────────────────────────
-    # If an agent is waiting for user input, we must stop the graph execution.
+    # ── 1. Interruption Check ────────────────────────────────────────────
     if state.get("waiting_for"):
         print(f"🛑 Router: Waiting for '{state.get('waiting_for')}' → END")
         return END
 
-    # ── 2. Hard stop ───────────────────────────────────────────────────
+    # ── 2. Hard stop ─────────────────────────────────────────────────────
     if state.get("abort"):
         print(f"🛑 Router: Abort flag set → END")
         return END
 
-    # ── 4. Location + property type ──────────────────────────────────────
+    # ── 3. Location + property type ──────────────────────────────────────
     if not state.get("location") or not state.get("typeofproperty"):
         print(f"→ Router: Missing location/property → location_agent")
         return "location_agent"
 
-
-    # ── 3. Budget & Payment (MUST come BEFORE location check) ───────────
-    # ✅ FIX: Check budget FIRST, because we need payment info regardless of location
+    # ── 4. Budget & Payment type ─────────────────────────────────────────
     if not state.get("payment_type") or not state.get("budget_valid"):
         print(f"→ Router: Missing payment/budget → budget_agent")
         return "budget_agent"
 
-   
-    # ── 5. Compound discovery ────────────────────────────────────────────
+    # ── 5. Compound discovery (None = not yet found OR user reset it) ────
     if state.get("candidate_compounds") is None:
         print(f"→ Router: Finding compounds → compounds_agent")
         return "compounds_agent"

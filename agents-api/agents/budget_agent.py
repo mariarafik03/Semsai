@@ -85,7 +85,55 @@ def budget_agent(state: AgentState) -> AgentState:
     
     user_input = (state.get("user_input") or "").strip()
     waiting = state.get("waiting_for")
-    
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # 0. HANDLE "BUDGET EXCEEDED" CHOICE RESPONSE
+    # ═══════════════════════════════════════════════════════════════════════
+    if waiting == "budget_exceeded_choice":
+        choice_text = user_input.lower()
+
+        if "1" in choice_text or "increase" in choice_text or "budget" in choice_text:
+            # User wants to increase budget — reset budget fields
+            state["budget_valid"] = None
+            if state.get("payment_type") == "cash":
+                state["budget"] = None
+                state["waiting_for"] = None
+                # Router will send back to budget_agent which will re-ask cash_budget
+            else:
+                state["Downpayment"] = None
+                state["monthlyinstall"] = None
+                state["waiting_for"] = None
+            print("→ Budget exceeded choice: increase budget")
+            return state
+
+        elif "2" in choice_text or "location" in choice_text:
+            # User wants to change location (reset both location + type for clean slate)
+            state["location"] = None
+            state["typeofproperty"] = None
+            state["budget_valid"] = None
+            state["waiting_for"] = None
+            print("→ Budget exceeded choice: change location")
+            return state
+
+        elif "3" in choice_text or "type" in choice_text or "property" in choice_text:
+            # User wants to change property type only
+            state["typeofproperty"] = None
+            state["budget_valid"] = None
+            state["waiting_for"] = None
+            print("→ Budget exceeded choice: change property type")
+            return state
+
+        else:
+            # Couldn't understand — re-ask
+            state["agent_message"] = (
+                "I didn't quite catch that. Please choose one of:\n\n"
+                "1\ufe0f\u20e3 **Increase my budget**\n"
+                "2\ufe0f\u20e3 **Change location**\n"
+                "3\ufe0f\u20e3 **Change property type**"
+            )
+            state["waiting_for"] = "budget_exceeded_choice"
+            return state
+
     # ═══════════════════════════════════════════════════════════════════════
     # 1. HANDLE PAYMENT TYPE
     # ═══════════════════════════════════════════════════════════════════════
@@ -204,14 +252,14 @@ def budget_agent(state: AgentState) -> AgentState:
                     
                     if user_budget < min_p:
                         state["agent_message"] = (
-                            f"⚠️ In **{loc}**, the cheapest **{ptype}** starts at **{min_p:,} EGP**. "
+                            f"\u26a0\ufe0f In **{loc}**, the cheapest **{ptype}** starts at **{min_p:,} EGP**. "
                             f"Your budget is **{user_budget:,} EGP**.\n\n"
-                            f"Would you like to:\n"
-                            f"1. **Increase your budget**\n"
-                            f"2. **Change location** or **property type**"
+                            f"What would you like to do?\n\n"
+                            f"1\ufe0f\u20e3 **Increase my budget**\n"
+                            f"2\ufe0f\u20e3 **Change location**\n"
+                            f"3\ufe0f\u20e3 **Change property type**"
                         )
-                        state["budget"] = None  # Reset to re-ask
-                        state["waiting_for"] = "cash_budget"
+                        state["waiting_for"] = "budget_exceeded_choice"
                         return state
                 
                 else:  # installments
@@ -221,18 +269,20 @@ def budget_agent(state: AgentState) -> AgentState:
                     user_mi = state.get("monthlyinstall", 0)
                     
                     if user_dp < min_dp or user_mi < min_mi:
+                        issues = []
+                        if user_dp < min_dp:
+                            issues.append(f"• Minimum down payment required: **{min_dp:,} EGP** (yours: {user_dp:,})") 
+                        if user_mi < min_mi:
+                            issues.append(f"• Minimum monthly installment required: **{min_mi:,} EGP** (yours: {user_mi:,})")
                         state["agent_message"] = (
-                            f"⚠️ Market prices in **{loc}** require:\n"
-                            f"• Minimum down payment: **{min_dp:,} EGP**\n"
-                            f"• Minimum monthly installment: **{min_mi:,} EGP**\n\n"
-                            f"Your current budget:\n"
-                            f"• Down payment: **{user_dp:,} EGP**\n"
-                            f"• Monthly: **{user_mi:,} EGP**\n\n"
-                            f"Please provide updated figures or change your location/property type."
+                            f"\u26a0\ufe0f Market prices in **{loc}** for **{ptype}** via installments are higher than your current figures:\n\n"
+                            + "\n".join(issues)
+                            + "\n\nWhat would you like to do?\n\n"
+                            "1\ufe0f\u20e3 **Increase my budget / installments**\n"
+                            "2\ufe0f\u20e3 **Change location**\n"
+                            "3\ufe0f\u20e3 **Change property type**"
                         )
-                        state["Downpayment"] = None
-                        state["monthlyinstall"] = None
-                        state["waiting_for"] = "downpayment"
+                        state["waiting_for"] = "budget_exceeded_choice"
                         return state
 
     # ═══════════════════════════════════════════════════════════════════════

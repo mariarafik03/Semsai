@@ -207,4 +207,3 @@ def _clear_turn_fields(state: dict) -> None:
     - Do NOT touch waiting_for — agents own that.
     """
     state[AGENT_MSG_KEY] = None
-    state["user_input"]  = None

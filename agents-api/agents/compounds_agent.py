@@ -243,6 +243,53 @@ def _build_units_pipeline(
 def compounds_agent(state: AgentState):
     print("\n--- Compounds Agent ---")
 
+    user_input = (state.get("user_input") or "").strip()
+    waiting    = state.get("waiting_for") or ""
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Handle "no units found" choice BEFORE running any DB query
+    # ═══════════════════════════════════════════════════════════════════════
+    if waiting == "no_units_response":
+        state["waiting_for"] = None
+        choice_text = user_input.lower()
+
+        if "1" in choice_text or "increase" in choice_text or "budget" in choice_text:
+            # Increase budget — reset all budget fields; router → budget_agent
+            state["budget"]      = None
+            state["budget_valid"] = None
+            if state.get("payment_type") == "installments":
+                state["Downpayment"]    = None
+                state["monthlyinstall"] = None
+            # candidate_compounds stays None → router hits compounds_agent again after budget_agent
+            print("→ No-units choice: increase budget")
+            return state
+
+        elif "2" in choice_text or "location" in choice_text:
+            # Change location — reset location + type + budget; router → location_agent
+            state["location"]      = None
+            state["typeofproperty"] = None
+            state["budget_valid"]   = None
+            print("→ No-units choice: change location")
+            return state
+
+        elif "3" in choice_text or "type" in choice_text or "property" in choice_text:
+            # Change property type — reset type + budget; router → location_agent (type section)
+            state["typeofproperty"] = None
+            state["budget_valid"]   = None
+            print("→ No-units choice: change property type")
+            return state
+
+        else:
+            # Unclear answer — re-ask
+            state["agent_message"] = (
+                "I didn't catch that. Please choose one of:\n\n"
+                "1\ufe0f\u20e3 **Increase my budget**\n"
+                "2\ufe0f\u20e3 **Change location**\n"
+                "3\ufe0f\u20e3 **Change property type**"
+            )
+            state["waiting_for"] = "no_units_response"
+            return state
+
     load_dotenv()
     uri = os.getenv("MONGO_URI")
     if not uri:
@@ -295,6 +342,33 @@ def compounds_agent(state: AgentState):
             })
 
         state["candidate_compounds"] = candidate_compounds
+
+        # ─────────────────────────────────────────────────────────────────
+        if not candidate_compounds:
+            loc      = state.get("location", "your selected area")
+            ptype    = state.get("typeofproperty", "your selected property type")
+            bval     = state.get("budget")
+            bstr     = f"{int(bval):,} EGP" if bval else "your budget"
+            pay_type = state.get("payment_type", "")
+
+            if pay_type == "installments":
+                dp  = state.get("Downpayment", 0)
+                mi  = state.get("monthlyinstall", 0)
+                bstr = f"down payment {dp:,} EGP / monthly {mi:,} EGP"
+
+            print(f"⚠️  No units found for {ptype} in {loc} within {bstr}")
+            state["agent_message"] = (
+                f"🔍 I searched our database but couldn't find any "
+                f"**{ptype}** units in **{loc}** within **{bstr}**.\n\n"
+                f"Don't worry \u2014 here's what you can do:\n\n"
+                f"1\ufe0f\u20e3 **Increase my budget** \u2014 I'll look for more options\n"
+                f"2\ufe0f\u20e3 **Change location** \u2014 let's try a different area\n"
+                f"3\ufe0f\u20e3 **Change property type** \u2014 maybe a different type fits your budget"
+            )
+            # Keep candidate_compounds = None so the router comes back here after user responds
+            state["candidate_compounds"] = None
+            state["waiting_for"]         = "no_units_response"
+            return state
 
         print(f"Type used for comparison: {wanted_type}")
         print(f"Location filter (units): {location}")
