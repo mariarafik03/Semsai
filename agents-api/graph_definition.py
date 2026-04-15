@@ -37,52 +37,67 @@ from agents.final_output_agent       import final_output_agent
 # ---------------------------------------------------------------------------
 
 def state_router(state: dict) -> str:
+    """
+    ✅ FIXED: Added debug logging and proper routing order
+    """
     # ── 1. Interruption Check (CRITICAL) ────────────────────────────────
     # If an agent is waiting for user input, we must stop the graph execution.
     if state.get("waiting_for"):
+        print(f"🛑 Router: Waiting for '{state.get('waiting_for')}' → END")
         return END
 
     # ── 2. Hard stop ───────────────────────────────────────────────────
     if state.get("abort"):
+        print(f"🛑 Router: Abort flag set → END")
         return END
 
-    # ── 3. Location + property type ──────────────────────────────────────
-    if not state.get("location") or not state.get("typeofproperty"):
-        return "location_agent"
-
-    # ── 4. Budget & Payment (Using the new validation logic) ─────────────
-    # Move to budget_agent if payment type is missing OR budget isn't validated yet
+    # ── 3. Budget & Payment (MUST come BEFORE location check) ───────────
+    # ✅ FIX: Check budget FIRST, because we need payment info regardless of location
     if not state.get("payment_type") or not state.get("budget_valid"):
+        print(f"→ Router: Missing payment/budget → budget_agent")
         return "budget_agent"
+
+    # ── 4. Location + property type ──────────────────────────────────────
+    if not state.get("location") or not state.get("typeofproperty"):
+        print(f"→ Router: Missing location/property → location_agent")
+        return "location_agent"
 
     # ── 5. Compound discovery ────────────────────────────────────────────
     if state.get("candidate_compounds") is None:
+        print(f"→ Router: Finding compounds → compounds_agent")
         return "compounds_agent"
 
     # ── 6. Developer filtering ───────────────────────────────────────────
     if state.get("final_compounds") is None:
+        print(f"→ Router: Filtering developers → developers_agent")
         return "developers_agent"
 
     # ── 7. Feature extraction ────────────────────────────────────────────
-    if state.get("compound_features_stats") is None:    
+    if state.get("compound_features_stats") is None:
+        print(f"→ Router: Extracting features → compound_features_agent")
         return "compound_features_agent"
 
     # ── 8. Embedding generation ──────────────────────────────────────────
     if state.get("embeddings") is None:
+        print(f"→ Router: Generating embeddings → embedding_agent")
         return "embedding_agent"
 
     # ── 9. User preferences interview ────────────────────────────────────
     if state.get("user_preferences") is None:
+        print(f"→ Router: Collecting preferences → user_preferences_agent")
         return "user_preferences_agent"
 
     # ── 10. Vector ranking ───────────────────────────────────────────────
     if state.get("ranked_compounds") is None:
+        print(f"→ Router: Ranking compounds → compound_ranking_agent")
         return "compound_ranking_agent"
 
     # ── 11. Final output ─────────────────────────────────────────────────
     if state.get("final_best_compound") is None:
+        print(f"→ Router: Generating final output → final_output_agent")
         return "final_output_agent"
 
+    print(f"✓ Router: All complete → END")
     return END
 
 
@@ -121,3 +136,5 @@ for _node in [
     "final_output_agent",
 ]:
     graph.add_edge(_node, state_router)
+
+print("✓ Graph compiled successfully")

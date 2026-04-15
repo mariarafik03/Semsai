@@ -1,141 +1,210 @@
 """
-graph_definition.py
-───────────────────
-Builds and exports the compiled StateGraph singleton.
+graph_runner.py — async, HTTP-safe execution engine for the StateGraph.
 
-Full pipeline (HTTP-safe):
-    extraction_agent
-    → budget_agent            (payment_type + budget)
-    → location_agent          (location + typeofproperty)
-    → compounds_agent         (candidate_compounds)
-    → developers_agent        (final_compounds)
-    → compound_features_agent (compound_features_stats)
-    → embedding_agent         (embeddings)
-    → user_preferences_agent  (user_preferences)
-    → compound_ranking_agent  (ranked_compounds)
-    → final_output_agent      (final_best_compound)
-    → END
+HOW THE PAUSE / RESUME PATTERN WORKS
+─────────────────────────────────────
+Turn N   : agent needs input
+             → sets  state["waiting_for"]  = "<field_name>"
+             → sets  state["agent_message"] = "<question to show user>"
+             → runner returns ChatResponse to client immediately
+
+Turn N+1 : client sends next message
+             → runner puts message into state["user_input"]
+             → KEEPS state["waiting_for"] so the agent knows which field
+               it was waiting for
+             → graph resumes on the SAME node
+             → agent reads user_input + waiting_for, processes the answer,
+               clears waiting_for itself, then returns
+             → runner sees waiting_for is now None → continues stepping
+
+CRITICAL RULES
+──────────────
+1. graph_runner NEVER clears waiting_for — only agents clear it.
+2. user_input is set fresh every turn and consumed by the agent.
+3. _graph_current_node is the cursor; it is updated by graph.step().
 """
 
+import asyncio
+from typing import Tuple
 from graph import StateGraph, END
 
-# ── Agent imports ─────────────────────────────────────────────────────────────
-from agents.extraction_agent         import extraction_agent
-from agents.budget_agent             import budget_agent
-from agents.location_agent           import location_agent
-from agents.compounds_agent          import compounds_agent
-from agents.developers_agent         import developers_agent
-from agents.compound_features_agent  import compound_features_agent
-from agents.embedding_agent          import embedding_agent
-from agents.user_preferences_agent   import user_preferences_agent
-from agents.compound_ranking_agent   import compound_ranking_agent
-from agents.final_output_agent       import final_output_agent
+# ---------------------------------------------------------------------------
+# Sentinel keys stored in state
+# ---------------------------------------------------------------------------
+WAITING_FOR_KEY  = "waiting_for"    # str  — which field the agent is waiting for
+AGENT_MSG_KEY    = "agent_message"  # str  — the question/message shown to the user
+GRAPH_NODE_KEY   = "_graph_current_node"
+
+# Maximum steps per turn to prevent infinite loops
+MAX_STEPS_PER_TURN = 60
 
 
 # ---------------------------------------------------------------------------
-# State Router — single source of truth for all routing
+# Initial (blank) state factory
 # ---------------------------------------------------------------------------
 
-def state_router(state: dict) -> str:
+def make_initial_state(session_id: str) -> dict:
+    """Return a fresh state dict for a brand-new session."""
+    return {
+        # ── identity ──────────────────────────────────────────────────────
+        "user_id":                session_id,
+        # ── conversation ──────────────────────────────────────────────────
+        "user_input":             None,
+        "agent_message":          None,
+        "waiting_for":            None,
+        # ── domain fields ─────────────────────────────────────────────────
+        "purpose":                None,
+        "pending_confirmation":   None,
+        "budget":                 None,
+        "location":               None,
+        "next_step":              None,
+        "payment_type":           None,
+        "payment_type_confirmed": False,
+        "Downpayment":            None,
+        "monthlyinstall":         None,
+        "retry":                  None,
+        "budget_valid":           None,
+        "breakingquest":          None,
+        "breakingbudget":         None,
+        "breakinginstallments":   None,
+        "candidate_compounds":    None,
+        "final_compounds":        None,
+        "top_compounds":          None,
+        "top_developers":         None,
+        "typeofproperty":         None,
+        "final_candidates":       None,
+        "compound_features_stats": None,
+        "features_limit":         0,
+        "features_force_refresh": False,
+        "candidate_units":        None,
+        "selected_compound":      None,
+        "top_investment_units":   None,
+        "route":                  None,
+        "years":                  None,
+        "ranked_compounds":       None,
+        "user_preferences":       None,
+        "final_best_compound":    None,
+        "final_report":           None,
+        "abort":                  None,
+        "embeddings":             None,
+        # ── graph cursor ──────────────────────────────────────────────────
+        GRAPH_NODE_KEY:           None,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Runner
+# ---------------------------------------------------------------------------
+
+async def run_graph_turn(
+    graph: StateGraph,
+    state: dict,
+    user_message: str,
+) -> Tuple[dict, str, bool]:
     """
-    ✅ FIXED: Added debug logging and proper routing order
+    Execute one conversational turn.
+
+    Parameters
+    ----------
+    graph        : the compiled StateGraph instance
+    state        : current state (loaded from Redis / session store)
+    user_message : the raw text the user just sent
+
+    Returns
+    -------
+    (updated_state, reply_text, is_done)
+        updated_state — must be persisted by the caller
+        reply_text    — the message to send back to the user
+        is_done       — True when the graph has reached END
     """
-    # ── 1. Interruption Check (CRITICAL) ────────────────────────────────
-    # If an agent is waiting for user input, we must stop the graph execution.
-    if state.get("waiting_for"):
-        print(f"🛑 Router: Waiting for '{state.get('waiting_for')}' → END")
-        return END
 
-    # ── 2. Hard stop ───────────────────────────────────────────────────
-    if state.get("abort"):
-        print(f"🛑 Router: Abort flag set → END")
-        return END
+    # ── 1. Inject user message ───────────────────────────────────────────
+    # IMPORTANT: we set user_input but do NOT touch waiting_for.
+    # The resuming agent needs waiting_for to know what it was waiting for.
+    state["user_input"]   = user_message if user_message else None
+    state["agent_message"] = None   # clear previous message
 
-    # ── 4. Location + property type ──────────────────────────────────────
-    if not state.get("location") or not state.get("typeofproperty"):
-        print(f"→ Router: Missing location/property → location_agent")
-        return "location_agent"
-    # ── 3. Budget & Payment (MUST come BEFORE location check) ───────────
-    # ✅ FIX: Check budget FIRST, because we need payment info regardless of location
-    if not state.get("payment_type") or not state.get("budget_valid"):
-        print(f"→ Router: Missing payment/budget → budget_agent")
-        return "budget_agent"
+    # ── 2. Safety: detect stale waiting_for with empty message ──────────
+    # If waiting_for is set but user sent nothing, just re-ask the question.
+    if state.get(WAITING_FOR_KEY) and not user_message:
+        reply = state.get(AGENT_MSG_KEY) or "Please provide the requested information."
+        return state, reply, False
 
-   
+    # ── 3. Step through graph until pause or END ─────────────────────────
+    loop = asyncio.get_event_loop()
+    steps = 0
+    last_node = None
 
-    # ── 5. Compound discovery ────────────────────────────────────────────
-    if state.get("candidate_compounds") is None:
-        print(f"→ Router: Finding compounds → compounds_agent")
-        return "compounds_agent"
+    while True:
+        steps += 1
 
-    # ── 6. Developer filtering ───────────────────────────────────────────
-    if state.get("final_compounds") is None:
-        print(f"→ Router: Filtering developers → developers_agent")
-        return "developers_agent"
+        if steps > MAX_STEPS_PER_TURN:
+            reply = (
+                "I seem to be stuck in a loop internally. "
+                "Please try rephrasing your last message."
+            )
+            # Reset cursor so next turn restarts from current node cleanly
+            state["user_input"] = None
+            return state, reply, False
 
-    # ── 7. Feature extraction ────────────────────────────────────────────
-    if state.get("compound_features_stats") is None:
-        print(f"→ Router: Extracting features → compound_features_agent")
-        return "compound_features_agent"
+        # Run the synchronous graph.step() off the event loop
+        state, next_node = await loop.run_in_executor(
+            None, graph.step, state
+        )
 
-    # ── 8. Embedding generation ──────────────────────────────────────────
-    if state.get("embeddings") is None:
-        print(f"→ Router: Generating embeddings → embedding_agent")
-        return "embedding_agent"
+        # ── Graph reached END ────────────────────────────────────────────
+        if next_node == END:
+            reply = (
+                state.get(AGENT_MSG_KEY)
+                or "✅ All done! Your property search is complete."
+            )
+            _clear_turn_fields(state)
+            return state, reply, True
 
-    # ── 9. User preferences interview ────────────────────────────────────
-    if state.get("user_preferences") is None:
-        print(f"→ Router: Collecting preferences → user_preferences_agent")
-        return "user_preferences_agent"
+        # ── Agent needs user input → pause ───────────────────────────────
+        if state.get(WAITING_FOR_KEY):
+            reply = (
+                state.get(AGENT_MSG_KEY)
+                or "Please provide the requested information."
+            )
+            # Clear agent_message (already captured in reply)
+            # but keep waiting_for so next turn's agent can resume.
+            state[AGENT_MSG_KEY] = None
+            state["user_input"]  = None   # consumed; don't leave stale value
+            return state, reply, False
 
-    # ── 10. Vector ranking ───────────────────────────────────────────────
-    if state.get("ranked_compounds") is None:
-        print(f"→ Router: Ranking compounds → compound_ranking_agent")
-        return "compound_ranking_agent"
+        # ── Abort flag set by an agent ───────────────────────────────────
+        if state.get("abort"):
+            reply = (
+                state.get(AGENT_MSG_KEY)
+                or "I'm sorry, I couldn't complete your request. Please try again."
+            )
+            _clear_turn_fields(state)
+            return state, reply, True   # treat as done so client resets
 
-    # ── 11. Final output ─────────────────────────────────────────────────
-    if state.get("final_best_compound") is None:
-        print(f"→ Router: Generating final output → final_output_agent")
-        return "final_output_agent"
+        # ── Infinite-loop guard: same node twice with no waiting_for ─────
+        current_node = state.get(GRAPH_NODE_KEY)
+        if current_node == last_node and not state.get(WAITING_FOR_KEY):
+            reply = (
+                state.get(AGENT_MSG_KEY)
+                or "Something went wrong internally. Please try again."
+            )
+            _clear_turn_fields(state)
+            return state, reply, False
 
-    print(f"✓ Router: All complete → END")
-    return END
+        last_node = current_node
 
 
 # ---------------------------------------------------------------------------
-# Build the graph (singleton)
+# Internal helpers
 # ---------------------------------------------------------------------------
 
-graph = StateGraph()
-
-# ── Nodes ────────────────────────────────────────────────────────────────────
-graph.add_node("extraction_agent",        extraction_agent)
-graph.add_node("budget_agent",            budget_agent)
-graph.add_node("location_agent",          location_agent)
-graph.add_node("compounds_agent",         compounds_agent)
-graph.add_node("developers_agent",        developers_agent)
-graph.add_node("compound_features_agent", compound_features_agent)
-graph.add_node("embedding_agent",         embedding_agent)
-graph.add_node("user_preferences_agent",  user_preferences_agent)
-graph.add_node("compound_ranking_agent",  compound_ranking_agent)
-graph.add_node("final_output_agent",      final_output_agent)
-
-# ── Entry point ──────────────────────────────────────────────────────────────
-graph.set_entry_point("extraction_agent")
-
-# ── Edges (all route through state_router) ───────────────────────────────────
-for _node in [
-    "extraction_agent",
-    "budget_agent",
-    "location_agent",
-    "compounds_agent",
-    "developers_agent",
-    "compound_features_agent",
-    "embedding_agent",
-    "user_preferences_agent",
-    "compound_ranking_agent",
-    "final_output_agent",
-]:
-    graph.add_edge(_node, state_router)
-
-print("✓ Graph compiled successfully")
+def _clear_turn_fields(state: dict) -> None:
+    """
+    Tidy up transient per-turn fields before persisting state.
+    - Clear agent_message (already sent to client).
+    - Clear user_input (consumed this turn).
+    - Do NOT touch waiting_for — agents own that.
+    """
+    state[AGENT_MSG_KEY] = None
+    state["user_input"]  = None
