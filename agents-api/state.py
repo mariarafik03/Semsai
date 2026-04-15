@@ -33,4 +33,7 @@ class AgentState(TypedDict):
     abort: Optional[bool]
     embeddings: Optional[str]
     user_id:Optional[str]
+    min_price_in_market: Optional[float]
+    budget_valid: Optional[bool]
+    budget_retry: Optional[bool]
 
