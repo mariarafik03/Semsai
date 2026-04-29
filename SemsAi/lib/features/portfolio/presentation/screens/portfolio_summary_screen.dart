@@ -8,6 +8,8 @@ import 'package:SemsAi/features/portfolio/presentation/screens/ai_insight_screen
 import 'package:SemsAi/features/portfolio/presentation/screens/whatif_simulator_screen.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/decision_history_screen.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/market_context_screen.dart';
+import 'package:SemsAi/features/portfolio/presentation/screens/inflation_calculator_screen.dart';
+import 'package:SemsAi/features/portfolio/presentation/screens/market_analytics_screen.dart';
 
 class PortfolioSummaryScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -600,6 +602,41 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                   context,
                   MaterialPageRoute(
                     builder: (_) => MarketContextScreen(result: widget.result),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                icon: Icons.calculate_rounded,
+                title: 'Inflation Calc',
+                subtitle: 'Future value estimate',
+                color: const Color(0xFF22C55E),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        InflationCalculatorScreen(result: widget.result),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionCard(
+                icon: Icons.analytics_rounded,
+                title: 'Market Analytics',
+                subtitle: 'Area & developer prices',
+                color: const Color(0xFF3B82F6),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MarketAnalyticsScreen(),
                   ),
                 ),
               ),

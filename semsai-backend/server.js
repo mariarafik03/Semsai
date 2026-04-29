@@ -796,6 +796,179 @@ app.post('/portfolio/matching-units', async (req, res) => {
   }
 });
 
+// ── Market Analytics API ─────────────────────────────────
+// Area price comparison + Developer ranking using existing data.
+// No historical data needed — uses current units collection.
+app.get('/api/market-analytics', async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+
+    // ── 1) Area Price Comparison ──
+    // Aggregate avg price/sqm per location from units + compounds
+    const areaPipeline = [
+      {
+        $lookup: {
+          from: 'compounds',
+          localField: 'compound_id',
+          foreignField: '_id',
+          as: 'compound',
+        },
+      },
+      { $unwind: { path: '$compound', preserveNullAndEmptyArrays: false } },
+      { $match: { price: { $gt: 0 }, area: { $gt: 0 } } },
+      {
+        $addFields: {
+          price_per_sqm: { $divide: ['$price', '$area'] },
+          location: '$compound.location',
+        },
+      },
+      {
+        $group: {
+          _id: '$location',
+          avg_price_per_sqm: { $avg: '$price_per_sqm' },
+          min_price_per_sqm: { $min: '$price_per_sqm' },
+          max_price_per_sqm: { $max: '$price_per_sqm' },
+          avg_price: { $avg: '$price' },
+          unit_count: { $sum: 1 },
+          compound_names: { $addToSet: '$compound.name' },
+        },
+      },
+      { $match: { _id: { $ne: null } } },
+      { $sort: { avg_price_per_sqm: -1 } },
+    ];
+
+    const areaStats = await db.collection('units').aggregate(areaPipeline).toArray();
+
+    const areas = areaStats.map((a) => ({
+      location: a._id,
+      avg_price_per_sqm: Math.round(a.avg_price_per_sqm),
+      min_price_per_sqm: Math.round(a.min_price_per_sqm),
+      max_price_per_sqm: Math.round(a.max_price_per_sqm),
+      avg_price: Math.round(a.avg_price),
+      unit_count: a.unit_count,
+      compound_count: a.compound_names ? a.compound_names.length : 0,
+    }));
+
+    // ── 2) Developer Price Ranking ──
+    const devPipeline = [
+      {
+        $lookup: {
+          from: 'compounds',
+          localField: 'compound_id',
+          foreignField: '_id',
+          as: 'compound',
+        },
+      },
+      { $unwind: { path: '$compound', preserveNullAndEmptyArrays: false } },
+      {
+        $lookup: {
+          from: 'developers',
+          localField: 'compound.developer_id',
+          foreignField: '_id',
+          as: 'developer',
+        },
+      },
+      { $unwind: { path: '$developer', preserveNullAndEmptyArrays: false } },
+      { $match: { price: { $gt: 0 }, area: { $gt: 0 } } },
+      {
+        $addFields: {
+          price_per_sqm: { $divide: ['$price', '$area'] },
+        },
+      },
+      {
+        $group: {
+          _id: '$developer.dev_name',
+          avg_price_per_sqm: { $avg: '$price_per_sqm' },
+          min_price: { $min: '$price' },
+          max_price: { $max: '$price' },
+          unit_count: { $sum: 1 },
+          developer_class: { $first: '$developer.Developer_Class' },
+          rating: { $first: '$developer.rating' },
+          compounds: { $addToSet: '$compound.name' },
+          locations: { $addToSet: '$compound.location' },
+        },
+      },
+      { $match: { _id: { $ne: null } } },
+      { $sort: { avg_price_per_sqm: -1 } },
+    ];
+
+    const devStats = await db.collection('units').aggregate(devPipeline).toArray();
+
+    const developers = devStats.map((d) => ({
+      name: d._id,
+      avg_price_per_sqm: Math.round(d.avg_price_per_sqm),
+      min_price: Math.round(d.min_price),
+      max_price: Math.round(d.max_price),
+      unit_count: d.unit_count,
+      developer_class: d.developer_class || '',
+      rating: d.rating || 0,
+      compound_count: d.compounds ? d.compounds.length : 0,
+      locations: d.locations ? d.locations.filter((l) => l) : [],
+    }));
+
+    // ── 3) Property Type Distribution ──
+    const typePipeline = [
+      { $match: { price: { $gt: 0 }, area: { $gt: 0 } } },
+      {
+        $addFields: {
+          price_per_sqm: { $divide: ['$price', '$area'] },
+          resolved_type: { $ifNull: ['$property_type', { $ifNull: ['$type', 'Other'] }] },
+        },
+      },
+      {
+        $group: {
+          _id: '$resolved_type',
+          avg_price_per_sqm: { $avg: '$price_per_sqm' },
+          avg_price: { $avg: '$price' },
+          avg_area: { $avg: '$area' },
+          count: { $sum: 1 },
+        },
+      },
+      { $match: { _id: { $ne: null } } },
+      { $sort: { count: -1 } },
+    ];
+
+    const typeStats = await db.collection('units').aggregate(typePipeline).toArray();
+
+    const propertyTypes = typeStats.map((t) => ({
+      type: t._id,
+      avg_price_per_sqm: Math.round(t.avg_price_per_sqm),
+      avg_price: Math.round(t.avg_price),
+      avg_area: Math.round(t.avg_area),
+      count: t.count,
+    }));
+
+    // ── 4) Overall Summary ──
+    const totalUnits = areas.reduce((sum, a) => sum + a.unit_count, 0);
+    const overallAvg = totalUnits > 0
+      ? Math.round(areas.reduce((sum, a) => sum + a.avg_price_per_sqm * a.unit_count, 0) / totalUnits)
+      : 0;
+
+    const cheapestArea = areas.length > 0 ? areas[areas.length - 1] : null;
+    const expensiveArea = areas.length > 0 ? areas[0] : null;
+
+    return res.json({
+      success: true,
+      data: {
+        areas,
+        developers,
+        property_types: propertyTypes,
+        summary: {
+          total_units: totalUnits,
+          total_areas: areas.length,
+          total_developers: developers.length,
+          overall_avg_price_per_sqm: overallAvg,
+          cheapest_area: cheapestArea ? cheapestArea.location : '',
+          most_expensive_area: expensiveArea ? expensiveArea.location : '',
+        },
+      },
+    });
+  } catch (err) {
+    console.error('Market analytics error:', err);
+    return res.status(500).json({ error: 'Failed to fetch market analytics' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
