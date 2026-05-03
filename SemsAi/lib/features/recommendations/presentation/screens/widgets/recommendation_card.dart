@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/widgets/app_cached_image.dart';
 import 'package:SemsAi/features/recommendations/presentation/screens/compound_detail_screen.dart';
+import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
+import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
 
 class RecommendationCard extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -442,7 +444,17 @@ class _RecommendationCardState extends State<RecommendationCard>
     final beds = unit['bedrooms'];
     final baths = unit['bathrooms'];
 
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        final unitModel = CompoundUnit.fromJson(unit);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => UnitDetailScreen(unit: unitModel),
+          ),
+        );
+      },
+      child: Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
@@ -504,6 +516,7 @@ class _RecommendationCardState extends State<RecommendationCard>
             ),
           ),
         ],
+      ),
       ),
     );
   }

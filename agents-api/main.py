@@ -66,6 +66,21 @@ def _phase_from_state(state: dict) -> str:
 def _build_results(state: dict) -> dict:
     best = state.get("final_best_compound")
     units = state.get("candidate_units") or []
+
+    # Build top_compounds from the new top_compounds_with_units
+    top_compounds_raw = state.get("top_compounds_with_units") or []
+    top_compounds = []
+    for tc in top_compounds_raw:
+        tc_units = tc.get("units") or []
+        top_compounds.append({
+            "compound_id": tc.get("compound_id"),
+            "compound_name": tc.get("compound_name", "Unknown"),
+            "location": tc.get("location", ""),
+            "score": tc.get("score", 0),
+            "units": _json_safe(tc_units[:10]),  # limit to 10 units per compound
+            "above_budget": tc.get("above_budget", False),
+        })
+
     return {
         "purpose": state.get("purpose"),
         "budget": state.get("budget"),
@@ -74,6 +89,7 @@ def _build_results(state: dict) -> dict:
         "payment_type": state.get("payment_type"),
         "best_compound": best or {"status": "no_compound_found"},
         "top_units": _json_safe(units[:5]),
+        "top_compounds": top_compounds,  # NEW: top 3 with units
     }
 
 

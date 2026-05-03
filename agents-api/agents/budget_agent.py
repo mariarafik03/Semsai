@@ -11,6 +11,7 @@ waiting_for values used
 "cash_budget"            → asked for total budget (direct)
 "install_dp"             → asked for down payment only
 "install_mi"             → asked for monthly installment only
+"install_years"          → asked for installment duration (years)
 "location"               → asked for preferred location
 """
 
@@ -29,6 +30,28 @@ def _ask(prompt: str) -> str:
 
 def _digits(text: str) -> str:
     return "".join(filter(str.isdigit, str(text or "")))
+
+
+def _parse_budget(text: str) -> int | None:
+    """Parse budget from text — understands '15 million', '15M', '3.5m', '500k', etc."""
+    import re
+    text = str(text or "").lower().strip().replace(",", "").replace("_", "")
+
+    # Try patterns like '15 million', '15m', '3.5 مليون'
+    m = re.search(r'(\d+\.?\d*)\s*(?:million|مليون|m\b)', text)
+    if m:
+        return int(float(m.group(1)) * 1_000_000)
+
+    m = re.search(r'(\d+\.?\d*)\s*(?:thousand|ألف|الف|k\b)', text)
+    if m:
+        return int(float(m.group(1)) * 1_000)
+
+    # Fallback: plain digits
+    digits = "".join(filter(str.isdigit, text))
+    if digits and len(digits) >= 4:
+        return int(digits)
+
+    return None
 
 
 # ─────────────────────────────────────────────
@@ -136,12 +159,12 @@ def budget_agent(state: AgentState) -> AgentState:
     if not state.get("payment_type"):
 
         if waiting == "payment_type":
-            extracted = _ask(
-                f"Extract payment type: cash or installments.\nUser: {user_input}"
-            ).lower()
-
-            if extracted in ("cash", "installments"):
-                state["payment_type"] = extracted
+            # Simple keyword matching — no LLM needed for "cash" or "installments"
+            if any(x in user_input for x in ["cash", "كاش", "نقد", "كاچ"]):
+                state["payment_type"] = "cash"
+                state["waiting_for"] = None
+            elif any(x in user_input for x in ["install", "تقسيط", "قسط", "اقساط"]):
+                state["payment_type"] = "installments"
                 state["waiting_for"] = None
             else:
                 state["agent_message"] = "Cash or installments?"
@@ -159,10 +182,15 @@ def budget_agent(state: AgentState) -> AgentState:
     if state["payment_type"] == "cash" and not state.get("budget"):
 
         if waiting == "cash_budget":
-            d = _digits(user_input)
-            if d and len(d) >= 4:
-                state["budget"] = int(d)
+            budget = _parse_budget(user_input)
+            if budget and budget >= 1000:
+                state["budget"] = budget
+                state["budget_valid"] = True
                 state["waiting_for"] = None
+                return state
+            else:
+                state["agent_message"] = "Please enter your budget (e.g. 5 million, 500k, 3000000)"
+                state["waiting_for"] = "cash_budget"
                 return state
 
         state["agent_message"] = "What budget range are you considering?"
@@ -170,34 +198,74 @@ def budget_agent(state: AgentState) -> AgentState:
         return state
 
     # ═══════════════════════════════════════════════
-    # STEP 3 — INSTALLMENTS
+    # STEP 3 — INSTALLMENTS (DP → Monthly → Years)
     # ═══════════════════════════════════════════════
 
     if state["payment_type"] == "installments":
 
+        # 3a — Down Payment
         if not state.get("Downpayment"):
-            d = _digits(user_input)
-            if d:
-                state["Downpayment"] = int(d)
+            if waiting == "install_dp":
+                dp = _parse_budget(user_input)
+                if dp and dp >= 1000:
+                    state["Downpayment"] = dp
+                    state["waiting_for"] = None
+                    # Fall through to ask monthly
+                else:
+                    state["agent_message"] = "Please enter your down payment (e.g. 500k, 1 million)"
+                    state["waiting_for"] = "install_dp"
+                    return state
+            else:
+                state["agent_message"] = "How much down payment are you considering?"
+                state["waiting_for"] = "install_dp"
                 return state
 
-            state["agent_message"] = "How much down payment are you considering?"
-            return state
-
+        # 3b — Monthly Installment
         if not state.get("monthlyinstall"):
-            d = _digits(user_input)
-            if d:
-                state["monthlyinstall"] = int(d)
-
-                years = state.get("years") or 8
-                state["budget"] = (
-                    state["Downpayment"] +
-                    state["monthlyinstall"] * 12 * years
-                )
-
+            if waiting == "install_mi":
+                mi = _parse_budget(user_input)
+                if mi and mi >= 100:
+                    state["monthlyinstall"] = mi
+                    state["waiting_for"] = None
+                    # Fall through to ask years
+                else:
+                    state["agent_message"] = "Please enter your monthly installment (e.g. 20k, 50000)"
+                    state["waiting_for"] = "install_mi"
+                    return state
+            else:
+                state["agent_message"] = "What monthly installment works for you?"
+                state["waiting_for"] = "install_mi"
                 return state
 
-            state["agent_message"] = "What monthly installment works for you?"
-            return state
+        # 3c — Installment Duration (Years)
+        if not state.get("years"):
+            if waiting == "install_years":
+                d = _digits(user_input)
+                if d:
+                    yrs = int(d)
+                    if 1 <= yrs <= 15:
+                        state["years"] = yrs
+                        state["waiting_for"] = None
+                    else:
+                        state["agent_message"] = "Please enter a valid number of years (1-15)"
+                        state["waiting_for"] = "install_years"
+                        return state
+                else:
+                    state["agent_message"] = "Please enter the number of years (1-15)"
+                    state["waiting_for"] = "install_years"
+                    return state
+            else:
+                state["agent_message"] = "How many years for the installment plan? (max 15 years)"
+                state["waiting_for"] = "install_years"
+                return state
+
+        # 3d — Calculate total budget
+        if not state.get("budget_valid"):
+            state["budget"] = (
+                state["Downpayment"] +
+                state["monthlyinstall"] * 12 * state["years"]
+            )
+            state["budget_valid"] = True
+            print(f"  💰 Installment budget: DP={state['Downpayment']:,} + {state['monthlyinstall']:,}/mo × {state['years']}y = {state['budget']:,}")
 
     return state
