@@ -358,6 +358,20 @@ def compounds_agent(state: AgentState):
 
         results = list(db["units"].aggregate(pipeline, allowDiskUse=True))
 
+        # ── FALLBACK: if no compounds within budget, find the cheapest available ──
+        above_budget = False
+        if not results:
+            print("  ⚠️ No compounds within budget. Fetching closest above budget...")
+            fallback_pipeline = _build_units_pipeline(
+                wanted_type=wanted_type,
+                location=location,
+                budget=999_999_999_999,  # effectively no budget limit
+                payment_type=payment_type,
+                limit=10
+            )
+            results = list(db["units"].aggregate(fallback_pipeline, allowDiskUse=True))
+            above_budget = True
+
         candidate_compounds: List[Dict[str, Any]] = []
         for r in results:
             name = (r.get("compound_name") or "").strip()
@@ -371,6 +385,7 @@ def compounds_agent(state: AgentState):
                 "payment_type_used": payment_type or "any",
                 "sale_type_used": r.get("sale_type_used"),
                 "min_unit_price": float(r.get("min_unit_price") or 0),
+                "above_budget": above_budget,
             })
 
         state["candidate_compounds"] = candidate_compounds
@@ -406,7 +421,10 @@ def compounds_agent(state: AgentState):
         print(f"Location filter (units): {location}")
         print(f"Payment type (state): {state.get('payment_type')} -> normalized: {payment_type or 'any'}")
         print(f"Budget: {format_price(budget)}")
-        print(f"Top compounds within budget: {len(candidate_compounds)}")
+        if above_budget:
+            print(f"⚠️ FALLBACK: showing closest above budget ({len(candidate_compounds)} compounds)")
+        else:
+            print(f"Top compounds within budget: {len(candidate_compounds)}")
 
         for c in candidate_compounds[:10]:
             print(

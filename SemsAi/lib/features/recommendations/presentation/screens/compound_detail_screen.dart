@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/utils/price_formatter.dart';
+import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
+import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
 
 class CompoundDetailScreen extends StatelessWidget {
   final Map<String, dynamic> compound;
@@ -281,7 +283,17 @@ class _UnitCard extends StatelessWidget {
 
     final isVilla = type.toLowerCase().contains('villa');
 
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        final unitModel = CompoundUnit.fromJson(unit);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => UnitDetailScreen(unit: unitModel),
+          ),
+        );
+      },
+      child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -359,6 +371,7 @@ class _UnitCard extends StatelessWidget {
             ),
         ],
       ),
+    ),
     );
   }
 
