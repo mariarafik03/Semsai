@@ -82,7 +82,39 @@ async def _persist_user_data(user_id: str, session_id: str, state: dict) -> None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Endpoint
+# Helpers
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _normalize_state(state) -> dict:
+    """Ensure state is always a plain dict."""
+    if isinstance(state, dict):
+        return state
+    if hasattr(state, "model_dump"):
+        return state.model_dump()
+    return dict(state)
+
+
+async def _run_turn(session_id: str, state: dict, message: str, user_id: str | None = None):
+    """Shared logic: run one graph turn, save state, return (state, reply, done)."""
+    try:
+        state, reply, is_done = await run_graph_turn(graph, state, message)
+    except Exception as exc:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal error: {exc}")
+
+    state = _normalize_state(state)
+    await save_state(session_id, state)
+    print(f"✓ State saved | phase: {_phase(state)} | done: {is_done}")
+    print(f"✓ Reply: {reply[:100]}...")
+
+    if is_done and user_id:
+        asyncio.create_task(_persist_user_data(user_id, session_id, state))
+
+    return state, reply, is_done
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Primary endpoint
 # ─────────────────────────────────────────────────────────────────────────────
 
 @router.post("/chat", response_model=ChatResponse)
@@ -108,50 +140,20 @@ async def chat(request: ChatRequest) -> ChatResponse:
             )
         session_id = request.session_id
         print(f"\n{'='*60}\n💬 /chat — session_id: {session_id}\n{'='*60}")
-        print(f"✓ State loaded from Redis")
     else:
         session_id = new_session_id()
         state = make_initial_state(session_id)
-        # Attach real user_id if provided
         if request.user_id:
-            if isinstance(state, dict):
-                state["user_id"] = request.user_id
-            else:
-                state.user_id = request.user_id
+            state["user_id"] = request.user_id
         print(f"\n{'='*60}\n🆕 /chat — new session_id: {session_id}\n{'='*60}")
 
-    # Ensure state is always a plain dict for graph_runner
-    if hasattr(state, "model_dump"):
-        state = state.model_dump()
-    elif not isinstance(state, dict):
-        state = dict(state)
-
+    state = _normalize_state(state)
     print(f"📨 User message: {request.message}")
     print(f"🔍 Current waiting_for: {state.get('waiting_for')}")
 
-    # ── 2. Run one graph turn ─────────────────────────────────────────────────
-    try:
-        state, reply, is_done = await run_graph_turn(graph, state, request.message)
-    except Exception as exc:
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Internal error: {exc}")
+    # ── 2. Run turn, save, return ─────────────────────────────────────────────
+    state, reply, is_done = await _run_turn(session_id, state, request.message, request.user_id)
 
-    # Normalize back to dict (agents may return Pydantic models)
-    if hasattr(state, "model_dump"):
-        state = state.model_dump()
-    elif not isinstance(state, dict):
-        state = dict(state)
-
-    # ── 3. Persist state ──────────────────────────────────────────────────────
-    await save_state(session_id, state)
-    print(f"✓ State saved | phase: {_phase(state)} | done: {is_done}")
-    print(f"✓ Reply: {reply[:100]}...")
-
-    # ── 4. On completion: persist user preferences (non-blocking) ────────────
-    if is_done and request.user_id:
-        asyncio.create_task(_persist_user_data(request.user_id, session_id, state))
-
-    # ── 5. Build response ─────────────────────────────────────────────────────
     return ChatResponse(
         session_id=session_id,
         message=reply,
@@ -159,3 +161,96 @@ async def chat(request: ChatRequest) -> ChatResponse:
         done=is_done,
         results=_results(state) if is_done else None,
     )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Legacy shims — keep the old URLs working while the frontend migrates
+# Both endpoints delegate entirely to the shared _run_turn helper.
+# ─────────────────────────────────────────────────────────────────────────────
+
+from fastapi import Request as FastAPIRequest  # noqa: E402 (import inside module is fine)
+
+
+@router.post("/chat/start")
+async def chat_start(request: FastAPIRequest):
+    """
+    Legacy endpoint — kept for backward compatibility.
+    Creates a new session and returns the opening greeting.
+    Clients should migrate to POST /chat (omit session_id).
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    session_id = body.get("session_id") or new_session_id()
+    user_id    = body.get("user_id")
+
+    print(f"\n{'='*60}\n📝 /chat/start — session_id: {session_id}\n{'='*60}")
+
+    state = _normalize_state(make_initial_state(session_id))
+    if user_id:
+        state["user_id"] = user_id
+
+    state, reply, is_done = await _run_turn(session_id, state, "", user_id)
+
+    return {
+        "session_id": session_id,
+        "message":    reply,
+        "phase":      _phase(state),
+        "done":       is_done,
+    }
+
+
+@router.post("/chat/respond")
+async def chat_respond(request: FastAPIRequest):
+    """
+    Legacy endpoint — kept for backward compatibility.
+    Continues an existing session with one user message.
+    Clients should migrate to POST /chat (include session_id).
+    """
+    try:
+        body = await request.json()
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON: {exc}")
+
+    session_id = body.get("session_id")
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id is required")
+
+    message = (body.get("message") or "").strip()
+    user_id = body.get("user_id")
+
+    print(f"\n{'='*60}\n💬 /chat/respond — session_id: {session_id}\n{'='*60}")
+
+    state = await load_state(session_id)
+    if state is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Session '{session_id}' not found or expired. Please start a new chat.",
+        )
+
+    state = _normalize_state(state)
+
+    if not message:
+        return {
+            "session_id": session_id,
+            "message":    "Please type a message.",
+            "phase":      _phase(state),
+            "done":       False,
+        }
+
+    print(f"📨 User message: {message}")
+    print(f"🔍 Current waiting_for: {state.get('waiting_for')}")
+
+    state, reply, is_done = await _run_turn(session_id, state, message, user_id)
+
+    response = {
+        "session_id": session_id,
+        "message":    reply,
+        "phase":      _phase(state),
+        "done":       is_done,
+    }
+    if is_done:
+        response["results"] = _results(state)
+    return response
