@@ -146,37 +146,29 @@ async def chat_start(request: Request):
         print(f"📝 /chat/start — session_id: {session_id}")
         print(f"{'='*60}")
 
-        # make_initial_state() returns a plain dict (from graph_runner.py)
+        # Don't run the graph at all for /chat/start
+        # Just create the session and return a welcome message
         state = make_initial_state(session_id)
-
-        # Run first graph turn (extraction_agent asks the first question)
-        state, reply, done = await run_graph_turn(graph, state, "")
-
-        # FIX: normalize to dict before saving / reading
         state = _to_dict(state)
         await save_state(session_id, state)
-        print(f"✓ State saved to Redis for session {session_id}")
-
+        
+        welcome_message = "Hello! I'm your real estate assistant. What type of property are you looking for? (e.g., villa, apartment, townhouse)"
+        
         response = {
             "session_id": session_id,
-            "message": reply,
-            "phase": _phase_from_state(state),
-            "done": done,
+            "message": welcome_message,
+            "phase": "greeting",
+            "done": False,
             "state": _json_safe(state),
         }
-
-        if done:
-            response["results"] = _build_results(state)
-
-        print(f"✓ /chat/start response: {reply[:100]}...")
+        
+        print(f"✓ /chat/start response: {welcome_message[:100]}...")
         return response
 
     except Exception as e:
         print(f"❌ /chat/start error: {e}")
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"chat_start failed: {e}") from e
-
-
 # ---------------------------------------------------------------------------
 # /chat/respond — continue existing session
 # ---------------------------------------------------------------------------
