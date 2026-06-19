@@ -16,6 +16,8 @@ WORKFLOW
 4. If field valid → clear waiting_for
 """
 
+import starlette
+import starlette
 from state import AgentState
 from agents.utils.extractors import extract_location
 from agents.utils.validators import validate_location
@@ -112,5 +114,12 @@ def location_agent(state: AgentState) -> AgentState:
     # ══════════════════════════════════════════════════════════════════
     # STEP 3: Field is valid, nothing to do
     # ══════════════════════════════════════════════════════════════════
-    state.sync_to_legacy()
+    if state.context.location and not state.context.location_normalized:
+        from agents.utils.validators import validate_location
+        db = get_db()
+        is_valid, normalized, _ = validate_location(state.context.location, db)
+        if is_valid:
+            state.context.location_normalized = normalized
+            state.sync_to_legacy()
+
     return state
