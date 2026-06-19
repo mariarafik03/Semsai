@@ -1,6 +1,26 @@
 END = "END"
 
 
+def _state_get(state, key, default=None):
+    """
+    Uniform read helper — works for both dict state (HTTP/Redis path)
+    and Pydantic AgentState objects (in-process / test path).
+    """
+    if isinstance(state, dict):
+        return state.get(key, default)
+    return getattr(state, key, default)
+
+
+def _state_set(state, key, value):
+    """
+    Uniform write helper — works for both dict and Pydantic state.
+    """
+    if isinstance(state, dict):
+        state[key] = value
+    else:
+        setattr(state, key, value)
+
+
 class StateGraph:
     def __init__(self):
         self.nodes = {}
@@ -20,13 +40,14 @@ class StateGraph:
 
     def step(self, state):
         # Restore cursor from state (HTTP mode) or use entry_point
-        if state.get("_graph_current_node") is not None:
-            self._current_node = state["_graph_current_node"]
+        current_cursor = _state_get(state, "_graph_current_node")
+        if current_cursor is not None:
+            self._current_node = current_cursor
         else:
             self._current_node = self.entry_point
 
         current_node = self._current_node
-        state["_graph_current_node"] = current_node  # persist before agent (for NeedInput)
+        _state_set(state, "_graph_current_node", current_node)  # persist before agent
         fn = self.nodes[current_node]
 
         new_state = fn(state)       # run the agent
@@ -35,14 +56,14 @@ class StateGraph:
 
         # HTTP pause mode: agent asked a question and is waiting for user input.
         # Keep cursor on the SAME node so next turn resumes this agent.
-        if state.get("waiting_for"):
+        if _state_get(state, "waiting_for"):
             self._current_node = current_node
-            state["_graph_current_node"] = current_node
+            _state_set(state, "_graph_current_node", current_node)
             return state, current_node
 
         edge = self.edges[current_node]
         next_node = edge(state) if callable(edge) else edge
 
         self._current_node = next_node  # advance cursor
-        state["_graph_current_node"] = next_node  # persist for HTTP mode
+        _state_set(state, "_graph_current_node", next_node)   # persist for HTTP mode
         return state, next_node

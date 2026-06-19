@@ -1,167 +1,79 @@
 """
-agents/extraction_agent.py  (HTTP-safe refactor)
-─────────────────────────────────────────────────
-Turn 1 (waiting_for is None, user_input is None):
-    → greet the user, set waiting_for = "opening_message", return
+extraction_agent.py — Extract ALL fields from the user's first message
 
-Turn 2 (waiting_for == "opening_message", user_input has their text):
-    → extract fields from user_input, update state, clear waiting_for, return
+RESPONSIBILITY
+──────────────
+Extract all possible fields from user's initial message.
+Only saves high-confidence extractions to avoid false positives.
+Validation happens in specialized agents.
+
+WORKFLOW
+────────
+1. Extract all fields at once from state.user_input
+2. Save HIGH-confidence extractions only to state.context
+3. Log extraction results
 """
 
-import json
 from state import AgentState
-from main_helpers import ask_ollama
-# Import the new normalization logic
-from .Normalization import normalize_location
-
-VALID_PURPOSES      = {"rent", "invest", "live"}
-VALID_PAYMENT_TYPES = {"cash", "installments"}
-VALID_PROPERTY_TYPES = {"Apartment", "Villa", "Chalet"}
-
-PROPERTY_ALIASES = {
-    "villa":      "Villa",
-    "vila":       "Villa",
-    "apartment":  "Apartment",
-    "flat":       "Apartment",
-    "chalet":     "Chalet",
-}
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
-def _normalize_purpose(raw: str) -> str | None:
-    raw = raw.strip().lower()
-    return raw if raw in VALID_PURPOSES else None
-
-
-def _normalize_payment_type(raw: str) -> str | None:
-    raw = raw.strip().lower()
-    return raw if raw in VALID_PAYMENT_TYPES else None
-
-
-def _normalize_property_type(raw: str) -> str | None:
-    raw = raw.strip().lower()
-    for alias, canonical in PROPERTY_ALIASES.items():
-        if alias in raw:
-            return canonical
-    return None
-
-
-def _parse_numeric(raw) -> int | None:
-    if raw is None:
-        return None
-
-    raw_str = str(raw).strip().lower().replace(",", "").replace("_", "")
-
-    multiplier = 1
-    if "m" in raw_str:
-        multiplier = 1_000_000
-    elif "k" in raw_str:
-        multiplier = 1_000
-
-    try:
-        number = float("".join(ch for ch in raw_str if ch.isdigit() or ch == "."))
-        return int(number * multiplier)
-    except:
-        return None
-
-
-# ---------------------------------------------------------------------------
-# Agent (re-entrant, no input())
-# ---------------------------------------------------------------------------
+from agents.utils.extractors import extract_all_fields
 
 def extraction_agent(state: AgentState) -> AgentState:
     """
-    Re-entrant entry-point agent that uses Normalization.py for location mapping.
+    Extract all possible fields from user's initial message.
+    
+    Only saves high-confidence extractions to avoid false positives.
+    Validation happens in specialized agents.
+    
+    Parameters
+    ----------
+    state : AgentState
+        Current conversation state
+    
+    Returns
+    -------
+    AgentState
+        Updated state with extracted fields in context
     """
-
-    # ── Turn 2: we have the user's opening message ───────────────────────
-    if state.get("waiting_for") == "opening_message":
-        user_input = (state.get("user_input") or "").strip()
-        state["waiting_for"] = None   # clear pause flag
-
-        if not user_input:
-            state["user_input"] = ""
-            return state
-
-        # ---- LLM extraction ----
-        extraction_prompt = f"""
-You are a real estate data extraction engine.
-From the following user message, extract as many of these fields as you can.
-Only include a field if the user **clearly** mentioned it; do NOT guess.
-
-Fields to extract:
-- purpose        : one of "rent", "invest", "live"
-- budget         : total budget in EGP as an integer (convert "3M"→3000000, "500k"→500000)
-- location       : area/city name (extract the raw text used by the user)
-- typeofproperty : one of "Apartment", "Villa", "Chalet"
-- payment_type   : one of "cash", "installments"
-- Downpayment    : down-payment in EGP as integer
-- monthlyinstall : monthly installment in EGP as integer
-
-User message: \"{user_input}\"
-
-Respond ONLY with valid JSON. Use null for missing fields.
-"""
-        raw = ask_ollama(extraction_prompt)
-        raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-
-        try:
-            print(f"DEBUG [extraction_agent]: RAW LLM output -> {raw}")
-            extracted = json.loads(raw)
-            print(f"DEBUG [extraction_agent]: Extracted JSON data -> {extracted}")
-        except json.JSONDecodeError:
-            return state
-
-        # Apply extracted values with enhanced location normalization
-        if purpose := _normalize_purpose(extracted.get("purpose") or ""):
-            state["purpose"] = purpose
-
-        if (budget := _parse_numeric(extracted.get("budget"))) and budget > 0:
-            state["budget"] = budget
-
-        # --- IMPROVED LOCATION LOGIC ---
-        raw_loc = (extracted.get("location") or "").strip()
-
-        normalized_loc = None
-
-        # 1. Try extracted location
-        if raw_loc:
-            normalized_loc = normalize_location(raw_loc)
-
-        # 2. ALWAYS fallback to full message
-        if not normalized_loc:
-            normalized_loc = normalize_location(user_input)
-
-        # 3. Apply result
-        if normalized_loc:
-            state["location"] = normalized_loc
-        elif raw_loc:
-            state["location"] = raw_loc.title()
-        # --------------------------------
-
-        if prop_type := _normalize_property_type(extracted.get("typeofproperty") or ""):
-            state["typeofproperty"] = prop_type
-
-        if pay_type := _normalize_payment_type(extracted.get("payment_type") or ""):
-            state["payment_type"] = pay_type
-
-        if (dp := _parse_numeric(extracted.get("Downpayment"))) and dp > 0:
-            state["Downpayment"] = dp
-
-        if (mi := _parse_numeric(extracted.get("monthlyinstall"))) and mi > 0:
-            state["monthlyinstall"] = mi
-
+    
+    print("\n--- Extraction Agent ---")
+    
+    # Handle empty input
+    if not state.user_input or not state.user_input.strip():
+        print("⚠️ No user input to extract from")
+        state.sync_to_legacy()
         return state
-
-    # ── Turn 1: greet and ask for opening message ────────────────────────
-    greeting = ask_ollama(
-        "You are a friendly, premium real estate assistant in Egypt. "
-        "Start a warm short conversation and invite the user to tell you everything "
-        "they have in mind about the property they are looking for."
-    )
-
-    state["agent_message"] = greeting
-    state["waiting_for"]   = "opening_message"
+    
+    # Extract all fields at once
+    extracted = extract_all_fields(state.user_input)
+    
+    # Track successful extractions
+    extracted_count = 0
+    
+    # Save HIGH-confidence extractions only
+    for field_name, (value, confidence) in extracted.items():
+        if value and confidence == "high":
+            # Map field names to context attributes
+            if field_name == "location":
+                state.context.location = value
+            elif field_name == "property_type":
+                state.context.property_type = value
+            elif field_name == "payment_type":
+                state.context.payment_type = value
+            elif field_name == "budget":
+                state.context.budget = value
+            elif field_name == "downpayment":
+                state.context.downpayment = value
+            elif field_name == "monthly_installment":
+                state.context.monthly_installment = value
+            
+            print(f"  ✓ {field_name}: {value}")
+            extracted_count += 1
+    
+    # Summary
+    if extracted_count > 0:
+        print(f"📊 Extracted {extracted_count}/6 fields with high confidence")
+    else:
+        print("ℹ️ No high-confidence extractions found (other agents will ask)")
+    
+    state.sync_to_legacy()
     return state

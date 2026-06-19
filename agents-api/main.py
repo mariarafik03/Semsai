@@ -2,7 +2,6 @@ import os
 import sys
 
 # Ensure the directory containing main.py is in the Python path
-# This allows 'import api' and others to work even if the folder has a hyphen.
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
@@ -19,15 +18,75 @@ from graph_definition import graph
 
 
 # ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _json_safe(data) -> dict:
+    """Serialize anything (dict or Pydantic model) to a plain JSON-safe dict."""
+    if data is None:
+        return {}
+    if hasattr(data, "model_dump"):        # Pydantic v2
+        data = data.model_dump()
+    elif hasattr(data, "dict"):            # Pydantic v1
+        data = data.dict()
+    return json.loads(json.dumps(data, default=str))
+
+
+def _to_dict(state) -> dict:
+    """
+    Normalize state to a plain dict regardless of whether graph_runner /
+    agents returned a dict or a Pydantic AgentState object.
+    Always call this before:
+      - saving to Redis
+      - reading with state.get(...)
+      - building response payloads
+    """
+    if state is None:
+        return {}
+    if isinstance(state, dict):
+        return state
+    # Pydantic model
+    if hasattr(state, "model_dump"):
+        return state.model_dump()
+    if hasattr(state, "dict"):
+        return state.dict()
+    return dict(state)
+
+
+def _phase_from_state(state: dict) -> str:
+    if state.get("final_best_compound") or (
+        state.get("context", {}) or {}
+    ).get("final_best_compound"):
+        return "complete"
+    if state.get("waiting_for"):
+        return "asking"
+    return state.get("_graph_current_node") or "processing"
+
+
+def _build_results(state: dict) -> dict:
+    # Support both legacy top-level fields and nested context
+    ctx = state.get("context") or {}
+    best  = state.get("final_best_compound") or ctx.get("final_best_compound")
+    units = state.get("candidate_units") or ctx.get("candidate_units") or []
+    return {
+        "purpose":       state.get("purpose"),
+        "budget":        state.get("budget") or ctx.get("budget"),
+        "location":      state.get("location") or ctx.get("location"),
+        "property_type": state.get("typeofproperty") or ctx.get("property_type"),
+        "payment_type":  state.get("payment_type") or ctx.get("payment_type"),
+        "best_compound": best or {"status": "no_compound_found"},
+        "top_units":     _json_safe(units[:5]),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Lifespan  (startup / shutdown)
 # ---------------------------------------------------------------------------
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ── Startup ──────────────────────────────────────────────────────────
     print("🚀  Real-estate assistant API starting…")
     yield
-    # ── Shutdown ─────────────────────────────────────────────────────────
     print("🛑  Shutting down — closing Redis connection…")
     await close_redis()
 
@@ -43,59 +102,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ── CORS  (adjust origins for production) ───────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # tighten this in production!
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Routes ───────────────────────────────────────────────────────────────────
 app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
-
-
-def _json_safe(data):
-    return json.loads(json.dumps(data, default=str))
-
-
-def _phase_from_state(state: dict) -> str:
-    if state.get("final_best_compound"):
-        return "complete"
-    if state.get("waiting_for"):
-        return "asking"
-    return state.get("_graph_current_node") or "processing"
-
-
-def _build_results(state: dict) -> dict:
-    best = state.get("final_best_compound")
-    units = state.get("candidate_units") or []
-
-    # Build top_compounds from the new top_compounds_with_units
-    top_compounds_raw = state.get("top_compounds_with_units") or []
-    top_compounds = []
-    for tc in top_compounds_raw:
-        tc_units = tc.get("units") or []
-        top_compounds.append({
-            "compound_id": tc.get("compound_id"),
-            "compound_name": tc.get("compound_name", "Unknown"),
-            "location": tc.get("location", ""),
-            "score": tc.get("score", 0),
-            "units": _json_safe(tc_units[:10]),  # limit to 10 units per compound
-            "above_budget": tc.get("above_budget", False),
-        })
-
-    return {
-        "purpose": state.get("purpose"),
-        "budget": state.get("budget"),
-        "location": state.get("location"),
-        "property_type": state.get("typeofproperty"),
-        "payment_type": state.get("payment_type"),
-        "best_compound": best or {"status": "no_compound_found"},
-        "top_units": _json_safe(units[:5]),
-        "top_compounds": top_compounds,  # NEW: top 3 with units
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -112,14 +127,13 @@ async def health():
 
 
 # ---------------------------------------------------------------------------
-# Backward-compatible chat endpoints (used by Flutter app)
+# /chat/start — begin a new session
 # ---------------------------------------------------------------------------
 
 @app.post("/chat/start")
 async def chat_start(request: Request):
     """
     Start a new session and return the first assistant question.
-    ✅ FIXED: Now properly saves state to Redis
     """
     try:
         try:
@@ -129,15 +143,17 @@ async def chat_start(request: Request):
 
         session_id = body.get("session_id") or new_session_id()
         print(f"\n{'='*60}")
-        print(f"📝 /chat/start called — session_id: {session_id}")
+        print(f"📝 /chat/start — session_id: {session_id}")
         print(f"{'='*60}")
-        
+
+        # make_initial_state() returns a plain dict (from graph_runner.py)
         state = make_initial_state(session_id)
 
-        # Run the first graph turn (extraction agent will ask first question)
+        # Run first graph turn (extraction_agent asks the first question)
         state, reply, done = await run_graph_turn(graph, state, "")
-        
-        # ✅ FIX: SAVE STATE TO REDIS BEFORE RETURNING
+
+        # FIX: normalize to dict before saving / reading
+        state = _to_dict(state)
         await save_state(session_id, state)
         print(f"✓ State saved to Redis for session {session_id}")
 
@@ -148,73 +164,85 @@ async def chat_start(request: Request):
             "done": done,
             "state": _json_safe(state),
         }
-        
+
         if done:
             response["results"] = _build_results(state)
-            
+
         print(f"✓ /chat/start response: {reply[:100]}...")
         return response
 
     except Exception as e:
         print(f"❌ /chat/start error: {e}")
-        import traceback
-        traceback.print_exc()
+        import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"chat_start failed: {e}") from e
 
+
+# ---------------------------------------------------------------------------
+# /chat/respond — continue existing session
+# ---------------------------------------------------------------------------
 
 @app.post("/chat/respond")
 async def chat_respond(request: Request):
     """
     Continue an existing session with one user message.
-    ✅ FIXED: Better error handling and state loading
     """
     try:
         try:
             body = await request.json()
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Invalid JSON: {e}") from e
-            
+
         session_id = body.get("session_id")
         if not session_id:
             raise HTTPException(status_code=400, detail="session_id is required")
 
         print(f"\n{'='*60}")
-        print(f"💬 /chat/respond called — session_id: {session_id}")
+        print(f"💬 /chat/respond — session_id: {session_id}")
         print(f"{'='*60}")
 
         message = (body.get("message") or "").strip()
         if not message:
+            # Re-ask if user sent nothing
+            state = await load_state(session_id) or {}
             return {
                 "session_id": session_id,
                 "message": "لم تكتب رسالة. يرجى المحاولة مرة أخرى.",
-                "phase": "error",
+                "phase": _phase_from_state(state),
                 "done": False,
-                "state": _json_safe(body.get("state") or {}),
+                "state": _json_safe(state),
             }
 
-        # ✅ FIX: Try loading from body first, then Redis
-        state = body.get("state") if isinstance(body.get("state"), dict) else None
-        
-        if state is None:
-            print(f"⏳ Loading state from Redis for session {session_id}...")
-            state = await load_state(session_id)
-        else:
-            print(f"✓ State loaded from request body")
+        # ── Load state ──────────────────────────────────────────────────────
+        # Priority: Redis (source of truth) → body fallback (for dev/testing)
+        state = await load_state(session_id)
 
         if state is None:
-            print(f"❌ Session {session_id} not found in Redis")
-            raise HTTPException(
-                status_code=404,
-                detail=f"Session '{session_id}' not found or expired. Please start a new chat.",
-            )
+            # Fallback: client may have sent state in body (dev/mobile clients)
+            body_state = body.get("state")
+            if isinstance(body_state, dict) and body_state:
+                state = body_state
+                print("⚠️ State loaded from request body (Redis miss)")
+            else:
+                print(f"❌ Session {session_id} not found")
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Session '{session_id}' not found or expired. Please start a new chat.",
+                )
+        else:
+            print(f"✓ State loaded from Redis")
+
+        # FIX: ensure it's a plain dict before passing to run_graph_turn
+        state = _to_dict(state)
 
         print(f"📨 User message: {message}")
         print(f"🔍 Current waiting_for: {state.get('waiting_for')}")
-        
-        # Run graph turn with user's message
+
+        # ── Run graph ────────────────────────────────────────────────────────
         state, reply, done = await run_graph_turn(graph, state, message)
-        
-        # ✅ FIX: Always save state after processing
+
+        # FIX: normalize to dict after graph run (agents may return Pydantic)
+        state = _to_dict(state)
+
         await save_state(session_id, state)
         print(f"✓ State saved to Redis")
 
@@ -225,10 +253,10 @@ async def chat_respond(request: Request):
             "done": done,
             "state": _json_safe(state),
         }
-        
+
         if done:
             response["results"] = _build_results(state)
-            
+
         print(f"✓ Response: {reply[:100]}...")
         return response
 
@@ -236,21 +264,25 @@ async def chat_respond(request: Request):
         raise
     except Exception as e:
         print(f"❌ /chat/respond error: {e}")
-        import traceback
-        traceback.print_exc()
+        import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"chat_respond failed: {e}") from e
 
 
+# ---------------------------------------------------------------------------
+# /chat/status  &  /chat/results
+# ---------------------------------------------------------------------------
+
 @app.get("/chat/status/{session_id}")
 async def chat_status(session_id: str):
-    """Get the current status of a session"""
-    print(f"🔍 /chat/status called for session {session_id}")
-    
+    """Get current status of a session."""
+    print(f"🔍 /chat/status — {session_id}")
     state = await load_state(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    done = bool(state.get("final_best_compound"))
+    state = _to_dict(state)
+    done = bool(state.get("final_best_compound") or
+                (state.get("context") or {}).get("final_best_compound"))
     return {
         "session_id": session_id,
         "phase": _phase_from_state(state),
@@ -261,42 +293,45 @@ async def chat_status(session_id: str):
 
 @app.get("/chat/results/{session_id}")
 async def chat_results(session_id: str):
-    """Get final results for a completed session"""
-    print(f"📊 /chat/results called for session {session_id}")
-    
+    """Get final results for a completed session."""
+    print(f"📊 /chat/results — {session_id}")
     state = await load_state(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    if not state.get("final_best_compound"):
+    state = _to_dict(state)
+    ctx = state.get("context") or {}
+    has_result = bool(state.get("final_best_compound") or ctx.get("final_best_compound"))
+    if not has_result:
         raise HTTPException(status_code=400, detail="Conversation not finished yet")
 
     return _build_results(state)
 
 
 # ---------------------------------------------------------------------------
-# Debug endpoint (helpful during development)
+# Debug endpoint
 # ---------------------------------------------------------------------------
 
 @app.get("/debug/session/{session_id}", tags=["debug"])
 async def debug_session(session_id: str):
-    """
-    Get full state dump for debugging
-    """
+    """Full state dump for debugging."""
     state = await load_state(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="Session not found")
-    
+
+    state = _to_dict(state)
     return {
         "session_id": session_id,
         "state": _json_safe(state),
         "waiting_for": state.get("waiting_for"),
         "phase": _phase_from_state(state),
+        # Show context fields separately for easy reading
+        "context": _json_safe(state.get("context") or {}),
     }
 
 
 # ---------------------------------------------------------------------------
-# Dev runner  (uvicorn main:app --reload)
+# Dev runner
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
