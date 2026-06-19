@@ -248,7 +248,7 @@ class AgentState(BaseModel):
     # GRAPH INTERNALS (Keep)
     # ══════════════════════════════════════════════════════════════════════
     
-    _graph_current_node: Optional[str] = None           # Graph execution cursor
+    graph_current_node: Optional[str] = None           # Graph execution cursor
     
     
     # ══════════════════════════════════════════════════════════════════════

@@ -21,7 +21,7 @@ CRITICAL RULES
 ──────────────
 1. graph_runner NEVER clears waiting_for — only agents clear it.
 2. user_input is set fresh every turn and consumed by the agent.
-3. _graph_current_node is the cursor; it is updated by graph.step().
+3. graph_current_node is the cursor; it is updated by graph.step().
 """
 
 import asyncio
@@ -33,7 +33,7 @@ from graph import StateGraph, END
 # ---------------------------------------------------------------------------
 WAITING_FOR_KEY  = "waiting_for"    # str  — which field the agent is waiting for
 AGENT_MSG_KEY    = "agent_message"  # str  — the question/message shown to the user
-GRAPH_NODE_KEY   = "_graph_current_node"
+GRAPH_NODE_KEY   = "graph_current_node"
 
 # Maximum steps per turn to prevent infinite loops
 MAX_STEPS_PER_TURN = 60
@@ -121,7 +121,14 @@ async def run_graph_turn(
     # ── 3. Step through graph until pause or END ─────────────────────────
     loop = asyncio.get_event_loop()
     steps = 0
-    last_node = None
+    # Track how many times we've visited each node.  Firing the guard only
+    # when the same node is visited consecutively was too aggressive: agents
+    # that pass through without pausing (nothing to do yet) legitimately
+    # hand off to the next node and the two consecutive graph_current_node
+    # values can look identical if the router keeps choosing the same target.
+    # Instead we fire only when any single node has been entered 3+ times in
+    # one turn — that is always a real cycle.
+    node_visit_counts: dict = {}
 
     while True:
         steps += 1
@@ -173,17 +180,17 @@ async def run_graph_turn(
             _clear_turn_fields(state)
             return state, reply, True   # treat as done so client resets
 
-        # ── Infinite-loop guard: same node twice with no waiting_for ─────
+        # ── Infinite-loop guard: same node visited 3+ times this turn ──────
         current_node = state.get(GRAPH_NODE_KEY)
-        if current_node == last_node and not state.get(WAITING_FOR_KEY):
-            reply = (
-                state.get(AGENT_MSG_KEY)
-                or "Something went wrong internally. Please try again."
-            )
-            _clear_turn_fields(state)
-            return state, reply, False
-
-        last_node = current_node
+        if current_node and current_node != END:
+            node_visit_counts[current_node] = node_visit_counts.get(current_node, 0) + 1
+            if node_visit_counts[current_node] >= 3:
+                reply = (
+                    state.get(AGENT_MSG_KEY)
+                    or "Something went wrong internally. Please try again."
+                )
+                _clear_turn_fields(state)
+                return state, reply, False
 
 
 # ---------------------------------------------------------------------------

@@ -60,7 +60,7 @@ def _phase_from_state(state: dict) -> str:
         return "complete"
     if state.get("waiting_for"):
         return "asking"
-    return state.get("_graph_current_node") or "processing"
+    return state.get("graph_current_node") or "processing"
 
 
 def _build_results(state: dict) -> dict:

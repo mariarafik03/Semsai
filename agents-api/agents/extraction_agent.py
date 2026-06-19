@@ -37,9 +37,20 @@ def extraction_agent(state: AgentState) -> AgentState:
     
     print("\n--- Extraction Agent ---")
     
-    # Handle empty input
+    # Handle empty input — this happens if the graph is ever invoked with no
+    # user message (e.g. an unexpected /chat/respond with empty body).
+    # Rather than returning silently (which causes the router to loop until the
+    # MAX_STEPS guard fires and shows the user an error), we pause the graph
+    # here by setting waiting_for so the runner surfaces the welcome question.
     if not state.user_input or not state.user_input.strip():
-        print("⚠️ No user input to extract from")
+        print("⚠️ No user input to extract from — asking opening question")
+        if not state.waiting_for:
+            state.agent_message = (
+                "Hello! I'm your real estate assistant. "
+                "Which city or area are you looking in? "
+                "(e.g., New Cairo, Sheikh Zayed, North Coast)"
+            )
+            state.waiting_for = "location"
         state.sync_to_legacy()
         return state
     

@@ -129,9 +129,9 @@ def state_router(state) -> str:
     # 2. Check if we should route to extraction_agent first (initial state)
     current_node = None
     if isinstance(state, dict):
-        current_node = state.get("_graph_current_node")
+        current_node = state.get("graph_current_node")
     else:
-        current_node = getattr(state, "_graph_current_node", None)
+        current_node = getattr(state, "graph_current_node", None)
         
     if not current_node and not location and not property_type and not payment_type and not budget:
         return "extraction_agent"
