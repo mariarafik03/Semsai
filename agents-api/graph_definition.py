@@ -28,7 +28,9 @@ from agents.property_type_agent      import property_type_agent
 from agents.payment_agent            import payment_agent
 from agents.compounds_agent          import compounds_agent
 from agents.developers_agent         import developers_agent
-from agents.comparing_agent          import comparing_agent
+from agents.compound_features_agent  import compound_features_agent
+from agents.embedding_agent          import embedding_agent
+from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
 
@@ -93,6 +95,9 @@ def state_router(state) -> str:
         final_best_compound = context.get("final_best_compound") if isinstance(context, dict) else None
         if not final_best_compound:
             final_best_compound = state.get("final_best_compound")
+        compound_features_stats = state.get("compound_features_stats")
+        embeddings = state.get("embeddings")
+        user_preferences = state.get("user_preferences")
         
     else:
         # Pydantic AgentState format (from new code)
@@ -113,6 +118,9 @@ def state_router(state) -> str:
         comparison_result = context.comparison_result
         ranked_compounds = context.ranked_compounds
         final_best_compound = context.final_best_compound or getattr(state, "final_best_compound", None)
+        compound_features_stats = getattr(state, "compound_features_stats", None)
+        embeddings = getattr(state, "embeddings", None)
+        user_preferences = getattr(state, "user_preferences", None)
     
     # ═══════════════════════════════════════════════════════════════════
     # ROUTING LOGIC (Now type-safe!)
@@ -146,6 +154,8 @@ def state_router(state) -> str:
             return "compounds_agent"
         elif waiting_for == "no_developer_response":
             return "developers_agent"
+        elif waiting_for == "preference_input":
+            return "user_preferences_agent"
         else:
             return END
 
@@ -204,14 +214,25 @@ def state_router(state) -> str:
         return "comparing_agent"
     
     elif phase == "comparison":
-        # Comparison phase: analyze and rank
-        
-        if not comparison_result:
-            return "comparing_agent"
-            
+        # Comparison phase: turn raw compound descriptions into structured
+        # decision features, embed them, interview the user against those
+        # features, then rank by similarity to the user's preferences.
+        #
+        # (comparing_agent — picking top-3 via a single LLM call over raw
+        # descriptions — is intentionally NOT used in this flow.)
+
+        if not compound_features_stats:
+            return "compound_features_agent"
+
+        if not embeddings:
+            return "embedding_agent"
+
+        if not user_preferences:
+            return "user_preferences_agent"
+
         if not ranked_compounds:
             return "compound_ranking_agent"
-            
+
         return "final_output_agent"
     
     elif phase == "presentation":
@@ -243,7 +264,9 @@ graph.add_node("payment_agent",          payment_agent)
 graph.add_node("budget_agent",           budget_agent)
 graph.add_node("compounds_agent",        compounds_agent)
 graph.add_node("developers_agent",       developers_agent)
-graph.add_node("comparing_agent",        comparing_agent)
+graph.add_node("compound_features_agent", compound_features_agent)
+graph.add_node("embedding_agent",        embedding_agent)
+graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
 
