@@ -159,23 +159,14 @@ async def run_graph_turn(
             _clear_turn_fields(state)
             return state, reply, True
 
-        # ── Agent wrote a message → pause and send it to the user ──────────
-        # agent_message is the authoritative "I have something to say" signal.
-        #
-        # Two sub-cases:
-        #  A) waiting_for is set   → agent is asking a question; pause so
-        #     the user can answer.  Keep waiting_for in state.
-        #  B) waiting_for is clear → agent wrote a confirmation / success
-        #     message (e.g. "Great! Searching in New Cairo.").  Still pause
-        #     so the user sees it before the next question arrives.
-        #     The next turn will have no waiting_for, so the runner continues
-        #     stepping until the next agent asks a question.
-        #
-        # waiting_for alone is NOT a pause signal: it persists across turns
-        # and is present on passthrough agents (extraction_agent) that have
-        # not written anything this step.
-        if state.get(AGENT_MSG_KEY):
-            reply = state[AGENT_MSG_KEY]
+        # ── Agent needs user input → pause ───────────────────────────────
+        if state.get(WAITING_FOR_KEY):
+            reply = (
+                state.get(AGENT_MSG_KEY)
+                or "Please provide the requested information."
+            )
+            # Clear agent_message (already captured in reply)
+            # but keep waiting_for so next turn's agent can resume.
             state[AGENT_MSG_KEY] = None
             state["user_input"]  = None   # consumed; don't leave stale value
             return state, reply, False

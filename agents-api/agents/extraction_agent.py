@@ -17,6 +17,31 @@ WORKFLOW
 from state import AgentState
 from agents.utils.extractors import extract_all_fields
 
+# ── Field-owner map ──────────────────────────────────────────────────────────
+# Mirrors the waiting_for routing block in graph_definition.state_router.
+# Imported lazily inside the function (not at module load time) to avoid any
+# risk of circular imports while keeping a single source of truth for which
+# agent owns which field.
+def _field_agent_for(waiting_for: str):
+    from agents.location_agent      import location_agent
+    from agents.property_type_agent import property_type_agent
+    from agents.payment_agent       import payment_agent
+    from agents.budget_agent        import budget_agent
+    from agents.compounds_agent     import compounds_agent
+    from agents.developers_agent    import developers_agent
+
+    return {
+        "location":             location_agent,
+        "property_type":        property_type_agent,
+        "payment_type":         payment_agent,
+        "downpayment":          payment_agent,
+        "monthly_installment":  payment_agent,
+        "budget":               budget_agent,
+        "no_units_response":    compounds_agent,
+        "no_developer_response": developers_agent,
+    }.get(waiting_for)
+
+
 def extraction_agent(state: AgentState) -> AgentState:
     """
     Extract all possible fields from user's initial message.
@@ -38,12 +63,32 @@ def extraction_agent(state: AgentState) -> AgentState:
     print("\n--- Extraction Agent ---")
 
     # ── FIX: If we're already waiting for a field, this agent is being
-    # resumed as a passthrough (because graph_current_node was saved as
-    # "extraction_agent" when the graph paused).  Don't re-extract —
-    # just return so the router fires and dispatches to the correct
-    # field agent (location_agent, property_type_agent, etc.).
+    # resumed because graph_current_node was saved as "extraction_agent"
+    # when the graph paused (extraction_agent set waiting_for on turn 1,
+    # and graph.step() always re-pins the cursor on whichever node was just
+    # run while waiting_for stays set — it never re-pins to the agent that
+    # actually owns the field).
+    #
+    # Just returning here (the old behavior) does NOT "let the router
+    # fire" — graph.step() only consults the router once waiting_for is
+    # empty. Returning untouched keeps waiting_for set, so the cursor stays
+    # pinned on extraction_agent forever and the conversation never
+    # progresses past the opening question.
+    #
+    # The real fix: actively delegate to the agent that owns the current
+    # waiting_for field, so it can process this turn's answer and clear
+    # waiting_for itself. Once it does, graph.step() will consult the
+    # router normally and the graph advances.
     if state.waiting_for:
-        print(f"↩️  Resuming with waiting_for='{state.waiting_for}' — passing through to field agent")
+        field_agent = _field_agent_for(state.waiting_for)
+        if field_agent:
+            print(f"↩️  Resuming with waiting_for='{state.waiting_for}' — delegating to {field_agent.__name__}")
+            return field_agent(state)
+
+        # Unknown waiting_for value — clear it rather than looping forever,
+        # and let the router decide what to do next.
+        print(f"⚠️ Unknown waiting_for='{state.waiting_for}' — clearing and handing off to router")
+        state.waiting_for = None
         state.sync_to_legacy()
         return state
 
