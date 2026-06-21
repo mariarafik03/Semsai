@@ -50,44 +50,17 @@ class StateGraph:
         _state_set(state, "graph_current_node", current_node)  # persist before agent
         fn = self.nodes[current_node]
 
-        # ── Snapshot state BEFORE running the agent ───────────────────────
-        # agent_message is the true "I need to talk to the user" signal.
-        # A passthrough agent (extraction_agent resuming) never sets it.
-        # A field agent asking a question or retrying always sets it.
-        # waiting_for alone is ambiguous: it is set on passthrough agents
-        # too (carried over from the previous turn).
-        msg_before = _state_get(state, "agent_message")
-
         new_state = fn(state)       # run the agent
         if new_state is not None:
             state = new_state
 
-        waiting_after = _state_get(state, "waiting_for")
-        msg_after     = _state_get(state, "agent_message")
-
-        # HTTP pause mode — lock cursor here when this agent produced a
-        # message for the user AND still needs their input (waiting_for set).
-        #
-        # agent_message being written this step (new value != old value)
-        # is the reliable discriminator:
-        #   • Passthrough agent  → msg_after is None (nothing written) → advance
-        #   • Field agent asking → msg_after is set (question written)  → pause
-        #   • Field agent success→ msg_after may be set but waiting_for
-        #                          cleared → advance so router moves on
-        agent_wrote_message = (msg_after is not None) and (msg_after != msg_before)
-
-        if agent_wrote_message and waiting_after:
-            # This agent asked a question — lock cursor on this node so the
-            # next turn resumes here with the user's answer.
+        # HTTP pause mode: agent asked a question and is waiting for user input.
+        # Keep cursor on the SAME node so next turn resumes this agent.
+        if _state_get(state, "waiting_for"):
             self._current_node = current_node
             _state_set(state, "graph_current_node", current_node)
             return state, current_node
 
-        # All other cases: fire the router edge.
-        # Covers:
-        #  - Passthrough agents (extraction_agent, msg unchanged / None)
-        #  - Field agents that cleared waiting_for (success path)
-        #  - Field agents that wrote a success message but cleared waiting_for
         edge = self.edges[current_node]
         next_node = edge(state) if callable(edge) else edge
 
