@@ -194,8 +194,8 @@ class AgentState(BaseModel):
     # RESULTS (Existing - Keep)
     # ══════════════════════════════════════════════════════════════════════
     
-    candidate_compounds: List[Dict] = Field(default_factory=list)
-    final_compounds: List[Dict] = Field(default_factory=list)
+    candidate_compounds: Optional[List[Dict]] = None   # None = no results; [] = not yet searched
+    final_compounds: Optional[List[Dict]] = None
     top_compounds: Optional[List[Dict]] = None
     ranked_compounds: Optional[List[Dict]] = None
     final_best_compound: Optional[Dict] = None

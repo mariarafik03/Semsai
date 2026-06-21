@@ -274,8 +274,8 @@ def compounds_agent(state: AgentState):
                 state.context.downpayment = None
                 state.context.monthly_installment = None
             # Clear candidate_compounds so router returns here after budget_agent
-            state.candidate_compounds = None
-            state.context.candidate_compounds = None
+            state.candidate_compounds = []
+            state.context.candidate_compounds = []
             print("→ No-units choice: increase budget")
             state.sync_to_legacy()
             return state
@@ -429,8 +429,8 @@ def compounds_agent(state: AgentState):
                 f"3️⃣ **Change property type** — maybe a different type fits your budget"
             )
             # Clear both copies so the router stays in compounds_agent after user responds
-            state.candidate_compounds = None
-            state.context.candidate_compounds = None
+            state.candidate_compounds = []
+            state.context.candidate_compounds = []
             state.waiting_for = "no_units_response"
             state.sync_to_legacy()
             return state

@@ -110,7 +110,24 @@ def location_agent(state: AgentState) -> AgentState:
         return state
     
     # ══════════════════════════════════════════════════════════════════
-    # STEP 3: Field is valid, nothing to do
+    # STEP 3: location is set but may lack location_normalized
+    # (happens when extraction_agent pre-fills location without going
+    # through validation — the router will loop back here indefinitely
+    # if location_normalized stays None).
     # ══════════════════════════════════════════════════════════════════
+    if not state.context.location_normalized:
+        is_valid, normalized, error = validate_location(state.context.location, db)
+        if is_valid:
+            state.context.location_normalized = normalized
+            print(f"✓ Location normalized (pre-filled): {state.context.location} → {normalized}")
+        else:
+            # Pre-filled value is invalid — clear it and ask the user
+            print(f"⚠️  Pre-filled location '{state.context.location}' failed validation: {error}")
+            state.context.location = None
+            state.agent_message = "Which city or area are you interested in? (e.g., Cairo, New Cairo, North Coast)"
+            state.waiting_for = "location"
+            state.sync_to_legacy()
+            return state
+
     state.sync_to_legacy()
     return state

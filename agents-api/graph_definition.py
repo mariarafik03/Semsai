@@ -126,17 +126,13 @@ def state_router(state) -> str:
     if final_best_compound:
         return END
     
-    # 2. Check if we should route to extraction_agent first (initial state)
-    current_node = None
-    if isinstance(state, dict):
-        current_node = state.get("graph_current_node")
-    else:
-        current_node = getattr(state, "graph_current_node", None)
-        
-    if not current_node and not location and not property_type and not payment_type and not budget:
-        return "extraction_agent"
-        
-    # 3. Waiting for user input routing
+    # 2. Waiting for user input routing — MUST come before the
+    #    "initial state → extraction_agent" check below.
+    #    If waiting_for is set, the user just answered a field question;
+    #    route straight to the agent that owns that field.
+    #    (Previously this block was #3 and could be skipped when
+    #     graph_current_node was None, causing extraction_agent to
+    #     re-run instead of the correct field agent.)
     if waiting_for:
         if waiting_for == "location":
             return "location_agent"
@@ -152,7 +148,18 @@ def state_router(state) -> str:
             return "developers_agent"
         else:
             return END
-    
+
+    # 3. Check if we should route to extraction_agent (initial state —
+    #    no fields collected yet and no waiting_for, so this is turn 1).
+    current_node = None
+    if isinstance(state, dict):
+        current_node = state.get("graph_current_node")
+    else:
+        current_node = getattr(state, "graph_current_node", None)
+
+    if not current_node and not location and not property_type and not payment_type and not budget:
+        return "extraction_agent"
+
     # 4. Phase-based routing
     if phase == "discovery":
         # Discovery phase: collect location, property type, payment, budget
@@ -174,10 +181,22 @@ def state_router(state) -> str:
     
     elif phase == "search":
         # Search phase: find and filter properties
-        
-        if not candidate_compounds:
+        #
+        # IMPORTANT: candidate_compounds uses a 3-way sentinel:
+        #   None  → compounds_agent hasn't run yet → send to it
+        #   []    → compounds_agent ran but found no results → waiting_for
+        #           "no_units_response" handled by waiting_for block above;
+        #           don't loop back to compounds_agent
+        #   [...]  → results exist → continue pipeline
+        if candidate_compounds is None:
             return "compounds_agent"
-        
+
+        if not candidate_compounds:
+            # Empty list = no results were found; compounds_agent already
+            # handled the user message via waiting_for. Stay put until the
+            # user's choice routes elsewhere (handled by waiting_for block).
+            return END
+
         if not final_compounds:
             return "developers_agent"
         

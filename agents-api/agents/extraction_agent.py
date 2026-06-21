@@ -36,7 +36,17 @@ def extraction_agent(state: AgentState) -> AgentState:
     """
     
     print("\n--- Extraction Agent ---")
-    
+
+    # ── FIX: If we're already waiting for a field, this agent is being
+    # resumed as a passthrough (because graph_current_node was saved as
+    # "extraction_agent" when the graph paused).  Don't re-extract —
+    # just return so the router fires and dispatches to the correct
+    # field agent (location_agent, property_type_agent, etc.).
+    if state.waiting_for:
+        print(f"↩️  Resuming with waiting_for='{state.waiting_for}' — passing through to field agent")
+        state.sync_to_legacy()
+        return state
+
     # Handle empty input — this happens if the graph is ever invoked with no
     # user message (e.g. an unexpected /chat/respond with empty body).
     # Rather than returning silently (which causes the router to loop until the

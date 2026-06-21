@@ -1,59 +1,41 @@
 """
-Pydantic schemas for the /chat endpoint.
+api/models.py — Pydantic request/response schemas for the chat API.
 """
 
 from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 
-# ---------------------------------------------------------------------------
-# Request
-# ---------------------------------------------------------------------------
-
 class ChatRequest(BaseModel):
     """Sent by the client on every turn."""
 
     session_id: Optional[str] = Field(
         default=None,
-        description="Omit (or pass null) on the very first message — the server will create one.",
+        description="Omit on the very first message — the server will create one.",
     )
     message: str = Field(
         ...,
         min_length=1,
         description="The user's raw text input for this turn.",
     )
+    user_id: Optional[str] = Field(
+        default=None,
+        description="Optional user identifier for profile persistence.",
+    )
 
-
-# ---------------------------------------------------------------------------
-# Response
-# ---------------------------------------------------------------------------
 
 class ChatResponse(BaseModel):
     """Returned by the server on every turn."""
 
-    session_id: str = Field(
-        description="Echo the session_id back so the client can store it."
-    )
-    reply: str = Field(
-        description="The assistant's message to display to the user."
-    )
-    done: bool = Field(
-        default=False,
-        description="True when the conversation has fully completed (graph reached END).",
-    )
+    session_id: str
+    message: str = Field(description="The assistant's reply to show the user.")
+    phase: str = Field(default="processing")
+    done: bool = Field(default=False)
     results: Optional[dict[str, Any]] = Field(
         default=None,
-        description="Final results when done=True. Contains best_compound, top_units, etc.",
-    )
-    state_snapshot: Optional[dict[str, Any]] = Field(
-        default=None,
-        description="(Debug / admin only) Full state dict. Omit in production.",
+        description="Final property results when done=True.",
     )
 
-
-# ---------------------------------------------------------------------------
-# Error
-# ---------------------------------------------------------------------------
 
 class ErrorResponse(BaseModel):
     detail: str
