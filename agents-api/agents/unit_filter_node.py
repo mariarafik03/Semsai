@@ -266,6 +266,7 @@ def _apply_ranking(state: AgentState, answers: dict) -> AgentState:
     print(f"   {len(ranked_units)} units ranked.")
 
     state["candidate_units"] = ranked_units
+    state["unit_filter_done"] = True   # signal to router: filter is complete
     _flush_scratch(state)
     return state
 
@@ -287,6 +288,7 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     # Nothing to filter
     if len(units) <= 1:
         _flush_scratch(state)
+        state["unit_filter_done"] = True
         return state
 
     waiting    = (state.get("waiting_for") or "").strip()
@@ -346,6 +348,7 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     if unit_questions is None or not unit_questions.questions:
         print("   Proceeding with all candidate units (no questions generated).")
         _flush_scratch(state)
+        state["unit_filter_done"] = True
         return state
 
     # Serialise questions into state for future turns
