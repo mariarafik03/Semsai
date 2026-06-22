@@ -25,6 +25,7 @@ CRITICAL RULES
 """
 
 import asyncio
+from datetime import datetime, timezone
 from typing import Tuple
 from graph import StateGraph, END
 
@@ -110,6 +111,18 @@ async def run_graph_turn(
     state["user_input"]   = user_message if user_message else None
     state["agent_message"] = None   # clear previous message
 
+    # ── 1a. Record user turn in conversation history ─────────────────────
+    # Done once here so every agent gets history for free — agents never
+    # need to append user messages themselves.
+    if user_message:
+        msgs = list(state.get("messages") or [])
+        msgs.append({
+            "role": "user",
+            "content": user_message,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        })
+        state["messages"] = msgs
+
     # ── 2. Safety: detect stale waiting_for with empty message ──────────
     if state.get(WAITING_FOR_KEY) and not user_message:
         reply = state.get(AGENT_MSG_KEY) or "Please provide the requested information."
@@ -156,6 +169,7 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "✅ All done! Your property search is complete."
             )
+            _record_assistant_message(state, reply)
             _clear_turn_fields(state)
             return state, reply, True
 
@@ -165,6 +179,7 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "Please provide the requested information."
             )
+            _record_assistant_message(state, reply)
             # Clear agent_message (already captured in reply)
             # but keep waiting_for so next turn's agent can resume.
             state[AGENT_MSG_KEY] = None
@@ -177,6 +192,7 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "I'm sorry, I couldn't complete your request. Please try again."
             )
+            _record_assistant_message(state, reply)
             _clear_turn_fields(state)
             return state, reply, True   # treat as done so client resets
 
@@ -196,6 +212,25 @@ async def run_graph_turn(
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
+
+def _record_assistant_message(state: dict, reply: str) -> None:
+    """
+    Append the assistant's reply to the conversation history.
+
+    Called at every exit point in run_graph_turn so the history is
+    always symmetric: one user entry followed by one assistant entry
+    per turn.
+    """
+    if not reply:
+        return
+    msgs = list(state.get("messages") or [])
+    msgs.append({
+        "role": "assistant",
+        "content": reply,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+    state["messages"] = msgs
+
 
 def _clear_turn_fields(state: dict) -> None:
     """
