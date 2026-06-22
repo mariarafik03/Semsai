@@ -311,24 +311,8 @@ class AgentState(BaseModel):
         self.messages.append({
             "role": role,
             "content": content,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.utcnow().isoformat()
         })
-
-    def get_llm_messages(self, last_n: int = 10) -> List[Dict[str, str]]:
-        """
-        Return the last N messages in OpenAI-compatible format.
-
-        Strips the internal 'timestamp' key so the list can be passed
-        directly to client.chat.completions.create(messages=...) without
-        the API rejecting unknown fields.
-
-        Usage
-        -----
-            history = state.get_llm_messages(last_n=8)
-            ask_llm_with_history(system_prompt, history, new_user_prompt)
-        """
-        recent = self.messages[-last_n:] if len(self.messages) > last_n else self.messages
-        return [{"role": m["role"], "content": m["content"]} for m in recent]
     
     
     class Config:
