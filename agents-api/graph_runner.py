@@ -63,7 +63,6 @@ def _ensure_agent_state(state) -> AgentState:
     if isinstance(state, AgentState):
         return state
     if isinstance(state, dict):
-        # We assume the dict represents an AgentState dump.
         return AgentState(**state)
     raise TypeError(f"Cannot convert {type(state)} to AgentState")
 
@@ -103,7 +102,6 @@ async def run_graph_turn(
         is_done       — True when the graph has reached END
     """
 
-    # Ensure we have a dict to start
     state = _ensure_dict(state)
 
     # ── 1. Inject user message ───────────────────────────────────────────
@@ -214,13 +212,6 @@ async def run_graph_turn(
 # ---------------------------------------------------------------------------
 
 def _record_assistant_message(state: dict, reply: str) -> None:
-    """
-    Append the assistant's reply to the conversation history.
-
-    Called at every exit point in run_graph_turn so the history is
-    always symmetric: one user entry followed by one assistant entry
-    per turn.
-    """
     if not reply:
         return
     msgs = list(state.get("messages") or [])
@@ -233,10 +224,4 @@ def _record_assistant_message(state: dict, reply: str) -> None:
 
 
 def _clear_turn_fields(state: dict) -> None:
-    """
-    Tidy up transient per-turn fields before persisting state.
-    - Clear agent_message (already sent to client).
-    - Clear user_input (consumed this turn).
-    - Do NOT touch waiting_for — agents own that.
-    """
     state[AGENT_MSG_KEY] = None
