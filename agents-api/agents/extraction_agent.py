@@ -23,13 +23,25 @@ WORKFLOW
 4. Defensive case: if this agent is ever resumed with waiting_for pointing
    at a field owned by another agent (location/property_type/...), delegate
    there directly instead of getting stuck repeating the opening question.
+
+CONVERSATION HISTORY
+────────────────────
+The LLM extraction call now receives the last N turns of conversation history
+via state.get_llm_messages(). This lets the model handle corrections and
+context that span multiple messages, e.g.:
+  User turn 1: "I want an apartment in New Cairo"
+  Agent:        "What's your budget?"
+  User turn 2:  "Actually make it a villa — budget is 5 million"
+Without history, turn 2 would only extract budget. With history, the model
+sees the prior mention of "apartment" and can correctly apply the correction.
 """
 
 import json
+from typing import List, Dict, Optional
 
 from state import AgentState
 from agents.utils.extractors import extract_all_fields
-from main_helpers import ask_ollama
+from main_helpers import ask_llm_with_history
 
 
 OPENING_MESSAGE = (
@@ -40,15 +52,51 @@ OPENING_MESSAGE = (
     "message!"
 )
 
-# Fields the LLM extractor understands and how they map onto AgentContext.
-_VALID_PURPOSES = {"rent", "invest", "live"}
-_VALID_PROPERTY_TYPES = {"apartment", "villa", "chalet"}
-_VALID_PAYMENT_TYPES = {"cash", "installment"}
+# ── Extraction system prompt ──────────────────────────────────────────────────
+# Kept as a constant so it's easy to tune without touching call-site code.
+_EXTRACTION_SYSTEM = """\
+You are a real estate data extraction engine for the Egyptian market.
+
+Your job is to read a conversation and extract structured property-search \
+fields from the user's latest message. Use the conversation history only to \
+resolve ambiguity and apply corrections (e.g. "actually make it a villa" \
+overrides an earlier apartment mention).
+
+Rules:
+- Only include a field if the user CLEARLY mentioned it — never guess.
+- Apply shorthand conversions: "3M" → 3000000, "500k" → 500000.
+  If the number has no unit and the scale is ambiguous, return null.
+- A correction in the latest message always beats an earlier value.
+- Respond ONLY with valid JSON — no markdown fences, no commentary.
+"""
+
+_EXTRACTION_PROMPT = """\
+From the user's message below, extract as many of these fields as you can:
+
+Fields:
+- purpose             : one of "rent", "invest", "live"  (null if unclear)
+- location            : area/city in Egypt  (e.g. "New Cairo")
+- typeofproperty      : one of "apartment", "villa", "chalet"
+- payment_type        : one of "cash", "installment"
+- budget              : total budget in EGP as an integer
+- downpayment         : down-payment in EGP as an integer (only if mentioned)
+- monthly_installment : monthly installment in EGP as an integer (only if mentioned)
+
+User message: "{user_input}"
+
+Respond ONLY with valid JSON, null for anything you cannot extract. Example:
+{{"purpose": "live", "location": "New Cairo", "typeofproperty": "villa", \
+"payment_type": "cash", "budget": 5000000, "downpayment": null, \
+"monthly_installment": null}}
+"""
+
+_VALID_PURPOSES        = {"rent", "invest", "live"}
+_VALID_PROPERTY_TYPES  = {"apartment", "villa", "chalet"}
+_VALID_PAYMENT_TYPES   = {"cash", "installment"}
 
 
 def _field_agent_for(waiting_for: str):
-    """Map a waiting_for value to the agent that owns that field. Mirrors
-    the waiting_for routing block in graph_definition.state_router."""
+    """Map a waiting_for value to the agent that owns that field."""
     from agents.location_agent      import location_agent
     from agents.property_type_agent import property_type_agent
     from agents.payment_agent       import payment_agent
@@ -68,54 +116,71 @@ def _field_agent_for(waiting_for: str):
     }.get(waiting_for)
 
 
-def _llm_extract(user_input: str) -> dict:
+def _llm_extract(
+    user_input: str,
+    history: Optional[List[Dict[str, str]]] = None,
+) -> dict:
     """
     Use the LLM to pull every recognisable field out of one free-form
-    message — same idea as the original prototype's extraction prompt.
-    Returns {} (never raises) if the call fails or the response isn't
-    valid JSON, so a flaky API call never breaks the conversation.
+    message, using the conversation history for context.
+
+    Parameters
+    ----------
+    user_input : str
+        The user's latest message (current turn).
+    history : list of {role, content} dicts, optional
+        Prior turns from state.get_llm_messages().  Pass an empty list
+        or None for the very first message.
+
+    Returns
+    -------
+    dict
+        Extracted fields.  Never raises — returns {} on any failure so a
+        flaky API call never breaks the conversation.
     """
-    prompt = f"""
-You are a real estate data extraction engine for the Egyptian market.
+    prompt = _EXTRACTION_PROMPT.format(user_input=user_input)
 
-From the user's message below, extract as many of these fields as you can.
-Only include a field if the user **clearly** mentioned it — never guess.
-
-Fields:
-- purpose             : one of "rent", "invest", "live" (null if unclear)
-- location             : area/city in Egypt (e.g. "New Cairo")
-- typeofproperty       : one of "apartment", "villa", "chalet"
-- payment_type         : one of "cash", "installment"
-- budget               : total budget in EGP as an integer
-                          (convert shorthand: "3M" -> 3000000, "500k" -> 500000)
-                          If the number has no unit, return null — do not guess scale.
-- downpayment          : down-payment amount in EGP as an integer (only if mentioned)
-- monthly_installment  : monthly installment amount in EGP as an integer (only if mentioned)
-
-User message: "{user_input}"
-
-Respond ONLY with valid JSON, no markdown fences, no commentary. Use null for
-anything you cannot extract. Example:
-{{"purpose": "live", "location": "New Cairo", "typeofproperty": "villa", "payment_type": "cash", "budget": 5000000, "downpayment": null, "monthly_installment": null}}
-"""
     try:
-        raw = ask_ollama(prompt).strip()
+        raw = ask_llm_with_history(
+            system_prompt=_EXTRACTION_SYSTEM,
+            history=history or [],
+            user_prompt=prompt,
+            max_tokens=256,
+            temperature=0.1,   # near-zero: we want deterministic JSON
+        )
+
+        # Strip accidental markdown fences the model sometimes adds
         if raw.startswith("```"):
             raw = raw.strip("`")
             if "\n" in raw:
                 raw = raw.split("\n", 1)[1]
+
         return json.loads(raw)
+
     except Exception as exc:
         print(f"   ⚠️ LLM extraction failed ({exc}) — falling back to rule-based extractor")
         return {}
 
 
 def _apply_extraction(state: AgentState, user_input: str) -> None:
-    """Extract every recognisable field from one free-form message and save
-    high-confidence values to state.context (+ state.purpose, which lives
-    outside context — see state.py)."""
+    """
+    Extract every recognisable field from one free-form message and save
+    high-confidence values to state.context.
 
-    fields = _llm_extract(user_input)
+    Passes the full conversation history so the model can resolve
+    corrections across turns (e.g. "actually make it a villa").
+    """
+    # Exclude the message we just appended (the runner already added it) —
+    # pass only the prior turns so the model treats user_input as the *new*
+    # message rather than seeing it duplicated in both history and the prompt.
+    prior_history = state.get_llm_messages(last_n=10)
+    # The runner appended the current user message before calling this agent,
+    # so the last entry in prior_history IS the current message.  Trim it to
+    # avoid the duplicate.
+    if prior_history and prior_history[-1]["role"] == "user":
+        prior_history = prior_history[:-1]
+
+    fields = _llm_extract(user_input, prior_history)
     extracted_count = 0
 
     purpose = (fields.get("purpose") or "").strip().lower()
@@ -160,8 +225,8 @@ def _apply_extraction(state: AgentState, user_input: str) -> None:
         print(f"   ✓ monthly_installment: {mi:,.0f} EGP")
         extracted_count += 1
 
-    # LLM call failed outright (empty dict from an API error / bad JSON) —
-    # fall back to the fast rule-based extractor so the message isn't wasted.
+    # LLM call failed outright — fall back to rule-based extractor so the
+    # message is never silently wasted.
     if not fields:
         for field_name, (value, confidence) in extract_all_fields(user_input).items():
             if not value or confidence != "high":
@@ -206,8 +271,7 @@ def extraction_agent(state: AgentState) -> AgentState:
         return state
 
     # ── Defensive: resumed with waiting_for pointing at a field owned by
-    # another agent. Shouldn't normally happen once the block above routes
-    # things on, but prevents ever getting stuck repeating this node. ──────
+    # another agent. Shouldn't normally happen but prevents getting stuck. ──
     if state.waiting_for:
         field_agent = _field_agent_for(state.waiting_for)
         if field_agent:
@@ -227,8 +291,8 @@ def extraction_agent(state: AgentState) -> AgentState:
         return state
 
     # ── Edge case: extraction_agent invoked directly WITH input already
-    # present (e.g. POST /chat with no session_id and a message already in
-    # the body) — extract immediately, no extra round trip needed. ────────
+    # present (e.g. POST /chat with no session_id and a message in body)
+    # — extract immediately, no extra round trip needed. ──────────────────
     _apply_extraction(state, state.user_input)
     state.sync_to_legacy()
     return state
