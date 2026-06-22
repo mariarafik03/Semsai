@@ -210,8 +210,8 @@ def state_router(state) -> str:
         if not final_compounds:
             return "developers_agent"
         
-        # Search complete → move to comparison
-        return "comparing_agent"
+        # Search complete → enter the feature/preference comparison chain
+        return "compound_features_agent"
     
     elif phase == "comparison":
         # Comparison phase: turn raw compound descriptions into structured
@@ -282,7 +282,9 @@ all_nodes = [
     "budget_agent",
     "compounds_agent",
     "developers_agent",
-    "comparing_agent",
+    "compound_features_agent",
+    "embedding_agent",
+    "user_preferences_agent",
     "compound_ranking_agent",
     "final_output_agent",
 ]

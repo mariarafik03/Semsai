@@ -101,25 +101,16 @@ def _to_objectid(x: Any) -> Optional[ObjectId]:
 
 def _pick_compounds_list_from_state(state: AgentState) -> Tuple[str, List[Dict[str, Any]]]:
     """
-    Picks the best 'post-developer-agent' list from state.
-    Returns (key_name, list_of_compounds).
-    """
-   
-    preferred_keys = [
-        "final_candidates",
-        "shortlisted_compounds",
-        "top_compounds",
-        "ranked_compounds",
-        "selected_compounds",
-        "final_compounds",
-        # fallback
-        "candidate_compounds",
-    ]
+    Picks the compounds list to extract features for.
 
-    for k in preferred_keys:
-        v = state.get(k)
-        if isinstance(v, list) and len(v) > 0:
-            return k, v
+    This pipeline only ever produces one source for this: developers_agent.py
+    writes the filtered, top-developer compound list to
+    state.context.final_compounds (a flat list of
+    {"compound_id", "compound_name", "location", "min_unit_price"} dicts).
+    """
+    final_compounds = state.context.final_compounds
+    if isinstance(final_compounds, list) and len(final_compounds) > 0:
+        return "context.final_compounds", final_compounds
 
     return "none", []
 
@@ -132,7 +123,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
 
     if not compounds_list:
         print("No compounds list found in state (post-developer). Nothing to extract.")
-        state["compound_features_stats"] = {
+        state.compound_features_stats = {
             "processed": 0,
             "skipped_existing": 0,
             "skipped_no_desc": 0,
@@ -169,7 +160,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
         failed = 0
 
        
-        limit = int(state.get("features_limit") or 0)
+        limit = int(state.features_limit or 0)
 
        
         ids: List[ObjectId] = []
@@ -186,7 +177,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
 
         if not ids:
             print("No valid compound_id found in the chosen list.")
-            state["compound_features_stats"] = {
+            state.compound_features_stats = {
                 "processed": 0,
                 "skipped_existing": 0,
                 "skipped_no_desc": 0,
@@ -284,7 +275,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
                     upsert=True,
                 )
 
-        state["compound_features_stats"] = {
+        state.compound_features_stats = {
             "processed": processed,
             "skipped_existing": skipped_existing,
             "skipped_no_desc": skipped_no_desc,
@@ -303,7 +294,7 @@ def compound_features_agent(state: AgentState) -> AgentState:
         print("Skipped (existing):", skipped_existing)
         print("Skipped (no desc/missing doc/short):", skipped_no_desc)
         print("Failed:", failed)
-        state["next_step"] = "embedding_agent"
+        state.next_step = "embedding_agent"
         return state
 
     finally:

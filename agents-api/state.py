@@ -203,6 +203,13 @@ class AgentState(BaseModel):
     
     embeddings: Optional[Any] = None
     compound_features_stats: Optional[Dict] = None
+
+    # Scratch-pad for user_preferences_agent's multi-turn interview
+    # (signals, asked fields, LLM history, turn count, last question/schema).
+    # Kept as a plain dict field (not top-level state keys) so the agent can
+    # use ordinary dict.get()/[]= on it without needing AgentState itself
+    # to support dict-style access.
+    pref_scratch: Dict[str, Any] = Field(default_factory=dict)
     
     # ══════════════════════════════════════════════════════════════════════
     # LEGACY FIELDS (Temporary - Will be removed in Phase 3-4)
