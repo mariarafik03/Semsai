@@ -1,6 +1,5 @@
 import os
-import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -11,8 +10,6 @@ from state import AgentState
 
 FEATURES_COLLECTION = "compound_features"
 
-
-# ─── Helpers ────────────────────────────────────────────────────────────────
 
 def _to_objectid(x: Any) -> Optional[ObjectId]:
     if x is None:
@@ -47,140 +44,71 @@ def _short(s: Any, n: int = 160) -> str:
     return (t[: n - 3] + "...") if len(t) > n else t
 
 
-def _ranked_list(state: AgentState) -> List[Dict[str, Any]]:
+def _pick_best_item(state: AgentState) -> Optional[Dict[str, Any]]:
     """
-    Return compounds sorted by score descending.
-    Prefers ranked_compounds (already sorted by the ranking agent),
-    then final_compounds, then candidate_compounds.
+    Prefer ranked_compounds; otherwise fallback to final_compounds/candidate_compounds.
+    If list has a score, pick max score; else pick lowest min price.
     """
-    score_keys = ("score", "total_score", "final_score", "rank_score")
-    price_keys = ("min_unit_price", "min_price", "price_min")
+    items = []
+    if state.context.ranked_compounds:
+        items = state.context.ranked_compounds
+    elif state.context.final_compounds:
+        items = state.context.final_compounds
+    elif state.context.candidate_compounds:
+        items = state.context.candidate_compounds
 
-    for pool in (
-        state.context.ranked_compounds,
-        state.context.final_compounds,
-        state.context.candidate_compounds,
-    ):
-        if not pool:
-            continue
-        if any(any(k in c for k in score_keys) for c in pool):
-            def _score(c: Dict) -> float:
-                for k in score_keys:
-                    v = c.get(k)
-                    if v is not None:
-                        try:
-                            return float(v)
-                        except Exception:
-                            pass
-                return 0.0
-            return sorted(pool, key=_score, reverse=True)
-        # no score — sort cheapest first
-        def _price(c: Dict) -> float:
-            for k in price_keys:
-                v = c.get(k)
-                if v is not None:
+    if not items:
+        return None
+
+    # score can be under different names (keep backward compatibility)
+    score_keys = ("score", "total_score", "final_score", "rank_score")
+
+    if any(any(sk in x and x.get(sk) is not None for sk in score_keys) for x in items):
+        def sk(x: Dict[str, Any]) -> float:
+            for kk in score_keys:
+                if kk in x and x.get(kk) is not None:
                     try:
-                        return float(v)
+                        return float(x.get(kk))
                     except Exception:
                         pass
-            return 1e18
-        return sorted(pool, key=_price)
-    return []
+            return 0.0
+
+        return max(items, key=sk)
+
+    # price can be under different names
+    price_keys = ("min_unit_price", "min_price", "price_min")
+
+    def pk(x: Dict[str, Any]) -> float:
+        for kk in price_keys:
+            if x.get(kk) is not None:
+                try:
+                    return float(x.get(kk))
+                except Exception:
+                    pass
+        return 1e18
+
+    return min(items, key=pk)
 
 
 def _load_features(db, compound_id: ObjectId) -> Optional[Dict[str, Any]]:
     return db[FEATURES_COLLECTION].find_one(
         {"compound_id": compound_id},
-        {"compound_id": 1, "compound_name": 1, "features": 1,
-         "missing_evidence": 1, "updated_at": 1},
+        {"compound_id": 1, "compound_name": 1, "features": 1, "missing_evidence": 1, "updated_at": 1},
     )
 
-
-def _normalise_type(raw: Optional[str]) -> str:
-    t = (raw or "apartment").strip().lower()
-    if t in ("apt", "apartments"):
-        return "apartment"
-    if t in ("villas",):
-        return "villa"
-    return t
-
-
-def _normalise_payment(raw: Optional[str]) -> Optional[str]:
-    p = (raw or "").strip().lower()
-    if p in ("cash", "full cash", "c"):
-        return "cash"
-    if p in ("installment", "installments", "instalments", "plan", "monthly"):
-        return "installments"
-    return None
-
-
-def _fetch_units(
-    db,
-    comp_oid: ObjectId,
-    wanted_type: str,
-    pay_type: Optional[str],
-    budget_val: Optional[float],
-) -> List[Dict]:
-    """
-    Query the units collection for one compound.
-    Returns a (possibly empty) list — never raises.
-    """
-    type_match = {
-        "$or": [
-            {"type":               {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-            {"property_type":      {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-            {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-            {"unit_type":          {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-        ]
-    }
-    comp_match = {"compound_id": {"$in": [comp_oid, str(comp_oid)]}}
-    query: Dict[str, Any] = {"$and": [comp_match, type_match]}
-
-    if pay_type == "cash":
-        query["$and"].append({"sale_type": {"$regex": r"^resale$", "$options": "i"}})
-    elif pay_type == "installments":
-        query["$and"].append({"sale_type": {"$regex": r"developer", "$options": "i"}})
-
-    units: List[Dict] = []
-    try:
-        for u in db["units"].find(query):
-            if budget_val is not None:
-                eff = u.get("price") or u.get("price_min") or u.get("price_max")
-                if eff is not None:
-                    try:
-                        if float(eff) > budget_val:
-                            continue
-                    except Exception:
-                        pass
-            units.append(u)
-    except Exception as exc:
-        print(f"   ⚠️ Unit query failed for {comp_oid}: {exc}")
-    return units
-
-
-def _open_mongo(uri: str) -> MongoClient:
-    return MongoClient(
-        uri,
-        tls=True,
-        tlsCAFile=certifi.where(),
-        serverSelectionTimeoutMS=20_000,
-        connectTimeoutMS=20_000,
-        socketTimeoutMS=20_000,
-    )
-
-
-# ─── Main agent ─────────────────────────────────────────────────────────────
 
 def final_output_agent(state: AgentState) -> AgentState:
     print("\n" + "=" * 90)
     print("✅ FINAL OUTPUT (SEMSAI) — BEST COMPOUND")
     print("=" * 90)
 
-    purpose      = state.purpose or "N/A"
-    location     = state.context.location or "N/A"
-    prop_type    = state.context.property_type or "N/A"
+    # Header summary
+    # Header summary
+    purpose = state.purpose or "N/A"
+    location = state.context.location or "N/A"
+    prop_type = state.context.property_type or "N/A"
     payment_type = state.context.payment_type or "N/A"
-    budget       = state.context.budget
+    budget = state.context.budget
 
     print("\nUser request:")
     print(f"- Purpose: {purpose}")
@@ -189,110 +117,65 @@ def final_output_agent(state: AgentState) -> AgentState:
     print(f"- Payment: {payment_type}")
     print(f"- Budget: {_format_money(budget) if budget else 'N/A'}")
 
-    # ── Gather candidates in score order ─────────────────────────────────
-    ranked = _ranked_list(state)
-    if not ranked:
+    # Pick best compound
+    best = _pick_best_item(state)
+    if not best:
         print("\n❌ No compound available to output.")
+        # Set a sentinel so the router doesn't loop back here forever,
+        # then signal abort so the graph terminates cleanly.
         state.context.final_best_compound = {"status": "no_compound_found"}
         state.agent_message = "No compounds found matching your criteria."
         state.handoff_to_human = True
         state.sync_to_legacy()
         return state
 
-    # ── Prepare filters ───────────────────────────────────────────────────
+    compound_name = (best.get("compound_name") or best.get("name") or "Unknown").strip()
+    dev_name = (best.get("developer_name") or "").strip()
+    loc = (best.get("location") or "").strip()
+
+    # pick price from any known key
+    min_price = best.get("min_unit_price")
+    if min_price is None:
+        min_price = best.get("min_price")
+    if min_price is None:
+        min_price = best.get("price_min")
+
+    # pick score from any known key
+    score = best.get("score")
+    if score is None:
+        score = best.get("total_score")
+    if score is None:
+        score = best.get("final_score")
+    if score is None:
+        score = best.get("rank_score")
+
+    reasons = best.get("reasons") or best.get("why") or []
+
+    comp_oid = _to_objectid(best.get("compound_id")) or _to_objectid(best.get("_id"))
+
+    # Load features from DB (if possible)
+    features_doc = None
     load_dotenv()
-    uri         = os.getenv("MONGO_URI")
-    wanted_type = _normalise_type(state.context.property_type)
-    pay_type    = _normalise_payment(state.context.payment_type)
-    budget_val: Optional[float] = None
-    if budget is not None:
-        try:
-            budget_val = float(budget)
-        except Exception:
-            pass
+    uri = os.getenv("MONGO_URI")
 
-    # ── Walk ranked list: pick first compound that has matching units ─────
-    best: Optional[Dict[str, Any]]  = None
-    candidate_units: List[Dict]     = []
-    features_doc: Optional[Dict]    = None
-    comp_oid: Optional[ObjectId]    = None
-
-    if uri:
-        client = _open_mongo(uri)
+    if comp_oid and uri:
+        client = MongoClient(
+            uri,
+            tls=True,
+            tlsCAFile=certifi.where(),
+            serverSelectionTimeoutMS=20000,
+            connectTimeoutMS=20000,
+            socketTimeoutMS=20000,
+        )
         try:
             db = client.get_default_database()
-
-            for idx, compound in enumerate(ranked):
-                c_oid = (
-                    _to_objectid(compound.get("compound_id"))
-                    or _to_objectid(compound.get("_id"))
-                )
-                name = (
-                    compound.get("compound_name") or compound.get("name") or "Unknown"
-                ).strip()
-                rank_label = f"#{idx + 1}"
-
-                units = _fetch_units(db, c_oid, wanted_type, pay_type, budget_val)
-
-                if units:
-                    print(
-                        f"\n✅ {rank_label} {name} — "
-                        f"found {len(units)} matching unit(s) → selected"
-                    )
-                    best            = compound
-                    comp_oid        = c_oid
-                    candidate_units = units
-                    break
-                else:
-                    print(f"   ⏭  {rank_label} {name} — 0 matching units, trying next…")
-
-            # Nothing had units → fall back to the top-ranked compound
-            if best is None:
-                best     = ranked[0]
-                comp_oid = (
-                    _to_objectid(best.get("compound_id"))
-                    or _to_objectid(best.get("_id"))
-                )
-                print(
-                    f"\n⚠️ No compound had matching units under budget. "
-                    f"Defaulting to top-ranked: "
-                    f"{(best.get('compound_name') or best.get('name') or 'Unknown').strip()}"
-                )
-
-            # Load features for the selected compound
-            if comp_oid:
-                features_doc = _load_features(db, comp_oid)
-
+            features_doc = _load_features(db, comp_oid)
         finally:
             client.close()
 
-    else:
-        # No DB URI — just use the top-ranked compound
-        best     = ranked[0]
-        comp_oid = (
-            _to_objectid(best.get("compound_id"))
-            or _to_objectid(best.get("_id"))
-        )
-        print("\n⚠️ MONGO_URI not set — skipping unit check, using top-ranked compound")
-
-    # ── Display selected compound ─────────────────────────────────────────
-    compound_name = (best.get("compound_name") or best.get("name") or "Unknown").strip()
-    dev_name  = (best.get("developer_name") or "").strip()
-    loc       = (best.get("location") or "").strip()
-    reasons   = best.get("reasons") or best.get("why") or []
-    min_price = (
-        best.get("min_unit_price")
-        or best.get("min_price")
-        or best.get("price_min")
-    )
-    score = (
-        best.get("score")
-        or best.get("total_score")
-        or best.get("final_score")
-        or best.get("rank_score")
-    )
     feats = (features_doc or {}).get("features") or []
 
+    # Print BEST recommendation
     print("\n" + "-" * 90)
     print("🏆 Best compound for this user:")
     print("-" * 90)
@@ -304,49 +187,120 @@ def final_output_agent(state: AgentState) -> AgentState:
     if loc:
         print(f"Location: {loc}")
     if min_price is not None:
-        print(f"Min unit price: {_format_money(min_price)}")
+        print(f"Min unit price (from units): {_format_money(min_price)}")
     if comp_oid:
         print(f"Compound ID: {str(comp_oid)}")
 
+    # Reasons
     if isinstance(reasons, list) and reasons:
         print("\nWhy this is the best match:")
         for r in reasons[:5]:
             print(f"  • {_short(r)}")
     else:
         print("\nWhy this is the best match:")
-        print("  • Selected as top option based on available scoring/filters.")
+        print("  • Selected as top option based on available scoring/filters (budget/type/location).")
 
+    # Extracted decision features
     if isinstance(feats, list) and feats:
         print("\nDecision features (from description):")
         for f in feats:
-            k    = f.get("key")
-            v    = f.get("value")
+            k = f.get("key")
+            v = f.get("value")
             conf = f.get("confidence")
-            ev   = f.get("evidence") or []
-            ev1  = ev[0] if isinstance(ev, list) and ev else None
+            ev = f.get("evidence") or []
+            ev1 = ev[0] if isinstance(ev, list) and ev else None
             print(f"  - {k}: {v} (conf={conf})")
             if ev1:
-                print(f'    evidence: "{_short(ev1, 180)}"')
+                print(f"    evidence: “{_short(ev1, 180)}”")
     else:
         print("\nDecision features: (not found in DB yet)")
 
-    print(f"\n✅ Found {len(candidate_units)} candidate unit(s) in {compound_name}.")
-
-    # ── Persist ───────────────────────────────────────────────────────────
+    # Save for frontend/logging
+    # Save for frontend/logging
     state.context.final_best_compound = {
-        "compound_id":    str(comp_oid) if comp_oid else None,
-        "compound_name":  compound_name,
+        "compound_id": str(comp_oid) if comp_oid else None,
+        "compound_name": compound_name,
         "developer_name": dev_name or None,
-        "location":       loc or None,
+        "location": loc or None,
         "min_unit_price": min_price,
-        "score":          score,
-        "reasons":        reasons if isinstance(reasons, list) else [],
-        "features":       feats   if isinstance(feats,   list) else [],
+        "score": score,
+        "reasons": reasons if isinstance(reasons, list) else [],
+        "features": feats if isinstance(feats, list) else [],
     }
-    state.context.selected_compound = {
-        "id":   str(comp_oid) if comp_oid else None,
-        "name": compound_name,
-    }
+
+    # --------------------------------------------------------------------------------
+    # Save selected compound and fetch candidate units for unit_agent
+    # --------------------------------------------------------------------------------
+    state.context.selected_compound = {"id": str(comp_oid), "name": compound_name}
+    candidate_units = []
+    
+    if uri and comp_oid:
+        import re
+        try:
+            client = MongoClient(
+                uri,
+                tls=True,
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=20000,
+                connectTimeoutMS=20000,
+                socketTimeoutMS=20000,
+            )
+            db = client.get_default_database()
+            
+            wanted_type = str(state.context.property_type or "Apartment").strip().lower()
+            if wanted_type in ["apt", "apartments"]: wanted_type = "apartment"
+            if wanted_type in ["villas"]: wanted_type = "villa"
+            
+            budget_val = state.context.budget
+            if budget_val is not None:
+                try: budget_val = float(budget_val)
+                except: budget_val = None
+            
+            pay_type = state.context.payment_type
+            if pay_type:
+                pay_type = str(pay_type).strip().lower()
+                if pay_type in ["cash", "full cash", "c"]: pay_type = "cash"
+                elif pay_type in ["installment", "installments", "instalments", "plan", "monthly"]: pay_type = "installments"
+                else: pay_type = None
+
+            type_match = {
+                "$or": [
+                    {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                    {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+                ]
+            }
+
+            sale_match = None
+            if pay_type == "cash":
+                sale_match = {"sale_type": {"$regex": r"^resale$", "$options": "i"}}
+            elif pay_type == "installments":
+                sale_match = {"sale_type": {"$regex": r"developer", "$options": "i"}}
+                
+            comp_str = str(comp_oid)
+            comp_match = {"compound_id": {"$in": [comp_oid, comp_str]}}
+
+            query = {"$and": [comp_match, type_match]}
+            if sale_match:
+                query["$and"].append(sale_match)
+
+            units_cursor = db["units"].find(query)
+            
+            for u in units_cursor:
+                eff_price = u.get("price") or u.get("price_min") or u.get("price_max")
+                if budget_val is not None and eff_price is not None:
+                    try:
+                        if float(eff_price) > budget_val:
+                            continue
+                    except: pass
+                candidate_units.append(u)
+                
+            print(f"\n✅ Found {len(candidate_units)} candidate units in {compound_name} matching your budget and preferences.")
+            
+        finally:
+            client.close()
+
     state.context.candidate_units = candidate_units
     state.agent_message = f"Found best match: {compound_name}"
     state.sync_to_legacy()

@@ -122,7 +122,8 @@ sys.modules["utils.extractors"] = extractors_stub
 sys.modules["agents.utils"] = types.ModuleType("agents.utils")
 
 # Also make `from utils.extractors import X` work inside agents package
-sys.modules["agents.utils.extractors"] = extractors_stub
+agents_utils_extractors = types.ModuleType("utils.extractors")
+sys.modules["agents.utils.extractors"] = agents_utils_extractors
 
 # Default extractor stubs (tests can monkey-patch these)
 def _noop_extractor(text): return (None, "low", None)
@@ -194,7 +195,8 @@ def make_state(session_id="test-session") -> AgentState:
 
 
 def run_router_steps(state: AgentState, max_steps=30) -> list:
-    """Simulate the router without actually calling agents."""
+    """Simulate the router without actually calling agents.
+    Returns list of node names the router would call in order."""
     transitions = []
     visited = {}
     for _ in range(max_steps):
@@ -217,7 +219,7 @@ def step_graph(graph: StateGraph, state, max_steps=40):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Tests
+# Test 1: Router — initial state → extraction_agent
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_router_initial_extraction():
@@ -227,19 +229,29 @@ def test_router_initial_extraction():
     print(f"  Initial state → {node}")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 2: Router — progressive collection (missing location)
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_router_progressive_missing_location():
     state = make_state()
-    state.context.property_type = "apartment"
+    state.context.property_type = "apartment"   # partial info
     state.context.payment_type = "cash"
     state.context.budget = 5_000_000
     state.context.budget_valid = True
+    # location is missing → should route to location_agent
     node = state_router(state)
     assert node == "location_agent", f"Expected location_agent got {node}"
     print(f"  Missing location → {node}")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 3: Router — waiting_for takes priority
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_router_waiting_for_priority():
     state = make_state()
+    # Even if all context fields set, waiting_for must route back to that agent
     state.context.location = "Cairo"
     state.context.location_normalized = "القاهرة"
     state.context.property_type = "apartment"
@@ -248,12 +260,12 @@ def test_router_waiting_for_priority():
     state.context.budget_valid = True
 
     for wf, expected in [
-        ("location",           "location_agent"),
-        ("property_type",      "property_type_agent"),
-        ("payment_type",       "payment_agent"),
-        ("downpayment",        "payment_agent"),
+        ("location",          "location_agent"),
+        ("property_type",     "property_type_agent"),
+        ("payment_type",      "payment_agent"),
+        ("downpayment",       "payment_agent"),
         ("monthly_installment","payment_agent"),
-        ("budget",             "budget_agent"),
+        ("budget",            "budget_agent"),
     ]:
         state.waiting_for = wf
         got = state_router(state)
@@ -263,7 +275,16 @@ def test_router_waiting_for_priority():
     state.waiting_for = None
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 4: Router — no_units_response before candidate_compounds check
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_router_no_units_response_priority():
+    """
+    When compounds_agent sets waiting_for='no_units_response' it ALSO clears
+    candidate_compounds=None. The router must route to compounds_agent, NOT
+    get stuck in an infinite re-trigger loop.
+    """
     state = make_state()
     state.context.location = "Cairo"
     state.context.location_normalized = "القاهرة"
@@ -271,13 +292,17 @@ def test_router_no_units_response_priority():
     state.context.payment_type = "cash"
     state.context.budget = 5_000_000
     state.context.budget_valid = True
-    state.context.candidate_compounds = None
+    state.context.candidate_compounds = None  # cleared by compounds_agent
     state.waiting_for = "no_units_response"
 
     node = state_router(state)
     assert node == "compounds_agent", f"Expected compounds_agent, got {node}"
     print(f"  no_units_response → {node}")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 5: Router — handoff_to_human → END (not handoff_agent)
+# ─────────────────────────────────────────────────────────────────────────────
 
 def test_router_handoff_to_end():
     state = make_state()
@@ -287,65 +312,93 @@ def test_router_handoff_to_end():
     print(f"  handoff_to_human=True → {node}")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 6: Router — full happy-path sequence (no DB)
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_router_happy_path_sequence():
+    """
+    Walk through the router at each stage, manually advancing state as each
+    agent would, and assert the correct next-node is chosen at every step.
+    """
     state = make_state()
 
+    # STEP 1 — initial → extraction_agent
     assert state_router(state) == "extraction_agent"
 
+    # Simulate extraction_agent populating context
     state.context.location = "Cairo"
     state.context.property_type = "apartment"
     state.context.payment_type = "cash"
     state.context.budget = 5_000_000
 
+    # STEP 2 — location needs normalizing
     assert state_router(state) == "location_agent"
 
+    # Simulate location_agent
     state.context.location_normalized = "القاهرة"
 
+    # STEP 3 — payment/budget valid → straight to compounds (budget needs validation)
     assert state_router(state) == "budget_agent"
 
+    # Simulate budget_agent
     state.context.budget_valid = True
 
+    # STEP 4 — no candidates yet → compounds_agent
     assert state_router(state) == "compounds_agent"
 
+    # Simulate compounds_agent  (legacy + context)
     fake_candidates = [{"compound_id": "c1", "compound_name": "Test Compound",
                         "min_unit_price": 4_000_000, "location": "Cairo"}]
     state.candidate_compounds = fake_candidates
     state.context.candidate_compounds = fake_candidates
-    state.current_phase = "search"
 
+    # STEP 5 — candidates exist, no final_compounds → developers_agent
     assert state_router(state) == "developers_agent"
 
+    # Simulate developers_agent
     state.final_compounds = fake_candidates
     state.context.final_compounds = fake_candidates
-    state.current_phase = "comparison"
 
+    # STEP 6 — comparison needed
     assert state_router(state) == "comparing_agent"
 
+    # Simulate comparing_agent
     state.context.comparison_result = [{"rank": 1, "name": "Test Compound"}]
 
+    # STEP 7 — ranking needed
     assert state_router(state) == "compound_ranking_agent"
 
+    # Simulate compound_ranking_agent
     state.context.ranked_compounds = fake_candidates
-    state.current_phase = "presentation"
 
+    # STEP 8 — final output
     assert state_router(state) == "final_output_agent"
 
+    # Simulate final_output_agent
     state.context.final_best_compound = {"compound_name": "Test Compound"}
 
+    # STEP 9 — done
     assert state_router(state) == END
 
     print("  All 9 routing steps passed")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 7: extraction_agent — populates context from extractors
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_extraction_agent_populates_context():
+    import importlib
     import agents.extraction_agent as ea_mod
 
+    # Patch extractors inside the module
     original = ea_mod.__dict__.get("extract_all_fields")
     ea_mod.extract_all_fields = lambda text: {
-        "location":      ("Cairo",     "high"),
-        "property_type": ("apartment", "high"),
-        "payment_type":  ("cash",      "high"),
-        "budget":        (5_000_000,   "high"),
+        "location":    ("Cairo",     "high"),
+        "property_type": ("apartment","high"),
+        "payment_type": ("cash",     "high"),
+        "budget":      (5_000_000,   "high"),
     }
     try:
         state = make_state()
@@ -355,6 +408,7 @@ def test_extraction_agent_populates_context():
         assert result.context.property_type == "apartment"
         assert result.context.payment_type == "cash"
         assert result.context.budget == 5_000_000
+        # sync_to_legacy must have run
         assert result.location == "Cairo"
         assert result.typeofproperty == "apartment"
         print("  extraction_agent: all fields extracted and synced to legacy ✓")
@@ -363,9 +417,14 @@ def test_extraction_agent_populates_context():
             ea_mod.extract_all_fields = original
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 8: location_agent — validates successfully, clears waiting_for
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_location_agent_success():
     import agents.location_agent as la_mod
 
+    # Patch extractors in module
     la_mod.extract_location = lambda text: ("Cairo", "high", None)
     la_mod.validate_location = lambda loc, db: (True, "القاهرة", None)
 
@@ -377,9 +436,14 @@ def test_location_agent_success():
     assert result.waiting_for is None, f"waiting_for should be None, got {result.waiting_for}"
     assert result.context.location == "Cairo"
     assert result.context.location_normalized == "القاهرة"
+    # sync_to_legacy mirrors context.location ("Cairo") not normalized
     assert result.location == "Cairo", f"legacy location should be 'Cairo', got {result.location}"
     print("  location_agent: validates Cairo → القاهرة, clears waiting_for ✓")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 9: budget_agent — invalid budget, increments error count, retries
+# ─────────────────────────────────────────────────────────────────────────────
 
 def test_budget_agent_retry_on_low_budget():
     import agents.budget_agent as ba_mod
@@ -403,7 +467,12 @@ def test_budget_agent_retry_on_low_budget():
     print("  budget_agent: low budget → error recorded, retry requested ✓")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 10: Vector search fallback — no user embedding → uses final_compounds
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_compound_ranking_fallback():
+    """Without user embedding the ranking agent should fall back gracefully."""
     import agents.compound_ranking_agent as cra_mod
 
     fake_compounds = [
@@ -413,15 +482,20 @@ def test_compound_ranking_fallback():
 
     state = make_state()
     state.context.final_compounds = fake_compounds
+    # STUB_DB.users is empty → agent can't find embedding
 
     result = cra_mod.compound_ranking_agent(state)
     assert result.context.ranked_compounds is not None, "ranked_compounds should not be None"
     assert len(result.context.ranked_compounds) > 0, "ranked_compounds should not be empty"
-    assert result.current_phase == "presentation", "Phase should be 'presentation' after ranking"
     print(f"  compound_ranking_agent: fallback → {len(result.context.ranked_compounds)} ranked compounds ✓")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 11: comparing_agent — LLM succeeds, comparison_result populated
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_comparing_agent_llm_success():
+    """Ollama stub returns valid JSON; agent should set comparison_result."""
     import agents.comparing_agent as ca_mod
 
     fake_final_compounds = [
@@ -432,6 +506,8 @@ def test_comparing_agent_llm_success():
     state.context.final_compounds = fake_final_compounds
     state.purpose = "end_user"
 
+    # Patch MONGO_URI so the agent reaches the MongoClient (which is stubbed)
+    import os
     _orig = os.environ.get("MONGO_URI")
     os.environ["MONGO_URI"] = "mongodb://stub-host:27017/stubdb"
     try:
@@ -447,6 +523,10 @@ def test_comparing_agent_llm_success():
     assert len(result.context.comparison_result) >= 1
     print(f"  comparing_agent: LLM → {len(result.context.comparison_result)} top choices ✓")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 12: state error tracking helpers
+# ─────────────────────────────────────────────────────────────────────────────
 
 def test_state_error_tracking():
     state = make_state()
@@ -465,6 +545,10 @@ def test_state_error_tracking():
     assert state.get_error_count("location") == 1
     print("  Error tracking: add_error / get_error_count works correctly ✓")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 13: sync_to_legacy mirrors context → legacy fields
+# ─────────────────────────────────────────────────────────────────────────────
 
 def test_sync_to_legacy():
     state = make_state()
@@ -488,10 +572,15 @@ def test_sync_to_legacy():
     print("  sync_to_legacy: all 7 fields mirrored correctly ✓")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 14: final_output_agent — no compounds → safe sentinel
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_final_output_agent_no_compounds():
     import agents.final_output_agent as foa_mod
 
     state = make_state()
+    # No compounds anywhere
     state.context.ranked_compounds = None
     state.context.final_compounds = None
     state.context.candidate_compounds = None
@@ -501,19 +590,29 @@ def test_final_output_agent_no_compounds():
     state.context.budget = 5_000_000
 
     result = foa_mod.final_output_agent(state)
+    # Should not crash, should set a sentinel
     assert result.context.final_best_compound is not None
     assert result.context.final_best_compound.get("status") == "no_compound_found"
     assert result.handoff_to_human is True
     print("  final_output_agent: no compounds → safe sentinel + handoff_to_human ✓")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 15: graph.step() — entry point and conditional edge wiring
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_graph_step_entry_point():
+    """
+    Verify graph.step() on a blank state lands at extraction_agent.
+    Works with both AgentState (Pydantic) and dict state.
+    """
     from graph import StateGraph, END as GRAPH_END
 
     called = []
 
     def fake_extraction(state):
         called.append("extraction_agent")
+        # Works for both Pydantic and dict
         if hasattr(state, 'context'):
             state.context.location = "Cairo"
             state.sync_to_legacy()
@@ -526,6 +625,7 @@ def test_graph_step_entry_point():
     g.set_entry_point("extraction_agent")
     g.add_edge("extraction_agent", lambda s: GRAPH_END)
 
+    # Test with Pydantic AgentState
     state = make_state()
     state_out, next_node = g.step(state)
 
@@ -533,6 +633,7 @@ def test_graph_step_entry_point():
     assert next_node == GRAPH_END
     print(f"  graph.step() [Pydantic]: extraction_agent called, next={next_node} ✓")
 
+    # Test with plain dict
     called.clear()
     dict_state = {"_graph_current_node": None, "waiting_for": None, "user_id": "test"}
     dict_out, next_node2 = g.step(dict_state)
@@ -541,8 +642,14 @@ def test_graph_step_entry_point():
     print(f"  graph.step() [dict]: extraction_agent called, next={next_node2} ✓")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Test 16: router loop guard — same node 3× without progress → detected
+# ─────────────────────────────────────────────────────────────────────────────
+
 def test_router_loop_detection():
+    """run_router_steps detects when the same (node, waiting_for) is hit 3x."""
     state = make_state()
+    # Deliberately leave state empty so router keeps choosing extraction_agent
     transitions = run_router_steps(state, max_steps=15)
     assert "INFINITE_LOOP_DETECTED" in transitions, (
         f"Loop not detected. Transitions: {transitions}"
@@ -555,22 +662,22 @@ def test_router_loop_detection():
 # ─────────────────────────────────────────────────────────────────────────────
 
 TESTS = [
-    ("T01: Router — initial → extraction_agent",               test_router_initial_extraction),
-    ("T02: Router — missing location → location_agent",        test_router_progressive_missing_location),
-    ("T03: Router — waiting_for priority",                      test_router_waiting_for_priority),
+    ("T01: Router — initial → extraction_agent",          test_router_initial_extraction),
+    ("T02: Router — missing location → location_agent",   test_router_progressive_missing_location),
+    ("T03: Router — waiting_for priority",                 test_router_waiting_for_priority),
     ("T04: Router — no_units_response before candidate check", test_router_no_units_response_priority),
-    ("T05: Router — handoff_to_human → END",                   test_router_handoff_to_end),
-    ("T06: Router — full happy-path sequence",                 test_router_happy_path_sequence),
-    ("T07: extraction_agent — populates context",              test_extraction_agent_populates_context),
-    ("T08: location_agent — validates and clears wait",        test_location_agent_success),
-    ("T09: budget_agent — retry on low budget",                test_budget_agent_retry_on_low_budget),
-    ("T10: compound_ranking — fallback (no embedding)",        test_compound_ranking_fallback),
-    ("T11: comparing_agent — LLM success path",                test_comparing_agent_llm_success),
-    ("T12: State error tracking",                               test_state_error_tracking),
-    ("T13: sync_to_legacy correctness",                        test_sync_to_legacy),
-    ("T14: final_output_agent — no compounds sentinel",        test_final_output_agent_no_compounds),
-    ("T15: graph.step() — entry point + edge wiring",          test_graph_step_entry_point),
-    ("T16: Router loop detection",                             test_router_loop_detection),
+    ("T05: Router — handoff_to_human → END",              test_router_handoff_to_end),
+    ("T06: Router — full happy-path sequence",            test_router_happy_path_sequence),
+    ("T07: extraction_agent — populates context",          test_extraction_agent_populates_context),
+    ("T08: location_agent — validates and clears wait",   test_location_agent_success),
+    ("T09: budget_agent — retry on low budget",           test_budget_agent_retry_on_low_budget),
+    ("T10: compound_ranking — fallback (no embedding)",   test_compound_ranking_fallback),
+    ("T11: comparing_agent — LLM success path",           test_comparing_agent_llm_success),
+    ("T12: State error tracking",                          test_state_error_tracking),
+    ("T13: sync_to_legacy correctness",                   test_sync_to_legacy),
+    ("T14: final_output_agent — no compounds sentinel",   test_final_output_agent_no_compounds),
+    ("T15: graph.step() — entry point + edge wiring",     test_graph_step_entry_point),
+    ("T16: Router loop detection",                         test_router_loop_detection),
 ]
 
 
@@ -582,6 +689,7 @@ def main():
     for name, fn in TESTS:
         run_test(name, fn)
 
+    # Summary
     passed = sum(1 for _, ok, _ in results if ok)
     total  = len(results)
     print("\n" + "="*60)

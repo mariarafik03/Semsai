@@ -8,12 +8,12 @@ waiting_for values used
 ───────────────────────
 "unit_filter_q_{n}"   → question n sent to user, waiting for answer (n = 1-based)
 
-State scratch-pad keys (prefixed with _ so they don't pollute domain state)
-─────────────────────────────────────────────────────────────────────────────
-_uf_questions      : list[dict]   — generated UnitQuestion objects (serialised)
-_uf_answers        : dict         — {key: chosen_option} collected so far
-_uf_current_q      : int          — index of next question to ask (0-based)
-_uf_done           : bool         — True once ranking is complete
+State scratch-pad fields (uf_* on AgentState)
+──────────────────────────────────────────────
+uf_questions      : list[dict]   — generated UnitQuestion objects (serialised)
+uf_answers        : dict         — {key: chosen_option} collected so far
+uf_current_q      : int          — index of next question to ask (0-based)
+uf_done           : bool         — True once ranking is complete
 """
 
 import json
@@ -218,30 +218,32 @@ Respond ONLY with valid JSON, no extra text:
 
 
 # ---------------------------------------------------------------------------
-# Helpers — scratch-pad accessors
+# Helpers — scratch-pad accessors  (Pydantic attribute access, NOT dict.get)
 # ---------------------------------------------------------------------------
 
 def _get_questions(state: AgentState) -> Optional[list]:
-    return state.get("_uf_questions")
+    return state.uf_questions
 
 
 def _get_answers(state: AgentState) -> dict:
-    return dict(state.get("_uf_answers") or {})
+    return dict(state.uf_answers or {})
 
 
 def _get_current_q(state: AgentState) -> int:
-    return int(state.get("_uf_current_q") or 0)
+    return int(state.uf_current_q or 0)
 
 
 def _flush_scratch(state: AgentState) -> None:
-    for k in ("_uf_questions", "_uf_answers", "_uf_current_q", "_uf_done"):
-        state.pop(k, None)  # type: ignore[misc]
+    state.uf_questions = None
+    state.uf_answers   = None
+    state.uf_current_q = None
+    state.uf_done      = None
 
 
 def _apply_ranking(state: AgentState, answers: dict) -> AgentState:
-    """Run LLM ranking and update state["candidate_units"]."""
-    units  = state.get("candidate_units") or []
-    budget = state.get("budget")
+    """Run LLM ranking and update state.candidate_units."""
+    units  = state.candidate_units or []
+    budget = state.budget
 
     ranked_result = _rank_units(units, answers, budget=budget)
 
@@ -265,8 +267,7 @@ def _apply_ranking(state: AgentState, answers: dict) -> AgentState:
     print(f"\n   Reasoning: {ranked_result.reasoning}")
     print(f"   {len(ranked_units)} units ranked.")
 
-    state["candidate_units"] = ranked_units
-    state["unit_filter_done"] = True   # signal to router: filter is complete
+    state.candidate_units = ranked_units
     _flush_scratch(state)
     return state
 
@@ -282,17 +283,16 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     Turn 1 : generate questions, send question #1, set waiting_for
     Turn 2+ : record answer, send next question  — OR — run ranking and finish
     """
-    units  = state.get("candidate_units") or []
-    budget = state.get("budget")
+    units  = state.candidate_units or []
+    budget = state.budget
 
     # Nothing to filter
     if len(units) <= 1:
         _flush_scratch(state)
-        state["unit_filter_done"] = True
         return state
 
-    waiting    = (state.get("waiting_for") or "").strip()
-    user_input = (state.get("user_input") or "").strip()
+    waiting    = (state.waiting_for or "").strip()
+    user_input = (state.user_input or "").strip()
 
     # ═══════════════════════════════════════════════════════════════════
     # CASE A — Returning with an answer to a unit question
@@ -317,9 +317,9 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
             answers[q_key] = chosen
             print(f"   ✅ [{q_key}] = {chosen}")
 
-        state["_uf_answers"]   = answers
-        state["_uf_current_q"] = current_q_idx + 1
-        state["waiting_for"]   = None
+        state.uf_answers   = answers
+        state.uf_current_q = current_q_idx + 1
+        state.waiting_for  = None
 
         next_q_idx = current_q_idx + 1
 
@@ -334,8 +334,8 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
         opts_str = "\n".join(f"  {i+1}. {o}" for i, o in enumerate(opts))
         full_q   = f"{question}\n{opts_str}"
 
-        state["agent_message"] = full_q
-        state["waiting_for"]   = f"unit_filter_q_{next_q_idx + 1}"
+        state.agent_message = full_q
+        state.waiting_for   = f"unit_filter_q_{next_q_idx + 1}"
         return state
 
     # ═══════════════════════════════════════════════════════════════════
@@ -348,15 +348,14 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     if unit_questions is None or not unit_questions.questions:
         print("   Proceeding with all candidate units (no questions generated).")
         _flush_scratch(state)
-        state["unit_filter_done"] = True
         return state
 
     # Serialise questions into state for future turns
     questions_raw = [q.model_dump() for q in unit_questions.questions]
-    state["_uf_questions"]  = questions_raw
-    state["_uf_answers"]    = {}
-    state["_uf_current_q"]  = 0
-    state["_uf_done"]       = False
+    state.uf_questions = questions_raw
+    state.uf_answers   = {}
+    state.uf_current_q = 0
+    state.uf_done      = False
 
     # Send first question
     q_data   = questions_raw[0]
@@ -365,6 +364,6 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     opts_str = "\n".join(f"  {i+1}. {o}" for i, o in enumerate(opts))
     full_q   = f"{question}\n{opts_str}"
 
-    state["agent_message"] = full_q
-    state["waiting_for"]   = "unit_filter_q_1"
+    state.agent_message = full_q
+    state.waiting_for   = "unit_filter_q_1"
     return state

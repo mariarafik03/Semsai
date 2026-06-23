@@ -244,34 +244,6 @@ def _build_units_pipeline(
     return pipeline
 
 
-def _reset_for_requery(state: AgentState) -> None:
-    """
-    Called whenever the user changes budget / location / property type after
-    a "no units found" result. Resets the phase + result sentinels so the
-    router re-enters the discovery gate (to re-validate whichever field
-    changed) instead of short-circuiting to END.
-
-    Two things matter here, both required together:
-      1. current_phase must go back to "discovery" — the "search" phase
-         block never looks at location/property_type/budget at all, it
-         jumps straight to checking candidate_compounds. Leaving phase as
-         "search" skips the re-validation entirely.
-      2. candidate_compounds must become None, not [] — the router treats
-         [] as "we already searched and are mid no-units-response flow",
-         which makes it return END immediately. None means "hasn't
-         searched yet", which is what's actually true after a field changes.
-    """
-    state.current_phase = "discovery"
-    state.candidate_compounds = None
-    state.context.candidate_compounds = None
-    # Any previously found developers/final_compounds are now stale too —
-    # clear them so a re-run of the search starts clean.
-    state.final_compounds = None
-    state.context.final_compounds = None
-    state.top_developers = None
-    state.context.top_developers = None
-
-
 # -----------------------
 # Agent
 # -----------------------
@@ -301,7 +273,9 @@ def compounds_agent(state: AgentState):
                 state.monthlyinstall = None
                 state.context.downpayment = None
                 state.context.monthly_installment = None
-            _reset_for_requery(state)
+            # Clear candidate_compounds so router returns here after budget_agent
+            state.candidate_compounds = None
+            state.context.candidate_compounds = None
             print("→ No-units choice: increase budget")
             state.sync_to_legacy()
             return state
@@ -328,7 +302,6 @@ def compounds_agent(state: AgentState):
                 state.budget_valid = None
                 state.context.budget_valid = False
                 print("\u2192 No-units: change location (will ask fresh)")
-            _reset_for_requery(state)
             state.sync_to_legacy()
             return state
 
@@ -357,7 +330,6 @@ def compounds_agent(state: AgentState):
                 state.budget_valid = None
                 state.context.budget_valid = False
                 print("\u2192 No-units: change type (will ask fresh)")
-            _reset_for_requery(state)
             state.sync_to_legacy()
             return state
 
@@ -402,7 +374,6 @@ def compounds_agent(state: AgentState):
         budget = _compute_budget_if_missing(db, state)
         if budget is None:
             print("Budget missing/invalid and could not be computed.")
-            state.sync_to_legacy()
             return state
 
         pipeline = _build_units_pipeline(
@@ -457,8 +428,8 @@ def compounds_agent(state: AgentState):
                 f"3️⃣ **Change property type** — maybe a different type fits your budget"
             )
             # Clear both copies so the router stays in compounds_agent after user responds
-            state.candidate_compounds = []
-            state.context.candidate_compounds = []
+            state.candidate_compounds = None
+            state.context.candidate_compounds = None
             state.waiting_for = "no_units_response"
             state.sync_to_legacy()
             return state

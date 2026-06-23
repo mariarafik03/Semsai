@@ -78,35 +78,18 @@ START YOUR RESPONSE NOW WITH { (not with any explanation):
 # Helpers: extraction + db
 # -------------------------
 
-def _extract_compound_names(
-    final_compounds: Optional[List[Dict[str, Any]]]
+def _extract_compound_names_from_developers(
+    final_candidates: Optional[List[Dict[str, Any]]]
 ) -> List[str]:
-    """Extract compound names to compare.
-
-    state.context.final_compounds (set by developers_agent.py in this
-    pipeline) is already a FLAT list of compound dicts —
-    {"compound_id": ..., "compound_name": ..., "location": ..., "min_unit_price": ...} —
-    not a list of developer dicts with a nested "matched_compound_names"
-    array. The nested shape belongs to an older prototype; it's kept here
-    as a defensive fallback only, in case this ever gets fed developer-shaped
-    objects instead.
-    """
-    if not final_compounds:
+    """Extract all compound names from final_candidates."""
+    if not final_candidates:
         return []
 
     names: List[str] = []
-    for item in final_compounds:
-        if not isinstance(item, dict):
+    for dev in final_candidates:
+        if not isinstance(dev, dict):
             continue
-
-        # Current shape: compound dict with the name directly on it.
-        direct_name = (item.get("compound_name") or item.get("name") or "").strip()
-        if direct_name:
-            names.append(direct_name)
-            continue
-
-        # Defensive fallback: old developer-shaped dict.
-        arr = item.get("matched_compound_names") or []
+        arr = dev.get("matched_compound_names") or []
         if isinstance(arr, list):
             for n in arr:
                 if isinstance(n, str) and n.strip():
@@ -584,7 +567,7 @@ def comparing_agent(state: AgentState):
 
     # Extract compound names
     compounds_to_compare = state.context.final_compounds or []
-    compound_names = _extract_compound_names(compounds_to_compare)
+    compound_names = _extract_compound_names_from_developers(compounds_to_compare)
 
     if not compound_names:
         print("⚠️ No compounds to compare")

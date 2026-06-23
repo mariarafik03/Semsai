@@ -228,7 +228,6 @@ def developers_agent(state: AgentState):
         state.top_developers = []
         state.final_compounds = []
         state.context.final_compounds = []
-        state.sync_to_legacy()
         return state
 
     print(f"Searching developers for {len(candidate_compounds)} candidate compounds")
@@ -277,7 +276,5 @@ def developers_agent(state: AgentState):
         print(f"  - {x.get('compound_name')} | min_price={x.get('min_unit_price')}")
 
     state.next_step = "compound_features_agent"
-    state.current_phase = "comparison"
-    print("✓ Phase transition: search → comparison")
     state.sync_to_legacy()
     return state

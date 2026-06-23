@@ -2,35 +2,15 @@
 extractors.py — Rule-based field extraction from user input.
 """
 import re
-from typing import Tuple, Optional, Dict, Any
+from typing import Tuple, Optional, Dict
 
 def extract_location(text: str) -> Tuple[Optional[str], str, Optional[str]]:
-    """Extract location from text by matching against known area aliases.
-
-    Returns "high" confidence only when the input contains a recognisable
-    Egyptian city / area keyword.  Generic sentences like "i want to buy a
-    house" no longer produce false-positive high-confidence extractions.
-    """
-    # Import here to avoid circular imports; Normalization has no deps on us.
-    try:
-        from agents.Normalization import LOCATION_ALIASES
-    except ImportError:
-        try:
-            from Normalization import LOCATION_ALIASES  # fallback for direct runs
-        except ImportError:
-            LOCATION_ALIASES = {}
-
-    cleaned = text.strip().lower()
-    cleaned = re.sub(r'[،,.\-_]+', ' ', cleaned)
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-
-    # Try every alias: look for it as a substring of the user input
-    for alias, normalized in LOCATION_ALIASES.items():
-        if alias in cleaned:
-            # Return the canonical name so downstream validators/normalizers
-            # get a clean value rather than the raw user sentence.
-            return normalized, "high", None
-
+    """Extract location from text."""
+    # This is a stub for a real NLP extractor.
+    # For now, we clean the text and return it if it looks like a name.
+    cleaned = text.strip()
+    if len(cleaned) > 2 and len(cleaned) < 50:
+        return cleaned, "high", None
     return None, "low", None
 
 def extract_property_type(text: str) -> Tuple[Optional[str], str, Optional[str]]:
