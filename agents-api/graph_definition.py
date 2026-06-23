@@ -34,6 +34,7 @@ from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
 from agents.unit_filter_node         import interactive_unit_filter
+from agents.episodic_memory_agent    import episodic_memory_agent
 
 
 # ── Helpers: read context OR legacy list fields ────────────────────────────────
@@ -242,23 +243,32 @@ def state_router(state) -> str:
         # final_output_agent has run and selected the best compound.
         # If it found candidate_units, run the interactive unit filter so
         # the user can see and refine the matching units.
-        # Once the filter is done (no more waiting_for), go to END.
+        # Once the filter is done (or there were no units), save the episode
+        # once via episodic_memory_agent, then go to END.
         if final_best_compound:
             candidate_units = None
             unit_filter_done = False
+            episode_saved = False
             if isinstance(state, dict):
                 candidate_units = state.get("context", {}).get("candidate_units") \
                                   or state.get("candidate_units")
                 unit_filter_done = bool(state.get("unit_filter_done"))
+                episode_saved = bool(state.get("episode_saved", False))
             else:
                 candidate_units = (state.context.candidate_units
                                    or getattr(state, "candidate_units", None))
                 unit_filter_done = bool(getattr(state, "unit_filter_done", False))
+                episode_saved = bool(getattr(state, "episode_saved", False))
 
+            # Run unit filter if there are units and it hasn't finished yet.
             if candidate_units and not unit_filter_done:
                 return "unit_filter_agent"
 
-        return "final_output_agent"
+            # Save the episode exactly once.
+            if not episode_saved:
+                return "episodic_memory_agent"
+
+        return END
     
     # Invalid or unknown phase - log and end
     print(f"⚠️ WARNING: Invalid phase '{phase}' in router — ending conversation")
@@ -290,6 +300,7 @@ graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
 graph.add_node("unit_filter_agent",      interactive_unit_filter)
+graph.add_node("episodic_memory_agent",  episodic_memory_agent)
 
 # ── Entry point ──────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -309,6 +320,7 @@ all_nodes = [
     "compound_ranking_agent",
     "final_output_agent",
     "unit_filter_agent",
+    "episodic_memory_agent",
 ]
 
 for _node in all_nodes:

@@ -249,6 +249,7 @@ class AgentState(BaseModel):
     years: Optional[int] = None
     features_limit: int = 0
     features_force_refresh: bool = False
+    episode_saved: bool = False          # True once episodic_memory_agent has written
     abort: Optional[bool] = None
     
     # ══════════════════════════════════════════════════════════════════════

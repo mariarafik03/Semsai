@@ -114,3 +114,69 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
     except Exception as exc:
         # Never crash the API response because of a DB write failure
         print(f"❌ update_user_chat_preferences error: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Episodic memory
+# ---------------------------------------------------------------------------
+
+EPISODIC_COLLECTION = "episodic_memory"
+
+# Ensure the compound index exists once per process lifetime.
+_episodic_index_created = False
+
+
+def _ensure_episodic_index() -> None:
+    """Create the compound index on episodic_memory if it doesn't exist yet."""
+    global _episodic_index_created
+    if _episodic_index_created:
+        return
+    try:
+        from pymongo import DESCENDING
+        db = _get_db()
+        db[EPISODIC_COLLECTION].create_index(
+            [("user_id", 1), ("created_at", DESCENDING)],
+            background=True,
+        )
+        _episodic_index_created = True
+    except Exception as exc:
+        print(f"⚠️ episodic_memory index creation failed (non-fatal): {exc}")
+
+
+def save_episode(user_id: str, summary: dict) -> None:
+    """
+    Insert one episode document into the episodic_memory collection.
+
+    Expected summary keys:
+        location, property_type, payment_type, budget,
+        best_compound_name, units_found, session_id, created_at
+    """
+    try:
+        _ensure_episodic_index()
+        db = _get_db()
+        db[EPISODIC_COLLECTION].insert_one({"user_id": str(user_id), **summary})
+    except Exception as exc:
+        print(f"❌ save_episode error for user {user_id}: {exc}")
+
+
+def load_episodes(user_id: str, limit: int = 3) -> list:
+    """
+    Return up to *limit* most recent episode documents for *user_id*,
+    newest first.  Returns [] if none found or on any error.
+
+    ObjectId fields are converted to strings so callers receive plain dicts.
+    """
+    try:
+        _ensure_episodic_index()
+        db = _get_db()
+        from pymongo import DESCENDING
+        cursor = (
+            db[EPISODIC_COLLECTION]
+            .find({"user_id": str(user_id)}, {"_id": 0})
+            .sort("created_at", DESCENDING)
+            .limit(limit)
+        )
+        return list(cursor)
+    except Exception as exc:
+        print(f"❌ load_episodes error for user {user_id}: {exc}")
+        return []

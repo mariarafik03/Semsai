@@ -42,6 +42,7 @@ from typing import List, Dict, Optional
 from state import AgentState
 from agents.utils.extractors import extract_all_fields
 from main_helpers import ask_llm_with_history
+from api.db import load_episodes
 
 
 OPENING_MESSAGE = (
@@ -116,9 +117,44 @@ def _field_agent_for(waiting_for: str):
     }.get(waiting_for)
 
 
+def _build_episode_context(user_id: str) -> str:
+    """
+    Load the user's past sessions and return a compact string to append
+    to the system prompt.  Returns "" if there are no episodes or on
+    any error.  Output is capped so it stays within ~300 characters.
+    """
+    try:
+        episodes = load_episodes(user_id, limit=3)
+    except Exception as exc:
+        print(f"   ⚠️ Could not load episodic memory ({exc}) — continuing without it")
+        return ""
+
+    if not episodes:
+        return ""
+
+    lines = []
+    for ep in episodes:
+        date = (ep.get("created_at") or "")[:10]  # YYYY-MM-DD
+        location = ep.get("location") or "?"
+        ptype = ep.get("property_type") or "?"
+        payment = ep.get("payment_type") or "?"
+        budget = ep.get("budget")
+        budget_str = f"{int(budget):,} EGP" if budget else "?"
+        compound = ep.get("best_compound_name") or "no match"
+        lines.append(
+            f"- {date}: {ptype} in {location}, {budget_str}, "
+            f"{payment} → {compound}"
+        )
+
+    block = "Past sessions:\n" + "\n".join(lines)
+    # Hard cap to stay within token budget
+    return block[:300]
+
+
 def _llm_extract(
     user_input: str,
     history: Optional[List[Dict[str, str]]] = None,
+    user_id: str = "",
 ) -> dict:
     """
     Use the LLM to pull every recognisable field out of one free-form
@@ -131,6 +167,8 @@ def _llm_extract(
     history : list of {role, content} dicts, optional
         Prior turns from state.get_llm_messages().  Pass an empty list
         or None for the very first message.
+    user_id : str, optional
+        User identifier used to look up episodic memory.
 
     Returns
     -------
@@ -140,9 +178,17 @@ def _llm_extract(
     """
     prompt = _EXTRACTION_PROMPT.format(user_input=user_input)
 
+    # Inject episodic memory into the system prompt (best-effort).
+    episode_ctx = _build_episode_context(user_id) if user_id else ""
+    system_prompt = (
+        _EXTRACTION_SYSTEM + "\n\n" + episode_ctx
+        if episode_ctx
+        else _EXTRACTION_SYSTEM
+    )
+
     try:
         raw = ask_llm_with_history(
-            system_prompt=_EXTRACTION_SYSTEM,
+            system_prompt=system_prompt,
             history=history or [],
             user_prompt=prompt,
             max_tokens=256,
@@ -180,7 +226,7 @@ def _apply_extraction(state: AgentState, user_input: str) -> None:
     if prior_history and prior_history[-1]["role"] == "user":
         prior_history = prior_history[:-1]
 
-    fields = _llm_extract(user_input, prior_history)
+    fields = _llm_extract(user_input, prior_history, user_id=getattr(state, "user_id", ""))
     extracted_count = 0
 
     purpose = (fields.get("purpose") or "").strip().lower()
