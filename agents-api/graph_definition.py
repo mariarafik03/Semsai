@@ -34,7 +34,6 @@ from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
 from agents.unit_filter_node         import interactive_unit_filter
-from agents.episodic_memory_agent    import episodic_memory_agent
 
 
 # ── Helpers: read context OR legacy list fields ────────────────────────────────
@@ -132,8 +131,15 @@ def state_router(state) -> str:
     if handoff:
         return END
         
-    # 1.5 Done check (final best compound selected)
-    if final_best_compound:
+    # 1.5 Done check — only short-circuit to END after episodic_memory_agent
+    # has run. Before that, final_output_agent and episodic_memory_agent still
+    # need to run, so we fall through to phase-based routing.
+    episode_saved = (
+        bool(state.get('episode_saved', False))
+        if isinstance(state, dict)
+        else bool(getattr(state, 'episode_saved', False))
+    )
+    if final_best_compound and episode_saved:
         return END
     
     # 2. Waiting for user input routing — MUST come before the
@@ -240,33 +246,32 @@ def state_router(state) -> str:
         return "final_output_agent"
     
     elif phase == "presentation":
-        # final_output_agent has run and selected the best compound.
-        # If it found candidate_units, run the interactive unit filter so
-        # the user can see and refine the matching units.
-        # Once the filter is done (or there were no units), save the episode
-        # once via episodic_memory_agent, then go to END.
-        if final_best_compound:
-            candidate_units = None
-            unit_filter_done = False
-            episode_saved = False
-            if isinstance(state, dict):
-                candidate_units = state.get("context", {}).get("candidate_units") \
-                                  or state.get("candidate_units")
-                unit_filter_done = bool(state.get("unit_filter_done"))
-                episode_saved = bool(state.get("episode_saved", False))
-            else:
-                candidate_units = (state.context.candidate_units
-                                   or getattr(state, "candidate_units", None))
-                unit_filter_done = bool(getattr(state, "unit_filter_done", False))
-                episode_saved = bool(getattr(state, "episode_saved", False))
+        # Presentation phase order:
+        #   1. final_output_agent     — picks best compound, fetches units
+        #   2. unit_filter_agent      — interactive filtering (if units exist)
+        #   3. episodic_memory_agent  — saves session summary once
+        #   4. END
+        if not final_best_compound:
+            # final_output_agent hasn't run yet
+            return "final_output_agent"
 
-            # Run unit filter if there are units and it hasn't finished yet.
-            if candidate_units and not unit_filter_done:
-                return "unit_filter_agent"
+        # final_best_compound is now set — work through remaining steps
+        if isinstance(state, dict):
+            candidate_units = (state.get("context", {}).get("candidate_units")
+                               or state.get("candidate_units"))
+            unit_filter_done = bool(state.get("unit_filter_done", False))
+            ep_saved = bool(state.get("episode_saved", False))
+        else:
+            candidate_units = (state.context.candidate_units
+                               or getattr(state, "candidate_units", None))
+            unit_filter_done = bool(getattr(state, "unit_filter_done", False))
+            ep_saved = bool(getattr(state, "episode_saved", False))
 
-            # Save the episode exactly once.
-            if not episode_saved:
-                return "episodic_memory_agent"
+        if candidate_units and not unit_filter_done:
+            return "unit_filter_agent"
+
+        if not ep_saved:
+            return "episodic_memory_agent"
 
         return END
     
@@ -300,7 +305,6 @@ graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
 graph.add_node("unit_filter_agent",      interactive_unit_filter)
-graph.add_node("episodic_memory_agent",  episodic_memory_agent)
 
 # ── Entry point ──────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -320,7 +324,6 @@ all_nodes = [
     "compound_ranking_agent",
     "final_output_agent",
     "unit_filter_agent",
-    "episodic_memory_agent",
 ]
 
 for _node in all_nodes:
