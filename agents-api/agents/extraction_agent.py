@@ -42,6 +42,7 @@ from typing import List, Dict, Optional
 from state import AgentState
 from agents.utils.extractors import extract_all_fields
 from main_helpers import ask_llm_with_history
+from api.db import load_episodes
 
 
 OPENING_MESSAGE = (
@@ -119,6 +120,7 @@ def _field_agent_for(waiting_for: str):
 def _llm_extract(
     user_input: str,
     history: Optional[List[Dict[str, str]]] = None,
+    system_prompt: Optional[str] = None,
 ) -> dict:
     """
     Use the LLM to pull every recognisable field out of one free-form
@@ -131,6 +133,8 @@ def _llm_extract(
     history : list of {role, content} dicts, optional
         Prior turns from state.get_llm_messages().  Pass an empty list
         or None for the very first message.
+    system_prompt : str, optional
+        Override the default _EXTRACTION_SYSTEM (used to inject memory).
 
     Returns
     -------
@@ -139,10 +143,11 @@ def _llm_extract(
         flaky API call never breaks the conversation.
     """
     prompt = _EXTRACTION_PROMPT.format(user_input=user_input)
+    sys_prompt = system_prompt if system_prompt is not None else _EXTRACTION_SYSTEM
 
     try:
         raw = ask_llm_with_history(
-            system_prompt=_EXTRACTION_SYSTEM,
+            system_prompt=sys_prompt,
             history=history or [],
             user_prompt=prompt,
             max_tokens=256,
@@ -162,7 +167,7 @@ def _llm_extract(
         return {}
 
 
-def _apply_extraction(state: AgentState, user_input: str) -> None:
+def _apply_extraction(state: AgentState, user_input: str, system_prompt: Optional[str] = None) -> None:
     """
     Extract every recognisable field from one free-form message and save
     high-confidence values to state.context.
@@ -180,7 +185,7 @@ def _apply_extraction(state: AgentState, user_input: str) -> None:
     if prior_history and prior_history[-1]["role"] == "user":
         prior_history = prior_history[:-1]
 
-    fields = _llm_extract(user_input, prior_history)
+    fields = _llm_extract(user_input, prior_history, system_prompt=system_prompt)
     extracted_count = 0
 
     purpose = (fields.get("purpose") or "").strip().lower()
@@ -252,6 +257,35 @@ def extraction_agent(state: AgentState) -> AgentState:
     """
     Entry-point agent. See module docstring for the full workflow.
     """
+    global _EXTRACTION_SYSTEM
+
+    # ── Episodic memory injection ──────────────────────────────────────────
+    # Load the user's past sessions and append a compact summary to the
+    # system prompt so the LLM knows prior preferences. Silently skipped
+    # on any error so a DB hiccup never breaks extraction.
+    memory_snippet = ""
+    try:
+        user_id = state.user_id if not isinstance(state, dict) else state.get("user_id", "")
+        episodes = load_episodes(user_id, limit=3)
+        if episodes:
+            lines = []
+            for ep in episodes:
+                date  = (ep.get("created_at") or "")[:10]
+                loc   = ep.get("location") or "?"
+                ptype = ep.get("property_type") or "?"
+                pay   = ep.get("payment_type") or "?"
+                budg  = ep.get("budget") or "?"
+                best  = ep.get("best_compound_name") or "no match"
+                lines.append(f"- {date}: {ptype} in {loc}, {budg} EGP, {pay} → {best}")
+            memory_snippet = ("Past sessions:\n" + "\n".join(lines))[:300]
+    except Exception as _mem_exc:
+        print(f"⚠️ Could not load episodes for extraction: {_mem_exc}")
+
+    # Build a per-call system prompt (keep the global constant unchanged)
+    effective_system = _EXTRACTION_SYSTEM
+    if memory_snippet:
+        effective_system = effective_system + f"\n\n{memory_snippet}"
+    # ──────────────────────────────────────────────────────────────────────
 
     print("\n--- Extraction Agent ---")
 
@@ -266,7 +300,7 @@ def extraction_agent(state: AgentState) -> AgentState:
             state.sync_to_legacy()
             return state
 
-        _apply_extraction(state, state.user_input)
+        _apply_extraction(state, state.user_input, system_prompt=effective_system)
         state.sync_to_legacy()
         return state
 
@@ -293,6 +327,6 @@ def extraction_agent(state: AgentState) -> AgentState:
     # ── Edge case: extraction_agent invoked directly WITH input already
     # present (e.g. POST /chat with no session_id and a message in body)
     # — extract immediately, no extra round trip needed. ──────────────────
-    _apply_extraction(state, state.user_input)
+    _apply_extraction(state, state.user_input, system_prompt=effective_system)
     state.sync_to_legacy()
     return state

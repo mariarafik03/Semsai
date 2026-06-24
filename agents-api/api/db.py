@@ -114,3 +114,92 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
     except Exception as exc:
         # Never crash the API response because of a DB write failure
         print(f"❌ update_user_chat_preferences error: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Episodic Memory helpers
+# ---------------------------------------------------------------------------
+
+def save_episode(user_id: str, summary: dict) -> None:
+    """
+    Append one episode (including candidate_units) into the user's
+    episodic_memory array inside the users collection.
+    Caps the array at 10 episodes (oldest dropped).
+    Never creates a new user document.
+    """
+    db = _get_db()
+    uid = str(user_id).strip()
+
+    # Resolve query — try ObjectId first, fall back to string _id
+    query = (
+        {"_id": ObjectId(uid)}
+        if ObjectId.is_valid(uid)
+        else {"_id": uid}
+    )
+
+    try:
+        db[USERS_COLLECTION].update_one(
+            query,
+            {
+                "$push": {
+                    "episodic_memory": {
+                        "$each": [summary],
+                        "$slice": -10,
+                    }
+                },
+                "$set": {"updatedAt": summary.get("created_at")},
+            },
+            upsert=False,
+        )
+    except Exception as exc:
+        print(f"❌ save_episode error for user {uid}: {exc}")
+        raise
+
+
+def load_episodes(user_id: str, limit: int = 3) -> list:
+    """
+    Return the `limit` most recent episodes from the user's episodic_memory
+    array, newest first. Returns [] if user not found or array is empty.
+    """
+    db = _get_db()
+    uid = str(user_id).strip()
+
+    query = (
+        {"_id": ObjectId(uid)}
+        if ObjectId.is_valid(uid)
+        else {"_id": uid}
+    )
+
+    try:
+        user = db[USERS_COLLECTION].find_one(
+            query,
+            {"episodic_memory": {"$slice": -limit}},
+        )
+    except Exception as exc:
+        print(f"❌ load_episodes error for user {uid}: {exc}")
+        return []
+
+    if not user or "episodic_memory" not in user:
+        return []
+
+    episodes = user["episodic_memory"]
+    # Reverse so newest is first; stringify any ObjectId values
+    cleaned = []
+    for ep in reversed(episodes):
+        cleaned.append(
+            {
+                k: str(v) if type(v).__name__ == "ObjectId" else v
+                for k, v in ep.items()
+            }
+        )
+    return cleaned
+
+
+# Create index once at module import time (idempotent)
+try:
+    _get_db()[USERS_COLLECTION].create_index(
+        [("episodic_memory.session_id", 1)],
+        background=True,
+    )
+except Exception as _idx_exc:
+    print(f"⚠️ Could not create episodic_memory index: {_idx_exc}")

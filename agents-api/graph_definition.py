@@ -33,6 +33,8 @@ from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
 from agents.unit_filter_node         import interactive_unit_filter
+from agents.episodic_memory_agent    import episodic_memory_agent
+from api.db                          import load_episodes
 
 
 # ── Helpers: read context OR legacy list fields ────────────────────────────────
@@ -55,6 +57,36 @@ def _final_compounds(state: AgentState):
         return ctx
     legacy = state.final_compounds  # AgentState legacy field
     return legacy if legacy else None
+
+
+def inject_last_session_units(state) -> object:
+    """
+    Runs at session start, before extraction_agent.
+
+    If the user has a past episode with candidate_units, loads them into
+    state.context.candidate_units so unit_filter_node can display them
+    in the GUI immediately. Sets has_prior_units = True to signal the router.
+    Never raises — failures are logged and silently skipped.
+    """
+    try:
+        uid = state.get("user_id", "") if isinstance(state, dict) else getattr(state, "user_id", "")
+        episodes = load_episodes(uid, limit=1)
+        if episodes and episodes[0].get("candidate_units"):
+            last_units = episodes[0]["candidate_units"]
+            ctx = state.get("context") if isinstance(state, dict) else getattr(state, "context", None)
+            if ctx is not None:
+                if isinstance(ctx, dict):
+                    ctx["candidate_units"] = last_units
+                else:
+                    ctx.candidate_units = last_units
+            if isinstance(state, dict):
+                state["has_prior_units"] = True
+            else:
+                state.has_prior_units = True
+            print(f"🔁 Loaded {len(last_units)} units from last session for user {uid}")
+    except Exception as exc:
+        print(f"⚠️ Could not inject last session units: {exc}")
+    return state
 
 
 # ========================================
@@ -130,8 +162,26 @@ def state_router(state) -> str:
     if handoff:
         return END
         
-    # 1.5 Done check (final best compound selected)
+    # 1.5 Done check (final best compound selected) — save episode first
     if final_best_compound:
+        # Check episode_saved flag (works for both dict and Pydantic state)
+        episode_saved = (
+            state.get("episode_saved", False)
+            if isinstance(state, dict)
+            else getattr(state, "episode_saved", False)
+        )
+        if not episode_saved:
+            return "episodic_memory_agent"
+        return END
+
+    # 1.6 Route episodic_memory_agent to END after it runs
+    current_node = None
+    if isinstance(state, dict):
+        current_node = state.get("graph_current_node")
+    else:
+        current_node = getattr(state, "graph_current_node", None)
+
+    if current_node == "episodic_memory_agent":
         return END
     
     # 2. Waiting for user input routing — MUST come before the
@@ -163,13 +213,31 @@ def state_router(state) -> str:
 
     # 3. Check if we should route to extraction_agent (initial state —
     #    no fields collected yet and no waiting_for, so this is turn 1).
-    current_node = None
-    if isinstance(state, dict):
-        current_node = state.get("graph_current_node")
-    else:
-        current_node = getattr(state, "graph_current_node", None)
+    #    Re-read current_node (may have been set above for episodic check).
+    if current_node is None:
+        if isinstance(state, dict):
+            current_node = state.get("graph_current_node")
+        else:
+            current_node = getattr(state, "graph_current_node", None)
 
     if not current_node and not location and not property_type and not payment_type and not budget:
+        return "inject_last_session_units"
+
+    # 3.5 After inject_last_session_units: if prior units were loaded,
+    #     show them via unit_filter_agent before extraction_agent runs.
+    has_prior_units = (
+        state.get("has_prior_units", False)
+        if isinstance(state, dict)
+        else getattr(state, "has_prior_units", False)
+    )
+    unit_filter_done = (
+        state.get("unit_filter_done", False)
+        if isinstance(state, dict)
+        else getattr(state, "unit_filter_done", False)
+    )
+    if current_node == "inject_last_session_units":
+        if has_prior_units and not unit_filter_done:
+            return "unit_filter_agent"
         return "extraction_agent"
 
     # 4. Phase-based routing
@@ -259,7 +327,6 @@ def state_router(state) -> str:
 
         return "final_output_agent"
     
-    # Invalid or unknown phase - log and end
     print(f"⚠️ WARNING: Invalid phase '{phase}' in router — ending conversation")
     return END
 
@@ -289,9 +356,11 @@ graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
 graph.add_node("unit_filter_agent",      interactive_unit_filter)
+graph.add_node("inject_last_session_units", inject_last_session_units)
+graph.add_node("episodic_memory_agent",     episodic_memory_agent)
 
 # ── Entry point ──────────────────────────────────────────────────────────────
-graph.set_entry_point("extraction_agent")
+graph.set_entry_point("inject_last_session_units")
 
 # ── Edges: every node routes through state_router ────────────────────────────
 all_nodes = [
@@ -309,6 +378,9 @@ all_nodes = [
     "final_output_agent",
     "unit_filter_agent",
 ]
+
+# New episodic-memory nodes also route through state_router
+all_nodes += ["inject_last_session_units", "episodic_memory_agent"]
 
 for _node in all_nodes:
     graph.add_edge(_node, state_router)

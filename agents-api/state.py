@@ -250,6 +250,7 @@ class AgentState(BaseModel):
     abort: Optional[bool] = None
     unit_filter_done: bool = False
     episode_saved: bool = False
+    has_prior_units: bool = False  # signals that last session units are pre-loaded
     
     # ══════════════════════════════════════════════════════════════════════
     # GRAPH INTERNALS (Keep)
