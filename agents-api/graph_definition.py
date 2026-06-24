@@ -33,8 +33,6 @@ from agents.embedding_agent          import embedding_agent
 from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
-from agents.unit_filter_node         import interactive_unit_filter
-
 
 # ── Helpers: read context OR legacy list fields ────────────────────────────────
 # compounds_agent / developers_agent write to dict-style state fields,
@@ -164,8 +162,6 @@ def state_router(state) -> str:
             return "developers_agent"
         elif waiting_for == "preference_input":
             return "user_preferences_agent"
-        elif waiting_for.startswith("unit_filter_q_"):
-            return "unit_filter_agent"
         else:
             return END
 
@@ -257,18 +253,9 @@ def state_router(state) -> str:
 
         # final_best_compound is now set — work through remaining steps
         if isinstance(state, dict):
-            candidate_units = (state.get("context", {}).get("candidate_units")
-                               or state.get("candidate_units"))
-            unit_filter_done = bool(state.get("unit_filter_done", False))
             ep_saved = bool(state.get("episode_saved", False))
         else:
-            candidate_units = (state.context.candidate_units
-                               or getattr(state, "candidate_units", None))
-            unit_filter_done = bool(getattr(state, "unit_filter_done", False))
             ep_saved = bool(getattr(state, "episode_saved", False))
-
-        if candidate_units and not unit_filter_done:
-            return "unit_filter_agent"
 
         if not ep_saved:
             return "episodic_memory_agent"
@@ -304,7 +291,6 @@ graph.add_node("embedding_agent",        embedding_agent)
 graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
-graph.add_node("unit_filter_agent",      interactive_unit_filter)
 
 # ── Entry point ──────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
@@ -323,7 +309,6 @@ all_nodes = [
     "user_preferences_agent",
     "compound_ranking_agent",
     "final_output_agent",
-    "unit_filter_agent",
 ]
 
 for _node in all_nodes:

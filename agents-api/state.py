@@ -250,6 +250,8 @@ class AgentState(BaseModel):
     features_limit: int = 0
     features_force_refresh: bool = False
     abort: Optional[bool] = None
+    unit_filter_done: bool = False
+    episode_saved: bool = False
     
     # ══════════════════════════════════════════════════════════════════════
     # GRAPH INTERNALS (Keep)
