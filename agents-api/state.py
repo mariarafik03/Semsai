@@ -1,6 +1,5 @@
 """
 state.py — Pydantic-based state schema for the real estate agent system.
-
 ARCHITECTURE DECISIONS
 ──────────────────────
 1. Type Safety: All fields have explicit types with Pydantic validation
@@ -8,7 +7,6 @@ ARCHITECTURE DECISIONS
 3. Error Tracking: Structured error records instead of string parsing
 4. Future-Proof: Language support, timestamps, audit trail ready
 5. Backward Compatible: Legacy fields maintained during migration
-
 STATE LIFECYCLE
 ───────────────
 1. Created: make_initial_state() → fresh session
@@ -319,11 +317,9 @@ class AgentState(BaseModel):
     def get_llm_messages(self, last_n: int = 10) -> List[Dict[str, str]]:
         """
         Return the last N messages in OpenAI-compatible format.
-
         Strips the internal 'timestamp' key so the list can be passed
         directly to client.chat.completions.create(messages=...) without
         the API rejecting unknown fields.
-
         Usage
         -----
             history = state.get_llm_messages(last_n=8)

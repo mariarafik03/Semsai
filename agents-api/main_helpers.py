@@ -11,6 +11,7 @@ load_dotenv(_here.parent / ".env")
 
 def _get_openai_client():
     """Return a configured OpenAI client, raising clearly if the key is absent."""
+    # pyrefly: ignore [missing-import]
     import openai
     api_key = "".join(os.getenv("OPENAI_API_KEY", "").split())
     if not api_key:
