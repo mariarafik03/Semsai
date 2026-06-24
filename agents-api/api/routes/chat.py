@@ -114,6 +114,10 @@ async def _run_turn(session_id: str, state: dict, message: str, user_id: str | N
 
     if is_done and user_id:
         asyncio.create_task(_persist_user_data(user_id, session_id, state))
+    elif is_done and not user_id:
+        print(f"⚠️  Session {session_id} completed but no user_id was provided — "
+              "chat_preferences will NOT be persisted to MongoDB. "
+              "Pass user_id in the request body to enable persistence.")
 
     return state, reply, is_done
 

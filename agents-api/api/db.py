@@ -97,7 +97,7 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
             print("⚠️  update_user_chat_preferences: nothing to save (all fields None)")
             return
 
-        db[USERS_COLLECTION].update_one(
+        result = db[USERS_COLLECTION].update_one(
             query,
             {
                 "$set": {
@@ -105,11 +105,14 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
                     "chat_preferences_updated_at": datetime.now(timezone.utc),
                 }
             },
-            # upsert=False: we only update — the user doc must already exist
-            # (created by user_preferences_agent during the same session)
             upsert=False,
         )
-        print(f"✅ chat_preferences saved to MongoDB for user {uid}: {list(chat_prefs.keys())}")
+        if result.matched_count == 0:
+            print(f"⚠️  update_user_chat_preferences: no user doc found for uid={uid!r}. "
+                  "chat_preferences NOT saved. Check that user_preferences_agent ran and "
+                  "created the user doc before the session ended.")
+        else:
+            print(f"✅ chat_preferences saved to MongoDB for user {uid}: {list(chat_prefs.keys())}")
 
     except Exception as exc:
         # Never crash the API response because of a DB write failure
@@ -130,15 +133,18 @@ def save_episode(user_id: str, summary: dict) -> None:
     db = _get_db()
     uid = str(user_id).strip()
 
-    # Resolve query — try ObjectId first, fall back to string _id
+    # Resolve query — try ObjectId first, fall back to user_id field
+    # NOTE: fallback was previously {"_id": uid} (wrong — _id is an ObjectId,
+    # not a string). Corrected to {"user_id": uid} to match how user docs are
+    # stored by user_preferences_agent.
     query = (
         {"_id": ObjectId(uid)}
         if ObjectId.is_valid(uid)
-        else {"_id": uid}
+        else {"user_id": uid}
     )
 
     try:
-        db[USERS_COLLECTION].update_one(
+        result = db[USERS_COLLECTION].update_one(
             query,
             {
                 "$push": {
@@ -151,6 +157,12 @@ def save_episode(user_id: str, summary: dict) -> None:
             },
             upsert=False,
         )
+        if result.matched_count == 0:
+            print(f"⚠️  save_episode: no user document found for uid={uid!r} (query={query}). "
+                  "Episode NOT saved. Check that user_preferences_agent ran first.")
+        else:
+            print(f"✅ save_episode: episode appended for uid={uid!r} "
+                  f"(matched={result.matched_count}, modified={result.modified_count})")
     except Exception as exc:
         print(f"❌ save_episode error for user {uid}: {exc}")
         raise

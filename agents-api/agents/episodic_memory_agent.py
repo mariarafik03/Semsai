@@ -52,6 +52,12 @@ def episodic_memory_agent(state) -> object:
     user_id = _get("user_id", "")
     session_id = _get("session_id", "")
 
+    if not user_id:
+        print(f"⚠️  episodic_memory_agent: user_id is empty — episode cannot be saved. "
+              "Make sure user_id is passed in the initial /chat request.")
+        _set("episode_saved", True)   # prevent retry loops
+        return state
+
     # ── Context access (object-style or dict-style) ───────────────────────────
     ctx = _get("context", {})
 
