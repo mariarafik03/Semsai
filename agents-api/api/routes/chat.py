@@ -96,6 +96,11 @@ def _normalize_state(state) -> dict:
 
 async def _run_turn(session_id: str, state: dict, message: str, user_id: str | None = None):
     """Shared logic: run one graph turn, save state, return (state, reply, done)."""
+    # Inject the real user_id into state before the graph runs so that
+    # episodic_memory_agent and inject_last_session_units always have the
+    # correct MongoDB _id, not a stale session UUID from a prior Redis save.
+    if user_id:
+        state["user_id"] = user_id
     try:
         state, reply, is_done = await run_graph_turn(graph, state, message)
     except Exception as exc:

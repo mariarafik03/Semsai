@@ -70,7 +70,7 @@ def make_initial_state(session_id: str) -> dict:
     """Return a fresh state dict for a brand-new session."""
     agent_state = AgentState(
         session_id=session_id,
-        user_id=session_id,
+        user_id="",             # route handler fills this with the real MongoDB _id
         context=AgentContext()
     )
     return _ensure_dict(agent_state)
