@@ -27,7 +27,7 @@ from agents.utils.error_helpers import (
     format_give_up_message,
     get_remaining_retries
 )
-
+from database import get_db  # Assume this exists
 
 
 def budget_agent(state: AgentState) -> AgentState:
@@ -55,6 +55,41 @@ def budget_agent(state: AgentState) -> AgentState:
         state.sync_to_legacy()
         return state
     
+    db = get_db()
+
+    # ═══════════════════════════════════════════════════════════════
+    # STEP 1a: Budget was pre-filled (e.g. by extraction_agent's one-shot
+    # extraction from the opening message) but never validated against the
+    # DB yet. Validate it now instead of blindly re-asking — mirrors the
+    # same pattern location_agent uses for pre-filled location.
+    # ═══════════════════════════════════════════════════════════════
+    if (
+        state.waiting_for != "budget"
+        and state.context.budget
+        and not state.context.budget_valid
+    ):
+        is_valid, min_budget, error = validate_budget(
+            state.context.budget,
+            state.context.location_normalized,
+            state.context.property_type,
+            db
+        )
+        if is_valid:
+            state.context.budget_valid = True
+            state.current_phase = "search"
+            print("✓ Phase transition: discovery → search")
+            state.agent_message = (
+                f"Got it! Budget of {state.context.budget:,.0f} EGP for "
+                f"{state.context.property_type} in {state.context.location}."
+            )
+            print(f"✓ Budget validated (pre-filled): {state.context.budget:,.0f} EGP")
+            state.sync_to_legacy()
+            return state
+        else:
+            print(f"⚠️  Pre-filled budget {state.context.budget} failed validation: {error}")
+            state.context.budget = None
+            # Fall through to STEP 2 below, which will ask the user properly.
+
     # ═══════════════════════════════════════════════════════════════
     # STEP 1: If waiting for budget
     # ═══════════════════════════════════════════════════════════════
@@ -84,13 +119,15 @@ def budget_agent(state: AgentState) -> AgentState:
             extracted,
             state.context.location_normalized,
             state.context.property_type,
-            db=None,  # reserved for future DB-backed min-price validation
+            db
         )
         
         if is_valid:
             state.context.budget = extracted
             state.context.budget_valid = True
             state.waiting_for = None
+            state.current_phase = "search"
+            print("✓ Phase transition: discovery → search")
             state.agent_message = (
                 f"Got it! Budget of {extracted:,.0f} EGP for "
                 f"{state.context.property_type} in {state.context.location}."

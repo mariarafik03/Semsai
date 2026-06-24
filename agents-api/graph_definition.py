@@ -28,9 +28,12 @@ from agents.property_type_agent      import property_type_agent
 from agents.payment_agent            import payment_agent
 from agents.compounds_agent          import compounds_agent
 from agents.developers_agent         import developers_agent
-from agents.comparing_agent          import comparing_agent
+from agents.compound_features_agent  import compound_features_agent
+from agents.embedding_agent          import embedding_agent
+from agents.user_preferences_agent   import user_preferences_agent
 from agents.compound_ranking_agent   import compound_ranking_agent
 from agents.final_output_agent       import final_output_agent
+from agents.unit_filter_node         import interactive_unit_filter
 
 
 # ── Helpers: read context OR legacy list fields ────────────────────────────────
@@ -77,115 +80,203 @@ def state_router(state) -> str:
         context = state.get("context", {})
         waiting_for = state.get("waiting_for")
         handoff = state.get("handoff_to_human", False)
-        candidate_compounds = state.get("candidate_compounds") or (context.get("candidate_compounds") if isinstance(context, dict) else None)
-        final_compounds = state.get("final_compounds") or (context.get("final_compounds") if isinstance(context, dict) else None)
-
+        phase = state.get("current_phase", "discovery")
+        candidate_compounds = state.get("candidate_compounds", [])
+        final_compounds = state.get("final_compounds", [])
+        
         # Extract context fields safely
-        location = (context.get("location") if isinstance(context, dict) else None) or state.get("location")
-        property_type = (context.get("property_type") if isinstance(context, dict) else None) or state.get("typeofproperty")
-        payment_type = (context.get("payment_type") if isinstance(context, dict) else None) or state.get("payment_type")
-        budget = (context.get("budget") if isinstance(context, dict) else None) or state.get("budget")
-        budget_valid = (context.get("budget_valid", False) if isinstance(context, dict) else False) or state.get("budget_valid", False)
-
+        location = context.get("location") if isinstance(context, dict) else None
+        location_normalized = context.get("location_normalized") if isinstance(context, dict) else None
+        property_type = context.get("property_type") if isinstance(context, dict) else None
+        payment_type = context.get("payment_type") if isinstance(context, dict) else None
+        budget = context.get("budget") if isinstance(context, dict) else None
+        budget_valid = context.get("budget_valid", False) if isinstance(context, dict) else False
+        comparison_result = context.get("comparison_result") if isinstance(context, dict) else None
+        ranked_compounds = context.get("ranked_compounds") if isinstance(context, dict) else None
+        final_best_compound = context.get("final_best_compound") if isinstance(context, dict) else None
+        if not final_best_compound:
+            final_best_compound = state.get("final_best_compound")
+        compound_features_stats = state.get("compound_features_stats")
+        embeddings = state.get("embeddings")
+        user_preferences = state.get("user_preferences")
+        
     else:
         # Pydantic AgentState format (from new code)
         context = state.context
         waiting_for = state.waiting_for
         handoff = getattr(state, "handoff_to_human", False)
-        candidate_compounds = _candidate_compounds(state)
-        final_compounds = _final_compounds(state)
-
-        # Extract context fields (check both context and legacy top-level fields)
-        location = context.location or state.location
-        property_type = context.property_type or state.typeofproperty
-        payment_type = context.payment_type or state.payment_type
-        budget = context.budget or state.budget
-        budget_valid = context.budget_valid or state.budget_valid or False
+        phase = state.current_phase
+        candidate_compounds = state.candidate_compounds
+        final_compounds = state.final_compounds
+        
+        # Extract context fields
+        location = context.location
+        location_normalized = context.location_normalized
+        property_type = context.property_type
+        payment_type = context.payment_type
+        budget = context.budget
+        budget_valid = context.budget_valid
+        comparison_result = context.comparison_result
+        ranked_compounds = context.ranked_compounds
+        final_best_compound = context.final_best_compound or getattr(state, "final_best_compound", None)
+        compound_features_stats = getattr(state, "compound_features_stats", None)
+        embeddings = getattr(state, "embeddings", None)
+        user_preferences = getattr(state, "user_preferences", None)
     
     # ═══════════════════════════════════════════════════════════════════
-    # ROUTING LOGIC
+    # ROUTING LOGIC (Now type-safe!)
     # ═══════════════════════════════════════════════════════════════════
-
-    # Human handoff check (highest priority)
+    
+    # 1. Human handoff check
     if handoff:
         return END
-
-    # ── waiting_for: route back to the agent that owns that field ───────
-    # "no_units_response" is special: compounds_agent is waiting for the user
-    # to pick a new area/type after no units were found. Route to compounds_agent
-    # so it can consume the answer (not END — user just replied).
-    if waiting_for:
-        _waiting_for_map = {
-            "location":             "location_agent",
-            "property_type":        "property_type_agent",
-            "payment_type":         "payment_agent",
-            "downpayment":          "payment_agent",
-            "monthly_installment":  "payment_agent",
-            "budget":               "budget_agent",
-            "no_units_response":    "compounds_agent",
-        }
-        if waiting_for in _waiting_for_map:
-            return _waiting_for_map[waiting_for]
-        # Any other waiting_for (e.g. preference_input, unit_filter_q_*) → END
+        
+    # 1.5 Done check — only short-circuit to END after episodic_memory_agent
+    # has run. Before that, final_output_agent and episodic_memory_agent still
+    # need to run, so we fall through to phase-based routing.
+    episode_saved = (
+        bool(state.get('episode_saved', False))
+        if isinstance(state, dict)
+        else bool(getattr(state, 'episode_saved', False))
+    )
+    if final_best_compound and episode_saved:
         return END
+    
+    # 2. Waiting for user input routing — MUST come before the
+    #    "initial state → extraction_agent" check below.
+    #    If waiting_for is set, the user just answered a field question;
+    #    route straight to the agent that owns that field.
+    #    (Previously this block was #3 and could be skipped when
+    #     graph_current_node was None, causing extraction_agent to
+    #     re-run instead of the correct field agent.)
+    if waiting_for:
+        if waiting_for == "location":
+            return "location_agent"
+        elif waiting_for == "property_type":
+            return "property_type_agent"
+        elif waiting_for in ("payment_type", "downpayment", "monthly_installment"):
+            return "payment_agent"
+        elif waiting_for == "budget":
+            return "budget_agent"
+        elif waiting_for == "no_units_response":
+            return "compounds_agent"
+        elif waiting_for == "no_developer_response":
+            return "developers_agent"
+        elif waiting_for == "preference_input":
+            return "user_preferences_agent"
+        elif waiting_for.startswith("unit_filter_q_"):
+            return "unit_filter_agent"
+        else:
+            return END
 
-    # ── Step 0: extraction agent runs first on a blank state ─────────────
-    # If none of the core discovery fields are populated yet, run extraction.
-    if not location and not property_type and not payment_type and not budget:
+    # 3. Check if we should route to extraction_agent (initial state —
+    #    no fields collected yet and no waiting_for, so this is turn 1).
+    current_node = None
+    if isinstance(state, dict):
+        current_node = state.get("graph_current_node")
+    else:
+        current_node = getattr(state, "graph_current_node", None)
+
+    if not current_node and not location and not property_type and not payment_type and not budget:
         return "extraction_agent"
 
-    # ── Discovery phase: collect required fields ─────────────────────────
-    if not location:
-        return "location_agent"
-
-    # Location exists but hasn't been normalized/validated yet
-    if isinstance(state, dict):
-        ctx = state.get("context", {})
-        location_normalized = ctx.get("location_normalized") if isinstance(ctx, dict) else None
-    else:
-        location_normalized = context.location_normalized
-
-    if not location_normalized:
-        return "location_agent"
-
-    if not property_type:
-        return "property_type_agent"
-
-    if not payment_type:
-        return "payment_agent"
-
-    if not budget or not budget_valid:
-        return "budget_agent"
-
-    # ── Search phase: find and filter properties ─────────────────────────
-    if not candidate_compounds:
+    # 4. Phase-based routing
+    if phase == "discovery":
+        # Discovery phase: collect location, property type, payment, budget
+        
+        if not location or not location_normalized:
+            return "location_agent"
+        
+        if not property_type:
+            return "property_type_agent"
+        
+        if not payment_type:
+            return "payment_agent"
+        
+        if not budget or not budget_valid:
+            return "budget_agent"
+        
+        # All discovery complete → move to search
         return "compounds_agent"
+    
+    elif phase == "search":
+        # Search phase: find and filter properties
+        #
+        # IMPORTANT: candidate_compounds uses a 3-way sentinel:
+        #   None  → compounds_agent hasn't run yet → send to it
+        #   []    → compounds_agent ran but found no results → waiting_for
+        #           "no_units_response" handled by waiting_for block above;
+        #           don't loop back to compounds_agent
+        #   [...]  → results exist → continue pipeline
+        if candidate_compounds is None:
+            return "compounds_agent"
 
-    if not final_compounds:
-        return "developers_agent"
+        if not candidate_compounds:
+            # Empty list = no results were found; compounds_agent already
+            # handled the user message via waiting_for. Stay put until the
+            # user's choice routes elsewhere (handled by waiting_for block).
+            return END
 
-    # ── Comparison phase ─────────────────────────────────────────────────
-    # Check context for comparison_result (Pydantic) or dict
-    if isinstance(state, dict):
-        ctx = state.get("context", {})
-        comparison_result = ctx.get("comparison_result") if isinstance(ctx, dict) else None
-        ranked_compounds  = ctx.get("ranked_compounds") if isinstance(ctx, dict) else None
-        final_best        = state.get("final_best_compound") or (ctx.get("final_best_compound") if isinstance(ctx, dict) else None)
-    else:
-        comparison_result = state.context.comparison_result
-        ranked_compounds  = state.context.ranked_compounds
-        final_best        = state.final_best_compound or getattr(state.context, "final_best_compound", None)
+        if not final_compounds:
+            return "developers_agent"
+        
+        # Search complete → enter the feature/preference comparison chain
+        return "compound_features_agent"
+    
+    elif phase == "comparison":
+        # Comparison phase: turn raw compound descriptions into structured
+        # decision features, embed them, interview the user against those
+        # features, then rank by similarity to the user's preferences.
+        #
+        # (comparing_agent — picking top-3 via a single LLM call over raw
+        # descriptions — is intentionally NOT used in this flow.)
 
-    if not comparison_result:
-        return "comparing_agent"
+        if not compound_features_stats:
+            return "compound_features_agent"
 
-    if not ranked_compounds:
-        return "compound_ranking_agent"
+        if not embeddings:
+            return "embedding_agent"
 
-    if not final_best:
+        if not user_preferences:
+            return "user_preferences_agent"
+
+        if not ranked_compounds:
+            return "compound_ranking_agent"
+
         return "final_output_agent"
+    
+    elif phase == "presentation":
+        # Presentation phase order:
+        #   1. final_output_agent     — picks best compound, fetches units
+        #   2. unit_filter_agent      — interactive filtering (if units exist)
+        #   3. episodic_memory_agent  — saves session summary once
+        #   4. END
+        if not final_best_compound:
+            # final_output_agent hasn't run yet
+            return "final_output_agent"
 
-    # ── Done ─────────────────────────────────────────────────────────────
+        # final_best_compound is now set — work through remaining steps
+        if isinstance(state, dict):
+            candidate_units = (state.get("context", {}).get("candidate_units")
+                               or state.get("candidate_units"))
+            unit_filter_done = bool(state.get("unit_filter_done", False))
+            ep_saved = bool(state.get("episode_saved", False))
+        else:
+            candidate_units = (state.context.candidate_units
+                               or getattr(state, "candidate_units", None))
+            unit_filter_done = bool(getattr(state, "unit_filter_done", False))
+            ep_saved = bool(getattr(state, "episode_saved", False))
+
+        if candidate_units and not unit_filter_done:
+            return "unit_filter_agent"
+
+        if not ep_saved:
+            return "episodic_memory_agent"
+
+        return END
+    
+    # Invalid or unknown phase - log and end
+    print(f"⚠️ WARNING: Invalid phase '{phase}' in router — ending conversation")
     return END
 
 
@@ -208,16 +299,17 @@ graph.add_node("payment_agent",          payment_agent)
 graph.add_node("budget_agent",           budget_agent)
 graph.add_node("compounds_agent",        compounds_agent)
 graph.add_node("developers_agent",       developers_agent)
-graph.add_node("comparing_agent",        comparing_agent)
+graph.add_node("compound_features_agent", compound_features_agent)
+graph.add_node("embedding_agent",        embedding_agent)
+graph.add_node("user_preferences_agent", user_preferences_agent)
 graph.add_node("compound_ranking_agent", compound_ranking_agent)
 graph.add_node("final_output_agent",     final_output_agent)
+graph.add_node("unit_filter_agent",      interactive_unit_filter)
 
 # ── Entry point ──────────────────────────────────────────────────────────────
 graph.set_entry_point("extraction_agent")
 
 # ── Edges: every node routes through state_router ────────────────────────────
-# graph.py's add_edge(node, callable) stores the callable as the router
-# function for that node — this is correct.
 all_nodes = [
     "extraction_agent",
     "location_agent",
@@ -226,9 +318,12 @@ all_nodes = [
     "budget_agent",
     "compounds_agent",
     "developers_agent",
-    "comparing_agent",
+    "compound_features_agent",
+    "embedding_agent",
+    "user_preferences_agent",
     "compound_ranking_agent",
     "final_output_agent",
+    "unit_filter_agent",
 ]
 
 for _node in all_nodes:

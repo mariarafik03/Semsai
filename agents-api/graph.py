@@ -40,8 +40,6 @@ class StateGraph:
 
     def step(self, state):
         # Restore cursor from state (HTTP mode) or use entry_point
-        # NOTE: use "graph_current_node" (no leading underscore) — Pydantic ignores
-        # underscore-prefixed names so the cursor would be lost across Redis round-trips.
         current_cursor = _state_get(state, "graph_current_node")
         if current_cursor is not None:
             self._current_node = current_cursor

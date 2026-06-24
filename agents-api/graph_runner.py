@@ -21,10 +21,11 @@ CRITICAL RULES
 ──────────────
 1. graph_runner NEVER clears waiting_for — only agents clear it.
 2. user_input is set fresh every turn and consumed by the agent.
-3. _graph_current_node is the cursor; it is updated by graph.step().
+3. graph_current_node is the cursor; it is updated by graph.step().
 """
 
 import asyncio
+from datetime import datetime, timezone
 from typing import Tuple
 from graph import StateGraph, END
 
@@ -62,7 +63,6 @@ def _ensure_agent_state(state) -> AgentState:
     if isinstance(state, AgentState):
         return state
     if isinstance(state, dict):
-        # We assume the dict represents an AgentState dump.
         return AgentState(**state)
     raise TypeError(f"Cannot convert {type(state)} to AgentState")
 
@@ -102,13 +102,24 @@ async def run_graph_turn(
         is_done       — True when the graph has reached END
     """
 
-    # Ensure we have a dict to start
     state = _ensure_dict(state)
 
     # ── 1. Inject user message ───────────────────────────────────────────
     # IMPORTANT: we set user_input but do NOT touch waiting_for.
     state["user_input"]   = user_message if user_message else None
     state["agent_message"] = None   # clear previous message
+
+    # ── 1a. Record user turn in conversation history ─────────────────────
+    # Done once here so every agent gets history for free — agents never
+    # need to append user messages themselves.
+    if user_message:
+        msgs = list(state.get("messages") or [])
+        msgs.append({
+            "role": "user",
+            "content": user_message,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        })
+        state["messages"] = msgs
 
     # ── 2. Safety: detect stale waiting_for with empty message ──────────
     if state.get(WAITING_FOR_KEY) and not user_message:
@@ -121,7 +132,14 @@ async def run_graph_turn(
     # ── 3. Step through graph until pause or END ─────────────────────────
     loop = asyncio.get_event_loop()
     steps = 0
-    last_node = None
+    # Track how many times we've visited each node.  Firing the guard only
+    # when the same node is visited consecutively was too aggressive: agents
+    # that pass through without pausing (nothing to do yet) legitimately
+    # hand off to the next node and the two consecutive graph_current_node
+    # values can look identical if the router keeps choosing the same target.
+    # Instead we fire only when any single node has been entered 3+ times in
+    # one turn — that is always a real cycle.
+    node_visit_counts: dict = {}
 
     while True:
         steps += 1
@@ -149,6 +167,7 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "✅ All done! Your property search is complete."
             )
+            _record_assistant_message(state, reply)
             _clear_turn_fields(state)
             return state, reply, True
 
@@ -158,6 +177,7 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "Please provide the requested information."
             )
+            _record_assistant_message(state, reply)
             # Clear agent_message (already captured in reply)
             # but keep waiting_for so next turn's agent can resume.
             state[AGENT_MSG_KEY] = None
@@ -170,31 +190,38 @@ async def run_graph_turn(
                 state.get(AGENT_MSG_KEY)
                 or "I'm sorry, I couldn't complete your request. Please try again."
             )
+            _record_assistant_message(state, reply)
             _clear_turn_fields(state)
             return state, reply, True   # treat as done so client resets
 
-        # ── Infinite-loop guard: same node twice with no waiting_for ─────
+        # ── Infinite-loop guard: same node visited 3+ times this turn ──────
         current_node = state.get(GRAPH_NODE_KEY)
-        if current_node == last_node and not state.get(WAITING_FOR_KEY):
-            reply = (
-                state.get(AGENT_MSG_KEY)
-                or "Something went wrong internally. Please try again."
-            )
-            _clear_turn_fields(state)
-            return state, reply, False
-
-        last_node = current_node
+        if current_node and current_node != END:
+            node_visit_counts[current_node] = node_visit_counts.get(current_node, 0) + 1
+            if node_visit_counts[current_node] >= 3:
+                reply = (
+                    state.get(AGENT_MSG_KEY)
+                    or "Something went wrong internally. Please try again."
+                )
+                _clear_turn_fields(state)
+                return state, reply, False
 
 
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+def _record_assistant_message(state: dict, reply: str) -> None:
+    if not reply:
+        return
+    msgs = list(state.get("messages") or [])
+    msgs.append({
+        "role": "assistant",
+        "content": reply,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+    state["messages"] = msgs
+
+
 def _clear_turn_fields(state: dict) -> None:
-    """
-    Tidy up transient per-turn fields before persisting state.
-    - Clear agent_message (already sent to client).
-    - Clear user_input (consumed this turn).
-    - Do NOT touch waiting_for — agents own that.
-    """
     state[AGENT_MSG_KEY] = None

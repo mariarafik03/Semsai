@@ -183,6 +183,8 @@ class AgentState(BaseModel):
     # FLOW CONTROL (Existing - Keep)
     # ══════════════════════════════════════════════════════════════════════
     
+    current_phase: Literal["discovery", "search", "comparison", "presentation"] = "discovery"
+    
     user_input: Optional[str] = None                    # Current turn's user message
     agent_message: Optional[str] = None                 # Question to show user
     waiting_for: Optional[str] = None                   # Field we're waiting for
@@ -192,8 +194,8 @@ class AgentState(BaseModel):
     # RESULTS (Existing - Keep)
     # ══════════════════════════════════════════════════════════════════════
     
-    candidate_compounds: List[Dict] = Field(default_factory=list)
-    final_compounds: List[Dict] = Field(default_factory=list)
+    candidate_compounds: Optional[List[Dict]] = None   # None = no results; [] = not yet searched
+    final_compounds: Optional[List[Dict]] = None
     top_compounds: Optional[List[Dict]] = None
     ranked_compounds: Optional[List[Dict]] = None
     final_best_compound: Optional[Dict] = None
@@ -201,6 +203,13 @@ class AgentState(BaseModel):
     
     embeddings: Optional[Any] = None
     compound_features_stats: Optional[Dict] = None
+
+    # Scratch-pad for user_preferences_agent's multi-turn interview
+    # (signals, asked fields, LLM history, turn count, last question/schema).
+    # Kept as a plain dict field (not top-level state keys) so the agent can
+    # use ordinary dict.get()/[]= on it without needing AgentState itself
+    # to support dict-style access.
+    pref_scratch: Dict[str, Any] = Field(default_factory=dict)
     
     # ══════════════════════════════════════════════════════════════════════
     # LEGACY FIELDS (Temporary - Will be removed in Phase 3-4)
@@ -241,23 +250,12 @@ class AgentState(BaseModel):
     features_limit: int = 0
     features_force_refresh: bool = False
     abort: Optional[bool] = None
-
-    # ── Unit Filter scratch-pad (used by unit_filter_node.py) ─────────────
-    uf_questions: Optional[List[Dict]] = None       # generated UnitQuestion objects (serialised)
-    uf_answers: Optional[Dict] = None               # {key: chosen_option} collected so far
-    uf_current_q: Optional[int] = None              # index of next question to ask (0-based)
-    uf_done: Optional[bool] = None                  # True once ranking is complete
-
-    # ── Phase tracking ────────────────────────────────────────────────────
-    # Agents don't write this; the router derives phase from field-presence.
-    # Kept so graph_definition.state_router can read it without AttributeError.
-    current_phase: Optional[Literal["discovery", "search", "comparison", "presentation"]] = None
     
     # ══════════════════════════════════════════════════════════════════════
     # GRAPH INTERNALS (Keep)
     # ══════════════════════════════════════════════════════════════════════
     
-    graph_current_node: Optional[str] = None            # Graph execution cursor (was _graph_current_node — underscore prefix makes Pydantic ignore it)
+    graph_current_node: Optional[str] = None           # Graph execution cursor
     
     
     # ══════════════════════════════════════════════════════════════════════
@@ -313,8 +311,24 @@ class AgentState(BaseModel):
         self.messages.append({
             "role": role,
             "content": content,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         })
+
+    def get_llm_messages(self, last_n: int = 10) -> List[Dict[str, str]]:
+        """
+        Return the last N messages in OpenAI-compatible format.
+
+        Strips the internal 'timestamp' key so the list can be passed
+        directly to client.chat.completions.create(messages=...) without
+        the API rejecting unknown fields.
+
+        Usage
+        -----
+            history = state.get_llm_messages(last_n=8)
+            ask_llm_with_history(system_prompt, history, new_user_prompt)
+        """
+        recent = self.messages[-last_n:] if len(self.messages) > last_n else self.messages
+        return [{"role": m["role"], "content": m["content"]} for m in recent]
     
     
     class Config:

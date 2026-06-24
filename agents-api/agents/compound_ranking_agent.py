@@ -16,6 +16,11 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
     """
     print("\n--- Compound Ranking Agent (Vector Search) ---")
 
+    # Phase transition: comparison → presentation
+    # Set early so any exit path (fallback, error, success) routes to final_output_agent
+    state.current_phase = "presentation"
+    print("✓ Phase transition: comparison → presentation")
+
     # ----------------------------
     # 1. Check Prerequisites
     # ----------------------------
@@ -106,6 +111,9 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
             {
                 "$project": {
                     "_id": 1,
+                    # compound_id is the ACTUAL compound ObjectId stored in the
+                    # compound_features document — this is what units reference.
+                    "compound_id": 1,
                     "compound_name": 1,
                     "score": {"$meta": "vectorSearchScore"}
                 }
@@ -114,17 +122,41 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
 
         results = list(db.compound_features.aggregate(pipeline))
 
+        # Build a lookup map from compound_id → full compound data so we can
+        # enrich the ranked list with location, developer, min_price, etc.
+        # These are needed by final_output_agent._fetch_units().
+        final_compounds_map = {
+            str(c.get("compound_id") or c.get("_id")): c
+            for c in state.context.final_compounds
+        }
+
         # ----------------------------
         # 6. Format Results
         # ----------------------------
         ranked_compounds = []
 
         for r in results:
-            ranked_compounds.append({
-                "compound_id": str(r["_id"]),
+            # compound_id field holds the actual compound ObjectId.
+            # Fall back to _id only if compound_id is missing (shouldn't happen).
+            actual_compound_id = r.get("compound_id") or r["_id"]
+            cid_str = str(actual_compound_id)
+
+            # Start with whatever we know from the vector search result
+            entry = {
+                "compound_id": cid_str,
                 "compound_name": r.get("compound_name", "Unknown"),
-                "score": float(r.get("score", 0))
-            })
+                "score": float(r.get("score", 0)),
+            }
+
+            # Merge full compound metadata from final_compounds so that
+            # final_output_agent has developer_name, location, min_price, etc.
+            base = final_compounds_map.get(cid_str, {})
+            for key in ("developer_name", "location", "min_price", "min_unit_price",
+                        "price_min", "sale_type", "property_type", "reasons", "why"):
+                if key in base:
+                    entry.setdefault(key, base[key])
+
+            ranked_compounds.append(entry)
 
         # Store in context
         state.context.ranked_compounds = ranked_compounds
