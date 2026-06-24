@@ -33,7 +33,7 @@ from graph import StateGraph, END
 # ---------------------------------------------------------------------------
 WAITING_FOR_KEY  = "waiting_for"    # str  — which field the agent is waiting for
 AGENT_MSG_KEY    = "agent_message"  # str  — the question/message shown to the user
-GRAPH_NODE_KEY   = "_graph_current_node"
+GRAPH_NODE_KEY   = "graph_current_node"
 
 # Maximum steps per turn to prevent infinite loops
 MAX_STEPS_PER_TURN = 60

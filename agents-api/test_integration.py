@@ -122,8 +122,8 @@ sys.modules["utils.extractors"] = extractors_stub
 sys.modules["agents.utils"] = types.ModuleType("agents.utils")
 
 # Also make `from utils.extractors import X` work inside agents package
-agents_utils_extractors = types.ModuleType("utils.extractors")
-sys.modules["agents.utils.extractors"] = agents_utils_extractors
+sys.modules["agents.utils.extractors"] = extractors_stub
+
 
 # Default extractor stubs (tests can monkey-patch these)
 def _noop_extractor(text): return (None, "low", None)
@@ -635,7 +635,7 @@ def test_graph_step_entry_point():
 
     # Test with plain dict
     called.clear()
-    dict_state = {"_graph_current_node": None, "waiting_for": None, "user_id": "test"}
+    dict_state = {"graph_current_node": None, "waiting_for": None, "user_id": "test"}
     dict_out, next_node2 = g.step(dict_state)
     assert "extraction_agent" in called
     assert next_node2 == GRAPH_END

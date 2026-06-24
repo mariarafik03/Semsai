@@ -27,7 +27,7 @@ from agents.utils.error_helpers import (
     format_give_up_message,
     get_remaining_retries
 )
-from database import get_db  # Assume this exists
+
 
 
 def budget_agent(state: AgentState) -> AgentState:
@@ -54,8 +54,6 @@ def budget_agent(state: AgentState) -> AgentState:
         print("⚠️ Budget validation requires location + property_type first")
         state.sync_to_legacy()
         return state
-    
-    db = get_db()
     
     # ═══════════════════════════════════════════════════════════════
     # STEP 1: If waiting for budget
@@ -86,7 +84,7 @@ def budget_agent(state: AgentState) -> AgentState:
             extracted,
             state.context.location_normalized,
             state.context.property_type,
-            db
+            db=None,  # reserved for future DB-backed min-price validation
         )
         
         if is_valid:

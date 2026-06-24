@@ -37,11 +37,21 @@ def extraction_agent(state: AgentState) -> AgentState:
     
     print("\n--- Extraction Agent ---")
     
-    # Handle empty input
+    # Handle empty input — this is the /chat/start call with no user message.
+    # Ask the opening question so the conversation actually begins.
     if not state.user_input or not state.user_input.strip():
-        print("⚠️ No user input to extract from")
+        print("⚠️ No user input — asking opening question")
+        state.agent_message = (
+            "Hello! I'm your real estate assistant. "
+            "What are you looking for? (apartment, villa, or chalet) and in which area?"
+        )
+        state.waiting_for = "location"
         state.sync_to_legacy()
         return state
+
+    # We have real user input — clear the opening waiting_for so the router
+    # moves forward after extraction instead of looping back to location_agent.
+    state.waiting_for = None
     
     # Extract all fields at once
     extracted = extract_all_fields(state.user_input)

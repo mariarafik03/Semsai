@@ -77,87 +77,115 @@ def state_router(state) -> str:
         context = state.get("context", {})
         waiting_for = state.get("waiting_for")
         handoff = state.get("handoff_to_human", False)
-        phase = state.get("current_phase", "discovery")
-        candidate_compounds = state.get("candidate_compounds", [])
-        final_compounds = state.get("final_compounds", [])
-        
+        candidate_compounds = state.get("candidate_compounds") or (context.get("candidate_compounds") if isinstance(context, dict) else None)
+        final_compounds = state.get("final_compounds") or (context.get("final_compounds") if isinstance(context, dict) else None)
+
         # Extract context fields safely
-        location = context.get("location") if isinstance(context, dict) else None
-        property_type = context.get("property_type") if isinstance(context, dict) else None
-        payment_type = context.get("payment_type") if isinstance(context, dict) else None
-        budget = context.get("budget") if isinstance(context, dict) else None
-        budget_valid = context.get("budget_valid", False) if isinstance(context, dict) else False
-        
+        location = (context.get("location") if isinstance(context, dict) else None) or state.get("location")
+        property_type = (context.get("property_type") if isinstance(context, dict) else None) or state.get("typeofproperty")
+        payment_type = (context.get("payment_type") if isinstance(context, dict) else None) or state.get("payment_type")
+        budget = (context.get("budget") if isinstance(context, dict) else None) or state.get("budget")
+        budget_valid = (context.get("budget_valid", False) if isinstance(context, dict) else False) or state.get("budget_valid", False)
+
     else:
         # Pydantic AgentState format (from new code)
         context = state.context
         waiting_for = state.waiting_for
         handoff = getattr(state, "handoff_to_human", False)
-        phase = state.current_phase
-        candidate_compounds = state.candidate_compounds
-        final_compounds = state.final_compounds
-        
-        # Extract context fields
-        location = context.location
-        property_type = context.property_type
-        payment_type = context.payment_type
-        budget = context.budget
-        budget_valid = context.budget_valid
+        candidate_compounds = _candidate_compounds(state)
+        final_compounds = _final_compounds(state)
+
+        # Extract context fields (check both context and legacy top-level fields)
+        location = context.location or state.location
+        property_type = context.property_type or state.typeofproperty
+        payment_type = context.payment_type or state.payment_type
+        budget = context.budget or state.budget
+        budget_valid = context.budget_valid or state.budget_valid or False
     
     # ═══════════════════════════════════════════════════════════════════
-    # ROUTING LOGIC (Now type-safe!)
+    # ROUTING LOGIC
     # ═══════════════════════════════════════════════════════════════════
-    
-    # Human handoff check
+
+    # Human handoff check (highest priority)
     if handoff:
         return END
-    
-    # Waiting for user input
+
+    # ── waiting_for: route back to the agent that owns that field ───────
+    # "no_units_response" is special: compounds_agent is waiting for the user
+    # to pick a new area/type after no units were found. Route to compounds_agent
+    # so it can consume the answer (not END — user just replied).
     if waiting_for:
+        _waiting_for_map = {
+            "location":             "location_agent",
+            "property_type":        "property_type_agent",
+            "payment_type":         "payment_agent",
+            "downpayment":          "payment_agent",
+            "monthly_installment":  "payment_agent",
+            "budget":               "budget_agent",
+            "no_units_response":    "compounds_agent",
+        }
+        if waiting_for in _waiting_for_map:
+            return _waiting_for_map[waiting_for]
+        # Any other waiting_for (e.g. preference_input, unit_filter_q_*) → END
         return END
-    
-    # Phase-based routing
-    if phase == "discovery":
-        # Discovery phase: collect location, property type, payment, budget
-        
-        if not location:
-            return "location_agent"
-        
-        if not property_type:
-            return "property_type_agent"
-        
-        if not payment_type:
-            return "payment_agent"
-        
-        if not budget or not budget_valid:
-            return "budget_agent"
-        
-        # All discovery complete → move to search
+
+    # ── Step 0: extraction agent runs first on a blank state ─────────────
+    # If none of the core discovery fields are populated yet, run extraction.
+    if not location and not property_type and not payment_type and not budget:
+        return "extraction_agent"
+
+    # ── Discovery phase: collect required fields ─────────────────────────
+    if not location:
+        return "location_agent"
+
+    # Location exists but hasn't been normalized/validated yet
+    if isinstance(state, dict):
+        ctx = state.get("context", {})
+        location_normalized = ctx.get("location_normalized") if isinstance(ctx, dict) else None
+    else:
+        location_normalized = context.location_normalized
+
+    if not location_normalized:
+        return "location_agent"
+
+    if not property_type:
+        return "property_type_agent"
+
+    if not payment_type:
+        return "payment_agent"
+
+    if not budget or not budget_valid:
+        return "budget_agent"
+
+    # ── Search phase: find and filter properties ─────────────────────────
+    if not candidate_compounds:
         return "compounds_agent"
-    
-    elif phase == "search":
-        # Search phase: find and filter properties
-        
-        if not candidate_compounds:
-            return "compounds_agent"
-        
-        if not final_compounds:
-            return "developers_agent"
-        
-        # Search complete → move to comparison
+
+    if not final_compounds:
+        return "developers_agent"
+
+    # ── Comparison phase ─────────────────────────────────────────────────
+    # Check context for comparison_result (Pydantic) or dict
+    if isinstance(state, dict):
+        ctx = state.get("context", {})
+        comparison_result = ctx.get("comparison_result") if isinstance(ctx, dict) else None
+        ranked_compounds  = ctx.get("ranked_compounds") if isinstance(ctx, dict) else None
+        final_best        = state.get("final_best_compound") or (ctx.get("final_best_compound") if isinstance(ctx, dict) else None)
+    else:
+        comparison_result = state.context.comparison_result
+        ranked_compounds  = state.context.ranked_compounds
+        final_best        = state.final_best_compound or getattr(state.context, "final_best_compound", None)
+
+    if not comparison_result:
         return "comparing_agent"
-    
-    elif phase == "comparison":
-        # Comparison phase: analyze and present
-        
-        return "embedding_agent"
-    
-    elif phase == "presentation":
-        # Final phase: generate output
-        
+
+    if not ranked_compounds:
+        return "compound_ranking_agent"
+
+    if not final_best:
         return "final_output_agent"
-    
-    # Default: end conversation
+
+    # ── Done ─────────────────────────────────────────────────────────────
     return END
 
 

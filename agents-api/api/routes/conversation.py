@@ -75,7 +75,7 @@ def _get_phase(state: dict) -> str:
     Falls back gracefully if the key is absent.
     """
     return (
-        state.get("_graph_current_node")
+        state.get("graph_current_node")
         or state.get("current_phase")
         or state.get("phase")
         or "extraction"

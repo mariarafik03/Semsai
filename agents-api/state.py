@@ -247,12 +247,17 @@ class AgentState(BaseModel):
     uf_answers: Optional[Dict] = None               # {key: chosen_option} collected so far
     uf_current_q: Optional[int] = None              # index of next question to ask (0-based)
     uf_done: Optional[bool] = None                  # True once ranking is complete
+
+    # ── Phase tracking ────────────────────────────────────────────────────
+    # Agents don't write this; the router derives phase from field-presence.
+    # Kept so graph_definition.state_router can read it without AttributeError.
+    current_phase: Optional[Literal["discovery", "search", "comparison", "presentation"]] = None
     
     # ══════════════════════════════════════════════════════════════════════
     # GRAPH INTERNALS (Keep)
     # ══════════════════════════════════════════════════════════════════════
     
-    _graph_current_node: Optional[str] = None           # Graph execution cursor
+    graph_current_node: Optional[str] = None            # Graph execution cursor (was _graph_current_node — underscore prefix makes Pydantic ignore it)
     
     
     # ══════════════════════════════════════════════════════════════════════
