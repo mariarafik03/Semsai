@@ -318,6 +318,8 @@ def _finalise(
 ) -> AgentState:
     """Persist preferences and mark agent as done."""
     session_user_id = state.user_id or f"guest_{uuid.uuid4().hex[:8]}"
+    if not state.user_id:
+        state.user_id = session_user_id
     preferences = {
         "weights": weights,
         "signals": signals,
