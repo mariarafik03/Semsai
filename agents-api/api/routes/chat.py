@@ -96,11 +96,14 @@ def _normalize_state(state) -> dict:
 
 async def _run_turn(session_id: str, state: dict, message: str, user_id: str | None = None):
     """Shared logic: run one graph turn, save state, return (state, reply, done)."""
-    # Inject the real user_id into state before the graph runs so that
-    # episodic_memory_agent and inject_last_session_units always have the
-    # correct MongoDB _id, not a stale session UUID from a prior Redis save.
-    if user_id:
-        state["user_id"] = user_id
+    # Resolve user_id: prefer the value from the request, fall back to whatever
+    # is already stored in state (set during /chat/start or an earlier turn).
+    # This ensures episodic_memory_agent always has a user_id even when the
+    # frontend only sends it on the first request.
+    effective_user_id = user_id or state.get("user_id") or None
+    if effective_user_id:
+        state["user_id"] = effective_user_id   # keep state in sync
+
     try:
         state, reply, is_done = await run_graph_turn(graph, state, message)
     except Exception as exc:
@@ -112,12 +115,12 @@ async def _run_turn(session_id: str, state: dict, message: str, user_id: str | N
     print(f"✓ State saved | phase: {_phase(state)} | done: {is_done}")
     print(f"✓ Reply: {reply[:100]}...")
 
-    if is_done and user_id:
-        asyncio.create_task(_persist_user_data(user_id, session_id, state))
-    elif is_done and not user_id:
-        print(f"⚠️  Session {session_id} completed but no user_id was provided — "
-              "chat_preferences will NOT be persisted to MongoDB. "
-              "Pass user_id in the request body to enable persistence.")
+    if is_done and effective_user_id:
+        asyncio.create_task(_persist_user_data(effective_user_id, session_id, state))
+    elif is_done and not effective_user_id:
+        print(f"⚠️  Session {session_id} completed but no user_id was found in "
+              "request or state — chat_preferences will NOT be persisted to MongoDB. "
+              "Pass user_id in the /chat/start request body to enable persistence.")
 
     return state, reply, is_done
 

@@ -43,9 +43,26 @@ def episodic_memory_agent(state) -> object:
         else:
             setattr(state, key, value)
 
+    # ── Context access (object-style or dict-style) ───────────────────────────
+    # Defined first so _ctx_get is available in the guard checks below.
+    ctx = _get("context", {})
+
+    def _ctx_get(key):
+        if isinstance(ctx, dict):
+            return ctx.get(key)
+        return getattr(ctx, key, None)
+
     # ── Guard: only run once, and only when session is complete ───────────────
-    if not _get("final_best_compound"):
+    # IMPORTANT: final_best_compound lives on context, NOT top-level state.
+    # Reading it from _get("final_best_compound") always returned None and
+    # caused the agent to exit immediately without setting episode_saved=True,
+    # leading to an infinite routing loop.
+    final_bc = _ctx_get("final_best_compound") or _get("final_best_compound")
+    if not final_bc:
+        print("⚠️  episodic_memory_agent: final_best_compound not set — skipping.")
+        _set("episode_saved", True)   # prevent infinite loop
         return state
+
     if _get("episode_saved"):
         return state
 
@@ -58,21 +75,12 @@ def episodic_memory_agent(state) -> object:
         _set("episode_saved", True)   # prevent retry loops
         return state
 
-    # ── Context access (object-style or dict-style) ───────────────────────────
-    ctx = _get("context", {})
-
-    def _ctx_get(key):
-        if isinstance(ctx, dict):
-            return ctx.get(key)
-        return getattr(ctx, key, None)
-
     raw_units = _ctx_get("candidate_units") or []
     units_serialized = [
         u if isinstance(u, dict) else vars(u)
         for u in raw_units
     ]
 
-    final_bc = _get("final_best_compound") or {}
     best_name = (
         final_bc.get("name")
         or final_bc.get("compound_name")
