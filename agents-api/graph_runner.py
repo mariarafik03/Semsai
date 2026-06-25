@@ -161,6 +161,13 @@ async def run_graph_turn(
         
         state = _ensure_dict(agent_state)
 
+        # ── DEBUG: trace routing decisions ──────────────────────────────
+        _fbk = (state.get("context") or {}).get("final_best_compound") or state.get("final_best_compound")
+        print(f"  🔀 step={steps} node={state.get(GRAPH_NODE_KEY)!r} next={next_node!r} "
+              f"waiting_for={state.get(WAITING_FOR_KEY)!r} "
+              f"episode_saved={state.get('episode_saved')} "
+              f"final_best_compound={'SET' if _fbk else 'None'}")
+
         # ── Graph reached END ────────────────────────────────────────────
         if next_node == END:
             reply = (
@@ -182,6 +189,7 @@ async def run_graph_turn(
             # but keep waiting_for so next turn's agent can resume.
             state[AGENT_MSG_KEY] = None
             state["user_input"]  = None   # consumed; don't leave stale value
+            print(f"  ⏸️  PAUSING — waiting_for={state.get(WAITING_FOR_KEY)!r}, reply={reply[:60]!r}")
             return state, reply, False
 
         # ── Abort flag set by an agent ───────────────────────────────────

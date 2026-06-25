@@ -170,6 +170,7 @@ def state_router(state) -> str:
             if isinstance(state, dict)
             else getattr(state, "episode_saved", False)
         )
+        print(f"  🧠 router check 1.5: final_best_compound=SET, episode_saved={episode_saved}")
         if not episode_saved:
             return "episodic_memory_agent"
         return END
