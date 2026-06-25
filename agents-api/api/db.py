@@ -15,7 +15,7 @@ from typing import Optional
 
 from bson import ObjectId
 from dotenv import load_dotenv
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING
 
 load_dotenv()
 
@@ -26,7 +26,8 @@ load_dotenv()
 _client: Optional[MongoClient] = None
 _db = None
 
-USERS_COLLECTION = "users"
+USERS_COLLECTION    = "users"
+EPISODES_COLLECTION = "episodic_memory"   # dedicated collection
 
 # Fields from chat-state that get stored under chat_preferences in the user doc
 _CHAT_PREF_FIELDS = (
@@ -61,6 +62,20 @@ def _get_db():
     return _db
 
 
+def _resolve_user_query(uid: str) -> dict:
+    """
+    Return the right MongoDB query dict to look up a user.
+
+    • Valid ObjectId string  →  {"_id": ObjectId(uid)}
+    • Anything else          →  {"user_id": uid}
+    """
+    return (
+        {"_id": ObjectId(uid)}
+        if ObjectId.is_valid(uid)
+        else {"user_id": uid}
+    )
+
+
 def update_user_chat_preferences(user_id: str, state: dict) -> None:
     """
     Merge the chat-session preferences from *state* into the existing
@@ -71,20 +86,10 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
     ``chat_preferences`` key.
 
     Skips None values so we never erase a previously saved preference.
-
-    Lookup strategy (same as the rest of the codebase):
-      • If user_id is a valid ObjectId  →  query by ``_id``
-      • Otherwise                        →  query by ``user_id`` field
     """
     try:
-        db = _get_db()
+        db  = _get_db()
         uid = str(user_id).strip()
-
-        query = (
-            {"_id": ObjectId(uid)}
-            if ObjectId.is_valid(uid)
-            else {"user_id": uid}
-        )
 
         # Build update payload — only non-None fields
         chat_prefs = {
@@ -98,21 +103,26 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
             return
 
         result = db[USERS_COLLECTION].update_one(
-            query,
+            _resolve_user_query(uid),
             {
                 "$set": {
-                    "chat_preferences":          chat_prefs,
-                    "chat_preferences_updated_at": datetime.now(timezone.utc),
+                    "chat_preferences":             chat_prefs,
+                    "chat_preferences_updated_at":  datetime.now(timezone.utc),
                 }
             },
             upsert=False,
         )
         if result.matched_count == 0:
-            print(f"⚠️  update_user_chat_preferences: no user doc found for uid={uid!r}. "
-                  "chat_preferences NOT saved. Check that user_preferences_agent ran and "
-                  "created the user doc before the session ended.")
+            print(
+                f"⚠️  update_user_chat_preferences: no user doc found for uid={uid!r}. "
+                "chat_preferences NOT saved. Check that user_preferences_agent ran and "
+                "created the user doc before the session ended."
+            )
         else:
-            print(f"✅ chat_preferences saved to MongoDB for user {uid}: {list(chat_prefs.keys())}")
+            print(
+                f"✅ chat_preferences saved to MongoDB for user {uid}: "
+                f"{list(chat_prefs.keys())}"
+            )
 
     except Exception as exc:
         # Never crash the API response because of a DB write failure
@@ -120,49 +130,58 @@ def update_user_chat_preferences(user_id: str, state: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Episodic Memory helpers
+# Episodic Memory helpers  —  dedicated `episodic_memory` collection
+#
+# Schema of each document:
+# {
+#   "_id":          ObjectId,           ← auto
+#   "user_id":      str,                ← links back to users collection
+#   "session_id":   str,
+#   "created_at":   ISO-8601 str,
+#   "location":     str | None,
+#   "property_type":str | None,
+#   "payment_type": str | None,
+#   "budget":       any | None,
+#   "best_compound_name": str,
+#   "units_found":  int,
+#   "candidate_units": [ ... ],
+# }
 # ---------------------------------------------------------------------------
 
 def save_episode(user_id: str, summary: dict) -> None:
     """
-    Append one episode (including candidate_units) into the user's
-    episodic_memory array inside the users collection.
-    Caps the array at 10 episodes (oldest dropped).
-    Never creates a new user document.
-    """
-    db = _get_db()
-    uid = str(user_id).strip()
+    Insert one episode document into the ``episodic_memory`` collection,
+    linked to the user via ``user_id``.
 
-    # Resolve query — try ObjectId first, fall back to user_id field
-    # NOTE: fallback was previously {"_id": uid} (wrong — _id is an ObjectId,
-    # not a string). Corrected to {"user_id": uid} to match how user docs are
-    # stored by user_preferences_agent.
-    query = (
-        {"_id": ObjectId(uid)}
-        if ObjectId.is_valid(uid)
-        else {"user_id": uid}
-    )
+    Caps stored episodes per user at 10 (oldest deleted automatically).
+    Never creates or modifies a user document.
+    """
+    db  = _get_db()
+    uid = str(user_id).strip()
+    col = db[EPISODES_COLLECTION]
+
+    # Attach the user_id so every episode document is self-describing
+    episode_doc = {**summary, "user_id": uid}
 
     try:
-        result = db[USERS_COLLECTION].update_one(
-            query,
-            {
-                "$push": {
-                    "episodic_memory": {
-                        "$each": [summary],
-                        "$slice": -10,
-                    }
-                },
-                "$set": {"updatedAt": summary.get("created_at")},
-            },
-            upsert=False,
+        col.insert_one(episode_doc)
+        inserted_id = str(episode_doc.get("_id", ""))
+        print(
+            f"✅ save_episode: episode inserted into '{EPISODES_COLLECTION}' "
+            f"for user={uid!r}  _id={inserted_id}"
         )
-        if result.matched_count == 0:
-            print(f"⚠️  save_episode: no user document found for uid={uid!r} (query={query}). "
-                  "Episode NOT saved. Check that user_preferences_agent ran first.")
-        else:
-            print(f"✅ save_episode: episode appended for uid={uid!r} "
-                  f"(matched={result.matched_count}, modified={result.modified_count})")
+
+        # Enforce per-user cap of 10 episodes — delete oldest beyond the limit
+        all_ids = list(
+            col.find({"user_id": uid}, {"_id": 1})
+               .sort("created_at", ASCENDING)
+        )
+        overflow = len(all_ids) - 10
+        if overflow > 0:
+            ids_to_delete = [doc["_id"] for doc in all_ids[:overflow]]
+            col.delete_many({"_id": {"$in": ids_to_delete}})
+            print(f"🗑️  Trimmed {overflow} old episode(s) for user={uid!r}")
+
     except Exception as exc:
         print(f"❌ save_episode error for user {uid}: {exc}")
         raise
@@ -170,34 +189,28 @@ def save_episode(user_id: str, summary: dict) -> None:
 
 def load_episodes(user_id: str, limit: int = 3) -> list:
     """
-    Return the `limit` most recent episodes from the user's episodic_memory
-    array, newest first. Returns [] if user not found or array is empty.
+    Return the ``limit`` most recent episodes from the ``episodic_memory``
+    collection for the given user, newest first.
+    Returns [] if none found.
     """
-    db = _get_db()
+    db  = _get_db()
     uid = str(user_id).strip()
-
-    query = (
-        {"_id": ObjectId(uid)}
-        if ObjectId.is_valid(uid)
-        else {"_id": uid}
-    )
+    col = db[EPISODES_COLLECTION]
 
     try:
-        user = db[USERS_COLLECTION].find_one(
-            query,
-            {"episodic_memory": {"$slice": -limit}},
+        cursor = (
+            col.find({"user_id": uid})
+               .sort("created_at", -1)   # newest first
+               .limit(limit)
         )
+        episodes = list(cursor)
     except Exception as exc:
         print(f"❌ load_episodes error for user {uid}: {exc}")
         return []
 
-    if not user or "episodic_memory" not in user:
-        return []
-
-    episodes = user["episodic_memory"]
-    # Reverse so newest is first; stringify any ObjectId values
+    # Stringify ObjectIds so the result is always JSON-safe
     cleaned = []
-    for ep in reversed(episodes):
+    for ep in episodes:
         cleaned.append(
             {
                 k: str(v) if type(v).__name__ == "ObjectId" else v
@@ -207,11 +220,21 @@ def load_episodes(user_id: str, limit: int = 3) -> list:
     return cleaned
 
 
-# Create index once at module import time (idempotent)
+# ---------------------------------------------------------------------------
+# Indexes — created once at module import (idempotent)
+# ---------------------------------------------------------------------------
 try:
-    _get_db()[USERS_COLLECTION].create_index(
-        [("episodic_memory.session_id", 1)],
+    db = _get_db()
+    db[EPISODES_COLLECTION].create_index(
+        [("user_id", ASCENDING), ("created_at", ASCENDING)],
         background=True,
+        name="user_id_created_at",
     )
+    db[EPISODES_COLLECTION].create_index(
+        [("session_id", ASCENDING)],
+        background=True,
+        name="session_id",
+    )
+    print("✅ episodic_memory indexes ensured")
 except Exception as _idx_exc:
-    print(f"⚠️ Could not create episodic_memory index: {_idx_exc}")
+    print(f"⚠️ Could not create episodic_memory indexes: {_idx_exc}")
