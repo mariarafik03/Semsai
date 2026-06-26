@@ -199,7 +199,7 @@ def state_router(state) -> str:
             return "property_type_agent"
         elif waiting_for in ("payment_type", "downpayment", "monthly_installment"):
             return "payment_agent"
-        elif waiting_for == "budget":
+        elif waiting_for in ("budget", "budget_negotiation"):
             return "budget_agent"
         elif waiting_for == "no_units_response":
             return "compounds_agent"
