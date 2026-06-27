@@ -277,6 +277,112 @@ def _reset_for_requery(state: AgentState) -> None:
 
 
 # -----------------------
+# No-units intent classifier
+# -----------------------
+
+def _classify_no_units_response(user_input: str, state: AgentState):
+    """
+    Use the LLM to classify the user's response to "no units found" and extract
+    any new values they mentioned inline.
+
+    Returns
+    -------
+    (intent, extracted_location, extracted_type, extracted_budget)
+      intent: "increase_budget" | "change_location" | "change_property_type" | "unclear"
+      extracted_location: str | None   — e.g. "Sheikh Zayed"
+      extracted_type:     str | None   — "Villa" | "Apartment" | "Chalet"
+      extracted_budget:   int | None   — e.g. 10_000_000
+    """
+    import json as _json
+    try:
+        from main_helpers import ask_llm_with_history
+        history = state.get_llm_messages(last_n=4) if hasattr(state, "get_llm_messages") else []
+        prompt = (
+            f"The user was told no properties were found and was offered three options: "
+            f"1) increase budget, 2) change location, 3) change property type.\n"
+            f"User replied: \"{user_input}\"\n\n"
+            "Extract:\n"
+            "- intent: one of 'increase_budget', 'change_location', 'change_property_type', 'unclear'\n"
+            "- location: Egyptian city/area they mentioned (or null)\n"
+            "- property_type: 'Villa', 'Apartment', or 'Chalet' if mentioned (or null)\n"
+            "- budget: numeric budget in EGP if mentioned — convert '10m'→10000000, '500k'→500000 (or null)\n\n"
+            "Rules:\n"
+            "- A place name ('zayed', 'maadi', 'october', 'tagmo3', etc.) always signals change_location\n"
+            "- Numbers alone (e.g. '25 m', 'raise to 10 million') signal increase_budget\n"
+            "- Property type words (villa/apartment/chalet) signal change_property_type\n"
+            "- Multiple signals: pick the most specific one (place name > property type > number)\n"
+            "Respond ONLY with valid JSON, no markdown:\n"
+            "{\"intent\": \"...\", \"location\": \"...\", \"property_type\": \"...\", \"budget\": 0}"
+        )
+        raw = ask_llm_with_history(
+            system_prompt="You are a precise intent-extraction engine. Return ONLY valid JSON.",
+            history=history,
+            user_prompt=prompt,
+            max_tokens=120,
+            temperature=0.0,
+        ).strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`")
+            if "\n" in raw:
+                raw = raw.split("\n", 1)[1]
+        data = _json.loads(raw)
+        intent    = data.get("intent", "unclear")
+        loc       = data.get("location") or None
+        ptype_raw = (data.get("property_type") or "").strip().capitalize()
+        ptype     = ptype_raw if ptype_raw in ("Villa", "Apartment", "Chalet") else None
+        budget_raw = data.get("budget")
+        budget    = int(budget_raw) if isinstance(budget_raw, (int, float)) and budget_raw >= 100_000 else None
+        # Normalise location through alias table for common colloquial names
+        if loc:
+            try:
+                from agents.Normalization import LOCATION_ALIASES
+            except ImportError:
+                try:
+                    from Normalization import LOCATION_ALIASES
+                except ImportError:
+                    LOCATION_ALIASES = {}
+            loc_key = loc.strip().lower()
+            loc = LOCATION_ALIASES.get(loc_key, loc)
+        return intent, loc, ptype, budget
+    except Exception as exc:
+        print(f"⚠️ _classify_no_units_response LLM failed ({exc}) — falling back to keyword matching")
+        # Keyword fallback
+        text = user_input.lower()
+        # Try to extract location via alias table
+        loc = None
+        try:
+            from agents.Normalization import LOCATION_ALIASES, normalize_location
+            loc = normalize_location(user_input)
+        except Exception:
+            pass
+        ptype = None
+        for k, v in {"villa": "Villa", "apartment": "Apartment", "flat": "Apartment", "chalet": "Chalet"}.items():
+            if k in text:
+                ptype = v
+                break
+        if loc:
+            return "change_location", loc, ptype, None
+        if any(w in text for w in ("increase", "raise", "more", "budget", "million", " m ", "k egp")):
+            return "increase_budget", None, None, None
+        if ptype:
+            return "change_property_type", None, ptype, None
+        # Check for any number that looks like a budget
+        nums = re.findall(r'\d[\d,]*', text)
+        for n in nums:
+            try:
+                val = int(n.replace(",", ""))
+                if val >= 100_000:
+                    return "increase_budget", None, None, val
+            except Exception:
+                pass
+        if any(w in text for w in ("location", "area", "city", "where", "place")):
+            return "change_location", None, None, None
+        if any(w in text for w in ("type", "property", "villa", "apartment", "chalet")):
+            return "change_property_type", None, None, None
+        return "unclear", None, None, None
+
+
+# -----------------------
 # Agent
 # -----------------------
 
@@ -294,8 +400,59 @@ def compounds_agent(state: AgentState):
         state.waiting_for = None
         choice_text = user_input.lower()
 
-        if "1" in choice_text or "increase" in choice_text or "budget" in choice_text:
-            # Increase budget — reset all budget fields; router → budget_agent
+        # ── Use LLM to classify the user's intent and extract any new values ──
+        # This handles natural phrasing like "look in zayed", "try a villa instead",
+        # "raise it to 10 million", "check Sheikh Zayed for an apartment", etc.
+        intent, extracted_location, extracted_type, extracted_budget = \
+            _classify_no_units_response(user_input, state)
+
+        print(f"→ No-units intent: {intent} | loc={extracted_location} | type={extracted_type} | budget={extracted_budget}")
+
+        if intent == "change_location":
+            if extracted_location:
+                # Validate the extracted location against the DB before accepting it
+                from agents.utils.validators import validate_location
+                from database import get_db
+                db = get_db()
+                is_valid, normalized, error = validate_location(extracted_location, db)
+                if is_valid:
+                    # ✅ Location known — set it directly, skip the ask-again round trip
+                    state.location = normalized
+                    state.context.location = normalized
+                    state.context.location_normalized = normalized
+                    state.budget_valid = None
+                    state.context.budget_valid = False
+                    # PRESERVE property_type — user only asked to change location
+                    # Also preserve payment_type and budget so they aren't re-asked
+                    state.agent_message = compounds_location_changed(normalized, state)
+                    print(f"✓ No-units: location validated & set to {normalized} (property_type preserved)")
+                    _reset_for_requery(state)
+                    state.sync_to_legacy()
+                    return state
+                else:
+                    # Location not in DB — clear it so location_agent asks fresh
+                    state.location = None
+                    state.context.location = None
+                    state.context.location_normalized = None
+                    state.budget_valid = None
+                    state.context.budget_valid = False
+                    # Still preserve property_type, payment_type, budget
+                    print(f"⚠️ No-units: extracted location '{extracted_location}' invalid ({error}) — asking fresh")
+            else:
+                # LLM couldn't find a location in the text — clear it so location_agent asks
+                state.location = None
+                state.context.location = None
+                state.context.location_normalized = None
+                state.budget_valid = None
+                state.context.budget_valid = False
+                # IMPORTANT: Do NOT clear property_type — user only wants to change location
+                print("→ No-units: change location (will ask fresh, property_type preserved)")
+            _reset_for_requery(state)
+            state.sync_to_legacy()
+            return state
+
+        elif intent == "increase_budget":
+            # Reset budget fields only; keep location, property_type, payment_type
             state.budget = None
             state.budget_valid = None
             state.context.budget = None
@@ -305,62 +462,39 @@ def compounds_agent(state: AgentState):
                 state.monthlyinstall = None
                 state.context.downpayment = None
                 state.context.monthly_installment = None
+            # If a new budget value was already extracted from the message, set it now
+            if extracted_budget and extracted_budget >= 100_000:
+                state.context.budget = float(extracted_budget)
+                state.budget = float(extracted_budget)
+                state.context.budget_valid = True
+                state.budget_valid = True
+                print(f"✓ No-units: new budget set directly to {extracted_budget:,.0f} EGP")
             _reset_for_requery(state)
             print("→ No-units choice: increase budget")
             state.sync_to_legacy()
             return state
 
-        elif "2" in choice_text or "location" in choice_text:
-            new_location = normalize_location(user_input)
-            if new_location:
-                state.location = new_location
-                state.context.location = new_location
-                state.context.location_normalized = None  # force re-validation
+        elif intent == "change_property_type":
+            if extracted_type:
+                state.typeofproperty = extracted_type
+                state.context.property_type = extracted_type.lower()
                 state.budget_valid = None
                 state.context.budget_valid = False
-                state.agent_message = compounds_location_changed(new_location, state)
-                print(f"\u2713 No-units: location changed to {new_location}")
+                state.agent_message = compounds_property_type_changed(extracted_type, state)
+                print(f"✓ No-units: property type changed to {extracted_type}")
             else:
-                state.location = None
-                state.context.location = None
-                state.context.location_normalized = None
+                # Clear type so property_type_agent asks fresh
                 state.typeofproperty = None
                 state.context.property_type = None
                 state.budget_valid = None
                 state.context.budget_valid = False
-                print("\u2192 No-units: change location (will ask fresh)")
-            _reset_for_requery(state)
-            state.sync_to_legacy()
-            return state
-
-        elif "3" in choice_text or "type" in choice_text or "property" in choice_text:
-            _PROP_MAP = {
-                "villa": "Villa",      "vila": "Villa",
-                "apartment": "Apartment", "flat": "Apartment",
-                "chalet": "Chalet",    "studio": "Apartment",
-                "penthouse": "Apartment", "duplex": "Apartment",
-                "townhouse": "Villa",
-            }
-            new_type = next((v for k, v in _PROP_MAP.items() if k in choice_text), None)
-            if new_type:
-                state.typeofproperty = new_type
-                state.context.property_type = new_type.lower()
-                state.budget_valid = None
-                state.context.budget_valid = False
-                state.agent_message = compounds_property_type_changed(new_type, state)
-                print(f"\u2713 No-units: property type changed to {new_type}")
-            else:
-                state.typeofproperty = None
-                state.context.property_type = None
-                state.budget_valid = None
-                state.context.budget_valid = False
-                print("\u2192 No-units: change type (will ask fresh)")
+                print("→ No-units: change type (will ask fresh)")
             _reset_for_requery(state)
             state.sync_to_legacy()
             return state
 
         else:
-            # Unclear answer — re-ask
+            # Unclear — re-ask without losing any state
             state.agent_message = compounds_unclear_choice(state)
             state.waiting_for = "no_units_response"
             state.sync_to_legacy()
