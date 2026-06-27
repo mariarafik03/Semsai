@@ -1,107 +1,216 @@
 """
-extractors.py — Rule-based field extraction from user input.
+agents/utils/extractors.py
+──────────────────────────
+LLM-powered field extraction using ask_llm_with_history from main_helpers.
+Same public API as before — every agent calls extract_*(text) and gets back
+(value | None, confidence_str, error | None) — no agent code needs to change.
+
+Regex fallback is kept so a flaky API call never breaks the conversation.
 """
+
+from __future__ import annotations
+
 import re
-from typing import Tuple, Optional, Dict, Any
+from typing import Any, Dict, Optional, Tuple
+
+
+def _ask(prompt: str) -> str:
+    """One focused LLM extraction call. Returns '' on any failure."""
+    try:
+        from main_helpers import ask_llm_with_history
+        return ask_llm_with_history(
+            system_prompt=(
+                "You are a precise data-extraction engine for Egyptian real estate. "
+                "Return ONLY the requested value — no explanation, no punctuation, "
+                "no markdown, no extra words. If you cannot extract it, return: none"
+            ),
+            history=[],
+            user_prompt=prompt,
+            max_tokens=32,
+            temperature=0.0,
+        ).strip()
+    except Exception as exc:
+        print(f"   ⚠️ extractor LLM call failed: {exc}")
+        return ""
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Location
+# ─────────────────────────────────────────────────────────────────────────────
 
 def extract_location(text: str) -> Tuple[Optional[str], str, Optional[str]]:
-    """Extract location from text by matching against known area aliases.
+    reply = _ask(
+        f"Extract the Egyptian city or area name from this text.\n"
+        f"Text: \"{text}\"\n"
+        f"Examples: 'New Cairo', 'El Sheikh Zayed', 'North Coast', 'Alexandria'.\n"
+        f"Return ONLY the place name, or 'none' if no location is mentioned."
+    )
+    if reply and reply.lower() not in ("none", ""):
+        return reply.strip().title(), "high", None
 
-    Returns "high" confidence only when the input contains a recognisable
-    Egyptian city / area keyword.  Generic sentences like "i want to buy a
-    house" no longer produce false-positive high-confidence extractions.
-    """
-    # Import here to avoid circular imports; Normalization has no deps on us.
+    # Regex fallback
     try:
         from agents.Normalization import LOCATION_ALIASES
     except ImportError:
         try:
-            from Normalization import LOCATION_ALIASES  # fallback for direct runs
+            from Normalization import LOCATION_ALIASES
         except ImportError:
             LOCATION_ALIASES = {}
-
-    cleaned = text.strip().lower()
-    cleaned = re.sub(r'[،,.\-_]+', ' ', cleaned)
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-
-    # Try every alias: look for it as a substring of the user input
+    cleaned = re.sub(r"[،,.\-_]+", " ", text.strip().lower())
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
     for alias, normalized in LOCATION_ALIASES.items():
         if alias in cleaned:
-            # Return the canonical name so downstream validators/normalizers
-            # get a clean value rather than the raw user sentence.
             return normalized, "high", None
 
-    return None, "low", None
+    return None, "low", "Could not extract a location."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Property type
+# ─────────────────────────────────────────────────────────────────────────────
+
+_VALID_PROPERTY_TYPES = {"apartment", "villa", "chalet"}
 
 def extract_property_type(text: str) -> Tuple[Optional[str], str, Optional[str]]:
-    """Extract property type from text."""
-    text = text.lower()
-    mapping = {
-        "apartment": ["apartment", "flat", "شقة", "شقه"],
-        "villa": ["villa", "house", "فيلا", "فيلة"],
-        "chalet": ["chalet", "شاليه", "شالية"]
-    }
-    for ptype, aliases in mapping.items():
-        if any(alias in text for alias in aliases):
+    reply = _ask(
+        f"What property type is the user asking for?\n"
+        f"Text: \"{text}\"\n"
+        f"Return ONLY one word: apartment, villa, or chalet.\n"
+        f"Synonyms: flat/studio/duplex/penthouse → apartment; house/townhouse → villa.\n"
+        f"Return 'none' if no property type is mentioned."
+    ).lower()
+    if reply in _VALID_PROPERTY_TYPES:
+        return reply, "high", None
+
+    # Regex fallback
+    t = text.lower()
+    for ptype, aliases in {
+        "apartment": ["apartment", "flat", "شقة", "شقه", "studio", "duplex", "penthouse"],
+        "villa":     ["villa", "house", "فيلا", "فيلة", "townhouse"],
+        "chalet":    ["chalet", "شاليه", "شالية"],
+    }.items():
+        if any(a in t for a in aliases):
             return ptype, "high", None
-    return None, "low", None
+
+    return None, "low", "Could not extract a property type."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Payment type
+# ─────────────────────────────────────────────────────────────────────────────
+
+_VALID_PAYMENT_TYPES = {"cash", "installment"}
 
 def extract_payment_type(text: str) -> Tuple[Optional[str], str, Optional[str]]:
-    """Extract payment type from text."""
-    text = text.lower()
-    if any(word in text for word in ["cash", "كاش", "نقدي"]):
+    reply = _ask(
+        f"Does the user want to pay cash or by installments?\n"
+        f"Text: \"{text}\"\n"
+        f"Return ONLY one word: cash or installment.\n"
+        f"Synonyms: 'installments/monthly/تقسيط/قسط' → installment; 'كاش/نقدي/full price' → cash.\n"
+        f"Return 'none' if unclear."
+    ).lower()
+    if reply in _VALID_PAYMENT_TYPES:
+        return reply, "high", None
+
+    # Regex fallback
+    t = text.lower()
+    if any(w in t for w in ["cash", "كاش", "نقدي"]):
         return "cash", "high", None
-    if any(word in text for word in ["installment", "تقسيط", "قسط"]):
+    if any(w in t for w in ["installment", "installments", "monthly", "تقسيط", "قسط"]):
         return "installment", "high", None
-    return None, "low", None
+
+    return None, "low", "Could not extract a payment type."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Numeric amounts (budget, downpayment, monthly installment)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _parse_numeric(text: str) -> Optional[float]:
+    """Convert '5m', '5 million', '500k', '5000000' → float. None if not found."""
+    t = text.lower().replace(",", "").strip()
+    match = re.search(r"(\d+(?:\.\d+)?)\s*(millions?|billions?|thousands?|m|b|k)\b", t)
+    if match:
+        val, unit = float(match.group(1)), match.group(2)
+        if unit.startswith("b"):   val *= 1_000_000_000
+        elif unit.startswith("m"): val *= 1_000_000
+        elif unit.startswith("k"): val *= 1_000
+        return val
+    nums = re.findall(r"\d+(?:\.\d+)?", t.replace(" ", ""))
+    return float(nums[0]) if nums else None
+
 
 def extract_budget(text: str) -> Tuple[Optional[float], str, Optional[str]]:
-    """Extract budget amount from text."""
-    # Match numbers like 5,000,000 or 5M
-    text = text.lower().replace(',', '')
-    
-    # Handle "million" or "m"
-    multiplier = 1.0
-    if "million" in text or "مليون" in text or " m" in text or text.endswith("m"):
-        multiplier = 1_000_000.0
-    elif "thousand" in text or "ألف" in text or " k" in text or text.endswith("k"):
-        multiplier = 1_000.0
-        
-    numbers = re.findall(r'\d+(?:\.\d+)?', text)
-    if numbers:
-        val = float(numbers[0]) * multiplier
+    reply = _ask(
+        f"Extract the total budget amount in EGP from this text.\n"
+        f"Text: \"{text}\"\n"
+        f"Convert shorthand: 5M → 5000000, 500k → 500000, 1.5 million → 1500000.\n"
+        f"Return ONLY digits (e.g. 5000000), or 'none'."
+    )
+    if reply and reply.lower() != "none":
+        val = _parse_numeric(reply) or _parse_numeric(text)
+        if val and val >= 100_000:
+            return val, "high", None
+
+    val = _parse_numeric(text)
+    if val and val >= 100_000:
         return val, "high", None
-    return None, "low", None
+
+    return None, "low", "Could not extract a budget amount."
+
 
 def extract_downpayment(text: str) -> Tuple[Optional[float], str, Optional[str]]:
-    """Extract downpayment amount from text."""
-    return extract_budget(text) # Reuse budget extraction logic for now
+    reply = _ask(
+        f"Extract the down payment amount in EGP from this text.\n"
+        f"Text: \"{text}\"\n"
+        f"Convert shorthand: 5M → 5000000, 500k → 500000.\n"
+        f"Return ONLY digits, or 'none'."
+    )
+    if reply and reply.lower() != "none":
+        val = _parse_numeric(reply) or _parse_numeric(text)
+        if val and val > 0:
+            return val, "high", None
+
+    val = _parse_numeric(text)
+    if val and val > 0:
+        return val, "high", None
+
+    return None, "low", "Could not extract a down-payment amount."
+
 
 def extract_monthly_installment(text: str) -> Tuple[Optional[float], str, Optional[str]]:
-    """Extract monthly installment amount from text."""
-    return extract_budget(text) # Reuse budget extraction logic for now
+    reply = _ask(
+        f"Extract the monthly installment amount in EGP from this text.\n"
+        f"Text: \"{text}\"\n"
+        f"Convert shorthand: 5M → 5000000, 500k → 500000.\n"
+        f"Return ONLY digits, or 'none'."
+    )
+    if reply and reply.lower() != "none":
+        val = _parse_numeric(reply) or _parse_numeric(text)
+        if val and val > 0:
+            return val, "high", None
+
+    val = _parse_numeric(text)
+    if val and val > 0:
+        return val, "high", None
+
+    return None, "low", "Could not extract a monthly installment amount."
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Multi-field (fallback for extraction_agent)
+# ─────────────────────────────────────────────────────────────────────────────
 
 def extract_all_fields(text: str) -> Dict[str, Tuple[Any, str]]:
-    """
-    Extract all possible fields from a single block of text.
-    Used by the initial extraction agent.
-    """
-    results = {}
-    
-    loc, conf_loc, _ = extract_location(text)
-    if loc and conf_loc == "high":
-        results["location"] = (loc, conf_loc)
-        
-    ptype, conf_pt, _ = extract_property_type(text)
-    if ptype and conf_pt == "high":
-        results["property_type"] = (ptype, conf_pt)
-        
-    pay, conf_pay, _ = extract_payment_type(text)
-    if pay and conf_pay == "high":
-        results["payment_type"] = (pay, conf_pay)
-        
-    bud, conf_bud, _ = extract_budget(text)
-    if bud and conf_bud == "high":
-        results["budget"] = (bud, conf_bud)
-        
+    """Extract all recognisable fields from one message. Used as fallback in extraction_agent."""
+    results: Dict[str, Tuple[Any, str]] = {}
+    for fn, key in (
+        (extract_location,      "location"),
+        (extract_property_type, "property_type"),
+        (extract_payment_type,  "payment_type"),
+        (extract_budget,        "budget"),
+    ):
+        val, conf, _ = fn(text)
+        if val and conf == "high":
+            results[key] = (val, conf)
     return results
