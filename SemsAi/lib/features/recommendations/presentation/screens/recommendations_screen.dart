@@ -41,20 +41,18 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     // New format: top_compounds with units per compound
     final topList = widget.results['top_compounds'] as List<dynamic>?;
     if (topList != null && topList.isNotEmpty) {
-      return topList
-          .map((item) {
-            final c = Map<String, dynamic>.from(item as Map);
-            return {
-              'compound_name': c['compound_name'] ?? 'Unknown',
-              'compound_id': c['compound_id'] ?? '',
-              'location': c['location'] ?? widget.results['location'] ?? '',
-              'score': c['score'] ?? 0.0,
-              'reasons': c['reasons'] ?? [],
-              'min_unit_price': c['min_unit_price'],
-              'units': c['units'] ?? [],
-            };
-          })
-          .toList();
+      return topList.map((item) {
+        final c = Map<String, dynamic>.from(item as Map);
+        return {
+          'compound_name': c['compound_name'] ?? 'Unknown',
+          'compound_id': c['compound_id'] ?? '',
+          'location': c['location'] ?? widget.results['location'] ?? '',
+          'score': c['score'] ?? 0.0,
+          'reasons': c['reasons'] ?? [],
+          'min_unit_price': c['min_unit_price'],
+          'units': c['units'] ?? [],
+        };
+      }).toList();
     }
 
     // Fallback: old single best_compound format

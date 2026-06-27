@@ -562,17 +562,15 @@ def comparing_agent(state: AgentState):
     print("\n--- Comparing Agent (Ollama) ---")
 
     # Get purpose
-    purpose_used = _normalize_purpose(state.purpose)
+    purpose_used = _normalize_purpose(state.get("purpose"))
     print(f"Purpose: {purpose_used}")
 
     # Extract compound names
-    compounds_to_compare = state.context.final_compounds or []
-    compound_names = _extract_compound_names_from_developers(compounds_to_compare)
+    final_candidates = state.get("final_candidates") or []
+    compound_names = _extract_compound_names_from_developers(final_candidates)
 
     if not compound_names:
-        print("⚠️ No compounds to compare")
-        state.agent_message = "No compounds available for comparison."
-        state.sync_to_legacy()
+        print("❌ No compound names found in state.final_candidates.")
         return state
 
     print(f"Found {len(compound_names)} compound names to evaluate")
@@ -582,7 +580,6 @@ def comparing_agent(state: AgentState):
     uri = os.getenv("MONGO_URI")
     if not uri:
         print("❌ No MONGO_URI found. Skipping comparison.")
-        state.sync_to_legacy()
         return state
 
     client = MongoClient(uri, tlsCAFile=certifi.where())
@@ -599,7 +596,6 @@ def comparing_agent(state: AgentState):
         if not candidates:
             print("❌ No compounds with descriptions found in database.")
             print("   Check that compounds.name matches matched_compound_names")
-            state.sync_to_legacy()
             return state
 
         print(f"✅ Found {len(candidates)} compounds with descriptions")
@@ -652,9 +648,8 @@ def comparing_agent(state: AgentState):
                         print(f"  {i}. {reason}")
                 print("-" * 80)
             
-            state.agent_message = "Compared compounds successfully."
-            state.context.comparison_result = top_choices
-            state.sync_to_legacy()
+            print("="*80)
+            
             return state
 
         except Exception as e:
@@ -684,15 +679,11 @@ def comparing_agent(state: AgentState):
             
             print("="*80)
             
-            state.agent_message = "Compared compounds successfully."
-            state.context.comparison_result = top_choices
-            state.sync_to_legacy()
             return state
 
         except Exception as fallback_error:
             print(f"\n❌ Fallback also failed: {fallback_error}")
             print("Unable to select top compounds")
-            state.sync_to_legacy()
             return state
 
     finally:

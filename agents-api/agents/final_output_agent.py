@@ -46,48 +46,44 @@ def _short(s: Any, n: int = 160) -> str:
 
 def _pick_best_item(state: AgentState) -> Optional[Dict[str, Any]]:
     """
-    Prefer ranked_compounds; otherwise fallback to final_compounds/candidate_compounds.
+    Prefer ranked_compounds/top_compounds; otherwise fallback to final_compounds/candidate_compounds.
     If list has a score, pick max score; else pick lowest min price.
     """
-    items = []
-    if state.context.ranked_compounds:
-        items = state.context.ranked_compounds
-    elif state.context.final_compounds:
-        items = state.context.final_compounds
-    elif state.context.candidate_compounds:
-        items = state.context.candidate_compounds
+    for key in ["ranked_compounds", "top_compounds", "final_compounds", "candidate_compounds"]:
+        items = state.get(key)
+        if not (isinstance(items, list) and items):
+            continue
 
-    if not items:
-        return None
+        # score can be under different names (keep backward compatibility)
+        score_keys = ("score", "total_score", "final_score", "rank_score")
 
-    # score can be under different names (keep backward compatibility)
-    score_keys = ("score", "total_score", "final_score", "rank_score")
+        if any(any(sk in x and x.get(sk) is not None for sk in score_keys) for x in items):
+            def sk(x: Dict[str, Any]) -> float:
+                for kk in score_keys:
+                    if kk in x and x.get(kk) is not None:
+                        try:
+                            return float(x.get(kk))
+                        except Exception:
+                            pass
+                return 0.0
 
-    if any(any(sk in x and x.get(sk) is not None for sk in score_keys) for x in items):
-        def sk(x: Dict[str, Any]) -> float:
-            for kk in score_keys:
-                if kk in x and x.get(kk) is not None:
+            return max(items, key=sk)
+
+        # price can be under different names
+        price_keys = ("min_unit_price", "min_price", "price_min")
+
+        def pk(x: Dict[str, Any]) -> float:
+            for kk in price_keys:
+                if x.get(kk) is not None:
                     try:
                         return float(x.get(kk))
                     except Exception:
                         pass
-            return 0.0
+            return 1e18
 
-        return max(items, key=sk)
+        return min(items, key=pk)
 
-    # price can be under different names
-    price_keys = ("min_unit_price", "min_price", "price_min")
-
-    def pk(x: Dict[str, Any]) -> float:
-        for kk in price_keys:
-            if x.get(kk) is not None:
-                try:
-                    return float(x.get(kk))
-                except Exception:
-                    pass
-        return 1e18
-
-    return min(items, key=pk)
+    return None
 
 
 def _load_features(db, compound_id: ObjectId) -> Optional[Dict[str, Any]]:
@@ -103,12 +99,11 @@ def final_output_agent(state: AgentState) -> AgentState:
     print("=" * 90)
 
     # Header summary
-    # Header summary
-    purpose = state.purpose or "N/A"
-    location = state.context.location or "N/A"
-    prop_type = state.context.property_type or "N/A"
-    payment_type = state.context.payment_type or "N/A"
-    budget = state.context.budget
+    purpose = state.get("purpose") or "N/A"
+    location = state.get("location") or "N/A"
+    prop_type = state.get("typeofproperty") or "N/A"
+    payment_type = state.get("payment_type") or "N/A"
+    budget = state.get("budget")
 
     print("\nUser request:")
     print(f"- Purpose: {purpose}")
@@ -123,10 +118,9 @@ def final_output_agent(state: AgentState) -> AgentState:
         print("\n❌ No compound available to output.")
         # Set a sentinel so the router doesn't loop back here forever,
         # then signal abort so the graph terminates cleanly.
-        state.context.final_best_compound = {"status": "no_compound_found"}
-        state.agent_message = "No compounds found matching your criteria."
-        state.handoff_to_human = True
-        state.sync_to_legacy()
+        state["final_best_compound"] = {"status": "no_compound_found"}
+        state["final_report"] = "No compound available."
+        state["abort"] = True
         return state
 
     compound_name = (best.get("compound_name") or best.get("name") or "Unknown").strip()
@@ -216,8 +210,7 @@ def final_output_agent(state: AgentState) -> AgentState:
         print("\nDecision features: (not found in DB yet)")
 
     # Save for frontend/logging
-    # Save for frontend/logging
-    state.context.final_best_compound = {
+    state["final_best_compound"] = {
         "compound_id": str(comp_oid) if comp_oid else None,
         "compound_name": compound_name,
         "developer_name": dev_name or None,
@@ -228,14 +221,48 @@ def final_output_agent(state: AgentState) -> AgentState:
         "features": feats if isinstance(feats, list) else [],
     }
 
+    # ── Build top compounds with units for ALL ranked compounds (top 3) ──
+    ranked = state.get("ranked_compounds") or []
+    top_compounds_with_units = []
+
     # --------------------------------------------------------------------------------
-    # Save selected compound and fetch candidate units for unit_agent
+    # Fetch units for ALL top 3 ranked compounds
     # --------------------------------------------------------------------------------
-    state.context.selected_compound = {"id": str(comp_oid), "name": compound_name}
-    candidate_units = []
-    
-    if uri and comp_oid:
-        import re
+    import re
+    state["selected_compound"] = {"id": str(comp_oid), "name": compound_name}
+
+    wanted_type = str(state.get("typeofproperty") or "Apartment").strip().lower()
+    if wanted_type in ["apt", "apartments"]: wanted_type = "apartment"
+    if wanted_type in ["villas"]: wanted_type = "villa"
+
+    budget_val = state.get("budget")
+    if budget_val is not None:
+        try: budget_val = float(budget_val)
+        except: budget_val = None
+
+    pay_type = state.get("payment_type")
+    if pay_type:
+        pay_type = str(pay_type).strip().lower()
+        if pay_type in ["cash", "full cash", "c"]: pay_type = "cash"
+        elif pay_type in ["installment", "installments", "instalments", "plan", "monthly"]: pay_type = "installments"
+        else: pay_type = None
+
+    type_match = {
+        "$or": [
+            {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+            {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
+        ]
+    }
+
+    sale_match = None
+    if pay_type == "cash":
+        sale_match = {"sale_type": {"$regex": r"^resale$", "$options": "i"}}
+    elif pay_type == "installments":
+        sale_match = {"sale_type": {"$regex": r"developer", "$options": "i"}}
+
+    if uri and ranked:
         try:
             client = MongoClient(
                 uri,
@@ -246,62 +273,72 @@ def final_output_agent(state: AgentState) -> AgentState:
                 socketTimeoutMS=20000,
             )
             db = client.get_default_database()
-            
-            wanted_type = str(state.context.property_type or "Apartment").strip().lower()
-            if wanted_type in ["apt", "apartments"]: wanted_type = "apartment"
-            if wanted_type in ["villas"]: wanted_type = "villa"
-            
-            budget_val = state.context.budget
-            if budget_val is not None:
-                try: budget_val = float(budget_val)
-                except: budget_val = None
-            
-            pay_type = state.context.payment_type
-            if pay_type:
-                pay_type = str(pay_type).strip().lower()
-                if pay_type in ["cash", "full cash", "c"]: pay_type = "cash"
-                elif pay_type in ["installment", "installments", "instalments", "plan", "monthly"]: pay_type = "installments"
-                else: pay_type = None
 
-            type_match = {
-                "$or": [
-                    {"type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-                    {"property_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-                    {"property_type.name": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-                    {"unit_type": {"$regex": f"^{re.escape(wanted_type)}$", "$options": "i"}},
-                ]
-            }
+            for rc in ranked[:3]:
+                rc_name = rc.get("compound_name") or "Unknown"
+                rc_score = rc.get("score", 0)
+                rc_cf_id = _to_objectid(rc.get("compound_id") or rc.get("_id"))
 
-            sale_match = None
-            if pay_type == "cash":
-                sale_match = {"sale_type": {"$regex": r"^resale$", "$options": "i"}}
-            elif pay_type == "installments":
-                sale_match = {"sale_type": {"$regex": r"developer", "$options": "i"}}
-                
-            comp_str = str(comp_oid)
-            comp_match = {"compound_id": {"$in": [comp_oid, comp_str]}}
+                # Resolve compound_features._id → compounds._id
+                real_cid = rc_cf_id
+                if rc_cf_id:
+                    cf_doc = db[FEATURES_COLLECTION].find_one({"_id": rc_cf_id})
+                    if cf_doc and cf_doc.get("compound_id"):
+                        real_cid = cf_doc["compound_id"]
 
-            query = {"$and": [comp_match, type_match]}
-            if sale_match:
-                query["$and"].append(sale_match)
+                # Also look up location from compounds collection
+                rc_location = ""
+                if real_cid:
+                    comp_doc = db["compounds"].find_one({"_id": real_cid}, {"location": 1})
+                    if comp_doc:
+                        rc_location = comp_doc.get("location") or ""
 
-            units_cursor = db["units"].find(query)
-            
-            for u in units_cursor:
-                eff_price = u.get("price") or u.get("price_min") or u.get("price_max")
-                if budget_val is not None and eff_price is not None:
-                    try:
-                        if float(eff_price) > budget_val:
-                            continue
-                    except: pass
-                candidate_units.append(u)
-                
-            print(f"\n✅ Found {len(candidate_units)} candidate units in {compound_name} matching your budget and preferences.")
-            
+                # Build unit query
+                real_str = str(real_cid) if real_cid else ""
+                comp_match = {"$or": [
+                    {"compound_id": {"$in": [x for x in [real_cid, real_str] if x]}},
+                    {"compound_name": {"$regex": f"^{re.escape(rc_name)}$", "$options": "i"}},
+                ]}
+
+                query = {"$and": [comp_match, type_match]}
+                if sale_match:
+                    query["$and"].append(sale_match)
+
+                rc_units = []
+                for u in db["units"].find(query):
+                    eff_price = u.get("price") or u.get("price_min") or u.get("price_max")
+                    if budget_val is not None and eff_price is not None:
+                        try:
+                            if float(eff_price) > budget_val:
+                                continue
+                        except: pass
+                    rc_units.append(u)
+
+                top_compounds_with_units.append({
+                    "compound_id": str(real_cid) if real_cid else str(rc_cf_id),
+                    "compound_name": rc_name,
+                    "location": rc_location or state.get("location") or "",
+                    "score": rc_score,
+                    "units": rc_units,
+                })
+
+                print(f"  📦 {rc_name}: {len(rc_units)} units (score={rc_score:.4f})")
+
+        except Exception as e:
+            print(f"  ⚠️ Error fetching units for ranked compounds: {e}")
         finally:
             client.close()
 
-    state.context.candidate_units = candidate_units
-    state.agent_message = f"Found best match: {compound_name}"
-    state.sync_to_legacy()
+    state["top_compounds_with_units"] = top_compounds_with_units
+
+    # Backward compat: candidate_units = units from best compound
+    if top_compounds_with_units:
+        state["candidate_units"] = top_compounds_with_units[0].get("units", [])
+    else:
+        state["candidate_units"] = []
+
+    total_units = sum(len(c.get("units", [])) for c in top_compounds_with_units)
+    print(f"\n✅ Total: {len(top_compounds_with_units)} compounds, {total_units} units")
+
+    state["final_report"] = f"BEST: {compound_name}"
     return state
