@@ -8,6 +8,7 @@ from pymongo import MongoClient
 import certifi
 
 from state import AgentState
+from agents.llm_messages import comparing_no_compounds, comparing_complete
 from main_helpers import ask_ollama
 
 
@@ -588,7 +589,7 @@ def comparing_agent(state: AgentState):
 
     if not compound_names:
         print("⚠️ No compounds to compare")
-        state.agent_message = "No compounds available for comparison."
+        state.agent_message = comparing_no_compounds(state)
         state.sync_to_legacy()
         return state
 
@@ -669,7 +670,7 @@ def comparing_agent(state: AgentState):
                         print(f"  {i}. {reason}")
                 print("-" * 80)
             
-            state.agent_message = "Compared compounds successfully."
+            state.agent_message = comparing_complete(state)
             state.context.comparison_result = top_choices
             state.sync_to_legacy()
             return state
@@ -701,7 +702,7 @@ def comparing_agent(state: AgentState):
             
             print("="*80)
             
-            state.agent_message = "Compared compounds successfully."
+            state.agent_message = comparing_complete(state)
             state.context.comparison_result = top_choices
             state.sync_to_legacy()
             return state

@@ -37,6 +37,7 @@ from agents.utils.error_helpers import (
 )
 from database import get_db
 from main_helpers import ask_llm_with_history
+from agents.llm_messages import budget_confirmed, budget_ask
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -447,10 +448,7 @@ def budget_agent(state: AgentState) -> AgentState:
             state.context.budget_valid = True
             state.waiting_for = None
             state.current_phase = "search"
-            state.agent_message = (
-                f"Got it! I'll look for {state.context.property_type}s "
-                f"in {state.context.location} within {extracted:,.0f} EGP."
-            )
+            state.agent_message = budget_confirmed(extracted, state)
             print(f"✓ Budget validated: {extracted:,.0f} EGP")
 
         else:
@@ -500,10 +498,7 @@ def budget_agent(state: AgentState) -> AgentState:
 
             state.context.budget_valid = True
             state.current_phase = "search"
-            state.agent_message = (
-                f"Got it! Budget of {state.context.budget:,.0f} EGP for "
-                f"{state.context.property_type} in {state.context.location}."
-            )
+            state.agent_message = budget_confirmed(state.context.budget, state)
             print(f"✓ Budget validated (pre-filled): {state.context.budget:,.0f} EGP")
         else:
             print(f"⚠️  Pre-filled budget failed: {error}")
@@ -512,9 +507,11 @@ def budget_agent(state: AgentState) -> AgentState:
 
     # ── Ask for budget ───────────────────────────────────────────────────────
     if not state.context.budget or not state.context.budget_valid:
-        state.agent_message = (
-            f"What's your budget for a {state.context.property_type} "
-            f"in {state.context.location}? (e.g. 5 million, 500k)"
+        state.agent_message = budget_ask(
+            state.context.location or "",
+            state.context.property_type or "",
+            state.context.payment_type or "cash",
+            state,
         )
         state.waiting_for = "budget"
 

@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 
 from state import AgentState
+from agents.llm_messages import (
+    ranking_no_compounds, ranking_no_user_id, ranking_unavailable,
+    ranking_no_valid_compounds, ranking_no_vector_results, ranking_complete,
+    ranking_failed,
+)
 
 load_dotenv()
 
@@ -26,7 +31,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
     # ----------------------------
     if not state.context.final_compounds:
         print("⚠️ No final_compounds available in context. Skipping ranking.")
-        state.agent_message = "No compounds to rank yet."
+        state.agent_message = ranking_no_compounds(state)
         state.sync_to_legacy()
         return state
 
@@ -44,7 +49,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         
         if not user_id:
             print("⚠️ session_id missing, cannot fetch user embedding")
-            state.agent_message = "User identification missing for personalized ranking."
+            state.agent_message = ranking_no_user_id(state)
             state.sync_to_legacy()
             return state
 
@@ -59,7 +64,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
             print("⚠️ User embedding not found in DB, cannot perform vector search")
             # Fallback: pass compounds through unranked
             state.context.ranked_compounds = state.context.final_compounds
-            state.agent_message = "Personalized ranking unavailable. Showing filtered results."
+            state.agent_message = ranking_unavailable(state)
             state.sync_to_legacy()
             return state
 
@@ -84,7 +89,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
 
         if len(compound_ids) == 0:
             print("⚠️ No valid compound IDs found in final_compounds")
-            state.agent_message = "No valid compounds to rank."
+            state.agent_message = ranking_no_valid_compounds(state)
             state.sync_to_legacy()
             return state
 
@@ -169,14 +174,14 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
 
         if len(ranked_compounds) == 0:
             print("No ranked compounds found.")
-            state.agent_message = "Vector search returned no results."
+            state.agent_message = ranking_no_vector_results(state)
         else:
             for i, d in enumerate(ranked_compounds[:3], 1):
                 print(f"\n{i}. {d['compound_name']}")
                 print(f"   Compound ID: {d['compound_id']}")
                 print(f"   Similarity Score: {d['score']:.6f}")
             
-            state.agent_message = f"Ranked {len(ranked_compounds)} compounds by your preferences."
+            state.agent_message = ranking_complete(len(ranked_compounds), state)
 
         # ----------------------------
         # 8. Sync to Legacy & Return
@@ -189,7 +194,7 @@ def compound_ranking_agent(state: AgentState) -> AgentState:
         
         # Fallback: pass compounds through unranked
         state.context.ranked_compounds = state.context.final_compounds
-        state.agent_message = f"Ranking failed ({str(e)}). Showing unranked results."
+        state.agent_message = ranking_failed(str(e), state)
         state.sync_to_legacy()
         return state
 

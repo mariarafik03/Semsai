@@ -8,6 +8,7 @@ from bson import ObjectId
 import certifi
 
 from state import AgentState
+from agents.llm_messages import no_compounds_found, best_match_found
 
 FEATURES_COLLECTION = "compound_features"
 
@@ -194,7 +195,7 @@ def final_output_agent(state: AgentState) -> AgentState:
     if not ranked:
         print("\n❌ No compound available to output.")
         state.context.final_best_compound = {"status": "no_compound_found"}
-        state.agent_message = "No compounds found matching your criteria."
+        state.agent_message = no_compounds_found(state)
         state.handoff_to_human = True
         state.sync_to_legacy()
         return state
@@ -348,6 +349,6 @@ def final_output_agent(state: AgentState) -> AgentState:
         "name": compound_name,
     }
     state.context.candidate_units = candidate_units
-    state.agent_message = f"Found best match: {compound_name}"
+    state.agent_message = best_match_found(compound_name, state)
     state.sync_to_legacy()
     return state

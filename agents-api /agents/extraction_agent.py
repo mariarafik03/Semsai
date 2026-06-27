@@ -43,6 +43,7 @@ from state import AgentState
 from agents.utils.extractors import extract_all_fields
 from main_helpers import ask_llm_with_history
 from api.db import load_episodes
+from agents.llm_messages import opening_greeting
 
 
 OPENING_MESSAGE = (
@@ -295,7 +296,7 @@ def extraction_agent(state: AgentState) -> AgentState:
 
         if not state.user_input or not state.user_input.strip():
             # Empty reply — ask again rather than silently extracting nothing.
-            state.agent_message = OPENING_MESSAGE
+            state.agent_message = opening_greeting(state)
             state.waiting_for = "initial_message"
             state.sync_to_legacy()
             return state
@@ -319,7 +320,7 @@ def extraction_agent(state: AgentState) -> AgentState:
     # ── Very first call: nothing collected yet, no input yet ──────────────
     if not state.user_input or not state.user_input.strip():
         print("⚠️ No user input yet — asking the open-ended opening question")
-        state.agent_message = OPENING_MESSAGE
+        state.agent_message = opening_greeting(state)
         state.waiting_for = "initial_message"
         state.sync_to_legacy()
         return state

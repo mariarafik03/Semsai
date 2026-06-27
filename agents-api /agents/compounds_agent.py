@@ -7,6 +7,10 @@ from pymongo import MongoClient
 import certifi
 
 from state import AgentState
+from agents.llm_messages import (
+    compounds_location_changed, compounds_property_type_changed,
+    compounds_no_units_options, compounds_unclear_choice,
+)
 from .Normalization import normalize_location
 
 
@@ -314,10 +318,7 @@ def compounds_agent(state: AgentState):
                 state.context.location_normalized = None  # force re-validation
                 state.budget_valid = None
                 state.context.budget_valid = False
-                state.agent_message = (
-                    f"\u2705 Location changed to **{new_location}**. "
-                    f"Searching for units there..."
-                )
+                state.agent_message = compounds_location_changed(new_location, state)
                 print(f"\u2713 No-units: location changed to {new_location}")
             else:
                 state.location = None
@@ -346,10 +347,7 @@ def compounds_agent(state: AgentState):
                 state.context.property_type = new_type.lower()
                 state.budget_valid = None
                 state.context.budget_valid = False
-                state.agent_message = (
-                    f"\u2705 Property type changed to **{new_type}**. "
-                    f"Searching for units now..."
-                )
+                state.agent_message = compounds_property_type_changed(new_type, state)
                 print(f"\u2713 No-units: property type changed to {new_type}")
             else:
                 state.typeofproperty = None
@@ -363,12 +361,7 @@ def compounds_agent(state: AgentState):
 
         else:
             # Unclear answer — re-ask
-            state.agent_message = (
-                "I didn't catch that. Please choose one of:\n\n"
-                "1\ufe0f\u20e3 **Increase my budget**\n"
-                "2\ufe0f\u20e3 **Change location**\n"
-                "3\ufe0f\u20e3 **Change property type**"
-            )
+            state.agent_message = compounds_unclear_choice(state)
             state.waiting_for = "no_units_response"
             state.sync_to_legacy()
             return state
@@ -448,14 +441,7 @@ def compounds_agent(state: AgentState):
                 _bstr = f"down payment {_dp:,} EGP / monthly {_mi:,} EGP"
 
             print(f"⚠️  No units found for {_ptype} in {_loc} within {_bstr}")
-            state.agent_message = (
-                f"🔍 I searched our database but couldn't find any "
-                f"**{_ptype}** units in **{_loc}** within **{_bstr}**.\n\n"
-                f"Don't worry — here's what you can do:\n\n"
-                f"1️⃣ **Increase my budget** — I'll look for more options\n"
-                f"2️⃣ **Change location** — let's try a different area\n"
-                f"3️⃣ **Change property type** — maybe a different type fits your budget"
-            )
+            state.agent_message = compounds_no_units_options(_loc, _ptype, _bstr, state)
             # Clear both copies so the router stays in compounds_agent after user responds
             state.candidate_compounds = []
             state.context.candidate_compounds = []
