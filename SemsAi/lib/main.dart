@@ -1,6 +1,7 @@
-import 'package:SemsAi/features/portfolio/presentation/screens/portfolio_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+import 'package:SemsAi/core/theme/theme_cubit.dart';
 import 'package:SemsAi/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:SemsAi/features/home/presentation/cubit/home_cubit.dart';
 import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
         BlocProvider<AuthCubit>(
           create: (context) =>
               AuthCubit(authRepository: AuthRepositoryImpl())
@@ -40,14 +42,18 @@ class MyApp extends StatelessWidget {
         BlocProvider<MapCubit>(create: (context) => MapCubit()),
         BlocProvider<ComparisonCubit>(create: (context) => ComparisonCubit()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Sems AI',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
-        initialRoute: AppRoutes.splash,
-        onGenerateRoute: appRouter.generateRoute,
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Sems AI',
+            theme: AppThemes.light,
+            darkTheme: AppThemes.dark,
+            themeMode: themeMode,
+            initialRoute: AppRoutes.splash,
+            onGenerateRoute: appRouter.generateRoute,
+          );
+        },
       ),
     );
   }

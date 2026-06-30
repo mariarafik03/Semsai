@@ -6,6 +6,8 @@ import 'package:SemsAi/features/favorite/presentation/screens/favourite_screen.d
 import 'package:SemsAi/features/chat/presentation/screens/agent_chat_screen.dart';
 import 'package:SemsAi/features/profile/presentation/screens/profile_screen.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/portfolio_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: Stack(
         children: [
           IndexedStack(index: _currentIndex, children: _screens),
@@ -221,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     height: 40,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [AppColors.gold, AppColors.goldLight],
+                        colors: [AppColors.gold, context.appColors.goldLight],
                       ),
                       shape: BoxShape.circle,
                     ),
@@ -244,10 +246,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildBottomNav() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         border: Border(
           top: BorderSide(
-            color: AppColors.border.withValues(alpha: 0.4),
+            color: context.appColors.border.withValues(alpha: 0.4),
             width: 0.5,
           ),
         ),
@@ -294,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           selected ? item.activeIcon : item.icon,
                           color: selected
                               ? AppColors.gold
-                              : AppColors.textMuted.withValues(alpha: 0.65),
+                              : context.appColors.textMuted.withValues(alpha: 0.65),
                           size: 26,
                         ),
                         const SizedBox(height: 3),
@@ -303,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           style: TextStyle(
                             color: selected
                                 ? AppColors.gold
-                                : AppColors.textMuted.withValues(alpha: 0.65),
+                                : context.appColors.textMuted.withValues(alpha: 0.65),
                             fontSize: 11,
                             fontWeight: selected
                                 ? FontWeight.w600

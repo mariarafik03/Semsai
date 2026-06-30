@@ -30,6 +30,7 @@ If detected sale type conflicts with target → listing is rejected.
 If sale type cannot be determined → listing passes (safe default).
 """
 
+import os
 import pandas as pd
 import re
 import json
@@ -38,7 +39,7 @@ import statistics
 import numpy as np
 import requests
 from collections import Counter
-from catboost import CatBoostRegressor, Pool
+from catboost import CatBoostRegressor,Pool
 from langgraph.graph import StateGraph
 from typing import TypedDict
 from bs4 import BeautifulSoup
@@ -63,13 +64,14 @@ STRICT_BEDROOM_MATCH = True
 # ──────────────────────────────────────────────────────────────
 
 print("Loading Agentic Luxury Appraiser Model...")
+_MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "FINAL_SEMSAI_MODEL.cbm")
 try:
     model = CatBoostRegressor()
-    model.load_model("catboost_true_model.cbm")
+    model.load_model(_MODEL_PATH)
     print(" ✅ Model loaded successfully!\n")
 except Exception as e:
-    print(f" ❌ Error: Could not find 'catboost_true_model.cbm'. {e}")
-    exit()
+    print(f" ❌ Error: Could not load model at '{_MODEL_PATH}'. {e}")
+    model = None
 
 cat_features = [
     "property_type", "finishing", "sale_type",

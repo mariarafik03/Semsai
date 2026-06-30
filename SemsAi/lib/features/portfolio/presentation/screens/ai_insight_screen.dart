@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class AiInsightScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -122,7 +124,7 @@ class AiInsightScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -135,7 +137,7 @@ class AiInsightScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F172A),
+                      color: context.appColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: summaryColor.withValues(alpha: 0.3),
@@ -159,7 +161,7 @@ class AiInsightScreen extends StatelessWidget {
                             Text(
                               'AI Recommendation',
                               style: TextStyle(
-                                color: const Color(0xFF94A3B8),
+                                color: context.appColors.textMuted,
                                 fontSize: 13,
                               ),
                             ),
@@ -177,8 +179,8 @@ class AiInsightScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           summaryText,
-                          style: const TextStyle(
-                            color: Color(0xFF94A3B8),
+                          style: TextStyle(
+                            color: context.appColors.textMuted,
                             fontSize: 13,
                             height: 1.5,
                           ),
@@ -189,10 +191,10 @@ class AiInsightScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // Detailed Recommendations
-                  const Text(
+                  Text(
                     'Key Findings',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -200,20 +202,20 @@ class AiInsightScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   ...recommendations.map((r) => Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: _buildRecommendationCard(r),
+                        child: _buildRecommendationCard(context, r),
                       )),
 
                   if (recommendations.isEmpty)
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F172A),
+                        color: context.appColors.cardBg,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: const Color(0xFF22C55E).withValues(alpha: 0.3),
                         ),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Icon(Icons.check_circle_rounded,
                               color: Color(0xFF22C55E), size: 24),
@@ -222,7 +224,7 @@ class AiInsightScreen extends StatelessWidget {
                             child: Text(
                               'No critical issues found. Your portfolio is in good shape!',
                               style: TextStyle(
-                                  color: Color(0xFF94A3B8), fontSize: 13),
+                                  color: context.appColors.textMuted, fontSize: 13),
                             ),
                           ),
                         ],
@@ -240,10 +242,10 @@ class AiInsightScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -255,11 +257,11 @@ class AiInsightScreen extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(Icons.arrow_back_ios_new,
+                  color: context.appColors.textPrimary, size: 16),
             ),
           ),
           const SizedBox(width: 14),
@@ -273,10 +275,10 @@ class AiInsightScreen extends StatelessWidget {
                 color: AppColors.gold, size: 20),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'AI Insight',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),
@@ -286,13 +288,13 @@ class AiInsightScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendationCard(_Recommendation r) {
+  Widget _buildRecommendationCard(BuildContext context, _Recommendation r) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,8 +318,8 @@ class AiInsightScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             r.description,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: context.appColors.textMuted,
               fontSize: 13,
               height: 1.4,
             ),

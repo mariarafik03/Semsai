@@ -13,6 +13,8 @@ import 'package:SemsAi/features/listings/data/repo/listings_service.dart'
 import 'package:SemsAi/features/favorite/presentation/cubit/favorite_state.dart';
 import 'package:SemsAi/features/listings/presentation/screens/widgets/listings_search_bar.dart';
 import 'package:SemsAi/features/listings/presentation/screens/widgets/listings_filter_panel.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
@@ -129,7 +131,7 @@ class _FavouriteScreenBodyState extends State<_FavouriteScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -144,10 +146,10 @@ class _FavouriteScreenBodyState extends State<_FavouriteScreenBody> {
                     size: 26,
                   ),
                   const SizedBox(width: 10),
-                  const Text(
+                  Text(
                     'My Favorites',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
@@ -156,15 +158,15 @@ class _FavouriteScreenBodyState extends State<_FavouriteScreenBody> {
                   // Sort dropdown
                   DropdownButton<String>(
                     value: _sortBy,
-                    dropdownColor: AppColors.cardBg,
+                    dropdownColor: context.appColors.cardBg,
                     underline: const SizedBox.shrink(),
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 14,
                     ),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: AppColors.textMuted,
+                      color: context.appColors.textMuted,
                       size: 20,
                     ),
                     items: const [
@@ -287,32 +289,32 @@ class _FavouriteScreenBodyState extends State<_FavouriteScreenBody> {
               width: 90,
               height: 90,
               decoration: BoxDecoration(
-                color: AppColors.cardBg,
+                color: context.appColors.cardBg,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.border, width: 1.5),
+                border: Border.all(color: context.appColors.border, width: 1.5),
               ),
               child: Icon(
                 Icons.favorite_border_rounded,
                 size: 42,
-                color: AppColors.textMuted,
+                color: context.appColors.textMuted,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'No favorites yet',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: context.appColors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
               child: Text(
                 'Tap the heart icon on any listing to save it here',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                style: TextStyle(color: context.appColors.textMuted, fontSize: 14),
               ),
             ),
           ],
@@ -366,9 +368,9 @@ class _FavoriteCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.6)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.2),
@@ -405,8 +407,8 @@ class _FavoriteCard extends StatelessWidget {
                       unit.compoundName ?? unit.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -417,8 +419,8 @@ class _FavoriteCard extends StatelessWidget {
                         unit.developerName!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.textMuted,
+                        style: TextStyle(
+                          color: context.appColors.textMuted,
                           fontSize: 12,
                         ),
                       ),
@@ -428,14 +430,14 @@ class _FavoriteCard extends StatelessWidget {
                     Row(
                       children: [
                         if (unit.bedrooms != null)
-                          _spec(Icons.bed_outlined, '${unit.bedrooms}'),
+                          _spec(context, Icons.bed_outlined, '${unit.bedrooms}'),
                         if (unit.bathrooms != null) ...[
                           const SizedBox(width: 10),
-                          _spec(Icons.bathtub_outlined, '${unit.bathrooms}'),
+                          _spec(context, Icons.bathtub_outlined, '${unit.bathrooms}'),
                         ],
                         if (unit.displayArea != null) ...[
                           const SizedBox(width: 10),
-                          _spec(
+                          _spec(context,
                             Icons.straighten,
                             '${unit.displayArea!.round()} m²',
                           ),
@@ -505,15 +507,15 @@ class _FavoriteCard extends StatelessWidget {
     );
   }
 
-  Widget _spec(IconData icon, String text) {
+  Widget _spec(BuildContext context, IconData icon, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.textMuted, size: 13),
+        Icon(icon, color: context.appColors.textMuted, size: 13),
         const SizedBox(width: 3),
         Text(
           text,
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+          style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
         ),
       ],
     );

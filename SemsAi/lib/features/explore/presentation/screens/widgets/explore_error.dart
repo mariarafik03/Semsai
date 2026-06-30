@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ExploreErrorView extends StatelessWidget {
   const ExploreErrorView({super.key, required this.onRetry});
@@ -11,7 +13,7 @@ class ExploreErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -25,7 +27,7 @@ class ExploreErrorView extends StatelessWidget {
             Text(
               AppStrings.loadFailed,
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: context.appColors.textPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -37,14 +39,14 @@ class ExploreErrorView extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.gold, AppColors.goldLight],
+                    colors: [AppColors.gold, context.appColors.goldLight],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   AppStrings.retry,
                   style: TextStyle(
-                    color: AppColors.bg,
+                    color: context.appColors.bg,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

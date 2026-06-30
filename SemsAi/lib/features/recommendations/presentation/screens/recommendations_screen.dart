@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/recommendations/presentation/screens/widgets/recommendation_card.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class RecommendationsScreen extends StatefulWidget {
   final Map<String, dynamic> results;
@@ -80,7 +82,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -105,9 +107,9 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          border: const Border(
-            bottom: BorderSide(color: AppColors.border, width: 0.5),
+          color: context.appColors.cardBg,
+          border: Border(
+            bottom: BorderSide(color: context.appColors.border, width: 0.5),
           ),
         ),
         child: Row(
@@ -119,12 +121,12 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
                 height: 36,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.bg,
-                  border: Border.all(color: AppColors.border),
+                  color: context.appColors.bg,
+                  border: Border.all(color: context.appColors.border),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_back_ios_new,
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                   size: 16,
                 ),
               ),
@@ -153,10 +155,10 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'AI Recommendations',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
                     ),
@@ -211,13 +213,13 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
         children: [
           Icon(
             Icons.search_off_rounded,
-            color: AppColors.textMuted.withValues(alpha: 0.4),
+            color: context.appColors.textMuted.withValues(alpha: 0.4),
             size: 64,
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             AppStrings.noRecommendations,
-            style: TextStyle(color: AppColors.textMuted, fontSize: 15),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 15),
             textAlign: TextAlign.center,
           ),
         ],
@@ -231,9 +233,9 @@ class _RecommendationsScreenState extends State<RecommendationsScreen>
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        border: const Border(
-          top: BorderSide(color: AppColors.border, width: 0.5),
+        color: context.appColors.cardBg,
+        border: Border(
+          top: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: SizedBox(

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/networking/api_client.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class MarketAnalyticsScreen extends StatefulWidget {
   const MarketAnalyticsScreen({super.key});
@@ -72,7 +74,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -93,7 +95,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                           color: Color(0xFFEF4444), size: 48),
                       const SizedBox(height: 12),
                       Text(_error!,
-                          style: const TextStyle(color: Color(0xFF94A3B8))),
+                          style: TextStyle(color: context.appColors.textMuted)),
                       const SizedBox(height: 16),
                       TextButton(
                         onPressed: () {
@@ -139,10 +141,10 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -154,11 +156,11 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(Icons.arrow_back_ios_new,
+                  color: context.appColors.textPrimary, size: 16),
             ),
           ),
           const SizedBox(width: 14),
@@ -177,10 +179,10 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                 color: AppColors.gold, size: 20),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Market Analytics',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),
@@ -231,7 +233,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
@@ -249,8 +251,8 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
             ),
             const SizedBox(height: 2),
             Text(label,
-                style: const TextStyle(
-                    color: Color(0xFF64748B), fontSize: 11)),
+                style: TextStyle(
+                    color: context.appColors.textMuted, fontSize: 11)),
           ],
         ),
       ),
@@ -262,7 +264,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(10),
       ),
       child: TabBar(
@@ -274,7 +276,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         labelColor: AppColors.gold,
-        unselectedLabelColor: const Color(0xFF64748B),
+        unselectedLabelColor: context.appColors.textMuted,
         labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         dividerColor: Colors.transparent,
         tabs: const [
@@ -289,9 +291,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
   // ─── Areas Tab ────────────────────────────────────────
   Widget _buildAreasTab() {
     if (_areas.isEmpty) {
-      return const Center(
+      return Center(
         child: Text('No area data available',
-            style: TextStyle(color: Color(0xFF64748B))),
+            style: TextStyle(color: context.appColors.textMuted)),
       );
     }
 
@@ -309,10 +311,10 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Price per m² by Area',
                   style: TextStyle(
-                    color: Color(0xFFE2E8F0),
+                    color: context.appColors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -320,8 +322,8 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                 const SizedBox(height: 4),
                 Text(
                   'Average ${_formatNumber(_summary['overall_avg_price_per_sqm'] ?? 0)} EGP/m² across all areas',
-                  style: const TextStyle(
-                      color: Color(0xFF94A3B8), fontSize: 12),
+                  style: TextStyle(
+                      color: context.appColors.textMuted, fontSize: 12),
                 ),
               ],
             ),
@@ -338,12 +340,12 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
+            color: context.appColors.cardBg,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isTop3
                   ? AppColors.gold.withValues(alpha: 0.2)
-                  : const Color(0xFF1E293B),
+                  : context.appColors.border,
             ),
           ),
           child: Column(
@@ -358,7 +360,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                       shape: BoxShape.circle,
                       color: isTop3
                           ? AppColors.gold.withValues(alpha: 0.15)
-                          : const Color(0xFF1E293B),
+                          : context.appColors.border,
                     ),
                     child: Center(
                       child: Text(
@@ -366,7 +368,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                         style: TextStyle(
                           color: isTop3
                               ? AppColors.gold
-                              : const Color(0xFF64748B),
+                              : context.appColors.textMuted,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
@@ -377,8 +379,8 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                   Expanded(
                     child: Text(
                       area['location'] ?? 'Unknown',
-                      style: const TextStyle(
-                        color: Color(0xFFE2E8F0),
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -387,7 +389,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                   Text(
                     '${_formatNumber(avgPsqm)} EGP/m²',
                     style: TextStyle(
-                      color: isTop3 ? AppColors.gold : const Color(0xFF94A3B8),
+                      color: isTop3 ? AppColors.gold : context.appColors.textMuted,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -403,7 +405,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                     Container(
                       height: 6,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B),
+                        color: context.appColors.border,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -435,15 +437,15 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
               Row(
                 children: [
                   _buildTag('${area['unit_count']} units',
-                      const Color(0xFF64748B)),
+                      context.appColors.textMuted),
                   const SizedBox(width: 8),
                   _buildTag('${area['compound_count']} compounds',
-                      const Color(0xFF64748B)),
+                      context.appColors.textMuted),
                   const Spacer(),
                   Text(
                     'Avg ${_formatNumber((area['avg_price'] as num).toDouble())} EGP',
-                    style: const TextStyle(
-                        color: Color(0xFF475569), fontSize: 11),
+                    style: TextStyle(
+                        color: context.appColors.border, fontSize: 11),
                   ),
                 ],
               ),
@@ -457,9 +459,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
   // ─── Developers Tab ───────────────────────────────────
   Widget _buildDevelopersTab() {
     if (_developers.isEmpty) {
-      return const Center(
+      return Center(
         child: Text('No developer data available',
-            style: TextStyle(color: Color(0xFF64748B))),
+            style: TextStyle(color: context.appColors.textMuted)),
       );
     }
 
@@ -472,12 +474,12 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
       itemCount: _developers.length + 1,
       itemBuilder: (ctx, i) {
         if (i == 0) {
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Text(
               'Developer Price Ranking',
               style: TextStyle(
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -495,9 +497,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
+            color: context.appColors.cardBg,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF1E293B)),
+            border: Border.all(color: context.appColors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,8 +531,8 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                       children: [
                         Text(
                           dev['name'] ?? 'Unknown',
-                          style: const TextStyle(
-                            color: Color(0xFFE2E8F0),
+                          style: TextStyle(
+                            color: context.appColors.textPrimary,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
@@ -575,9 +577,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text('EGP/m²',
+                      Text('EGP/m²',
                           style: TextStyle(
-                              color: Color(0xFF64748B), fontSize: 10)),
+                              color: context.appColors.textMuted, fontSize: 10)),
                     ],
                   ),
                 ],
@@ -588,7 +590,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                 borderRadius: BorderRadius.circular(4),
                 child: Stack(
                   children: [
-                    Container(height: 5, color: const Color(0xFF1E293B)),
+                    Container(height: 5, color: context.appColors.border),
                     FractionallySizedBox(
                       widthFactor: fraction,
                       child: Container(
@@ -606,16 +608,16 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
               Row(
                 children: [
                   _buildTag('${dev['unit_count']} units',
-                      const Color(0xFF64748B)),
+                      context.appColors.textMuted),
                   const SizedBox(width: 6),
                   _buildTag('${dev['compound_count']} compounds',
-                      const Color(0xFF64748B)),
+                      context.appColors.textMuted),
                   const Spacer(),
                   if ((dev['locations'] as List?)?.isNotEmpty == true)
                     Text(
                       (dev['locations'] as List).take(2).join(', '),
-                      style: const TextStyle(
-                          color: Color(0xFF475569), fontSize: 10),
+                      style: TextStyle(
+                          color: context.appColors.border, fontSize: 10),
                       overflow: TextOverflow.ellipsis,
                     ),
                 ],
@@ -630,9 +632,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
   // ─── Types Tab ────────────────────────────────────────
   Widget _buildTypesTab() {
     if (_propertyTypes.isEmpty) {
-      return const Center(
+      return Center(
         child: Text('No type data available',
-            style: TextStyle(color: Color(0xFF64748B))),
+            style: TextStyle(color: context.appColors.textMuted)),
       );
     }
 
@@ -655,12 +657,12 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
       itemCount: _propertyTypes.length + 1,
       itemBuilder: (ctx, i) {
         if (i == 0) {
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Text(
               'Property Type Distribution',
               style: TextStyle(
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -677,9 +679,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
+            color: context.appColors.cardBg,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF1E293B)),
+            border: Border.all(color: context.appColors.border),
           ),
           child: Row(
             children: [
@@ -708,8 +710,8 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                   children: [
                     Text(
                       _resolveTypeName(type['type']),
-                      style: const TextStyle(
-                        color: Color(0xFFE2E8F0),
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -719,14 +721,14 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                       children: [
                         Text(
                           '$count units',
-                          style: const TextStyle(
-                              color: Color(0xFF64748B), fontSize: 11),
+                          style: TextStyle(
+                              color: context.appColors.textMuted, fontSize: 11),
                         ),
                         const SizedBox(width: 12),
                         Text(
                           'Avg ${_formatNumber((type['avg_area'] as num?)?.toDouble() ?? 0)} m²',
-                          style: const TextStyle(
-                              color: Color(0xFF64748B), fontSize: 11),
+                          style: TextStyle(
+                              color: context.appColors.textMuted, fontSize: 11),
                         ),
                       ],
                     ),
@@ -745,9 +747,9 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Text('EGP/m²',
+                  Text('EGP/m²',
                       style:
-                          TextStyle(color: Color(0xFF64748B), fontSize: 10)),
+                          TextStyle(color: context.appColors.textMuted, fontSize: 10)),
                 ],
               ),
             ],
@@ -788,7 +790,7 @@ class _MarketAnalyticsScreenState extends State<MarketAnalyticsScreen>
       case 'c':
         return const Color(0xFF22C55E);
       default:
-        return const Color(0xFF94A3B8);
+        return context.appColors.textMuted;
     }
   }
 }

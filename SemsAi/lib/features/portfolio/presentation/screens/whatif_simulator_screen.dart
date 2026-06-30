@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class WhatIfSimulatorScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -72,7 +74,7 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -81,18 +83,18 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  const Text(
+                  Text(
                     'What if you buy a new unit?',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Adjust parameters to simulate the impact on your portfolio',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                   ),
                   const SizedBox(height: 24),
 
@@ -138,17 +140,17 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F172A),
+                      color: context.appColors.cardBg,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFF1E293B)),
+                      border: Border.all(color: context.appColors.border),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Strategy',
                           style: TextStyle(
-                            color: Color(0xFF94A3B8),
+                            color: context.appColors.textMuted,
                             fontSize: 13,
                           ),
                         ),
@@ -168,12 +170,12 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                                   decoration: BoxDecoration(
                                     color: selected
                                         ? AppColors.gold.withValues(alpha: 0.15)
-                                        : const Color(0xFF1E293B),
+                                        : context.appColors.border,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       color: selected
                                           ? AppColors.gold
-                                          : const Color(0xFF334155),
+                                          : context.appColors.border,
                                     ),
                                   ),
                                   alignment: Alignment.center,
@@ -182,7 +184,7 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                                     style: TextStyle(
                                       color: selected
                                           ? AppColors.gold
-                                          : const Color(0xFF94A3B8),
+                                          : context.appColors.textMuted,
                                       fontSize: 13,
                                       fontWeight: selected
                                           ? FontWeight.w600
@@ -200,10 +202,10 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                   const SizedBox(height: 24),
 
                   // Results
-                  const Text(
+                  Text(
                     'Simulation Results',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -214,7 +216,7 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F172A),
+                      color: context.appColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: riskColor.withValues(alpha: 0.3),
@@ -294,9 +296,9 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,8 +308,8 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFF94A3B8),
+                style: TextStyle(
+                  color: context.appColors.textMuted,
                   fontSize: 13,
                 ),
               ),
@@ -316,8 +318,8 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                 children: [
                   Text(
                     displayValue,
-                    style: const TextStyle(
-                      color: Color(0xFFE2E8F0),
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -325,8 +327,8 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
                   if (subtitle != null)
                     Text(
                       subtitle,
-                      style: const TextStyle(
-                        color: Color(0xFF64748B),
+                      style: TextStyle(
+                        color: context.appColors.textMuted,
                         fontSize: 11,
                       ),
                     ),
@@ -338,7 +340,7 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: AppColors.gold,
-              inactiveTrackColor: const Color(0xFF1E293B),
+              inactiveTrackColor: context.appColors.border,
               thumbColor: AppColors.gold,
               overlayColor: AppColors.gold.withValues(alpha: 0.15),
               trackHeight: 4,
@@ -365,12 +367,12 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
         children: [
           Text(
             label,
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
           ),
           Text(
             value,
             style: TextStyle(
-              color: valueColor ?? const Color(0xFFE2E8F0),
+              color: valueColor ?? context.appColors.textPrimary,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -383,10 +385,10 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -398,11 +400,11 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(Icons.arrow_back_ios_new,
+                  color: context.appColors.textPrimary, size: 16),
             ),
           ),
           const SizedBox(width: 14),
@@ -410,16 +412,16 @@ class _WhatIfSimulatorScreenState extends State<WhatIfSimulatorScreen> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF94A3B8).withValues(alpha: 0.12),
+              color: context.appColors.textMuted.withValues(alpha: 0.12),
             ),
-            child: const Icon(Icons.tune_rounded,
-                color: Color(0xFF94A3B8), size: 20),
+            child: Icon(Icons.tune_rounded,
+                color: context.appColors.textMuted, size: 20),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'What-If Simulator',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),

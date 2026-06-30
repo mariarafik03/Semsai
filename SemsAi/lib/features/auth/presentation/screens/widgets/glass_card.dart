@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Glassmorphism Card for auth screens.
 class GlassCard extends StatefulWidget {
@@ -58,7 +60,7 @@ class _GlassCardState extends State<GlassCard>
             margin: EdgeInsets.all(2.5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.5),
-              color: AppColors.cardBg.withValues(alpha: 0.85),
+              color: context.appColors.cardBg.withValues(alpha: 0.85),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(22.5),

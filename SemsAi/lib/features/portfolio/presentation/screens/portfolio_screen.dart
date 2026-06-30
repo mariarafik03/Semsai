@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/networking/api_client.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/portfolio_summary_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class PortfolioScreen extends StatefulWidget {
   const PortfolioScreen({super.key});
@@ -119,7 +121,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeCtrl,
@@ -286,10 +288,10 @@ class _PortfolioScreenState extends State<PortfolioScreen>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -301,12 +303,12 @@ class _PortfolioScreenState extends State<PortfolioScreen>
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 size: 16,
               ),
             ),
@@ -328,21 +330,21 @@ class _PortfolioScreenState extends State<PortfolioScreen>
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Portfolio Analysis',
                   style: TextStyle(
-                    color: Color(0xFFE2E8F0),
+                    color: context.appColors.textPrimary,
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   'Enter your financial details',
-                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                  style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
                 ),
               ],
             ),
@@ -362,9 +364,9 @@ class _PortfolioScreenState extends State<PortfolioScreen>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,16 +388,16 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      color: Color(0xFFE2E8F0),
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(
-                      color: Color(0xFF64748B),
+                    style: TextStyle(
+                      color: context.appColors.textMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -428,12 +430,12 @@ class _PortfolioScreenState extends State<PortfolioScreen>
         if (n < 0) return 'Must be >= 0';
         return null;
       },
-      style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 14),
+      style: TextStyle(color: context.appColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
+        labelStyle: TextStyle(color: context.appColors.textMuted, fontSize: 13),
         prefixIcon: icon != null
-            ? Icon(icon, color: const Color(0xFF475569), size: 20)
+            ? Icon(icon, color: context.appColors.border, size: 20)
             : null,
         suffixText: prefix,
         suffixStyle: TextStyle(
@@ -442,18 +444,18 @@ class _PortfolioScreenState extends State<PortfolioScreen>
           fontWeight: FontWeight.w600,
         ),
         filled: true,
-        fillColor: const Color(0xFF020617),
+        fillColor: context.appColors.bg,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -482,35 +484,35 @@ class _PortfolioScreenState extends State<PortfolioScreen>
           value: item,
           child: Text(
             item[0].toUpperCase() + item.substring(1),
-            style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 14),
+            style: TextStyle(color: context.appColors.textPrimary, fontSize: 14),
           ),
         );
       }).toList(),
       onChanged: (v) {
         if (v != null) onChanged(v);
       },
-      dropdownColor: const Color(0xFF1E293B),
+      dropdownColor: context.appColors.border,
       icon: Icon(
         Icons.keyboard_arrow_down_rounded,
-        color: const Color(0xFF64748B),
+        color: context.appColors.textMuted,
       ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
-        prefixIcon: Icon(icon, color: const Color(0xFF475569), size: 20),
+        labelStyle: TextStyle(color: context.appColors.textMuted, fontSize: 13),
+        prefixIcon: Icon(icon, color: context.appColors.border, size: 20),
         filled: true,
-        fillColor: const Color(0xFF020617),
+        fillColor: context.appColors.bg,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -530,15 +532,15 @@ class _PortfolioScreenState extends State<PortfolioScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF020617),
+        color: context.appColors.bg,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.credit_card_rounded,
-            color: Color(0xFF475569),
+            color: context.appColors.border,
             size: 20,
           ),
           const SizedBox(width: 12),
@@ -548,15 +550,15 @@ class _PortfolioScreenState extends State<PortfolioScreen>
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: Color(0xFFE2E8F0),
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 14,
                   ),
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF64748B),
+                  style: TextStyle(
+                    color: context.appColors.textMuted,
                     fontSize: 11,
                   ),
                 ),
@@ -568,8 +570,8 @@ class _PortfolioScreenState extends State<PortfolioScreen>
             onChanged: onChanged,
             activeColor: AppColors.gold,
             activeTrackColor: AppColors.gold.withValues(alpha: 0.3),
-            inactiveThumbColor: const Color(0xFF475569),
-            inactiveTrackColor: const Color(0xFF1E293B),
+            inactiveThumbColor: context.appColors.border,
+            inactiveTrackColor: context.appColors.border,
           ),
         ],
       ),
@@ -650,19 +652,19 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                     color: Colors.white,
                   ),
                 )
-              : const Row(
+              : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       Icons.analytics_rounded,
-                      color: Color(0xFF020617),
+                      color: context.appColors.bg,
                       size: 20,
                     ),
                     SizedBox(width: 8),
                     Text(
                       'Analyze Portfolio',
                       style: TextStyle(
-                        color: Color(0xFF020617),
+                        color: context.appColors.bg,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
@@ -719,8 +721,8 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
   InputDecoration _inputDeco(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 12),
-      prefixIcon: Icon(icon, color: const Color(0xFF475569), size: 18),
+      labelStyle: TextStyle(color: context.appColors.textMuted, fontSize: 12),
+      prefixIcon: Icon(icon, color: context.appColors.border, size: 18),
       suffixText: 'EGP',
       suffixStyle: TextStyle(
         color: AppColors.gold.withValues(alpha: 0.6),
@@ -728,15 +730,15 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
         fontWeight: FontWeight.w600,
       ),
       filled: true,
-      fillColor: const Color(0xFF020617),
+      fillColor: context.appColors.bg,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFF334155)),
+        borderSide: BorderSide(color: context.appColors.border),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFF334155)),
+        borderSide: BorderSide(color: context.appColors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -754,9 +756,9 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF020617).withValues(alpha: 0.5),
+        color: context.appColors.bg.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,8 +786,8 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
               const SizedBox(width: 10),
               Text(
                 'Unit ${widget.index}',
-                style: const TextStyle(
-                  color: Color(0xFFE2E8F0),
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -820,7 +822,7 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
               if (double.tryParse(v!.trim()) == null) return 'Invalid';
               return null;
             },
-            style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 13),
+            style: TextStyle(color: context.appColors.textPrimary, fontSize: 13),
             decoration: _inputDeco(
               'Monthly Installment',
               Icons.calendar_month_rounded,
@@ -836,7 +838,7 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
               if (double.tryParse(v!.trim()) == null) return 'Invalid';
               return null;
             },
-            style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 13),
+            style: TextStyle(color: context.appColors.textPrimary, fontSize: 13),
             decoration: _inputDeco(
               'Remaining Balance',
               Icons.account_balance_rounded,
@@ -852,7 +854,7 @@ class _UnitCardWidgetState extends State<_UnitCardWidget> {
               if (double.tryParse(v!.trim()) == null) return 'Invalid';
               return null;
             },
-            style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 13),
+            style: TextStyle(color: context.appColors.textPrimary, fontSize: 13),
             decoration: _inputDeco('Market Value', Icons.trending_up_rounded),
           ),
         ],

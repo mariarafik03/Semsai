@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class UnitImageGallery extends StatefulWidget {
   const UnitImageGallery({super.key, required this.images});
@@ -79,15 +81,15 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.bg.withValues(alpha: 0.7),
+                  color: context.appColors.bg.withValues(alpha: 0.7),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.border.withValues(alpha: 0.5),
+                    color: context.appColors.border.withValues(alpha: 0.5),
                   ),
                 ),
                 child: Icon(
                   Icons.arrow_back_rounded,
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                   size: 20,
                 ),
               ),
@@ -124,7 +126,7 @@ class _UnitImageGalleryState extends State<UnitImageGallery> {
 
   Widget _placeholder() {
     return Container(
-      color: AppColors.cardBg,
+      color: context.appColors.cardBg,
       child: Center(
         child: Icon(
           Icons.apartment_rounded,

@@ -16,6 +16,8 @@ import 'package:SemsAi/features/explore/presentation/screens/widgets/properties_
 import 'package:SemsAi/features/explore/presentation/screens/widgets/explore_loading.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/explore_error.dart';
 import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -241,7 +243,7 @@ class ExploreScreenState extends State<ExploreScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -318,7 +320,7 @@ class ExploreScreenState extends State<ExploreScreen> {
         options: MapOptions(
           initialCenter: _cairoCenter,
           initialZoom: 10,
-          backgroundColor: AppColors.bg,
+          backgroundColor: context.appColors.bg,
           onTap: (_, __) => setState(() => _selectedCompound = null),
         ),
         children: [
@@ -348,7 +350,7 @@ class ExploreScreenState extends State<ExploreScreen> {
               TextSourceAttribution(
                 ApiConstants.mapAttribution,
                 textStyle: TextStyle(
-                  color: AppColors.textMuted.withValues(alpha: 0.4),
+                  color: context.appColors.textMuted.withValues(alpha: 0.4),
                   fontSize: 9,
                 ),
               ),

@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class InflationCalculatorScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -86,7 +88,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: FadeTransition(
           opacity: _animCtrl,
@@ -97,18 +99,18 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
-                    const Text(
+                    Text(
                       'Inflation Calculator',
                       style: TextStyle(
-                        color: Color(0xFFE2E8F0),
+                        color: context.appColors.textPrimary,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Estimate future property value based on inflation',
-                      style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                      style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                     ),
                     const SizedBox(height: 24),
 
@@ -127,7 +129,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                         max: 15,
                         divisions: 14,
                         activeColor: AppColors.gold,
-                        inactiveColor: const Color(0xFF1E293B),
+                        inactiveColor: context.appColors.border,
                         onChanged: (v) => setState(() => _years = v),
                       ),
                       sublabel: '1 — 15 years',
@@ -145,7 +147,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                         max: 40,
                         divisions: 70,
                         activeColor: const Color(0xFFF97316),
-                        inactiveColor: const Color(0xFF1E293B),
+                        inactiveColor: context.appColors.border,
                         onChanged: (v) => setState(() => _inflationRate = v),
                       ),
                       sublabel: '5% — 40%',
@@ -177,10 +179,10 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -192,11 +194,11 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(Icons.arrow_back_ios_new,
+                  color: context.appColors.textPrimary, size: 16),
             ),
           ),
           const SizedBox(width: 14),
@@ -215,10 +217,10 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                 color: Color(0xFF22C55E), size: 20),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Inflation Calculator',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),
@@ -233,9 +235,9 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,10 +253,10 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                 child: Icon(Icons.home_rounded, color: AppColors.gold, size: 18),
               ),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'Property Value',
                 style: TextStyle(
-                  color: Color(0xFF94A3B8),
+                  color: context.appColors.textMuted,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -265,9 +267,9 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFF020617),
+              color: context.appColors.bg,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFF334155)),
+              border: Border.all(color: context.appColors.border),
             ),
             child: Row(
               children: [
@@ -276,15 +278,15 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                     controller: _priceController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    style: const TextStyle(
-                      color: Color(0xFFE2E8F0),
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Enter price',
-                      hintStyle: TextStyle(color: Color(0xFF475569)),
+                      hintStyle: TextStyle(color: context.appColors.border),
                     ),
                     onChanged: (v) {
                       setState(() {
@@ -293,10 +295,10 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                     },
                   ),
                 ),
-                const Text(
+                Text(
                   'EGP',
                   style: TextStyle(
-                    color: Color(0xFF94A3B8),
+                    color: context.appColors.textMuted,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -330,20 +332,20 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              Icon(icon, color: const Color(0xFF94A3B8), size: 18),
+              Icon(icon, color: context.appColors.textMuted, size: 18),
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Color(0xFF94A3B8),
+                style: TextStyle(
+                  color: context.appColors.textMuted,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -371,7 +373,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           slider,
           Text(
             sublabel,
-            style: const TextStyle(color: Color(0xFF475569), fontSize: 11),
+            style: TextStyle(color: context.appColors.border, fontSize: 11),
           ),
         ],
       ),
@@ -384,14 +386,14 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF1E293B)),
+          border: Border.all(color: context.appColors.border),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
             'Enter a property value to see projections',
-            style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
           ),
         ),
       );
@@ -400,7 +402,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: const Color(0xFF22C55E).withValues(alpha: 0.3),
@@ -421,10 +423,10 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                     color: Color(0xFF22C55E), size: 20),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 'Projected Value',
                 style: TextStyle(
-                  color: Color(0xFF94A3B8),
+                  color: context.appColors.textMuted,
                   fontSize: 13,
                 ),
               ),
@@ -435,8 +437,8 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           // Future Value
           Text(
             '${_formatFullNumber(_futureValue)} EGP',
-            style: const TextStyle(
-              color: Color(0xFFE2E8F0),
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -444,7 +446,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           const SizedBox(height: 4),
           Text(
             'After ${_years.round()} year${_years.round() > 1 ? "s" : ""} at ${_inflationRate.toStringAsFixed(1)}% inflation',
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
           ),
           const SizedBox(height: 20),
 
@@ -496,7 +498,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
         children: [
           Text(
             label,
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 10),
           ),
           const SizedBox(height: 4),
           Text(
@@ -523,22 +525,22 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.bar_chart_rounded,
-                  color: Color(0xFF94A3B8), size: 18),
+                  color: context.appColors.textMuted, size: 18),
               SizedBox(width: 8),
               Text(
                 'Year-by-Year Projection',
                 style: TextStyle(
-                  color: Color(0xFFE2E8F0),
+                  color: context.appColors.textPrimary,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -552,7 +554,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
             label: 'Today',
             value: _propertyPrice,
             maxVal: maxVal,
-            color: const Color(0xFF475569),
+            color: context.appColors.border,
             isFirst: true,
           ),
           const SizedBox(height: 6),
@@ -596,7 +598,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           child: Text(
             label,
             style: TextStyle(
-              color: isFirst ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              color: isFirst ? context.appColors.textMuted : context.appColors.textMuted,
               fontSize: 11,
               fontWeight: isFirst ? FontWeight.w600 : FontWeight.normal,
             ),
@@ -612,7 +614,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
                     height: 22,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: const Color(0xFF1E293B),
+                      color: context.appColors.border,
                     ),
                   ),
                   AnimatedContainer(
@@ -641,7 +643,7 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           child: Text(
             _formatNumber(value),
             style: TextStyle(
-              color: isFirst ? const Color(0xFF94A3B8) : const Color(0xFFE2E8F0),
+              color: isFirst ? context.appColors.textMuted : context.appColors.textPrimary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
@@ -672,15 +674,15 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           children: [
             Icon(Icons.lightbulb_outline_rounded,
-                color: Color(0xFFE2E8F0), size: 18),
+                color: context.appColors.textPrimary, size: 18),
             SizedBox(width: 8),
             Text(
               'Key Insights',
               style: TextStyle(
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -732,9 +734,9 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -765,8 +767,8 @@ class _InflationCalculatorScreenState extends State<InflationCalculatorScreen>
           const SizedBox(height: 8),
           Text(
             description,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: context.appColors.textMuted,
               fontSize: 13,
               height: 1.5,
             ),

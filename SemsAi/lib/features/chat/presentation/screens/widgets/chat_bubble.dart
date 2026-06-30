@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ChatBubble extends StatefulWidget {
   final String text;
@@ -74,7 +76,7 @@ class _ChatBubbleState extends State<ChatBubble>
                       ],
                     )
                   : null,
-              color: widget.isUser ? null : AppColors.cardBg,
+              color: widget.isUser ? null : context.appColors.cardBg,
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(18),
                 topRight: const Radius.circular(18),
@@ -83,7 +85,7 @@ class _ChatBubbleState extends State<ChatBubble>
               ),
               border: widget.isUser
                   ? null
-                  : Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+                  : Border.all(color: context.appColors.border.withValues(alpha: 0.5)),
               boxShadow: [
                 BoxShadow(
                   color: (widget.isUser ? AppColors.gold : Colors.black)
@@ -96,7 +98,7 @@ class _ChatBubbleState extends State<ChatBubble>
             child: Text(
               widget.text,
               style: TextStyle(
-                color: widget.isUser ? Colors.white : AppColors.textPrimary,
+                color: widget.isUser ? Colors.white : context.appColors.textPrimary,
                 fontSize: 15,
                 height: 1.4,
               ),

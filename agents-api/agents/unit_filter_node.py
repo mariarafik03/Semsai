@@ -3,11 +3,9 @@ agents/interactive_unit_filter.py  (HTTP-safe refactor)
 ────────────────────────────────────────────────────────
 Dynamically asks the user preference questions about available units,
 then re-ranks them using the answers.
-
 waiting_for values used
 ───────────────────────
 "unit_filter_q_{n}"   → question n sent to user, waiting for answer (n = 1-based)
-
 State scratch-pad keys (prefixed with _ so they don't pollute domain state)
 ─────────────────────────────────────────────────────────────────────────────
 _uf_questions      : list[dict]   — generated UnitQuestion objects (serialised)
@@ -127,18 +125,13 @@ def _generate_questions(
     prompt = f"""
 You are a real estate advisor helping a user choose between a small set of investment units
 inside a single compound they have already selected.
-
 {budget_note}
-
 Here are the available units:
 {json.dumps(summary, indent=2)}
-
 IMPORTANT — These are the ONLY real values that exist in the data for each field.
 Do NOT invent options that are not listed here:
 {json.dumps(distinct, indent=2)}
-
 Your job: generate 2-4 concise questions that would best help differentiate these specific units.
-
 Rules:
 - Only ask about attributes that genuinely vary across the units (use the distinct values above).
 - NEVER offer an option that does not exist in the data.
@@ -146,7 +139,6 @@ Rules:
   is within the user's budget (use the within_budget field from the unit data above).
 - Always include "No preference" as a final option.
 - If only one field varies, ask only one question.
-
 Respond ONLY with valid JSON matching this exact structure, no extra text:
 {{
   "questions": [
@@ -181,15 +173,11 @@ def _rank_units(
 
     prompt = f"""
 You are a real estate investment advisor.
-
 {budget_note}
-
 The user has answered the following preference questions:
 {json.dumps(user_answers, indent=2)}
-
 Here are the available units to rank:
 {json.dumps(summary, indent=2)}
-
 Instructions:
 - Rank units from best to worst fit based on the user's answers.
 - If the user expressed a preference but NO unit matches it exactly,
@@ -199,7 +187,6 @@ Instructions:
 - Always keep at least 1 unit.
 - State whether the recommended unit is within budget, what finishing it has,
   and why it was ranked first.
-
 Respond ONLY with valid JSON, no extra text:
 {{
   "ranked_ids": ["unit_id_1", "unit_id_2"],
@@ -266,6 +253,7 @@ def _apply_ranking(state: AgentState, answers: dict) -> AgentState:
     print(f"   {len(ranked_units)} units ranked.")
 
     state["candidate_units"] = ranked_units
+    state["unit_filter_done"] = True   # signal to router: filter is complete
     _flush_scratch(state)
     return state
 
@@ -277,7 +265,6 @@ def _apply_ranking(state: AgentState, answers: dict) -> AgentState:
 def interactive_unit_filter(state: AgentState) -> AgentState:
     """
     HTTP-safe, re-entrant unit filter.
-
     Turn 1 : generate questions, send question #1, set waiting_for
     Turn 2+ : record answer, send next question  — OR — run ranking and finish
     """
@@ -287,6 +274,7 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     # Nothing to filter
     if len(units) <= 1:
         _flush_scratch(state)
+        state["unit_filter_done"] = True
         return state
 
     waiting    = (state.get("waiting_for") or "").strip()
@@ -346,6 +334,7 @@ def interactive_unit_filter(state: AgentState) -> AgentState:
     if unit_questions is None or not unit_questions.questions:
         print("   Proceeding with all candidate units (no questions generated).")
         _flush_scratch(state)
+        state["unit_filter_done"] = True
         return state
 
     # Serialise questions into state for future turns

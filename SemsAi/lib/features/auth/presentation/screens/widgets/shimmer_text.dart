@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Animated shimmer text effect for branding.
 class ShimmerText extends StatefulWidget {
@@ -49,9 +51,9 @@ class _ShimmerTextState extends State<ShimmerText>
             return LinearGradient(
               begin: Alignment(-1.0 + 3.0 * _ctrl.value, 0),
               end: Alignment(0.0 + 3.0 * _ctrl.value, 0),
-              colors: const [
+              colors: [
                 AppColors.gold,
-                AppColors.goldLighter,
+                context.appColors.goldLighter,
                 AppColors.gold,
               ],
             ).createShader(bounds);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Animated gradient button with glow effect.
 class GradientButton extends StatefulWidget {
@@ -47,7 +49,7 @@ class _GradientButtonState extends State<GradientButton>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             gradient: LinearGradient(
-              colors: [AppColors.gold, AppColors.goldLight],
+              colors: [AppColors.gold, context.appColors.goldLight],
             ),
             boxShadow: [
               BoxShadow(
@@ -70,13 +72,13 @@ class _GradientButtonState extends State<GradientButton>
                         height: 22,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          color: AppColors.bg,
+                          color: context.appColors.bg,
                         ),
                       )
                     : Text(
                         widget.text,
                         style: TextStyle(
-                          color: AppColors.bg,
+                          color: context.appColors.bg,
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                           letterSpacing: 0.5,

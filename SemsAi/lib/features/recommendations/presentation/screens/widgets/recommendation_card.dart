@@ -4,6 +4,8 @@ import 'package:SemsAi/core/widgets/app_cached_image.dart';
 import 'package:SemsAi/features/recommendations/presentation/screens/compound_detail_screen.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class RecommendationCard extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -101,12 +103,12 @@ class _RecommendationCardState extends State<RecommendationCard>
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: widget.rank == 1
               ? AppColors.gold.withValues(alpha: 0.4)
-              : AppColors.border,
+              : context.appColors.border,
         ),
         boxShadow: [
           if (widget.rank == 1)
@@ -149,7 +151,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          AppColors.cardBg.withValues(alpha: 0.8),
+                          context.appColors.cardBg.withValues(alpha: 0.8),
                         ],
                       ),
                     ),
@@ -165,7 +167,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.bg.withValues(alpha: 0.85),
+                      color: context.appColors.bg.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: AppColors.gold.withValues(alpha: 0.3),
@@ -217,7 +219,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.bg,
+                      color: context.appColors.bg,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: AppColors.gold.withValues(alpha: 0.3),
@@ -263,8 +265,8 @@ class _RecommendationCardState extends State<RecommendationCard>
                 // Name
                 Text(
                   name,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
@@ -282,7 +284,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                       Text(
                         location,
                         style: TextStyle(
-                          color: AppColors.textMuted,
+                          color: context.appColors.textMuted,
                           fontSize: 13,
                         ),
                       ),
@@ -340,8 +342,8 @@ class _RecommendationCardState extends State<RecommendationCard>
                               Expanded(
                                 child: Text(
                                   r.toString(),
-                                  style: const TextStyle(
-                                    color: AppColors.textMuted,
+                                  style: TextStyle(
+                                    color: context.appColors.textMuted,
                                     fontSize: 13,
                                     height: 1.3,
                                   ),
@@ -364,7 +366,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                     decoration: BoxDecoration(
                       color: const Color(0xFF1A2332),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.appColors.border),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -402,7 +404,7 @@ class _RecommendationCardState extends State<RecommendationCard>
                       Text(
                         'Available Units',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: context.appColors.textPrimary,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
@@ -458,9 +460,9 @@ class _RecommendationCardState extends State<RecommendationCard>
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.bg.withValues(alpha: 0.6),
+        color: context.appColors.bg.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+        border: Border.all(color: context.appColors.border.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -488,8 +490,8 @@ class _RecommendationCardState extends State<RecommendationCard>
               children: [
                 Text(
                   price != null ? _formatPrice(price) : 'Price N/A',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -525,11 +527,11 @@ class _RecommendationCardState extends State<RecommendationCard>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 11, color: AppColors.textMuted),
+        Icon(icon, size: 11, color: context.appColors.textMuted),
         const SizedBox(width: 3),
         Text(
           text,
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+          style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
         ),
       ],
     );

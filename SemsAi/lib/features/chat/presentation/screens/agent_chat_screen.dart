@@ -8,6 +8,8 @@ import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/chat/presentation/screens/widgets/chat_bubble.dart';
 import 'package:SemsAi/features/chat/presentation/screens/widgets/typing_dots.dart';
 import 'package:SemsAi/features/recommendations/presentation/screens/recommendations_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class AgentChatScreen extends StatefulWidget {
   const AgentChatScreen({super.key});
@@ -60,7 +62,7 @@ class _AgentChatScreenState extends State<AgentChatScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -119,7 +121,7 @@ class _AgentChatScreenState extends State<AgentChatScreen>
                           Text(
                             'Connection error',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: context.appColors.textPrimary,
                               fontSize: 16,
                             ),
                           ),
@@ -154,9 +156,9 @@ class _AgentChatScreenState extends State<AgentChatScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        border: const Border(
-          bottom: BorderSide(color: AppColors.border, width: 0.5),
+        color: context.appColors.cardBg,
+        border: Border(
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -184,7 +186,7 @@ class _AgentChatScreenState extends State<AgentChatScreen>
                 Text(
                   AppStrings.aiAssistant,
                   style: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: context.appColors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -208,7 +210,7 @@ class _AgentChatScreenState extends State<AgentChatScreen>
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: AppColors.textMuted),
+            icon: Icon(Icons.refresh_rounded, color: context.appColors.textMuted),
             onPressed: () => context.read<ChatCubit>().resetChat(),
             tooltip: 'New conversation',
           ),
@@ -282,14 +284,14 @@ class _AgentChatScreenState extends State<AgentChatScreen>
         margin: const EdgeInsets.only(top: 8, bottom: 8, right: 80),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18),
             topRight: Radius.circular(18),
             bottomRight: Radius.circular(18),
             bottomLeft: Radius.circular(4),
           ),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.5)),
         ),
         child: const TypingDots(),
       ),
@@ -302,31 +304,31 @@ class _AgentChatScreenState extends State<AgentChatScreen>
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
+        color: context.appColors.cardBg,
+        border: Border(top: BorderSide(color: context.appColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.bg,
+                color: context.appColors.bg,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: AppColors.border.withValues(alpha: 0.5),
+                  color: context.appColors.border.withValues(alpha: 0.5),
                 ),
               ),
               child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontSize: 15,
                 ),
                 decoration: InputDecoration(
                   hintText: AppStrings.typeMessage,
                   hintStyle: TextStyle(
-                    color: AppColors.textMuted.withValues(alpha: 0.6),
+                    color: context.appColors.textMuted.withValues(alpha: 0.6),
                     fontSize: 15,
                   ),
                   border: InputBorder.none,

@@ -6,6 +6,8 @@ import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/favorite/presentation/cubit/favorite_cubit.dart';
 import 'package:SemsAi/features/favorite/presentation/cubit/favorite_state.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 // ── Title Row ──────────────────────────────────────────────────
 
@@ -25,8 +27,8 @@ class UnitTitleRow extends StatelessWidget {
             children: [
               Text(
                 unit.compoundName ?? unit.name,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
                 ),
@@ -35,17 +37,17 @@ class UnitTitleRow extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on_outlined,
-                      color: AppColors.textMuted,
+                      color: context.appColors.textMuted,
                       size: 15,
                     ),
                     const SizedBox(width: 3),
                     Flexible(
                       child: Text(
                         unit.location!,
-                        style: const TextStyle(
-                          color: AppColors.textMuted,
+                        style: TextStyle(
+                          color: context.appColors.textMuted,
                           fontSize: 14,
                         ),
                         maxLines: 1,
@@ -74,15 +76,15 @@ class UnitTitleRow extends StatelessWidget {
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: AppColors.cardBg,
+                      color: context.appColors.cardBg,
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.appColors.border),
                     ),
                     child: Icon(
                       isFav
                           ? Icons.favorite_rounded
                           : Icons.favorite_border_rounded,
-                      color: isFav ? Colors.redAccent : AppColors.textMuted,
+                      color: isFav ? Colors.redAccent : context.appColors.textMuted,
                       size: 18,
                     ),
                   ),
@@ -90,23 +92,23 @@ class UnitTitleRow extends StatelessWidget {
               },
             ),
             const SizedBox(width: 8),
-            _actionIcon(Icons.ios_share_rounded),
+            _actionIcon(context, Icons.ios_share_rounded),
           ],
         ),
       ],
     );
   }
 
-  Widget _actionIcon(IconData icon) {
+  Widget _actionIcon(BuildContext context, IconData icon) {
     return Container(
       width: 38,
       height: 38,
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
-      child: Icon(icon, color: AppColors.textMuted, size: 18),
+      child: Icon(icon, color: context.appColors.textMuted, size: 18),
     );
   }
 }
@@ -139,7 +141,7 @@ class UnitPriceSection extends StatelessWidget {
           Text(
             rangeText!,
             style: TextStyle(
-              color: AppColors.textMuted.withValues(alpha: 0.8),
+              color: context.appColors.textMuted.withValues(alpha: 0.8),
               fontSize: 13,
             ),
           ),
@@ -170,27 +172,27 @@ class UnitSpecsRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Row(
         children: [
           if (unit.bedrooms != null)
-            _item(Icons.bed_rounded, '${unit.bedrooms}', AppStrings.beds),
+            _item(context, Icons.bed_rounded, '${unit.bedrooms}', AppStrings.beds),
           if (unit.bathrooms != null)
-            _item(
+            _item(context,
               Icons.bathtub_outlined,
               '${unit.bathrooms}',
               AppStrings.baths,
             ),
           if (unit.displayArea != null)
-            _item(
+            _item(context,
               Icons.square_foot_rounded,
               '${unit.displayArea!.toInt()}m²',
               AppStrings.area,
             ),
-          _item(
+          _item(context,
             Icons.home_work_rounded,
             unit.type.isNotEmpty ? _capitalize(unit.type) : '—',
             AppStrings.type,
@@ -200,16 +202,16 @@ class UnitSpecsRow extends StatelessWidget {
     );
   }
 
-  Widget _item(IconData icon, String value, String label) {
+  Widget _item(BuildContext context, IconData icon, String value, String label) {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: AppColors.textMuted, size: 20),
+          Icon(icon, color: context.appColors.textMuted, size: 20),
           const SizedBox(height: 6),
           Text(
             value,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontWeight: FontWeight.w700,
               fontSize: 15,
             ),
@@ -217,7 +219,7 @@ class UnitSpecsRow extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
           ),
         ],
       ),
@@ -256,9 +258,9 @@ class UnitInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Row(
         children: [
@@ -270,16 +272,16 @@ class UnitInfoCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
+                  style: TextStyle(
+                    color: context.appColors.textMuted,
                     fontSize: 12,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
@@ -308,22 +310,22 @@ class UnitExtraDetails extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Wrap(
         spacing: 24,
         runSpacing: 10,
         children: [
           if (finishing != null)
-            _item(
+            _item(context,
               Icons.format_paint_rounded,
               AppStrings.finishing,
               _capitalize(finishing!),
             ),
           if (saleType != null)
-            _item(
+            _item(context,
               Icons.sell_rounded,
               AppStrings.saleType,
               _capitalize(saleType!),
@@ -333,7 +335,7 @@ class UnitExtraDetails extends StatelessWidget {
     );
   }
 
-  Widget _item(IconData icon, String label, String value) {
+  Widget _item(BuildContext context, IconData icon, String label, String value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -344,12 +346,12 @@ class UnitExtraDetails extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(color: AppColors.textMuted, fontSize: 10),
+              style: TextStyle(color: context.appColors.textMuted, fontSize: 10),
             ),
             Text(
               value,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: context.appColors.textPrimary,
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
               ),

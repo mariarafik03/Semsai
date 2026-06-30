@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
 
 class MarketContextScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -50,7 +51,7 @@ class MarketContextScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -59,23 +60,27 @@ class MarketContextScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  const Text(
+                  Text(
                     'Market Context',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Current economic conditions affecting your portfolio',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(
+                      color: context.appColors.textMuted,
+                      fontSize: 13,
+                    ),
                   ),
                   const SizedBox(height: 24),
 
                   // Interest Rate Card
                   _buildRateCard(
+                    context,
                     icon: Icons.percent_rounded,
                     label: 'CBE Interest Rate',
                     value: '$interestRate%',
@@ -86,6 +91,7 @@ class MarketContextScreen extends StatelessWidget {
 
                   // Inflation Rate Card
                   _buildRateCard(
+                    context,
                     icon: Icons.trending_up_rounded,
                     label: 'Inflation Rate',
                     value: '$inflationRate%',
@@ -96,6 +102,7 @@ class MarketContextScreen extends StatelessWidget {
 
                   // Real Rate
                   _buildRateCard(
+                    context,
                     icon: Icons.calculate_outlined,
                     label: 'Real Interest Rate',
                     value: '${realRate.toStringAsFixed(2)}%',
@@ -108,7 +115,7 @@ class MarketContextScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F172A),
+                      color: context.appColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: stanceColor.withValues(alpha: 0.3),
@@ -125,14 +132,17 @@ class MarketContextScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                                 color: stanceColor.withValues(alpha: 0.12),
                               ),
-                              child:
-                                  Icon(stanceIcon, color: stanceColor, size: 20),
+                              child: Icon(
+                                stanceIcon,
+                                color: stanceColor,
+                                size: 20,
+                              ),
                             ),
                             const SizedBox(width: 12),
-                            const Text(
+                            Text(
                               'Current Stance',
                               style: TextStyle(
-                                color: Color(0xFF94A3B8),
+                                color: context.appColors.textMuted,
                                 fontSize: 13,
                               ),
                             ),
@@ -150,8 +160,8 @@ class MarketContextScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           stanceExplanation,
-                          style: const TextStyle(
-                            color: Color(0xFF94A3B8),
+                          style: TextStyle(
+                            color: context.appColors.textMuted,
                             fontSize: 13,
                             height: 1.5,
                           ),
@@ -162,10 +172,10 @@ class MarketContextScreen extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // Impact on your portfolio
-                  const Text(
+                  Text(
                     'Impact on Your Portfolio',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -173,6 +183,7 @@ class MarketContextScreen extends StatelessWidget {
                   const SizedBox(height: 12),
 
                   _buildImpactItem(
+                    context,
                     icon: Icons.payments_outlined,
                     title: 'Installment Costs',
                     description:
@@ -182,6 +193,7 @@ class MarketContextScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   _buildImpactItem(
+                    context,
                     icon: Icons.home_work_outlined,
                     title: 'Property Values',
                     description:
@@ -191,6 +203,7 @@ class MarketContextScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   _buildImpactItem(
+                    context,
                     icon: Icons.savings_outlined,
                     title: 'Cash Reserves',
                     description:
@@ -206,7 +219,8 @@ class MarketContextScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRateCard({
+  Widget _buildRateCard(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
@@ -216,9 +230,9 @@ class MarketContextScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Row(
         children: [
@@ -236,12 +250,20 @@ class MarketContextScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: const TextStyle(
-                        color: Color(0xFFE2E8F0), fontSize: 14)),
-                Text(sublabel,
-                    style: const TextStyle(
-                        color: Color(0xFF64748B), fontSize: 11)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  sublabel,
+                  style: TextStyle(
+                    color: context.appColors.textMuted,
+                    fontSize: 11,
+                  ),
+                ),
               ],
             ),
           ),
@@ -258,7 +280,8 @@ class MarketContextScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildImpactItem({
+  Widget _buildImpactItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String description,
@@ -267,9 +290,9 @@ class MarketContextScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,8 +314,8 @@ class MarketContextScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             description,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: context.appColors.textMuted,
               fontSize: 13,
               height: 1.4,
             ),
@@ -305,10 +328,10 @@ class MarketContextScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -320,11 +343,14 @@ class MarketContextScreen extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(
+                Icons.arrow_back_ios_new,
+                color: context.appColors.textPrimary,
+                size: 16,
+              ),
             ),
           ),
           const SizedBox(width: 14),
@@ -332,16 +358,19 @@ class MarketContextScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF94A3B8).withValues(alpha: 0.12),
+              color: context.appColors.textMuted.withValues(alpha: 0.12),
             ),
-            child: const Icon(Icons.bar_chart_rounded,
-                color: Color(0xFF94A3B8), size: 20),
+            child: Icon(
+              Icons.bar_chart_rounded,
+              color: context.appColors.textMuted,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Market Context',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Shared premium animated background for auth screens.
 class AuthBackground extends StatefulWidget {
@@ -16,7 +18,7 @@ class _AuthBackgroundState extends State<AuthBackground>
     with TickerProviderStateMixin {
   static const Color gold = AppColors.gold;
   static const Color accent = AppColors.accent;
-  static const Color bg = AppColors.bg;
+  Color get bg => context.appColors.bg;
 
   late AnimationController _orbController;
   late AnimationController _scanController;
@@ -53,7 +55,7 @@ class _AuthBackgroundState extends State<AuthBackground>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [AppColors.bg, AppColors.cardBg, AppColors.bg],
+                colors: [context.appColors.bg, context.appColors.cardBg, context.appColors.bg],
               ),
             ),
           ),
@@ -133,7 +135,7 @@ class _AuthBackgroundState extends State<AuthBackground>
             child: CustomPaint(
               size: Size(size.width, 180),
               painter: _SkylinePainter(
-                buildingColor: AppColors.buildingColor,
+                buildingColor: context.appColors.buildingColor,
                 windowColor: gold,
               ),
             ),

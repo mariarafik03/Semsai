@@ -7,6 +7,8 @@ import 'package:SemsAi/core/widgets/tap_scale.dart';
 import 'package:SemsAi/features/explore/data/models/compound_model.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/tag_overlay.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/mini_icon.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class PropertiesPanel extends StatelessWidget {
   const PropertiesPanel({
@@ -26,9 +28,9 @@ class PropertiesPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-        border: Border(top: BorderSide(color: AppColors.border)),
+        border: Border(top: BorderSide(color: context.appColors.border)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),
@@ -64,7 +66,7 @@ class PropertiesPanel extends StatelessWidget {
                   child: Text(
                     areaName,
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
@@ -75,12 +77,12 @@ class PropertiesPanel extends StatelessWidget {
                 SizedBox(width: 8),
                 Text(
                   '· ${compounds.length} Compounds',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                  style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                 ),
                 Spacer(),
                 Icon(
                   Icons.keyboard_arrow_up_rounded,
-                  color: AppColors.textMuted,
+                  color: context.appColors.textMuted,
                   size: 22,
                 ),
               ],
@@ -92,7 +94,7 @@ class PropertiesPanel extends StatelessWidget {
                     child: Text(
                       AppStrings.noProperties,
                       style: TextStyle(
-                        color: AppColors.textMuted,
+                        color: context.appColors.textMuted,
                         fontSize: 13,
                       ),
                     ),
@@ -137,9 +139,9 @@ class _PropertyCard extends StatelessWidget {
         width: 190,
         margin: EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: AppColors.bg,
+          color: context.appColors.bg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.6)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.15),
@@ -165,7 +167,7 @@ class _PropertyCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             memCacheWidth: 300,
                           )
-                        : _placeholder(),
+                        : _placeholder(context),
                   ),
                   Positioned(
                     bottom: 0,
@@ -203,7 +205,7 @@ class _PropertyCard extends StatelessWidget {
                         text: compound.developerName!.length > 14
                             ? compound.developerName!.substring(0, 14)
                             : compound.developerName!,
-                        color: AppColors.darkGray,
+                        color: context.appColors.darkGray,
                       ),
                     ),
                   Positioned(
@@ -229,7 +231,7 @@ class _PropertyCard extends StatelessWidget {
                   Text(
                     compound.name,
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: context.appColors.textPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
                     ),
@@ -256,7 +258,7 @@ class _PropertyCard extends StatelessWidget {
     );
   }
 
-  static String _fmtPrice(double p) {
+  String _fmtPrice(double p) {
     if (p >= 1000000) {
       return 'EGP ${(p / 1000000).toStringAsFixed(p % 1000000 == 0 ? 0 : 1)}M';
     }
@@ -264,9 +266,9 @@ class _PropertyCard extends StatelessWidget {
     return 'EGP ${p.toStringAsFixed(0)}';
   }
 
-  static Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
     return Container(
-      color: AppColors.bg,
+      color: context.appColors.bg,
       child: Center(
         child: Icon(
           Icons.apartment_rounded,

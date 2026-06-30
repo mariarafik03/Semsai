@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Shared cached image with shimmer placeholder and smooth fade-in.
 class AppCachedImage extends StatelessWidget {
@@ -23,7 +25,7 @@ class AppCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl == null || imageUrl!.isEmpty) return _placeholder();
+    if (imageUrl == null || imageUrl!.isEmpty) return _placeholder(context);
 
     final image = CachedNetworkImage(
       imageUrl: imageUrl ?? "No image for this unit",
@@ -34,7 +36,7 @@ class AppCachedImage extends StatelessWidget {
       fadeInDuration: Duration(milliseconds: 300),
       fadeOutDuration: Duration(milliseconds: 150),
       placeholder: (_, __) => _shimmerPlaceholder(),
-      errorWidget: (_, __, ___) => _placeholder(),
+      errorWidget: (_, __, ___) => _placeholder(context),
     );
 
     if (borderRadius != null) {
@@ -43,11 +45,11 @@ class AppCachedImage extends StatelessWidget {
     return image;
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
     return Container(
       width: width,
       height: height,
-      color: AppColors.buildingColor,
+      color: context.appColors.buildingColor,
       child: Center(
         child: Icon(
           Icons.apartment_rounded,
@@ -104,9 +106,9 @@ class _ShimmerRectState extends State<_ShimmerRect>
               begin: Alignment(-1.5 + 3.0 * _ctrl.value, 0),
               end: Alignment(-1.5 + 3.0 * _ctrl.value + 1.5, 0),
               colors: [
-                AppColors.buildingColor,
+                context.appColors.buildingColor,
                 Color(0xFF182030),
-                AppColors.buildingColor,
+                context.appColors.buildingColor,
               ],
             ),
           ),

@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class AiPromptBanner extends StatefulWidget {
   const AiPromptBanner({super.key, required this.onTap, this.onDismiss});
@@ -130,7 +132,7 @@ class _AiPromptBannerState extends State<AiPromptBanner>
                               Text(
                                 'Let our AI find the perfect property for you',
                                 style: TextStyle(
-                                  color: AppColors.textMuted,
+                                  color: context.appColors.textMuted,
                                   fontSize: 12,
                                   height: 1.3,
                                 ),
@@ -149,7 +151,7 @@ class _AiPromptBannerState extends State<AiPromptBanner>
                                 padding: EdgeInsets.all(4),
                                 child: Icon(
                                   Icons.close_rounded,
-                                  color: AppColors.textMuted.withValues(
+                                  color: context.appColors.textMuted.withValues(
                                     alpha: 0.5,
                                   ),
                                   size: 22,
@@ -193,7 +195,7 @@ class _AnimatedAiIcon extends StatelessWidget {
         height: 42,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppColors.gold, AppColors.goldLight],
+            colors: [AppColors.gold, context.appColors.goldLight],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -206,7 +208,7 @@ class _AnimatedAiIcon extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(Icons.smart_toy_rounded, color: AppColors.bg, size: 22),
+        child: Icon(Icons.smart_toy_rounded, color: context.appColors.bg, size: 22),
       ),
     );
   }

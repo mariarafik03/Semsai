@@ -5,6 +5,8 @@ import 'package:SemsAi/core/widgets/app_loading_indicator.dart';
 import 'package:SemsAi/core/widgets/app_error_widget.dart';
 import 'package:SemsAi/features/listings/data/models/developer_model.dart';
 import 'package:SemsAi/features/listings/data/repo/developer_service.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class DeveloperProfileScreen extends StatefulWidget {
   final String developerName;
@@ -65,7 +67,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: _loading
           ? const AppLoadingCenter()
           : _error != null
@@ -110,28 +112,28 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
     return SliverAppBar(
       pinned: true,
       expandedHeight: 0,
-      backgroundColor: AppColors.bg.withValues(alpha: 0.95),
+      backgroundColor: context.appColors.bg.withValues(alpha: 0.95),
       surfaceTintColor: Colors.transparent,
       leading: GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.cardBg,
+            color: context.appColors.cardBg,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.appColors.border),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.textPrimary,
+            color: context.appColors.textPrimary,
             size: 18,
           ),
         ),
       ),
-      title: const Text(
+      title: Text(
         'Developer Profile',
         style: TextStyle(
-          color: AppColors.textPrimary,
+          color: context.appColors.textPrimary,
           fontSize: 17,
           fontWeight: FontWeight.w700,
         ),
@@ -152,8 +154,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.gold, AppColors.goldLight],
+              gradient: LinearGradient(
+                colors: [AppColors.gold, context.appColors.goldLight],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -182,8 +184,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
           Text(
             dev.devName,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.w800,
             ),
@@ -218,7 +220,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
             Text(
               'Starting from ${PriceFormatter.format(dev.priceMin)}',
               style: TextStyle(
-                color: AppColors.textMuted.withValues(alpha: 0.8),
+                color: context.appColors.textMuted.withValues(alpha: 0.8),
                 fontSize: 13,
               ),
             ),
@@ -232,8 +234,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
     return Center(
       child: Text(
         dev.devName.isNotEmpty ? dev.devName[0].toUpperCase() : 'D',
-        style: const TextStyle(
-          color: AppColors.bg,
+        style: TextStyle(
+          color: context.appColors.bg,
           fontSize: 32,
           fontWeight: FontWeight.w900,
         ),
@@ -254,7 +256,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
         badgeColor = AppColors.gold;
         break;
       default:
-        badgeColor = AppColors.textMuted;
+        badgeColor = context.appColors.textMuted;
     }
 
     return Container(
@@ -362,9 +364,9 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.6)),
         ),
         child: Row(
           children: stats.map((s) {
@@ -382,8 +384,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
                   const SizedBox(height: 8),
                   Text(
                     s.value,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                     ),
@@ -393,7 +395,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
                     s.label,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.textMuted.withValues(alpha: 0.8),
+                      color: context.appColors.textMuted.withValues(alpha: 0.8),
                       fontSize: 11,
                     ),
                   ),
@@ -484,8 +486,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
                     Expanded(
                       child: Text(
                         name,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                        style: TextStyle(
+                          color: context.appColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -493,7 +495,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
                     ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: AppColors.textMuted.withValues(alpha: 0.5),
+                      color: context.appColors.textMuted.withValues(alpha: 0.5),
                       size: 20,
                     ),
                   ],
@@ -502,7 +504,7 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
               if (!isLast)
                 Divider(
                   height: 1,
-                  color: AppColors.border.withValues(alpha: 0.5),
+                  color: context.appColors.border.withValues(alpha: 0.5),
                 ),
             ],
           );
@@ -519,8 +521,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
       Icons.info_outline_rounded,
       child: Text(
         dev.description!,
-        style: const TextStyle(
-          color: AppColors.textMuted,
+        style: TextStyle(
+          color: context.appColors.textMuted,
           fontSize: 13,
           height: 1.7,
         ),
@@ -616,9 +618,9 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.6)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -636,8 +638,8 @@ class _DeveloperProfileScreenState extends State<DeveloperProfileScreen>
                 const SizedBox(width: 10),
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),

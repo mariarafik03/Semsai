@@ -5,6 +5,8 @@ import 'package:SemsAi/core/utils/price_formatter.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/comparison/presentation/cubit/comparison_cubit.dart';
 import 'package:SemsAi/features/comparison/presentation/cubit/comparison_state.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ComparisonScreen extends StatefulWidget {
   const ComparisonScreen({super.key});
@@ -49,7 +51,7 @@ class _ComparisonScreenState extends State<ComparisonScreen>
         }
 
         return Scaffold(
-          backgroundColor: AppColors.bg,
+          backgroundColor: context.appColors.bg,
           body: FadeTransition(
             opacity: _fadeAnim,
             child: CustomScrollView(
@@ -112,30 +114,30 @@ class _ComparisonScreenState extends State<ComparisonScreen>
   Widget _buildAppBar(ComparisonState state) {
     return SliverAppBar(
       pinned: true,
-      backgroundColor: AppColors.bg.withValues(alpha: 0.95),
+      backgroundColor: context.appColors.bg.withValues(alpha: 0.95),
       surfaceTintColor: Colors.transparent,
       leading: GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.cardBg,
+            color: context.appColors.cardBg,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.appColors.border),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.textPrimary,
+            color: context.appColors.textPrimary,
             size: 18,
           ),
         ),
       ),
       title: Column(
         children: [
-          const Text(
+          Text(
             'Property Comparison',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w700,
             ),
@@ -144,7 +146,7 @@ class _ComparisonScreenState extends State<ComparisonScreen>
           Text(
             'Comparing ${state.count} properties',
             style: TextStyle(
-              color: AppColors.textMuted.withValues(alpha: 0.8),
+              color: context.appColors.textMuted.withValues(alpha: 0.8),
               fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
@@ -223,9 +225,9 @@ class _ComparisonScreenState extends State<ComparisonScreen>
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: context.appColors.border.withValues(alpha: 0.6)),
         ),
         child: Column(
           children: [
@@ -256,8 +258,8 @@ class _ComparisonScreenState extends State<ComparisonScreen>
                   const SizedBox(width: 10),
                   Text(
                     title,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
@@ -301,7 +303,7 @@ class _ComparisonScreenState extends State<ComparisonScreen>
                   child: Text(
                     row.label,
                     style: TextStyle(
-                      color: AppColors.textMuted.withValues(alpha: 0.9),
+                      color: context.appColors.textMuted.withValues(alpha: 0.9),
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),
@@ -347,7 +349,7 @@ class _ComparisonScreenState extends State<ComparisonScreen>
                               style: TextStyle(
                                 color: isBest
                                     ? AppColors.gold
-                                    : AppColors.textPrimary,
+                                    : context.appColors.textPrimary,
                                 fontSize: 12,
                                 fontWeight: isBest
                                     ? FontWeight.w700
@@ -368,7 +370,7 @@ class _ComparisonScreenState extends State<ComparisonScreen>
           if (!isLast)
             Divider(
               height: 1,
-              color: AppColors.border.withValues(alpha: 0.4),
+              color: context.appColors.border.withValues(alpha: 0.4),
               indent: 16,
               endIndent: 16,
             ),
@@ -631,7 +633,7 @@ class _UnitHeaderCard extends StatelessWidget {
     final image = unit.images.isNotEmpty ? unit.images.first : null;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: color.withValues(alpha: 0.4)),
         boxShadow: [
@@ -657,9 +659,9 @@ class _UnitHeaderCard extends StatelessWidget {
                         height: 90,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholder(),
+                        errorBuilder: (_, __, ___) => _placeholder(context),
                       )
-                    : _placeholder(),
+                    : _placeholder(context),
               ),
               // Color indicator bar
               Positioned(
@@ -710,8 +712,8 @@ class _UnitHeaderCard extends StatelessWidget {
                   unit.compoundName ?? unit.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
@@ -744,14 +746,14 @@ class _UnitHeaderCard extends StatelessWidget {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
     return Container(
       height: 90,
       width: double.infinity,
-      color: AppColors.border,
-      child: const Icon(
+      color: context.appColors.border,
+      child: Icon(
         Icons.home_outlined,
-        color: AppColors.textMuted,
+        color: context.appColors.textMuted,
         size: 28,
       ),
     );

@@ -12,6 +12,7 @@ class SharedPrefHelper {
   static const String _keyIsLoggedIn = 'is_logged_in';
   static const String _keyDefaultRegion = 'default_region';
   static const String _keyFavorites = 'favorite_units';
+  static const String _keyIsDarkMode = 'is_dark_mode';
 
   // ── Favorites ──
   static Future<void> saveFavorites(List<CompoundUnit> units) async {
@@ -62,6 +63,16 @@ class SharedPrefHelper {
     final email = prefs.getString(_keyUserEmail);
     if (name == null || email == null) return null;
     return User(id: id, name: name, email: email, pass: '');
+  }
+
+  static Future<void> saveIsDarkMode(bool isDark) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyIsDarkMode, isDark);
+  }
+
+  static Future<bool> getIsDarkMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyIsDarkMode) ?? true; // default: dark
   }
 
   static Future<void> clear() async {

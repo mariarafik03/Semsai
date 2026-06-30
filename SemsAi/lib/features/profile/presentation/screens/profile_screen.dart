@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+import 'package:SemsAi/core/theme/theme_cubit.dart';
 import 'package:SemsAi/core/routing/app_routes.dart';
 import 'package:SemsAi/core/shared_pref/shared_pref_helper.dart';
 import 'package:SemsAi/features/auth/presentation/cubit/auth_cubit.dart';
@@ -40,17 +41,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: colors.bg,
       body: SafeArea(
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
-            final userName = state is AuthAuthenticated
-                ? state.user.name
-                : 'User';
-            final userEmail = state is AuthAuthenticated
-                ? state.user.email
-                : '';
+            final userName =
+                state is AuthAuthenticated ? state.user.name : 'User';
+            final userEmail =
+                state is AuthAuthenticated ? state.user.email : '';
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -60,18 +61,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     'Profile',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 28),
-                  _buildUserCard(userName, userEmail),
-                  SizedBox(height: 20),
-                  _buildRegionCard(),
-                  Spacer(),
-                  _buildSignOutButton(context),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 28),
+                  _buildUserCard(userName, userEmail, colors),
+                  const SizedBox(height: 16),
+                  _buildThemeToggleCard(colors),
+                  const SizedBox(height: 16),
+                  _buildRegionCard(colors),
+                  const Spacer(),
+                  _buildSignOutButton(context, colors),
+                  const SizedBox(height: 16),
                 ],
               ),
             );
@@ -81,14 +84,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildUserCard(String name, String email) {
+  Widget _buildUserCard(
+      String name, String email, AppColorExtension colors) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: colors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 0.5),
+        border: Border.all(color: colors.border, width: 0.5),
       ),
       child: Row(
         children: [
@@ -97,19 +101,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 52,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.gold.withValues(alpha: 0.15),
+              color: colors.gold.withValues(alpha: 0.15),
               border: Border.all(
-                color: AppColors.gold.withValues(alpha: 0.4),
+                color: colors.gold.withValues(alpha: 0.4),
                 width: 1.5,
               ),
             ),
             child: Icon(
               Icons.person_outline_rounded,
-              color: AppColors.gold,
+              color: colors.gold,
               size: 28,
             ),
           ),
-          SizedBox(width: 14),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,15 +121,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   name,
                   style: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 3),
+                const SizedBox(height: 3),
                 Text(
                   email,
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                  style: TextStyle(color: colors.textMuted, fontSize: 13),
                 ),
               ],
             ),
@@ -135,58 +139,128 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildRegionCard() {
+  Widget _buildThemeToggleCard(AppColorExtension colors) {
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDark = themeMode == ThemeMode.dark;
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: colors.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: colors.border, width: 0.5),
+          ),
+          child: Row(
+            children: [
+              // Icon
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colors.gold.withValues(alpha: 0.12),
+                ),
+                child: Icon(
+                  isDark
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded,
+                  color: colors.gold,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 14),
+              // Label
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Appearance',
+                      style: TextStyle(
+                        color: colors.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isDark ? 'Dark Mode' : 'Light Mode',
+                      style: TextStyle(color: colors.textMuted, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              // Toggle switch
+              Switch.adaptive(
+                value: isDark,
+                activeColor: colors.gold,
+                activeTrackColor: colors.gold.withValues(alpha: 0.3),
+                inactiveThumbColor: colors.textMuted,
+                inactiveTrackColor: colors.border,
+                onChanged: (_) =>
+                    context.read<ThemeCubit>().toggleTheme(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRegionCard(AppColorExtension colors) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: colors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 0.5),
+        border: Border.all(color: colors.border, width: 0.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.location_on_outlined, color: AppColors.gold, size: 20),
-              SizedBox(width: 8),
+              Icon(Icons.location_on_outlined, color: colors.gold, size: 20),
+              const SizedBox(width: 8),
               Text(
                 'Default Region',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: colors.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
             decoration: BoxDecoration(
-              color: AppColors.bg,
+              color: colors.bg,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.border, width: 0.5),
+              border: Border.all(color: colors.border, width: 0.5),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _selectedRegion,
                 isExpanded: true,
-                dropdownColor: AppColors.cardBg,
+                dropdownColor: colors.cardBg,
                 icon: Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: AppColors.textMuted,
+                  color: colors.textMuted,
                 ),
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                style: TextStyle(color: colors.textPrimary, fontSize: 14),
                 items: _regions.map((region) {
                   return DropdownMenuItem<String>(
                     value: region,
                     child: Text(
                       region,
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                         fontSize: 14,
                       ),
                     ),
@@ -206,14 +280,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSignOutButton(BuildContext context) {
+  Widget _buildSignOutButton(
+      BuildContext context, AppColorExtension colors) {
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: ElevatedButton.icon(
-        onPressed: () => _showSignOutDialog(context),
-        icon: Icon(Icons.logout_rounded, color: Colors.white, size: 20),
-        label: Text(
+        onPressed: () => _showSignOutDialog(context, colors),
+        icon:
+            const Icon(Icons.logout_rounded, color: Colors.white, size: 20),
+        label: const Text(
           'Sign Out',
           style: TextStyle(
             color: Colors.white,
@@ -222,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFDC2626),
+          backgroundColor: const Color(0xFFDC2626),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -232,21 +308,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showSignOutDialog(BuildContext context) {
+  void _showSignOutDialog(BuildContext context, AppColorExtension colors) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardBg,
+        backgroundColor: colors.cardBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Sign Out', style: TextStyle(color: AppColors.textPrimary)),
+        title:
+            Text('Sign Out', style: TextStyle(color: colors.textPrimary)),
         content: Text(
           'Are you sure you want to sign out?',
-          style: TextStyle(color: AppColors.textMuted),
+          style: TextStyle(color: colors.textMuted),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: AppColors.textMuted)),
+            child:
+                Text('Cancel', style: TextStyle(color: colors.textMuted)),
           ),
           TextButton(
             onPressed: () {
@@ -258,7 +336,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 (route) => false,
               );
             },
-            child: Text('Sign Out', style: TextStyle(color: Color(0xFFDC2626))),
+            child: const Text(
+              'Sign Out',
+              style: TextStyle(color: Color(0xFFDC2626)),
+            ),
           ),
         ],
       ),

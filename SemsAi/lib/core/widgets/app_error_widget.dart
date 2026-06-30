@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class AppErrorWidget extends StatelessWidget {
   const AppErrorWidget({
@@ -21,13 +23,13 @@ class AppErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: AppColors.textMuted),
+            Icon(icon, size: 48, color: context.appColors.textMuted),
             SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: context.appColors.textPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
@@ -40,7 +42,7 @@ class AppErrorWidget extends StatelessWidget {
                 label: Text('Retry'),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.gold,
-                  foregroundColor: AppColors.bg,
+                  foregroundColor: context.appColors.bg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

@@ -5,6 +5,8 @@ import 'package:SemsAi/features/explore/data/models/compound_model.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/explore/data/repo/explore_service.dart';
 import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Modal bottom sheet showing compound details + units list.
 class CompoundSheet extends StatefulWidget {
@@ -19,9 +21,9 @@ class CompoundSheet extends StatefulWidget {
 class _CompoundSheetState extends State<CompoundSheet> {
   static const _gold = AppColors.gold;
   static const _accent = AppColors.accent;
-  static const _cardBg = AppColors.cardBg;
-  static const _border = AppColors.border;
-  static const _textMuted = AppColors.textMuted;
+  Color get _cardBg => context.appColors.cardBg;
+  Color get _border => context.appColors.border;
+  Color get _textMuted => context.appColors.textMuted;
 
   List<CompoundUnit>? _units;
   bool _loading = true;
@@ -107,7 +109,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
                             c.location,
                             c.developerName,
                           ].where((s) => s != null && s.isNotEmpty).join(' · '),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: _textMuted,
                             fontSize: 12,
                           ),
@@ -118,7 +120,7 @@ class _CompoundSheetState extends State<CompoundSheet> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close_rounded,
                     color: _textMuted,
                     size: 22,
@@ -226,12 +228,13 @@ class UnitRow extends StatelessWidget {
 
   static const _gold = AppColors.gold;
   static const _accent = AppColors.accent;
-  static const _border = AppColors.border;
-  static const _textPrimary = AppColors.textPrimary;
-  static const _textMuted = AppColors.textMuted;
+
 
   @override
   Widget build(BuildContext context) {
+    final _border = context.appColors.border;
+    final _textPrimary = context.appColors.textPrimary;
+    final _textMuted = context.appColors.textMuted;
     return GestureDetector(
       onTap: () {
         Navigator.of(
@@ -312,10 +315,10 @@ class UnitRow extends StatelessWidget {
                     spacing: 8,
                     children: [
                       if (unit.displayArea != null)
-                        _info('${unit.displayArea!.toInt()}m²'),
-                      if (unit.bedrooms != null) _info('${unit.bedrooms}bd'),
-                      if (unit.bathrooms != null) _info('${unit.bathrooms}ba'),
-                      if (unit.finishing != null) _info(unit.finishing!),
+                        _info(context, '${unit.displayArea!.toInt()}m²'),
+                      if (unit.bedrooms != null) _info(context, '${unit.bedrooms}bd'),
+                      if (unit.bathrooms != null) _info(context, '${unit.bathrooms}ba'),
+                      if (unit.finishing != null) _info(context, unit.finishing!),
                     ],
                   ),
                   if (unit.displayPrice != null) ...[
@@ -351,8 +354,8 @@ class UnitRow extends StatelessWidget {
     );
   }
 
-  Widget _info(String text) {
-    return Text(text, style: const TextStyle(color: _textMuted, fontSize: 11));
+  Widget _info(BuildContext context, String text) {
+    return Text(text, style: TextStyle(color: context.appColors.textMuted, fontSize: 11));
   }
 
   String _fmtPrice(double p) {

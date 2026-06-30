@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/core/widgets/shimmer_loading.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ExploreLoadingView extends StatelessWidget {
   const ExploreLoadingView({super.key});
@@ -10,7 +12,7 @@ class ExploreLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -19,9 +21,9 @@ class ExploreLoadingView extends StatelessWidget {
                 height: 46,
                 margin: const EdgeInsets.fromLTRB(12, 6, 12, 2),
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg,
+                  color: context.appColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: context.appColors.border),
                 ),
               ),
             ),
@@ -37,7 +39,7 @@ class ExploreLoadingView extends StatelessWidget {
                       width: 80,
                       margin: const EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
-                        color: AppColors.border.withValues(alpha: 0.3),
+                        color: context.appColors.border.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
@@ -48,7 +50,7 @@ class ExploreLoadingView extends StatelessWidget {
             Expanded(
               flex: 55,
               child: Container(
-                color: AppColors.bg,
+                color: context.appColors.bg,
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -61,7 +63,7 @@ class ExploreLoadingView extends StatelessWidget {
                       Text(
                         AppStrings.loadingProperties,
                         style: TextStyle(
-                          color: AppColors.textMuted,
+                          color: context.appColors.textMuted,
                           fontSize: 13,
                         ),
                       ),
@@ -74,7 +76,7 @@ class ExploreLoadingView extends StatelessWidget {
               flex: 45,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg,
+                  color: context.appColors.cardBg,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
                 ),
                 child: Column(

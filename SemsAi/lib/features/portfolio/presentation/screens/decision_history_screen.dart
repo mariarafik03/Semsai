@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class DecisionHistoryScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -70,7 +72,7 @@ class DecisionHistoryScreen extends StatelessWidget {
     ));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: Column(
           children: [
@@ -79,18 +81,18 @@ class DecisionHistoryScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  const Text(
+                  Text(
                     'Your Decision Timeline',
                     style: TextStyle(
-                      color: Color(0xFFE2E8F0),
+                      color: context.appColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Track how each decision impacted your portfolio health',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                   ),
                   const SizedBox(height: 24),
 
@@ -99,7 +101,7 @@ class DecisionHistoryScreen extends StatelessWidget {
                     final idx = entry.key;
                     final item = entry.value;
                     final isLast = idx == timeline.length - 1;
-                    return _buildTimelineItem(item, isLast);
+                    return _buildTimelineItem(context, item, isLast);
                   }),
                 ],
               ),
@@ -110,7 +112,7 @@ class DecisionHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineItem(_TimelineEntry item, bool isLast) {
+  Widget _buildTimelineItem(BuildContext context, _TimelineEntry item, bool isLast) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +138,7 @@ class DecisionHistoryScreen extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      color: const Color(0xFF1E293B),
+                      color: context.appColors.border,
                     ),
                   ),
               ],
@@ -148,9 +150,9 @@ class DecisionHistoryScreen extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F172A),
+                color: context.appColors.cardBg,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFF1E293B)),
+                border: Border.all(color: context.appColors.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,8 +163,8 @@ class DecisionHistoryScreen extends StatelessWidget {
                       Expanded(
                         child: Text(
                           item.title,
-                          style: const TextStyle(
-                            color: Color(0xFFE2E8F0),
+                          style: TextStyle(
+                            color: context.appColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -194,8 +196,8 @@ class DecisionHistoryScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle,
-                    style: const TextStyle(
-                      color: Color(0xFF94A3B8),
+                    style: TextStyle(
+                      color: context.appColors.textMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -211,10 +213,10 @@ class DecisionHistoryScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -226,11 +228,11 @@ class DecisionHistoryScreen extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new,
-                  color: Color(0xFFE2E8F0), size: 16),
+              child: Icon(Icons.arrow_back_ios_new,
+                  color: context.appColors.textPrimary, size: 16),
             ),
           ),
           const SizedBox(width: 14),
@@ -238,16 +240,16 @@ class DecisionHistoryScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF94A3B8).withValues(alpha: 0.12),
+              color: context.appColors.textMuted.withValues(alpha: 0.12),
             ),
-            child: const Icon(Icons.history_rounded,
-                color: Color(0xFF94A3B8), size: 20),
+            child: Icon(Icons.history_rounded,
+                color: context.appColors.textMuted, size: 20),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Decision History',
             style: TextStyle(
-              color: Color(0xFFE2E8F0),
+              color: context.appColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),

@@ -9,9 +9,10 @@ import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/utils/price_formatter.dart';
 import 'package:SemsAi/core/utils/app_snackbar.dart';
 import 'package:SemsAi/core/widgets/app_loading_indicator.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
 
 class ListingUnitCard extends StatelessWidget {
-  Widget _buildImage(String? image, String heroTag, String? regionTag) {
+  Widget _buildImage(String? image, String heroTag) {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(14),
@@ -52,10 +53,6 @@ class ListingUnitCard extends StatelessWidget {
   final bool compareSelected;
   final VoidCallback? onCompareToggle;
   final bool compareDisabled;
-
-  // ── Helpers ──
-
-  // Removed: Use PriceFormatter.format instead.
 
   String _bestPaymentSummary() {
     final plan = unit.bestPlan;
@@ -103,12 +100,12 @@ class ListingUnitCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: compareSelected
                   ? AppColors.gold.withOpacity(0.08)
-                  : AppColors.cardBg,
+                  : context.appColors.cardBg,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: compareSelected
                     ? AppColors.gold
-                    : AppColors.border.withValues(alpha: 0.6),
+                    : context.appColors.border.withValues(alpha: 0.6),
                 width: compareSelected ? 2 : 1,
               ),
               boxShadow: [
@@ -122,24 +119,27 @@ class ListingUnitCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildImage(image, heroTag, regionTag),
-                _buildInfo(payment),
+                _buildImage(image, heroTag),
+                _buildInfo(context, payment),
+                const Spacer(),
+                // Tags row
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 8),
+                  child: Row(
+                    children: [
+                      if (regionTag != null)
+                        Flexible(
+                          child: _tag(context, regionTag, AppColors.gold),
+                        ),
+                      if (regionTag != null) const SizedBox(width: 6),
+                      Flexible(
+                        child: _tag(context, unit.type, AppColors.accent),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ),
-        // Tags row
-        Positioned(
-          bottom: 6,
-          left: 6,
-          right: 6,
-          child: Row(
-            children: [
-              if (regionTag != null)
-                Flexible(child: _tag(regionTag, AppColors.gold)),
-              if (regionTag != null) const SizedBox(width: 6),
-              Flexible(child: _tag(unit.type, AppColors.accent)),
-            ],
           ),
         ),
         // Compare toggle
@@ -158,14 +158,14 @@ class ListingUnitCard extends StatelessWidget {
                       : Colors.black.withValues(alpha: 0.45),
                   borderRadius: BorderRadius.circular(7),
                   border: compareSelected
-                      ? Border.all(color: AppColors.goldLight, width: 1)
+                      ? Border.all(color: context.appColors.goldLight, width: 1)
                       : null,
                 ),
                 child: Icon(
                   compareSelected
                       ? Icons.compare_arrows_rounded
                       : Icons.compare_arrows_outlined,
-                  color: compareSelected ? AppColors.bg : Colors.white,
+                  color: compareSelected ? context.appColors.bg : Colors.white,
                   size: 15,
                 ),
               ),
@@ -205,77 +205,79 @@ class ListingUnitCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfo(String payment) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Compound name
-            Text(
-              unit.compoundName ?? unit.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
+  Widget _buildInfo(BuildContext context, String payment) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Compound name
+          Text(
+            unit.compoundName ?? unit.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: context.appColors.textPrimary,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 2),
-            // Developer
-            Text(
-              unit.developerName ?? '',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
-            ),
-            const Spacer(),
-            // Specs row
-            Row(
-              children: [
-                if (unit.bedrooms != null)
-                  _spec(Icons.bed_outlined, '${unit.bedrooms}'),
-                if (unit.bathrooms != null) ...[
-                  const SizedBox(width: 8),
-                  _spec(Icons.bathtub_outlined, '${unit.bathrooms}'),
-                ],
-                if (unit.displayArea != null) ...[
-                  const SizedBox(width: 8),
-                  _spec(Icons.straighten, '${unit.displayArea!.round()} m²'),
-                ],
+          ),
+          const SizedBox(height: 2),
+          // Developer
+          Text(
+            unit.developerName ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
+          ),
+          const SizedBox(height: 6),
+          // Specs row
+          Row(
+            children: [
+              if (unit.bedrooms != null)
+                _spec(context, Icons.bed_outlined, '${unit.bedrooms}'),
+              if (unit.bathrooms != null) ...[
+                const SizedBox(width: 8),
+                _spec(context, Icons.bathtub_outlined, '${unit.bathrooms}'),
               ],
+              if (unit.displayArea != null) ...[
+                const SizedBox(width: 8),
+                _spec(
+                  context,
+                  Icons.straighten,
+                  '${unit.displayArea!.round()} m²',
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Price
+          Text(
+            PriceFormatter.format(unit.displayPrice),
+            style: const TextStyle(
+              color: AppColors.gold,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 6),
-            // Price
-            Text(
-              PriceFormatter.format(unit.displayPrice),
-              style: const TextStyle(
-                color: AppColors.gold,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            // Payment plan summary
-            if (payment.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(
-                  payment,
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 11,
-                  ),
+          ),
+          // Payment plan summary
+          if (payment.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                payment,
+                style: TextStyle(
+                  color: context.appColors.textMuted,
+                  fontSize: 11,
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
 
-  Widget _tag(String text, Color color) {
+  Widget _tag(BuildContext context, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
@@ -287,7 +289,7 @@ class ListingUnitCard extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: color == AppColors.gold ? AppColors.bg : Colors.white,
+          color: color == AppColors.gold ? context.appColors.bg : Colors.white,
           fontSize: 10,
           fontWeight: FontWeight.w600,
         ),
@@ -295,15 +297,15 @@ class ListingUnitCard extends StatelessWidget {
     );
   }
 
-  Widget _spec(IconData icon, String text) {
+  Widget _spec(BuildContext context, IconData icon, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.textMuted, size: 13),
+        Icon(icon, color: context.appColors.textMuted, size: 13),
         const SizedBox(width: 2),
         Text(
           text,
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+          style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
         ),
       ],
     );

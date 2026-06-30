@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ListingsHeader extends StatelessWidget {
   const ListingsHeader({
@@ -39,10 +41,10 @@ class ListingsHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
         children: [
-          const Text(
+          Text(
             'Listings',
             style: TextStyle(
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -52,13 +54,13 @@ class ListingsHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.cardBg,
+              color: context.appColors.cardBg,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.appColors.border),
             ),
             child: PopupMenuButton<String>(
               onSelected: onSortChanged,
-              color: AppColors.cardBg,
+              color: context.appColors.cardBg,
               itemBuilder: (_) => [
                 'newest',
                 'price_asc',
@@ -74,7 +76,7 @@ class ListingsHeader extends StatelessWidget {
                         style: TextStyle(
                           color: k == sortBy
                               ? AppColors.gold
-                              : AppColors.textPrimary,
+                              : context.appColors.textPrimary,
                           fontSize: 13,
                         ),
                       ),
@@ -86,15 +88,15 @@ class ListingsHeader extends StatelessWidget {
                 children: [
                   Text(
                     _sortLabel(sortBy),
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 13,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(
+                  Icon(
                     Icons.keyboard_arrow_down,
-                    color: AppColors.textMuted,
+                    color: context.appColors.textMuted,
                     size: 18,
                   ),
                 ],
@@ -108,15 +110,15 @@ class ListingsHeader extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: filtersOpen ? AppColors.gold : AppColors.cardBg,
+                color: filtersOpen ? AppColors.gold : context.appColors.cardBg,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: filtersOpen ? AppColors.gold : AppColors.border,
+                  color: filtersOpen ? AppColors.gold : context.appColors.border,
                 ),
               ),
               child: Icon(
                 Icons.tune,
-                color: filtersOpen ? AppColors.bg : AppColors.textPrimary,
+                color: filtersOpen ? context.appColors.bg : context.appColors.textPrimary,
                 size: 18,
               ),
             ),

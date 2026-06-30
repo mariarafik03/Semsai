@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class UnitPaymentPlans extends StatefulWidget {
   const UnitPaymentPlans({super.key, required this.plans});
@@ -26,9 +28,9 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,8 +47,8 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
                 plans.length > 1
                     ? '${AppStrings.paymentPlan} (${plans.length} options)'
                     : AppStrings.paymentPlan,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
+                style: TextStyle(
+                  color: context.appColors.textPrimary,
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),
@@ -61,7 +63,7 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
           if (selected.frequency != null) _frequencyBadge(selected.frequency!),
           _buildStatsRow(selected),
           if (selected.downPayment != null || selected.unitPrice != null) ...[
-            const Divider(color: AppColors.border, height: 24),
+            Divider(color: context.appColors.border, height: 24),
             if (selected.downPayment != null)
               _detailRow(
                 'Down Payment Amount',
@@ -94,13 +96,13 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
                 color: isActive ? AppColors.gold : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isActive ? AppColors.gold : AppColors.border,
+                  color: isActive ? AppColors.gold : context.appColors.border,
                 ),
               ),
               child: Text(
                 _chipLabel(plans[i], i),
                 style: TextStyle(
-                  color: isActive ? AppColors.bg : AppColors.textPrimary,
+                  color: isActive ? context.appColors.bg : context.appColors.textPrimary,
                   fontSize: 12,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 ),
@@ -143,12 +145,12 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
             AppColors.gold,
           ),
         if (plan.years != null)
-          _stat('${plan.years}', AppStrings.years, AppColors.textPrimary),
+          _stat('${plan.years}', AppStrings.years, context.appColors.textPrimary),
         if (plan.installmentAmount != null)
           _stat(
             _fmtPriceShort(plan.installmentAmount!),
             _capitalize(plan.frequency ?? AppStrings.installment),
-            AppColors.textPrimary,
+            context.appColors.textPrimary,
           ),
       ],
     );
@@ -169,7 +171,7 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
           const SizedBox(height: 3),
           Text(
             label,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
           ),
         ],
       ),
@@ -184,12 +186,12 @@ class _UnitPaymentPlansState extends State<UnitPaymentPlans> {
         children: [
           Text(
             label,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
           ),
           Text(
             value,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontWeight: FontWeight.w600,
               fontSize: 13,
             ),

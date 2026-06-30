@@ -10,6 +10,9 @@ import 'package:SemsAi/features/portfolio/presentation/screens/decision_history_
 import 'package:SemsAi/features/portfolio/presentation/screens/market_context_screen.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/inflation_calculator_screen.dart';
 import 'package:SemsAi/features/portfolio/presentation/screens/market_analytics_screen.dart';
+import 'package:SemsAi/features/appraisal/presentation/screens/appraisal_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class PortfolioSummaryScreen extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -91,7 +94,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
     final healthBand = (widget.result['healthBand'] ?? 'watch').toString();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: context.appColors.bg,
       body: SafeArea(
         child: FadeTransition(
           opacity: _entranceCtrl,
@@ -114,10 +117,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Your Portfolio',
                       style: TextStyle(
-                        color: Color(0xFFE2E8F0),
+                        color: context.appColors.textPrimary,
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
@@ -139,8 +142,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     // ── Units Section
                     Text(
                       '${widget.units.length} Units',
-                      style: const TextStyle(
-                        color: Color(0xFF94A3B8),
+                      style: TextStyle(
+                        color: context.appColors.textMuted,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -171,10 +174,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
+      decoration: BoxDecoration(
+        color: context.appColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF1E293B), width: 0.5),
+          bottom: BorderSide(color: context.appColors.border, width: 0.5),
         ),
       ),
       child: Row(
@@ -186,12 +189,12 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF1E293B),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: context.appColors.border,
+                border: Border.all(color: context.appColors.border),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 size: 16,
               ),
             ),
@@ -213,21 +216,21 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Portfolio Overview',
                   style: TextStyle(
-                    color: Color(0xFFE2E8F0),
+                    color: context.appColors.textPrimary,
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   'Your investment health',
-                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                  style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
                 ),
               ],
             ),
@@ -251,9 +254,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,8 +274,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 alignment: Alignment.center,
                 child: Text(
                   finalScore.toStringAsFixed(0),
-                  style: const TextStyle(
-                    color: Color(0xFFE2E8F0),
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -282,9 +285,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Portfolio Health',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                   ),
                   Text(
                     _bandLabel(healthBand),
@@ -363,7 +366,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                   Text(
                     'Assumptions: Interest rate at 27.25%, Inflation at 24.1%',
                     style: TextStyle(
-                      color: const Color(0xFF64748B),
+                      color: context.appColors.textMuted,
                       fontSize: 11,
                       fontStyle: FontStyle.italic,
                     ),
@@ -387,16 +390,16 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
         children: [
           TextSpan(
             text: title,
-            style: const TextStyle(
-              color: Color(0xFFE2E8F0),
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
           TextSpan(
             text: ' $text',
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: context.appColors.textMuted,
               fontSize: 13,
               fontStyle: FontStyle.italic,
             ),
@@ -416,12 +419,12 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           children: [
             Text(
               label,
-              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+              style: TextStyle(color: context.appColors.textMuted, fontSize: 14),
             ),
             Text(
               '${clamped.toStringAsFixed(0)}/100',
-              style: const TextStyle(
-                color: Color(0xFFE2E8F0),
+              style: TextStyle(
+                color: context.appColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -434,7 +437,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           child: LinearProgressIndicator(
             value: clamped / 100,
             minHeight: 6,
-            backgroundColor: const Color(0xFF1E293B),
+            backgroundColor: context.appColors.border,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -445,7 +448,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
   // ─── Monthly Burden Card ───────────────────────────────
   Widget _buildMonthlyBurdenCard(Map<String, dynamic> metrics) {
     final monthlyBurden = _toNum(metrics['totalInstallments']);
-    final dti = _toNum(metrics['dti']) * 100;
+    // final dti = _toNum(metrics['dti']) * 100;
     final healthBand = (widget.result['healthBand'] ?? 'watch').toString();
 
     String riskDesc;
@@ -463,9 +466,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -486,10 +489,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 ),
               ),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'Monthly burden',
                 style: TextStyle(
-                  color: Color(0xFF94A3B8),
+                  color: context.appColors.textMuted,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -499,8 +502,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           const SizedBox(height: 10),
           Text(
             '${_formatNumber(monthlyBurden)} EGP',
-            style: const TextStyle(
-              color: Color(0xFFE2E8F0),
+            style: TextStyle(
+              color: context.appColors.textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -508,8 +511,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           const SizedBox(height: 8),
           Text(
             riskDesc,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: context.appColors.textMuted,
               fontSize: 12,
               height: 1.4,
             ),
@@ -519,19 +522,19 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
     );
   }
 
-  Widget _buildInfoChip(String label, String value) {
+  /* Widget _buildInfoChip(String label, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: const Color(0xFF1E293B),
+        color: context.appColors.border,
       ),
       child: Text(
         '$label: $value',
-        style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+        style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
       ),
     );
-  }
+  } */
 
   // ─── Action Cards Grid ─────────────────────────────────
   Widget _buildActionCardsGrid() {
@@ -559,7 +562,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 icon: Icons.tune_rounded,
                 title: 'What-If Simulator',
                 subtitle: 'Simulate scenarios',
-                color: const Color(0xFF94A3B8),
+                color: context.appColors.textMuted,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -579,7 +582,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 icon: Icons.history_rounded,
                 title: 'Decision History',
                 subtitle: 'Review past decisions',
-                color: const Color(0xFF94A3B8),
+                color: context.appColors.textMuted,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -597,7 +600,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 icon: Icons.bar_chart_rounded,
                 title: 'Market Context',
                 subtitle: 'Interest & inflation',
-                color: const Color(0xFF94A3B8),
+                color: context.appColors.textMuted,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -643,6 +646,27 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                icon: Icons.price_check_rounded,
+                title: 'Price Appraisal',
+                subtitle: 'AI property valuation',
+                color: AppColors.gold,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AppraisalScreen(),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(child: SizedBox()),
+          ],
+        ),
       ],
     );
   }
@@ -659,9 +683,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF1E293B)),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -678,8 +702,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
-                color: Color(0xFFE2E8F0),
+              style: TextStyle(
+                color: context.appColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -687,7 +711,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: const TextStyle(color: Color(0xFF64748B), fontSize: 11),
+              style: TextStyle(color: context.appColors.textMuted, fontSize: 11),
             ),
           ],
         ),
@@ -741,9 +765,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -757,8 +781,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(
-                        color: Color(0xFFE2E8F0),
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -768,8 +792,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     if (type.isNotEmpty)
                       Text(
                         type,
-                        style: const TextStyle(
-                          color: Color(0xFF64748B),
+                        style: TextStyle(
+                          color: context.appColors.textMuted,
                           fontSize: 12,
                         ),
                       ),
@@ -806,10 +830,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'MONTHLY',
                       style: TextStyle(
-                        color: Color(0xFF64748B),
+                        color: context.appColors.textMuted,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -818,8 +842,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     const SizedBox(height: 2),
                     Text(
                       '${_formatNumber(installment)} EGP',
-                      style: const TextStyle(
-                        color: Color(0xFFE2E8F0),
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -831,10 +855,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'REMAINING',
                       style: TextStyle(
-                        color: Color(0xFF64748B),
+                        color: context.appColors.textMuted,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
@@ -843,8 +867,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     const SizedBox(height: 2),
                     Text(
                       '$remainingMonths/${totalMonths > 0 ? totalMonths : "—"} months',
-                      style: const TextStyle(
-                        color: Color(0xFFE2E8F0),
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -870,7 +894,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                       shape: BoxShape.circle,
                       color: i < riskDots
                           ? statusColor
-                          : const Color(0xFF1E293B),
+                          : context.appColors.border,
                     ),
                   );
                 }),
@@ -957,10 +981,10 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
               ),
             ),
             const SizedBox(width: 10),
-            const Text(
+            Text(
               'Recommended For You',
               style: TextStyle(
-                color: Color(0xFFE2E8F0),
+                color: context.appColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -968,20 +992,20 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           ],
         ),
         const SizedBox(height: 6),
-        const Text(
+        Text(
           'Properties matching your financial profile',
-          style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+          style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
         ),
         const SizedBox(height: 14),
         if (_loadingUnits)
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
+              color: context.appColors.cardBg,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFF1E293B)),
+              border: Border.all(color: context.appColors.border),
             ),
-            child: const Center(
+            child: Center(
               child: Column(
                 children: [
                   SizedBox(
@@ -995,7 +1019,7 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                   SizedBox(height: 12),
                   Text(
                     'Finding matching units...',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                   ),
                 ],
               ),
@@ -1005,27 +1029,27 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
+              color: context.appColors.cardBg,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFF1E293B)),
+              border: Border.all(color: context.appColors.border),
             ),
-            child: const Center(
+            child: Center(
               child: Column(
                 children: [
                   Icon(
                     Icons.search_off_rounded,
-                    color: Color(0xFF475569),
+                    color: context.appColors.border,
                     size: 36,
                   ),
                   SizedBox(height: 10),
                   Text(
                     'No matching units found',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 14),
                   ),
                   SizedBox(height: 4),
                   Text(
                     'Try adjusting your budget or preferences',
-                    style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+                    style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
                   ),
                 ],
               ),
@@ -1064,9 +1088,9 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF1E293B)),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1077,8 +1101,8 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 Expanded(
                   child: Text(
                     name.isNotEmpty ? name : 'Unknown Compound',
-                    style: const TextStyle(
-                      color: Color(0xFFE2E8F0),
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
@@ -1112,16 +1136,16 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
             if (location.isNotEmpty)
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.location_on_outlined,
-                    color: Color(0xFF64748B),
+                    color: context.appColors.textMuted,
                     size: 14,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     location,
-                    style: const TextStyle(
-                      color: Color(0xFF94A3B8),
+                    style: TextStyle(
+                      color: context.appColors.textMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -1136,18 +1160,18 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Price',
                         style: TextStyle(
-                          color: Color(0xFF64748B),
+                          color: context.appColors.textMuted,
                           fontSize: 11,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         '${_formatNumber(price)} EGP',
-                        style: const TextStyle(
-                          color: Color(0xFFE2E8F0),
+                        style: TextStyle(
+                          color: context.appColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -1161,18 +1185,18 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Area',
                           style: TextStyle(
-                            color: Color(0xFF64748B),
+                            color: context.appColors.textMuted,
                             fontSize: 11,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           '${area.toStringAsFixed(0)} m²',
-                          style: const TextStyle(
-                            color: Color(0xFFE2E8F0),
+                          style: TextStyle(
+                            color: context.appColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -1186,18 +1210,18 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Beds',
                           style: TextStyle(
-                            color: Color(0xFF64748B),
+                            color: context.appColors.textMuted,
                             fontSize: 11,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           '$bedrooms',
-                          style: const TextStyle(
-                            color: Color(0xFFE2E8F0),
+                          style: TextStyle(
+                            color: context.appColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -1213,12 +1237,12 @@ class _PortfolioSummaryScreenState extends State<PortfolioSummaryScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
-                  color: const Color(0xFF1E293B),
+                  color: context.appColors.border,
                 ),
                 child: Text(
                   saleType,
-                  style: const TextStyle(
-                    color: Color(0xFF94A3B8),
+                  style: TextStyle(
+                    color: context.appColors.textMuted,
                     fontSize: 11,
                   ),
                 ),

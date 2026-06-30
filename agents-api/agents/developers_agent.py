@@ -29,7 +29,12 @@ def _to_objectid_maybe(x):
 
 
 def get_top_developers_by_score(state: AgentState):
-    candidate_compounds = state.get("candidate_compounds", [])
+    # FIX: Pydantic attribute access; context first, legacy fallback
+    candidate_compounds = (
+        state.context.candidate_compounds
+        or state.candidate_compounds
+        or []
+    )
     if not candidate_compounds:
         print("No candidate compounds found.")
         return []
@@ -213,16 +218,25 @@ def get_top_developers_by_score(state: AgentState):
 def developers_agent(state: AgentState):
     print("\n--- Developer Agent ---")
 
-    candidate_compounds = state.get("candidate_compounds", [])
+    # FIX: Pydantic attribute access; check both context and legacy
+    candidate_compounds = (
+        state.context.candidate_compounds
+        or state.candidate_compounds
+        or []
+    )
     if not candidate_compounds:
-        state["top_developers"] = []
-        state["final_compounds"] = []
+        state.top_developers = []
+        state.final_compounds = []
+        state.context.final_compounds = []
+        state.sync_to_legacy()
         return state
 
     print(f"Searching developers for {len(candidate_compounds)} candidate compounds")
 
     top_developers = get_top_developers_by_score(state)
-    state["top_developers"] = top_developers
+    # FIX: write to both legacy and context
+    state.top_developers = top_developers
+    state.context.top_developers = top_developers
 
     # ----------------------------------------
     # Match compounds belonging to top developers
@@ -254,11 +268,16 @@ def developers_agent(state: AgentState):
         key=lambda x: float(x.get("min_unit_price") or 1e18)
     )
 
-    state["final_compounds"] = final_compounds
+    # FIX: write to BOTH legacy and context so the router can see final_compounds
+    state.final_compounds = final_compounds
+    state.context.final_compounds = final_compounds
 
-    print(f"\n✅ Final compounds selected: {len(final_compounds)}")
+    print(f"\n\u2705 Final compounds selected: {len(final_compounds)}")
     for x in final_compounds:
         print(f"  - {x.get('compound_name')} | min_price={x.get('min_unit_price')}")
 
-    state["next_step"] = "compound_features_agent"
+    state.next_step = "compound_features_agent"
+    state.current_phase = "comparison"
+    print("✓ Phase transition: search → comparison")
+    state.sync_to_legacy()
     return state

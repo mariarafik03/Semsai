@@ -607,7 +607,10 @@ app.get('/units/listings', async (req, res) => {
 
     let sort = { scraped_at: -1 };
     switch (req.query.sort) {
-      case 'price_asc': sort = { price: 1 }; break;
+      case 'price_asc': 
+        sort = { price: 1 }; 
+        filter.price = { $gt: 0 }; 
+        break;
       case 'price_desc': sort = { price: -1 }; break;
       case 'area_asc': sort = { area: 1 }; break;
       case 'area_desc': sort = { area: -1 }; break;
@@ -966,6 +969,31 @@ app.get('/api/market-analytics', async (req, res) => {
   } catch (err) {
     console.error('Market analytics error:', err);
     return res.status(500).json({ error: 'Failed to fetch market analytics' });
+  }
+});
+
+// ─── Price Appraisal (proxy to Python agent) ───
+app.post('/appraisal/run', async (req, res) => {
+  try {
+    // Fix AGENTS_URL if it has /agents/step attached to it
+    let agentsBase = process.env.AGENTS_URL || 'https://youssif12-semsai-agents.hf.space';
+    if (agentsBase.endsWith('/agents/step')) {
+      agentsBase = agentsBase.replace('/agents/step', '');
+    }
+    const appraisalUrl = `${agentsBase}/appraisal/run`;
+    console.log(`[Appraisal] Proxying to: ${appraisalUrl}`);
+
+    const response = await axios.post(appraisalUrl, req.body, {
+      timeout: 120000, // 2 min — agent does web scraping
+      headers: { 'Content-Type': 'application/json' },
+    });
+    res.json(response.data);
+  } catch (err) {
+    console.error('Appraisal proxy error:', err.message);
+    res.status(500).json({
+      error: 'Failed to run appraisal agent',
+      details: err.message,
+    });
   }
 });
 

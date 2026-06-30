@@ -8,6 +8,7 @@ from pymongo import MongoClient
 import certifi
 
 from state import AgentState
+from agents.llm_messages import comparing_no_compounds, comparing_complete
 from main_helpers import ask_ollama
 
 
@@ -78,18 +79,35 @@ START YOUR RESPONSE NOW WITH { (not with any explanation):
 # Helpers: extraction + db
 # -------------------------
 
-def _extract_compound_names_from_developers(
-    final_candidates: Optional[List[Dict[str, Any]]]
+def _extract_compound_names(
+    final_compounds: Optional[List[Dict[str, Any]]]
 ) -> List[str]:
-    """Extract all compound names from final_candidates."""
-    if not final_candidates:
+    """Extract compound names to compare.
+
+    state.context.final_compounds (set by developers_agent.py in this
+    pipeline) is already a FLAT list of compound dicts —
+    {"compound_id": ..., "compound_name": ..., "location": ..., "min_unit_price": ...} —
+    not a list of developer dicts with a nested "matched_compound_names"
+    array. The nested shape belongs to an older prototype; it's kept here
+    as a defensive fallback only, in case this ever gets fed developer-shaped
+    objects instead.
+    """
+    if not final_compounds:
         return []
 
     names: List[str] = []
-    for dev in final_candidates:
-        if not isinstance(dev, dict):
+    for item in final_compounds:
+        if not isinstance(item, dict):
             continue
-        arr = dev.get("matched_compound_names") or []
+
+        # Current shape: compound dict with the name directly on it.
+        direct_name = (item.get("compound_name") or item.get("name") or "").strip()
+        if direct_name:
+            names.append(direct_name)
+            continue
+
+        # Defensive fallback: old developer-shaped dict.
+        arr = item.get("matched_compound_names") or []
         if isinstance(arr, list):
             for n in arr:
                 if isinstance(n, str) and n.strip():
@@ -562,15 +580,17 @@ def comparing_agent(state: AgentState):
     print("\n--- Comparing Agent (Ollama) ---")
 
     # Get purpose
-    purpose_used = _normalize_purpose(state.get("purpose"))
+    purpose_used = _normalize_purpose(state.purpose)
     print(f"Purpose: {purpose_used}")
 
     # Extract compound names
-    final_candidates = state.get("final_candidates") or []
-    compound_names = _extract_compound_names_from_developers(final_candidates)
+    compounds_to_compare = state.context.final_compounds or []
+    compound_names = _extract_compound_names(compounds_to_compare)
 
     if not compound_names:
-        print("❌ No compound names found in state.final_candidates.")
+        print("⚠️ No compounds to compare")
+        state.agent_message = comparing_no_compounds(state)
+        state.sync_to_legacy()
         return state
 
     print(f"Found {len(compound_names)} compound names to evaluate")
@@ -580,6 +600,7 @@ def comparing_agent(state: AgentState):
     uri = os.getenv("MONGO_URI")
     if not uri:
         print("❌ No MONGO_URI found. Skipping comparison.")
+        state.sync_to_legacy()
         return state
 
     client = MongoClient(uri, tlsCAFile=certifi.where())
@@ -596,6 +617,7 @@ def comparing_agent(state: AgentState):
         if not candidates:
             print("❌ No compounds with descriptions found in database.")
             print("   Check that compounds.name matches matched_compound_names")
+            state.sync_to_legacy()
             return state
 
         print(f"✅ Found {len(candidates)} compounds with descriptions")
@@ -648,8 +670,9 @@ def comparing_agent(state: AgentState):
                         print(f"  {i}. {reason}")
                 print("-" * 80)
             
-            print("="*80)
-            
+            state.agent_message = comparing_complete(state)
+            state.context.comparison_result = top_choices
+            state.sync_to_legacy()
             return state
 
         except Exception as e:
@@ -679,11 +702,15 @@ def comparing_agent(state: AgentState):
             
             print("="*80)
             
+            state.agent_message = comparing_complete(state)
+            state.context.comparison_result = top_choices
+            state.sync_to_legacy()
             return state
 
         except Exception as fallback_error:
             print(f"\n❌ Fallback also failed: {fallback_error}")
             print("Unable to select top compounds")
+            state.sync_to_legacy()
             return state
 
     finally:

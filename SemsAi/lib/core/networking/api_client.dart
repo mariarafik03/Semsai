@@ -40,6 +40,30 @@ class ApiClient {
     }
   }
 
+  /// POST with extended timeout (for AI agent calls that do web scraping)
+  static Future<http.Response> postLong(
+    String path,
+    Map<String, dynamic> body, {
+    Duration timeout = const Duration(seconds: 120),
+  }) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}$path');
+    try {
+      print('POST (long) request to: $url');
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(timeout);
+      print('POST (long) response status: ${response.statusCode}');
+      return response;
+    } catch (e) {
+      print('POST (long) Error connecting to $url: $e');
+      rethrow;
+    }
+  }
+
   static Future<bool> saveLocation(
     String email,
     Map<String, dynamic> location,

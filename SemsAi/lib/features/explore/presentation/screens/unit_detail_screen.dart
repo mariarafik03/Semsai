@@ -6,6 +6,8 @@ import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_image_
 import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_payment_plans.dart';
 import 'package:SemsAi/features/explore/presentation/screens/widgets/unit_detail_info.dart';
 import 'package:SemsAi/features/listings/presentation/screens/developer_profile_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class UnitDetailScreen extends StatelessWidget {
   final CompoundUnit unit;
@@ -15,7 +17,7 @@ class UnitDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: UnitImageGallery(images: unit.images)),
@@ -84,10 +86,10 @@ class UnitDetailScreen extends StatelessWidget {
                   if (unit.description != null &&
                       unit.description!.trim().isNotEmpty) ...[
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       AppStrings.about,
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: context.appColors.textPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -95,8 +97,8 @@ class UnitDetailScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       unit.description!,
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
+                      style: TextStyle(
+                        color: context.appColors.textMuted,
                         fontSize: 14,
                         height: 1.6,
                       ),

@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class MapCountBadge extends StatelessWidget {
   const MapCountBadge({super.key, required this.count});
@@ -17,9 +19,9 @@ class MapCountBadge extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: AppColors.bg.withValues(alpha: 0.6),
+            color: context.appColors.bg.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border.withValues(alpha: 0.4)),
+            border: Border.all(color: context.appColors.border.withValues(alpha: 0.4)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -29,7 +31,7 @@ class MapCountBadge extends StatelessWidget {
               Text(
                 '$count compounds',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: context.appColors.textPrimary,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),

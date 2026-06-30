@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/constants/app_strings.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ExploreSearchBar extends StatelessWidget {
   const ExploreSearchBar({
@@ -25,29 +27,29 @@ class ExploreSearchBar extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(12, 6, 12, 2),
       padding: EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isOpen
               ? AppColors.gold.withValues(alpha: 0.4)
-              : AppColors.border,
+              : context.appColors.border,
         ),
       ),
       child: Row(
         children: [
           Icon(
             Icons.search_rounded,
-            color: isOpen ? AppColors.gold : AppColors.textMuted,
+            color: isOpen ? AppColors.gold : context.appColors.textMuted,
             size: 20,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: controller,
-              style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
+              style: TextStyle(color: context.appColors.textPrimary, fontSize: 14),
               decoration: InputDecoration(
                 hintText: AppStrings.searchHint,
-                hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                hintStyle: TextStyle(color: context.appColors.textMuted, fontSize: 13),
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -59,7 +61,7 @@ class ExploreSearchBar extends StatelessWidget {
               onTap: onClear,
               child: Icon(
                 Icons.close_rounded,
-                color: AppColors.textMuted,
+                color: context.appColors.textMuted,
                 size: 18,
               ),
             ),

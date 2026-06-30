@@ -283,30 +283,30 @@ def _validate_llm_output(data: Any) -> bool:
 
 
 # ==========================================================================
-# HELPERS — scratch-pad accessors
+# HELPERS — scratch-pad accessors (state.pref_scratch is a plain dict;
+# AgentState itself is a Pydantic model and doesn't support dict-style
+# access, so all interview scratch state lives inside this one field)
 # ==========================================================================
 
 def _get_signals(state: AgentState) -> Dict[str, Any]:
-    return dict(state.get("_pref_signals") or {})
+    return dict(state.pref_scratch.get("signals") or {})
 
 
 def _get_asked(state: AgentState) -> set:
-    return set(state.get("_pref_asked") or [])
+    return set(state.pref_scratch.get("asked") or [])
 
 
 def _get_history(state: AgentState) -> list:
-    return list(state.get("_pref_history") or [])
+    return list(state.pref_scratch.get("history") or [])
 
 
 def _get_turn(state: AgentState) -> int:
-    return int(state.get("_pref_turn") or 0)
+    return int(state.pref_scratch.get("turn") or 0)
 
 
 def _flush_scratch(state: AgentState) -> None:
-    """Remove all _pref_* scratch keys once we are done."""
-    for k in ("_pref_signals", "_pref_asked", "_pref_history",
-              "_pref_turn", "_pref_last_schema", "_pref_last_question"):
-        state.pop(k, None)  # type: ignore[misc]
+    """Clear the interview scratch-pad once we are done."""
+    state.pref_scratch = {}
 
 
 def _finalise(
@@ -317,10 +317,9 @@ def _finalise(
     status: str,
 ) -> AgentState:
     """Persist preferences and mark agent as done."""
-    session_user_id = (
-        state.get("user_id")
-        or f"guest_{uuid.uuid4().hex[:8]}"
-    )
+    session_user_id = state.user_id or f"guest_{uuid.uuid4().hex[:8]}"
+    if not state.user_id:
+        state.user_id = session_user_id
     preferences = {
         "weights": weights,
         "signals": signals,
@@ -328,10 +327,10 @@ def _finalise(
         "status":  status,
     }
     _save_preferences(session_user_id, preferences, weights, signals)
-    state["user_preferences"] = preferences
+    state.user_preferences = preferences
     _flush_scratch(state)
-    state["waiting_for"]   = None
-    state["agent_message"] = None
+    state.waiting_for   = None
+    state.agent_message = None
     print(f"\n✅ Preferences finalised — status={status}, turns={turn}")
     return state
 
@@ -350,13 +349,13 @@ def user_preferences_agent(state: AgentState) -> AgentState:
     """
 
     # ── Already done? ────────────────────────────────────────────────────
-    if state.get("user_preferences") is not None:
+    if state.user_preferences is not None:
         return state
 
     print("\n--- User Preferences Agent ---")
 
-    waiting    = (state.get("waiting_for") or "").strip()
-    user_input = (state.get("user_input") or "").strip()
+    waiting    = (state.waiting_for or "").strip()
+    user_input = (state.user_input or "").strip()
 
     # ── Load scratch-pad ─────────────────────────────────────────────────
     signals = _get_signals(state)
@@ -368,8 +367,8 @@ def user_preferences_agent(state: AgentState) -> AgentState:
     # CASE A — We sent a question last turn; process the user's answer now
     # ═════════════════════════════════════════════════════════════════════
     if waiting == "preference_input" and user_input:
-        last_schema   = state.get("_pref_last_schema") or {}
-        last_question = state.get("_pref_last_question") or ""
+        last_schema   = state.pref_scratch.get("last_schema") or {}
+        last_question = state.pref_scratch.get("last_question") or ""
         field         = last_schema.get("field")
         mapping       = last_schema.get("mapping") or {}
 
@@ -393,11 +392,11 @@ def user_preferences_agent(state: AgentState) -> AgentState:
         turn += 1
 
         # Save scratch-pad back
-        state["_pref_signals"] = signals
-        state["_pref_asked"]   = list(asked)
-        state["_pref_history"] = history
-        state["_pref_turn"]    = turn
-        state["waiting_for"]   = None
+        state.pref_scratch["signals"] = signals
+        state.pref_scratch["asked"]   = list(asked)
+        state.pref_scratch["history"] = history
+        state.pref_scratch["turn"]    = turn
+        state.waiting_for = None
 
         # Check termination conditions
         if len(signals) >= MIN_FEATURES_BEFORE_STOP or turn >= PREFS_MAX_TURNS:
@@ -450,14 +449,14 @@ def user_preferences_agent(state: AgentState) -> AgentState:
                 f"SYSTEM:\nYou must collect at least "
                 f"{MIN_FEATURES_BEFORE_STOP} features before stopping. Continue."
             )
-            state["_pref_history"] = history
-            # Recurse-by-return: next graph step will call us again
-            # (waiting_for is still None so graph re-enters this agent)
+            state.pref_scratch["history"] = history
+            # Recurse-by-return: waiting_for is still None, so the router
+            # will route straight back into this same agent next step.
             return state
 
         weights = data.get("ranking_weights") or {}
         history.append(f"ASSISTANT:\n{json.dumps(data)}")
-        state["_pref_history"] = history
+        state.pref_scratch["history"] = history
         return _finalise(state, signals, weights, turn, "completed")
 
     # ── action: ask ──────────────────────────────────────────────────────
@@ -471,11 +470,11 @@ def user_preferences_agent(state: AgentState) -> AgentState:
         history.append(
             f"SYSTEM:\nField '{field}' already collected. Ask about a different field."
         )
-        state["_pref_signals"] = signals
-        state["_pref_asked"]   = list(asked)
-        state["_pref_history"] = history
-        state["_pref_turn"]    = turn
-        # Return without waiting_for — graph will re-enter this agent
+        state.pref_scratch["signals"] = signals
+        state.pref_scratch["asked"]   = list(asked)
+        state.pref_scratch["history"] = history
+        state.pref_scratch["turn"]    = turn
+        # Return without waiting_for — router will re-enter this agent
         return state
 
     # Build option display to append to the question
@@ -485,15 +484,15 @@ def user_preferences_agent(state: AgentState) -> AgentState:
     full_question = f"{question}\n({options_display})"
 
     # Persist state for next turn
-    state["_pref_signals"]      = signals
-    state["_pref_asked"]        = list(asked)
-    state["_pref_history"]      = history + [f"ASSISTANT:\n{json.dumps(data)}"]
-    state["_pref_turn"]         = turn
-    state["_pref_last_schema"]  = schema
-    state["_pref_last_question"] = question
+    state.pref_scratch["signals"]      = signals
+    state.pref_scratch["asked"]        = list(asked)
+    state.pref_scratch["history"]      = history + [f"ASSISTANT:\n{json.dumps(data)}"]
+    state.pref_scratch["turn"]         = turn
+    state.pref_scratch["last_schema"]  = schema
+    state.pref_scratch["last_question"] = question
 
-    state["agent_message"] = full_question
-    state["waiting_for"]   = "preference_input"
+    state.agent_message = full_question
+    state.waiting_for    = "preference_input"
 
     print(f"  ❓ Asking about field: {field}")
     return state

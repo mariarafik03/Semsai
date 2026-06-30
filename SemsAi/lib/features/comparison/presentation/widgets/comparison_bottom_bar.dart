@@ -4,6 +4,8 @@ import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/features/comparison/presentation/cubit/comparison_cubit.dart';
 import 'package:SemsAi/features/comparison/presentation/cubit/comparison_state.dart';
 import 'package:SemsAi/features/comparison/presentation/screens/comparison_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Floating bottom bar that shows how many units are selected for comparison
 /// and allows the user to open the comparison screen.
@@ -99,8 +101,8 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                   children: [
                     Text(
                       '${state.count} of 3 selected',
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
+                      style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -111,7 +113,7 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                           ? 'Tap compare to view'
                           : 'Select at least 2',
                       style: TextStyle(
-                        color: AppColors.textMuted.withValues(alpha: 0.8),
+                        color: context.appColors.textMuted.withValues(alpha: 0.8),
                         fontSize: 11,
                       ),
                     ),
@@ -127,9 +129,9 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                     color: Colors.white.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.close_rounded,
-                    color: AppColors.textMuted,
+                    color: context.appColors.textMuted,
                     size: 18,
                   ),
                 ),
@@ -171,13 +173,13 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                   ),
                   decoration: BoxDecoration(
                     gradient: state.canCompare
-                        ? const LinearGradient(
-                            colors: [AppColors.gold, AppColors.goldLight],
+                        ? LinearGradient(
+                            colors: [AppColors.gold, context.appColors.goldLight],
                           )
                         : null,
                     color: state.canCompare
                         ? null
-                        : AppColors.textMuted.withValues(alpha: 0.2),
+                        : context.appColors.textMuted.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: state.canCompare
                         ? [
@@ -193,8 +195,8 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                     'Compare',
                     style: TextStyle(
                       color: state.canCompare
-                          ? AppColors.bg
-                          : AppColors.textMuted,
+                          ? context.appColors.bg
+                          : context.appColors.textMuted,
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
                     ),
@@ -231,13 +233,13 @@ class _BarState extends State<_Bar> with SingleTickerProviderStateMixin {
                         fit: BoxFit.cover,
                       )
                     : null,
-                color: image == null ? AppColors.border : null,
+                color: image == null ? context.appColors.border : null,
               ),
               child: image == null
-                  ? const Icon(
+                  ? Icon(
                       Icons.home_outlined,
                       size: 14,
-                      color: AppColors.textMuted,
+                      color: context.appColors.textMuted,
                     )
                   : null,
             ),

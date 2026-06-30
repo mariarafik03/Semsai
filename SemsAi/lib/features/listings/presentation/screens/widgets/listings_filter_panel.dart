@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/features/listings/data/repo/listings_service.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ListingsFilterPanel extends StatelessWidget {
   const ListingsFilterPanel({
@@ -46,17 +48,17 @@ class ListingsFilterPanel extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Region dropdown
-          _filterLabel('Region'),
+          _filterLabel(context, 'Region'),
           const SizedBox(height: 6),
-          _buildDropdown<String>(
+          _buildDropdown<String>(context, 
             value: selectedRegion,
             hint: 'All Regions',
             items: regions
@@ -76,9 +78,9 @@ class ListingsFilterPanel extends StatelessWidget {
           const SizedBox(height: 14),
 
           // Type dropdown
-          _filterLabel('Property Type'),
+          _filterLabel(context, 'Property Type'),
           const SizedBox(height: 6),
-          _buildDropdown<String>(
+          _buildDropdown<String>(context, 
             value: selectedType,
             hint: 'All Types',
             items: types
@@ -95,7 +97,7 @@ class ListingsFilterPanel extends StatelessWidget {
           const SizedBox(height: 14),
 
           // Bedrooms row
-          _filterLabel('Bedrooms'),
+          _filterLabel(context, 'Bedrooms'),
           const SizedBox(height: 6),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -115,15 +117,15 @@ class ListingsFilterPanel extends StatelessWidget {
                         color: selected ? AppColors.gold : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: selected ? AppColors.gold : AppColors.border,
+                          color: selected ? AppColors.gold : context.appColors.border,
                         ),
                       ),
                       child: Text(
                         b == null ? 'Any' : '$b+',
                         style: TextStyle(
                           color: selected
-                              ? AppColors.bg
-                              : AppColors.textPrimary,
+                              ? context.appColors.bg
+                              : context.appColors.textPrimary,
                           fontSize: 13,
                           fontWeight: selected
                               ? FontWeight.w600
@@ -141,13 +143,14 @@ class ListingsFilterPanel extends StatelessWidget {
 
           // Budget range
           _filterLabel(
+            context,
             'Budget: ${PriceFormatter.format(minPrice)} – ${PriceFormatter.format(maxPrice)}',
           ),
           const SizedBox(height: 2),
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: AppColors.gold,
-              inactiveTrackColor: AppColors.border,
+              inactiveTrackColor: context.appColors.border,
               thumbColor: AppColors.gold,
               overlayColor: AppColors.gold.withValues(alpha: 0.2),
               trackHeight: 3,
@@ -173,15 +176,15 @@ class ListingsFilterPanel extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: onReset,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.border),
+                    side: BorderSide(color: context.appColors.border),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Reset',
-                    style: TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: context.appColors.textPrimary),
                   ),
                 ),
               ),
@@ -199,7 +202,7 @@ class ListingsFilterPanel extends StatelessWidget {
                   child: Text(
                     'Apply',
                     style: TextStyle(
-                      color: AppColors.bg,
+                      color: context.appColors.bg,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -212,16 +215,16 @@ class ListingsFilterPanel extends StatelessWidget {
     );
   }
 
-  Widget _filterLabel(String text) => Text(
+  Widget _filterLabel(BuildContext context, String text) => Text(
     text,
-    style: const TextStyle(
-      color: AppColors.textMuted,
+    style: TextStyle(
+      color: context.appColors.textMuted,
       fontSize: 12,
       fontWeight: FontWeight.w500,
     ),
   );
 
-  Widget _buildDropdown<T>({
+  Widget _buildDropdown<T>(BuildContext context, {
     required T? value,
     required String hint,
     required List<DropdownMenuItem<T>> items,
@@ -230,23 +233,23 @@ class ListingsFilterPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.bg,
+        color: context.appColors.bg,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
           hint: Text(
             hint,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
           ),
           isExpanded: true,
-          dropdownColor: AppColors.cardBg,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
-          icon: const Icon(
+          dropdownColor: context.appColors.cardBg,
+          style: TextStyle(color: context.appColors.textPrimary, fontSize: 13),
+          icon: Icon(
             Icons.keyboard_arrow_down,
-            color: AppColors.textMuted,
+            color: context.appColors.textMuted,
             size: 18,
           ),
           items: items,

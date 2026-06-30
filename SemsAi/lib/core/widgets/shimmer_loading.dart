@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// A shimmer / skeleton placeholder that animates a gradient sweep.
 class ShimmerBox extends StatefulWidget {
@@ -50,7 +52,7 @@ class _ShimmerBoxState extends State<ShimmerBox>
             gradient: LinearGradient(
               begin: Alignment(-1.0 + 2.0 * _ctrl.value, 0),
               end: Alignment(-1.0 + 2.0 * _ctrl.value + 1.0, 0),
-              colors: [AppColors.cardBg, Color(0xFF1A2035), AppColors.cardBg],
+              colors: [context.appColors.cardBg, Color(0xFF1A2035), context.appColors.cardBg],
             ),
           ),
         );
@@ -126,9 +128,9 @@ class ListingCardSkeleton extends StatelessWidget {
     return Shimmer(
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: context.appColors.cardBg,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +139,7 @@ class ListingCardSkeleton extends StatelessWidget {
               aspectRatio: 1.45,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.buildingColor,
+                  color: context.appColors.buildingColor,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                 ),
               ),
@@ -147,13 +149,13 @@ class ListingCardSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _bar(0.7, 12),
+                  _bar(context, 0.7, 12),
                   SizedBox(height: 8),
-                  _bar(0.5, 10),
+                  _bar(context, 0.5, 10),
                   SizedBox(height: 12),
-                  _bar(0.4, 10),
+                  _bar(context, 0.4, 10),
                   SizedBox(height: 10),
-                  _bar(0.55, 14),
+                  _bar(context, 0.55, 14),
                 ],
               ),
             ),
@@ -163,13 +165,13 @@ class ListingCardSkeleton extends StatelessWidget {
     );
   }
 
-  Widget _bar(double widthFraction, double height) {
+  Widget _bar(BuildContext context, double widthFraction, double height) {
     return FractionallySizedBox(
       widthFactor: widthFraction,
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          color: AppColors.border.withValues(alpha: 0.5),
+          color: context.appColors.border.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(4),
         ),
       ),
@@ -188,9 +190,9 @@ class PropertyCardSkeleton extends StatelessWidget {
         width: 190,
         margin: EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: AppColors.bg,
+          color: context.appColors.bg,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.appColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +200,7 @@ class PropertyCardSkeleton extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.buildingColor,
+                  color: context.appColors.buildingColor,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
                 ),
               ),
@@ -212,7 +214,7 @@ class PropertyCardSkeleton extends StatelessWidget {
                     height: 12,
                     width: 120,
                     decoration: BoxDecoration(
-                      color: AppColors.border.withValues(alpha: 0.5),
+                      color: context.appColors.border.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -221,7 +223,7 @@ class PropertyCardSkeleton extends StatelessWidget {
                     height: 10,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.border.withValues(alpha: 0.3),
+                      color: context.appColors.border.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),

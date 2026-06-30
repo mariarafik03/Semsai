@@ -19,6 +19,8 @@ import 'package:SemsAi/features/comparison/presentation/cubit/comparison_cubit.d
 import 'package:SemsAi/features/comparison/presentation/cubit/comparison_state.dart';
 import 'package:SemsAi/features/comparison/presentation/widgets/comparison_bottom_bar.dart';
 import 'package:SemsAi/core/utils/app_snackbar.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class ListingsScreen extends StatefulWidget {
   const ListingsScreen({super.key, this.onNavigateToChat});
@@ -217,7 +219,7 @@ class ListingsScreenState extends State<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
@@ -303,7 +305,7 @@ class ListingsScreenState extends State<ListingsScreen> {
         children: [
           Text(
             _loading ? 'Loading...' : '${_formatCount(_total)} properties',
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+            style: TextStyle(color: context.appColors.textMuted, fontSize: 13),
           ),
           const Spacer(),
           if (_hasActiveFilters)
@@ -338,11 +340,11 @@ class ListingsScreenState extends State<ListingsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.search_off, color: AppColors.textMuted, size: 48),
+            Icon(Icons.search_off, color: context.appColors.textMuted, size: 48),
             const SizedBox(height: 12),
             Text(
               AppStrings.noUnitsFound,
-              style: const TextStyle(color: AppColors.textMuted),
+              style: TextStyle(color: context.appColors.textMuted),
             ),
             if (_hasActiveFilters) ...[
               const SizedBox(height: 12),

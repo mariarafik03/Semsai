@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:SemsAi/core/constants/app_colors.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 /// Area filter chip with optional count badge.
 class AreaChip extends StatelessWidget {
@@ -29,7 +31,7 @@ class AreaChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? chipColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? chipColor : AppColors.border),
+          border: Border.all(color: isSelected ? chipColor : context.appColors.border),
           boxShadow: isSelected
               ? [
                   BoxShadow(
@@ -46,7 +48,7 @@ class AreaChip extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppColors.bg : AppColors.textPrimary,
+                color: isSelected ? context.appColors.bg : context.appColors.textPrimary,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               ),
@@ -57,16 +59,16 @@ class AreaChip extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.bg.withValues(alpha: 0.25)
-                      : AppColors.border.withValues(alpha: 0.6),
+                      ? context.appColors.bg.withValues(alpha: 0.25)
+                      : context.appColors.border.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '$count',
                   style: TextStyle(
                     color: isSelected
-                        ? AppColors.bg.withValues(alpha: 0.8)
-                        : AppColors.textMuted,
+                        ? context.appColors.bg.withValues(alpha: 0.8)
+                        : context.appColors.textMuted,
                     fontSize: 9,
                     fontWeight: FontWeight.w700,
                   ),

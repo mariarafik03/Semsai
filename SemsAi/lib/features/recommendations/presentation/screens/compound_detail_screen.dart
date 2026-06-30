@@ -3,6 +3,8 @@ import 'package:SemsAi/core/constants/app_colors.dart';
 import 'package:SemsAi/core/utils/price_formatter.dart';
 import 'package:SemsAi/features/explore/data/models/compound_unit_model.dart';
 import 'package:SemsAi/features/explore/presentation/screens/unit_detail_screen.dart';
+import 'package:SemsAi/core/theme/app_themes.dart';
+
 
 class CompoundDetailScreen extends StatelessWidget {
   final Map<String, dynamic> compound;
@@ -20,17 +22,17 @@ class CompoundDetailScreen extends StatelessWidget {
     final confidencePercent = (score * 100).toInt();
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.appColors.bg,
       body: CustomScrollView(
         slivers: [
           // ── App Bar ──
           SliverAppBar(
-            backgroundColor: AppColors.cardBg,
+            backgroundColor: context.appColors.cardBg,
             pinned: true,
             title: Text(
               name,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: context.appColors.textPrimary,
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
               ),
@@ -67,7 +69,7 @@ class CompoundDetailScreen extends StatelessWidget {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.cardBg,
+                color: context.appColors.cardBg,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: AppColors.gold.withValues(alpha: 0.3),
@@ -79,8 +81,8 @@ class CompoundDetailScreen extends StatelessWidget {
                   // Name + Location
                   Text(
                     name,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -97,8 +99,8 @@ class CompoundDetailScreen extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           location.toString(),
-                          style: const TextStyle(
-                            color: AppColors.textMuted,
+                          style: TextStyle(
+                            color: context.appColors.textMuted,
                             fontSize: 13,
                           ),
                         ),
@@ -143,10 +145,10 @@ class CompoundDetailScreen extends StatelessWidget {
                   // Reasons
                   if (reasons.isNotEmpty) ...[
                     const SizedBox(height: 14),
-                    const Text(
+                    Text(
                       'Why this compound?',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: context.appColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -175,8 +177,8 @@ class CompoundDetailScreen extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     r.toString(),
-                                    style: const TextStyle(
-                                      color: AppColors.textMuted,
+                                    style: TextStyle(
+                                      color: context.appColors.textMuted,
                                       fontSize: 13,
                                       height: 1.4,
                                     ),
@@ -206,8 +208,8 @@ class CompoundDetailScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     'Available Units (${units.length})',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: context.appColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -224,21 +226,21 @@ class CompoundDetailScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg,
+                  color: context.appColors.cardBg,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       Icons.info_outline,
-                      color: AppColors.textMuted.withValues(alpha: 0.4),
+                      color: context.appColors.textMuted.withValues(alpha: 0.4),
                       size: 36,
                     ),
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       'No units found for this compound',
                       style: TextStyle(
-                        color: AppColors.textMuted,
+                        color: context.appColors.textMuted,
                         fontSize: 14,
                       ),
                     ),
@@ -297,9 +299,9 @@ class _UnitCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: context.appColors.cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.appColors.border),
       ),
       child: Row(
         children: [
@@ -329,8 +331,8 @@ class _UnitCard extends StatelessWidget {
                   unitName.isNotEmpty
                       ? unitName
                       : (type.isNotEmpty ? type : 'Unit ${index + 1}'),
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: context.appColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -341,11 +343,11 @@ class _UnitCard extends StatelessWidget {
                   spacing: 12,
                   runSpacing: 6,
                   children: [
-                    if (type.isNotEmpty) _spec(Icons.home_outlined, type),
-                    if (area != null) _spec(Icons.square_foot, '${area} m²'),
-                    if (beds != null) _spec(Icons.bed_outlined, '$beds Beds'),
+                    if (type.isNotEmpty) _spec(context, Icons.home_outlined, type),
+                    if (area != null) _spec(context, Icons.square_foot, '${area} m²'),
+                    if (beds != null) _spec(context, Icons.bed_outlined, '$beds Beds'),
                     if (baths != null)
-                      _spec(Icons.bathtub_outlined, '$baths Baths'),
+                      _spec(context, Icons.bathtub_outlined, '$baths Baths'),
                   ],
                 ),
               ],
@@ -375,15 +377,15 @@ class _UnitCard extends StatelessWidget {
     );
   }
 
-  Widget _spec(IconData icon, String label) {
+  Widget _spec(BuildContext context, IconData icon, String label) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12, color: AppColors.textMuted),
+        Icon(icon, size: 12, color: context.appColors.textMuted),
         const SizedBox(width: 4),
         Text(
           label,
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+          style: TextStyle(color: context.appColors.textMuted, fontSize: 12),
         ),
       ],
     );
